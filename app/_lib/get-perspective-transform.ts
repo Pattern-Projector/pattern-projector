@@ -41,15 +41,15 @@
 //
 //M*/
 
-import { Matrix, solve } from 'ml-matrix';
+import { Matrix, solve } from "ml-matrix";
 
-import Point from './point';
+import Point from "./point";
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
- * 
+ *
  * A TypeScript implementation of OpenCV's getPerspectiveTransform(src, dst, solve) available here:
  * https://github.com/opencv/opencv/blob/157b0e7760117a60de457a4ae874b0709edc4e53/modules/imgproc/src/imgwarp.cpp#L3432
- * 
+ *
  * Calculates coefficients of perspective transformation
  * which maps (xi,yi) to (ui,vi), (i=1,2,3,4):
  *
@@ -73,50 +73,53 @@ import Point from './point';
  *
  * where:
  *   cij - matrix coefficients, c22 = 1
- * 
+ *
  * @param {Point[]} src - Coordinates of quadrangle vertices in the source image.
  * @param {Point[]} dst - Coordinates of the corresponding quadrangle vertices in the destination image.
  * @returns {number[]} - A 3x3 matrix of a perspective transform flattened into a array of length 9.
  */
-export default function getPerspectiveTransform(src: Point[], dst: Point[]): number[] {
+export default function getPerspectiveTransform(
+  src: Point[],
+  dst: Point[]
+): number[] {
   const a: number[][] = Array.from(Array(8), () => Array(8));
-  const b: number[] = new Array(8); 
+  const b: number[] = new Array(8);
 
   for (let i = 0; i < 4; i++) {
-      a[i][0] = src[i].x;
-      a[i+4][3] = src[i].x;
+    a[i][0] = src[i].x;
+    a[i + 4][3] = src[i].x;
 
-      a[i][1] = src[i].y;
-      a[i+4][4] = src[i].y;
+    a[i][1] = src[i].y;
+    a[i + 4][4] = src[i].y;
 
-      a[i][2] = 1;
-      a[i+4][5] = 1;
+    a[i][2] = 1;
+    a[i + 4][5] = 1;
 
-      a[i][3] = 0;
-      a[i][4] = 0;
-      a[i][5] = 0;
-      a[i+4][0] = 0;
-      a[i+4][1] = 0;
-      a[i+4][2] = 0;
+    a[i][3] = 0;
+    a[i][4] = 0;
+    a[i][5] = 0;
+    a[i + 4][0] = 0;
+    a[i + 4][1] = 0;
+    a[i + 4][2] = 0;
 
-      const srcX = src[i].x;
-      const dstX = dst[i].x;
-      const srcY = src[i].y;
-      const dstY = dst[i].y;
-      a[i][6] = -srcX * dstX;
-      a[i][7] = -srcY * dstX;
-      a[i+4][6] = -srcX * dstY;
-      a[i+4][7] = -srcY * dstY;
+    const srcX = src[i].x;
+    const dstX = dst[i].x;
+    const srcY = src[i].y;
+    const dstY = dst[i].y;
+    a[i][6] = -srcX * dstX;
+    a[i][7] = -srcY * dstX;
+    a[i + 4][6] = -srcX * dstY;
+    a[i + 4][7] = -srcY * dstY;
 
-      b[i] = dst[i].x;
-      b[i+4] = dst[i].y;
+    b[i] = dst[i].x;
+    b[i + 4] = dst[i].y;
   }
 
   const A = new Matrix(a);
   const B = Matrix.columnVector(b);
-  const x = solve(A, B, true); 
+  const x = solve(A, B, true);
   const X = x.getColumn(0);
-  X.push(1.);
+  X.push(1);
 
   return X;
 }
