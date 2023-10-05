@@ -1,4 +1,4 @@
-import getPerspectiveTransform from "./get-perspective-transform";
+import getPerspectiveTransform from "../../app/_lib/get-perspective-transform";
 
 // opencv-python input and output
 // >>> import cv2
