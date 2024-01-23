@@ -74,8 +74,8 @@ import Point from "./point";
  * where:
  *   cij - matrix coefficients, c22 = 1
  *
- * @param src - Coordinates of quadrangle vertices in the source image.
- * @param dst - Coordinates of the corresponding quadrangle vertices in the destination image.
+ * @param src - Coordinates of quadrangle vertices in the source image starting from top left clockwise.
+ * @param dst - Coordinates of the corresponding quadrangle vertices in the destination image starting from top left clockwise.
  * @returns A 3x3 matrix of a perspective transform flattened into a array of length 9.
  */
 export default function getPerspectiveTransform(
