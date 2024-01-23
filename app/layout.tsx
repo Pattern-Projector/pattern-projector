@@ -55,9 +55,15 @@ export default function RootLayout({
             <div>
               <Link
                 href="/calibrate"
+                className="inline-block text-sm mx-4 px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-indigo-500 hover:bg-white mt-4 lg:mt-0"
+              >
+                Calibrate
+              </Link>
+              <Link
+                href="/project"
                 className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-indigo-500 hover:bg-white mt-4 lg:mt-0"
               >
-                Set Up Projector
+                Project
               </Link>
             </div>
           </div>
