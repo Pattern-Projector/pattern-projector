@@ -5,6 +5,7 @@ test("contain text 'Inches'", async ({ mount }) => {
   const component = await mount(
     <LabelledRadioInput
       defaultChecked={true}
+      handleChange={() => {}}
       id="inches"
       label="Inches"
       name="unit"
@@ -17,6 +18,7 @@ test("to be checked by default", async ({ mount }) => {
   const component = await mount(
     <LabelledRadioInput
       defaultChecked={true}
+      handleChange={() => {}}
       id="inches"
       label="Inches"
       name="unit"

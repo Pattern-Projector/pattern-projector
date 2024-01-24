@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 /**
  * Labelled radio input
  * @param defaultChecked - Sets the radio input as checked or unchecked
@@ -7,11 +9,13 @@
  */
 export default function LabelledRadioInput({
   defaultChecked = false,
+  handleChange,
   id,
   label,
   name,
 }: {
   defaultChecked?: boolean;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   id: string;
   label: string;
   name: string;
@@ -23,6 +27,7 @@ export default function LabelledRadioInput({
         defaultChecked={defaultChecked}
         id={id}
         name={name}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
         type="radio"
       />
       <label
