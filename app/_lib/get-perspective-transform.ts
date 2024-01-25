@@ -121,5 +121,7 @@ export default function getPerspectiveTransform(
   const X = x.getColumn(0);
   X.push(1);
 
+  console.log(`perspectiveTransform: ${X}`);
+
   return X;
 }
