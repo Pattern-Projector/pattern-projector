@@ -18,6 +18,6 @@ export default function getMatrix3d(src: Point[], dst: Point[]): number[] {
 
   // Transpose since CSS.matrix3d is column major.
   m = m.transpose();
-  console.log(Array.from(m));
+  console.log(m);
   return m.to1DArray();
 }
