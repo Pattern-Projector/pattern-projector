@@ -1,3 +1,5 @@
+import { AbstractMatrix } from "ml-matrix";
+
 import getPerspectiveTransform from "./get-perspective-transform";
 import Point from "./point";
 
@@ -8,26 +10,14 @@ import Point from "./point";
  * @returns A 4x4 matrix of a perspective transform flattened into a array of length 16.
  */
 export default function getMatrix3d(src: Point[], dst: Point[]): number[] {
-  const perspectiveTransform = getPerspectiveTransform(src, dst);
-  const matrix3d = Array<number>(16);
+  var m = AbstractMatrix.from1DArray(3, 3, getPerspectiveTransform(src, dst));
 
-  for (let i = 0, j = 0; i < matrix3d.length; i++) {
-    switch (i) {
-      case 3:
-      case 7:
-      case 11:
-      case 12:
-      case 13:
-      case 14:
-        matrix3d[i] = 0;
-        break;
-      case 15:
-        matrix3d[i] = 1;
-        break;
-      default:
-        matrix3d[i] = perspectiveTransform[j++];
-    }
-  }
+  // Make the 3x3 into 4x4 by inserting a z component in the 3rd column.
+  m.addColumn(2, AbstractMatrix.zeros(1, 3));
+  m.addRow(2, AbstractMatrix.from1DArray(1, 4, [0, 0, 1, 0]));
 
-  return matrix3d;
+  // Transpose since CSS.matrix3d is column major.
+  m = m.transpose();
+  console.log(Array.from(m));
+  return m.to1DArray();
 }
