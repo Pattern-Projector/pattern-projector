@@ -1,33 +1,29 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 
 /**
  * Controlled labelled text input
- * @param defaultValue - Sets the initial value for the input
+ * @param handleChange - Function that handles change to input
  * @param id - Global html attribute that must be unique to the document
+ * @param inputTestId - Input ID used for testing
  * @param label - Input label visible to the user
  * @param name - Name submitted with the form
+ * @param value - Input value
  */
 export default function LabelledInput({
-  defaultValue,
+  handleChange,
   id,
+  inputTestId,
   label,
-  modifyValue,
   name,
+  value,
 }: {
-  defaultValue: string;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   id: string;
+  inputTestId: string;
   label: string;
-  modifyValue: (s: string) => string;
   name: string;
+  value: string;
 }) {
-  const [value, setValue] = useState(defaultValue);
-
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    const v = modifyValue(e.target.value);
-    console.log(`MODIFY!!!`);
-    setValue(v);
-  }
-
   return (
     <>
       <label className="font-bold text-white" htmlFor={id}>
@@ -36,6 +32,7 @@ export default function LabelledInput({
       <input
         className="appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-indigo-500 focus:border-indigo-500"
         id={id}
+        data-test-id={inputTestId}
         name={name}
         onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
         required
