@@ -1,7 +1,7 @@
 import { AbstractMatrix } from "ml-matrix";
 
 import getPerspectiveTransform from "./get-perspective-transform";
-import Point from "./point";
+import Point from "./interfaces/point";
 
 /**
  * Converts 3x3 matrix returned from getPerspectiveTransform(src, dst) to a 4x4 matrix as per https://stackoverflow.com/a/4833408/3376039

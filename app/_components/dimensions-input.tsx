@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 
-import { Unit } from "@/_lib/unit";
+import { Unit } from "@/_lib/interfaces/unit";
 
 import LabelledInput from "./labelled-input";
 import LabelledRadioInput from "./labelled-radio-input";
