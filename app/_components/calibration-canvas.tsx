@@ -23,5 +23,5 @@ export default function CalibrationCanvas({
     }
   }, [draw]);
 
-  return <canvas className="cursor-crosshair" ref={canvasRef} {...rest} />;
+  return <canvas ref={canvasRef} {...rest} />;
 }
