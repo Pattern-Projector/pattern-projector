@@ -1,4 +1,4 @@
-import getMatrix3d from "@/_lib/get-matrix3d";
+import getMatrix3d from "@/_lib/to-matrix3d";
 
 test("coverts 3x3 matrix to 4x4 matrix", () => {
   const src = [
