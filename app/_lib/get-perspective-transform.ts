@@ -76,12 +76,12 @@ import Point from "./interfaces/point";
  *
  * @param src - Coordinates of quadrangle vertices in the source image starting from top left clockwise.
  * @param dst - Coordinates of the corresponding quadrangle vertices in the destination image starting from top left clockwise.
- * @returns A 3x3 matrix of a perspective transform flattened into a array of length 9.
+ * @returns A 3x3 matrix of a perspective transform.
  */
 export default function getPerspectiveTransform(
   src: Point[],
   dst: Point[]
-): number[] {
+): Matrix {
   const a: number[][] = Array.from(Array(8), () => Array(8));
   const b: number[] = new Array(8);
 
@@ -121,7 +121,29 @@ export default function getPerspectiveTransform(
   const X = x.getColumn(0);
   X.push(1);
 
-  console.log(`perspectiveTransform: ${X}`);
+  var s = Matrix.from1DArray(3, 3, X);
+  console.log(s);
+  return s;
+}
 
-  return X;
+export function transformPoints(points: Point[], m: Matrix): Point[] {
+  return points.map((p) => transformPoint(p, m));
+}
+
+export function transformPoint(p: Point, mm: Matrix): Point {
+  let m = mm.to1DArray();
+  var w = p.x * m[6] + p.y * m[7] + m[8];
+  w = 1 / w;
+  let ox = (p.x * m[0] + p.y * m[1] + m[2]) * w;
+  let oy = (p.x * m[3] + p.y * m[4] + m[5]) * w;
+  let result = { x: ox, y: oy };
+  return result;
+}
+
+export function translate(p: Point): Matrix {
+  return Matrix.from1DArray(3, 3, [1, 0, p.x, 0, 1, p.y, 0, 0, 1]);
+}
+
+export function scale(s: number): Matrix {
+  return Matrix.from1DArray(3, 3, [s, 0, 0, 0, s, 0, 0, 0, 1]);
 }
