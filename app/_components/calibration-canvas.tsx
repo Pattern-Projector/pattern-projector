@@ -8,11 +8,11 @@ export default function CalibrationCanvas({
   draw = (ctx: CanvasRenderingContext2D) => {},
   ...rest
 }) {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
-      const canvas: HTMLCanvasElement = canvasRef.current;
+      const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
 
       if (ctx !== null) {
