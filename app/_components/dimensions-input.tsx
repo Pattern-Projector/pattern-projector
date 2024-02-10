@@ -22,7 +22,7 @@ export default function DimensionsInput({
   width: string;
 }) {
   return (
-    <>
+    <div className="flex gap-x-4">
       <LabelledInput
         handleChange={handleWidthChange}
         id="width"
@@ -47,17 +47,17 @@ export default function DimensionsInput({
           defaultChecked={true}
           id={Unit.Inches}
           inputTestId="inches"
-          label="Inches"
+          label="in"
           name="unit"
         />
         <LabelledRadioInput
           handleChange={handleUnitChange}
           id={Unit.Centimetres}
           inputTestId="centimetres"
-          label="Centimetres"
+          label="cm"
           name="unit"
         />
       </fieldset>
-    </>
+    </div>
   );
 }
