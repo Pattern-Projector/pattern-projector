@@ -1,113 +1,244 @@
-import Image from 'next/image'
+// TODO:
+// Find DPI
+// Dragging reliable
+// Grid
+// Calibration and movement separate
+
+"use client";
+
+import Matrix from "ml-matrix";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+
+import CalibrationCanvas from "@/_components/calibration-canvas";
+import DimensionsInput from "@/_components/dimensions-input";
+import Draggable from "@/_components/draggable";
+import FullScreenButton from "@/_components/full-screen-button";
+import LabelledFileInput from "@/_components/labelled-file-input";
+import PDFViewer from "@/_components/pdf-viewer";
+import getPerspectiveTransform from "@/_lib/get-perspective-transform";
+import Point from "@/_lib/interfaces/point";
+import { Unit } from "@/_lib/interfaces/unit";
+import isInRadius from "@/_lib/is-in-radius";
+import isValidPDF from "@/_lib/is-valid-pdf";
+import removeNonDigits from "@/_lib/remove-non-digits";
+import toMatrix3d from "@/_lib/to-matrix3d";
 
 export default function Home() {
+  const defaultDimensionValue = "5";
+  const handle = useFullScreenHandle();
+  const maxPoints = 4; // One point per vertex in rectangle
+  const radius = 30;
+
+  const [points, setPoints] = useState<Point[]>([]);
+  const [pointToModiy, setPointToModify] = useState<number | null>(null);
+  const [width, setWidth] = useState(defaultDimensionValue);
+  const [height, setHeight] = useState(defaultDimensionValue);
+  const [unit, setUnit] = useState(Unit.Inches);
+  const [isCalibrating, setIsCalibrating] = useState(true);
+  const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
+  const [localTransform, setLocalTransform] = useState<Matrix>(
+    Matrix.identity(3, 3)
+  );
+  const [matrix3d, setMatrix3d] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [inverted, setInverted] = useState<boolean>(false);
+
+  function draw(ctx: CanvasRenderingContext2D) {
+    const rect = ctx.canvas.getBoundingClientRect(); // Find position of canvas below navbar to offset x and y
+    let prev = points[0];
+    for (let point of points) {
+      ctx.strokeStyle = "#36cf11";
+
+      ctx.moveTo(prev.x - rect.left, prev.y - rect.top);
+      ctx.lineTo(point.x - rect.left, point.y - rect.top);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(point.x - rect.left, point.y - rect.top, radius, 0, Math.PI * 2);
+      ctx.stroke();
+      prev = point;
+    }
+
+    if (points.length === maxPoints) {
+      ctx.moveTo(prev.x - rect.left, prev.y - rect.top);
+      ctx.lineTo(points[0].x - rect.left, points[0].y - rect.top);
+      ctx.stroke();
+    }
+  }
+
+  // HANDLERS
+
+  function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
+    const height = removeNonDigits(e.target.value);
+    setHeight(height);
+  }
+
+  function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
+    const width = removeNonDigits(e.target.value);
+    setWidth(width);
+  }
+
+  function handleUnitChange(e: ChangeEvent<HTMLInputElement>) {
+    setUnit(e.target.id as Unit);
+  }
+
+  function handleMouseDown(e: MouseEvent) {
+    const newPoint = { x: e.clientX, y: e.clientY };
+    if (points.length < maxPoints) {
+      setPoints([...points, newPoint]);
+      localStorage.setItem("points", JSON.stringify([...points, newPoint]));
+    } else {
+      for (let [i, point] of points.entries()) {
+        if (isInRadius(newPoint, point, radius)) {
+          setPointToModify(i);
+        }
+      }
+    }
+  }
+
+  function handleMouseMove(e: MouseEvent) {
+    if (pointToModiy !== null) {
+      const newPoints = [...points];
+      newPoints[pointToModiy] = { x: e.clientX, y: e.clientY };
+      setPoints(newPoints);
+    }
+  }
+
+  function handleMouseUp(e: MouseEvent) {
+    localStorage.setItem("points", JSON.stringify(points));
+    setPointToModify(null);
+  }
+
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
+    const { files } = e.target;
+
+    if (files && files[0] && isValidPDF(files[0])) {
+      setFile(files[0]);
+    }
+  }
+
+  function handleOnClickInvert(): void {
+    setInverted(!inverted);
+  }
+
+  function handleOnClickCalibrate(): void {
+    setIsCalibrating(!isCalibrating);
+  }
+
+  // EFFECTS
+
+  useEffect(() => {
+    const localPoints = localStorage.getItem("points");
+    if (localPoints !== null) {
+      setPoints(JSON.parse(localPoints));
+    }
+  }, []);
+
+  useEffect(() => {
+    setMatrix3d(toMatrix3d(localTransform));
+  }, [localTransform]);
+
+  useEffect(() => {
+    if (points.length === maxPoints) {
+      let m = getPerspectiveTransform(points, getDstVertices());
+      let n = getPerspectiveTransform(getDstVertices(), points);
+      setPerspective(m);
+      setLocalTransform(n);
+    }
+
+    function getDstVertices(): Point[] {
+      const ppi = 96; // defined by css.
+      const ox = 0;
+      const oy = 0;
+      const mx = +width * ppi + ox;
+      const my = +height * ppi + oy;
+
+      const dstVertices = [
+        { x: ox, y: oy },
+        { x: mx, y: oy },
+        { x: mx, y: my },
+        { x: ox, y: my },
+      ];
+
+      return dstVertices;
+    }
+  }, [points, width, height]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+    <main>
+      <FullScreen handle={handle}>
+        <Draggable
+          localTransform={localTransform}
+          setLocalTransform={setLocalTransform}
+          perspective={perspective}
+        >
+          <div className="flex flex-wrap items-center gap-4 m-4 absolute z-20">
+            <button
+              className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              onClick={handleOnClickCalibrate}
+            >
+              {isCalibrating ? "Hide Calibration" : "Show Calibration"}
+            </button>
+            <LabelledFileInput
+              accept="application/pdf"
+              handleChange={handleFileChange}
+              id="pdfFile"
+              inputTestId="pdfFile"
+              label=""
+            ></LabelledFileInput>
+
+            <button
+              className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              onClick={handleOnClickInvert}
+              type="button"
+            >
+              Invert
+            </button>
+
+            {isCalibrating && (
+              <DimensionsInput
+                width={width}
+                height={height}
+                handleWidthChange={handleWidthChange}
+                handleHeightChange={handleHeightChange}
+                handleUnitChange={handleUnitChange}
+              />
+            )}
+
+            <FullScreenButton handle={handle} />
+          </div>
+
+          {isCalibrating && (
+            <CalibrationCanvas
+              className="absolute cursor-crosshair z-10"
+              onMouseDown={(e: MouseEvent) => handleMouseDown(e)}
+              onMouseMove={(e: MouseEvent) => handleMouseMove(e)}
+              onMouseUp={(e: MouseEvent) => handleMouseUp(e)}
+              draw={draw}
             />
-          </a>
-        </div>
-      </div>
+          )}
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+          {!isCalibrating && (
+            <PDFViewer
+              file={file}
+              style={{
+                transform: matrix3d,
+                transformOrigin: "0 0",
+                filter: `invert(${inverted ? "1" : "0"})`,
+                // width: "100%",
+                // height: "100%",
+                // TODO: add grid overlay
+                margin: "0",
+                zoom: "100%",
+                backgroundImage:
+                  "repeating-linear-gradient(#fff 0 1px, transparent 1px 100%), repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 100%)",
+                backgroundSize: "1in 1in",
+              }}
+            />
+          )}
+        </Draggable>
+      </FullScreen>
     </main>
-  )
+  );
 }
