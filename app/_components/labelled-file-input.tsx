@@ -27,7 +27,7 @@ export default function LabelledFileInput({
       </label>{" "}
       <input
         accept={accept}
-        className="appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-indigo-500 focus:border-indigo-500"
+        className="z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-indigo-500 focus:border-indigo-500"
         data-test-id={inputTestId}
         id={id}
         onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}

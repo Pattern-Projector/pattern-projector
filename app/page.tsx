@@ -42,7 +42,7 @@ export default function Home() {
   );
   const [matrix3d, setMatrix3d] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
-  const [inverted, setInverted] = useState<boolean>(false);
+  const [inverted, setInverted] = useState<boolean>(true);
 
   function draw(ctx: CanvasRenderingContext2D) {
     const rect = ctx.canvas.getBoundingClientRect(); // Find position of canvas below navbar to offset x and y
@@ -173,28 +173,32 @@ export default function Home() {
           setLocalTransform={setLocalTransform}
           perspective={perspective}
         >
-          <div className="flex flex-wrap items-center gap-4 m-4 absolute z-20">
+          <div className="flex flex-wrap items-center gap-4 m-4">
             <button
-              className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               onClick={handleOnClickCalibrate}
             >
-              {isCalibrating ? "Hide Calibration" : "Show Calibration"}
+              {isCalibrating ? "Show Pattern" : "Show Calibration"}
             </button>
-            <LabelledFileInput
-              accept="application/pdf"
-              handleChange={handleFileChange}
-              id="pdfFile"
-              inputTestId="pdfFile"
-              label=""
-            ></LabelledFileInput>
+            {!isCalibrating && (
+              <>
+                <LabelledFileInput
+                  accept="application/pdf"
+                  handleChange={handleFileChange}
+                  id="pdfFile"
+                  inputTestId="pdfFile"
+                  label=""
+                ></LabelledFileInput>
 
-            <button
-              className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-              onClick={handleOnClickInvert}
-              type="button"
-            >
-              Invert
-            </button>
+                <button
+                  className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  onClick={handleOnClickInvert}
+                  type="button"
+                >
+                  Invert
+                </button>
+              </>
+            )}
 
             {isCalibrating && (
               <DimensionsInput
@@ -206,7 +210,7 @@ export default function Home() {
               />
             )}
 
-            <FullScreenButton handle={handle} />
+            <FullScreenButton className="z-10 ml-auto" handle={handle} />
           </div>
 
           {isCalibrating && (
