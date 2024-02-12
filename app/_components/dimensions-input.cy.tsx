@@ -8,7 +8,6 @@ describe("<DimensionsInput />", () => {
       <DimensionsInput
         handleHeightChange={() => {}}
         handleWidthChange={() => {}}
-        handleUnitChange={() => {}}
         height="5"
         width="5"
       />

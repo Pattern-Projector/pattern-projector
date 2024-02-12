@@ -1,9 +1,6 @@
 import { ChangeEvent } from "react";
 
-import { Unit } from "@/_lib/interfaces/unit";
-
 import LabelledInput from "./labelled-input";
-import LabelledRadioInput from "./labelled-radio-input";
 
 /**
  * A component for inputing the width and height of the user's selected rectangle from the cutting mat in either inches or centimetres

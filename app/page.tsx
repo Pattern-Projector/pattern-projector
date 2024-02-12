@@ -18,7 +18,6 @@ import LabelledFileInput from "@/_components/labelled-file-input";
 import PDFViewer from "@/_components/pdf-viewer";
 import getPerspectiveTransform from "@/_lib/get-perspective-transform";
 import Point from "@/_lib/interfaces/point";
-import { Unit } from "@/_lib/interfaces/unit";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import toMatrix3d from "@/_lib/to-matrix3d";
