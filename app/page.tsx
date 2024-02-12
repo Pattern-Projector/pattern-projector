@@ -19,21 +19,25 @@ import PDFViewer from "@/_components/pdf-viewer";
 import getPerspectiveTransform from "@/_lib/get-perspective-transform";
 import Point from "@/_lib/interfaces/point";
 import { Unit } from "@/_lib/interfaces/unit";
-import isInRadius from "@/_lib/is-in-radius";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import toMatrix3d from "@/_lib/to-matrix3d";
+import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
+import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
+import EyeIcon from "./_icons/eye-icon";
+import EyeInvertedIcon from "./_icons/eye-inverted-icon";
 
 export default function Home() {
-  const defaultDimensionValue = "5";
+  const defaultWidthDimensionValue = "24";
+  const defaultHeightDimensionValue = "18";
   const handle = useFullScreenHandle();
   const maxPoints = 4; // One point per vertex in rectangle
   const radius = 30;
 
   const [points, setPoints] = useState<Point[]>([]);
   const [pointToModiy, setPointToModify] = useState<number | null>(null);
-  const [width, setWidth] = useState(defaultDimensionValue);
-  const [height, setHeight] = useState(defaultDimensionValue);
+  const [width, setWidth] = useState(defaultWidthDimensionValue);
+  const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [unit, setUnit] = useState(Unit.Inches);
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
@@ -41,15 +45,21 @@ export default function Home() {
     Matrix.identity(3, 3)
   );
   const [matrix3d, setMatrix3d] = useState<string>("");
+  const [calibrationMatrix3d, setCalibrationMatrix3d] = useState<string>("");
+  const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
+    Matrix.identity(3, 3)
+  );
   const [file, setFile] = useState<File | null>(null);
   const [inverted, setInverted] = useState<boolean>(true);
+  const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
 
   function draw(ctx: CanvasRenderingContext2D) {
     const rect = ctx.canvas.getBoundingClientRect(); // Find position of canvas below navbar to offset x and y
+    //const rect = { top: 0, left: 0 };
+    ctx.strokeStyle = "#36cf11";
+
     let prev = points[0];
     for (let point of points) {
-      ctx.strokeStyle = "#36cf11";
-
       ctx.moveTo(prev.x - rect.left, prev.y - rect.top);
       ctx.lineTo(point.x - rect.left, point.y - rect.top);
       ctx.stroke();
@@ -83,25 +93,44 @@ export default function Home() {
     setUnit(e.target.id as Unit);
   }
 
+  function sqrdist(a: Point, b: Point): number {
+    let dx = a.x - b.x;
+    let dy = a.y - b.y;
+    return dx * dx + dy * dy;
+  }
+
+  function minIndex(a: number[]): number {
+    var min = 0;
+    for (var i = 1; i < a.length; i++) {
+      if (a[i] < a[min]) {
+        min = i;
+      }
+    }
+    return min;
+  }
+
+  function toCanvasPoint(e: MouseEvent): Point {
+    return { x: e.clientX, y: e.clientY };
+  }
+
   function handleMouseDown(e: MouseEvent) {
-    const newPoint = { x: e.clientX, y: e.clientY };
+    const newPoint = toCanvasPoint(e);
     if (points.length < maxPoints) {
       setPoints([...points, newPoint]);
-      localStorage.setItem("points", JSON.stringify([...points, newPoint]));
     } else {
-      for (let [i, point] of points.entries()) {
-        if (isInRadius(newPoint, point, radius)) {
-          setPointToModify(i);
-        }
-      }
+      setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
     }
   }
 
   function handleMouseMove(e: MouseEvent) {
     if (pointToModiy !== null) {
-      const newPoints = [...points];
-      newPoints[pointToModiy] = { x: e.clientX, y: e.clientY };
-      setPoints(newPoints);
+      if ((e.buttons & 1) == 0) {
+        setPointToModify(null);
+      } else {
+        const newPoints = [...points];
+        newPoints[pointToModiy] = toCanvasPoint(e);
+        setPoints(newPoints);
+      }
     }
   }
 
@@ -122,6 +151,14 @@ export default function Home() {
     setInverted(!inverted);
   }
 
+  function handleOnClickFlipHorizontal(): void {
+    setScale({ x: scale.x * -1, y: scale.y });
+  }
+
+  function handleOnClickFlipVertical(): void {
+    setScale({ x: scale.x, y: scale.y * -1 });
+  }
+
   function handleOnClickCalibrate(): void {
     setIsCalibrating(!isCalibrating);
   }
@@ -136,6 +173,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    setCalibrationMatrix3d(toMatrix3d(calibrationTransform));
+  }, [calibrationTransform]);
+
+  useEffect(() => {
     setMatrix3d(toMatrix3d(localTransform));
   }, [localTransform]);
 
@@ -143,6 +184,7 @@ export default function Home() {
     if (points.length === maxPoints) {
       let m = getPerspectiveTransform(points, getDstVertices());
       let n = getPerspectiveTransform(getDstVertices(), points);
+      setCalibrationTransform(n);
       setPerspective(m);
       setLocalTransform(n);
     }
@@ -168,52 +210,63 @@ export default function Home() {
   return (
     <main>
       <FullScreen handle={handle}>
-        <Draggable
-          localTransform={localTransform}
-          setLocalTransform={setLocalTransform}
-          perspective={perspective}
-        >
-          <div className="flex flex-wrap items-center gap-4 m-4">
-            <button
-              className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-              onClick={handleOnClickCalibrate}
-            >
-              {isCalibrating ? "Show Pattern" : "Show Calibration"}
-            </button>
-            {!isCalibrating && (
-              <>
-                <LabelledFileInput
-                  accept="application/pdf"
-                  handleChange={handleFileChange}
-                  id="pdfFile"
-                  inputTestId="pdfFile"
-                  label=""
-                ></LabelledFileInput>
+        <div className="flex flex-wrap items-center gap-4 m-4">
+          <button
+            className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+            onClick={handleOnClickCalibrate}
+          >
+            {isCalibrating ? "Show Pattern" : "Show Calibration"}
+          </button>
+          {!isCalibrating && (
+            <>
+              <LabelledFileInput
+                accept="application/pdf"
+                handleChange={handleFileChange}
+                id="pdfFile"
+                inputTestId="pdfFile"
+                label=""
+              ></LabelledFileInput>
 
-                <button
-                  className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                  onClick={handleOnClickInvert}
-                  type="button"
-                >
-                  Invert
-                </button>
-              </>
-            )}
+              <button
+                className={"z-10"}
+                name={"Flip horizontally"}
+                onClick={handleOnClickInvert}
+              >
+                {inverted ? <EyeIcon /> : <EyeInvertedIcon />}
+              </button>
 
-            {isCalibrating && (
-              <DimensionsInput
-                width={width}
-                height={height}
-                handleWidthChange={handleWidthChange}
-                handleHeightChange={handleHeightChange}
-                handleUnitChange={handleUnitChange}
-              />
-            )}
+              <button
+                className={"z-10"}
+                name={"Flip horizontally"}
+                onClick={handleOnClickFlipHorizontal}
+              >
+                <FlipHorizontalIcon />
+              </button>
 
-            <FullScreenButton className="z-10 ml-auto" handle={handle} />
-          </div>
+              <button
+                className={"z-10"}
+                name={"Flip vertically"}
+                onClick={handleOnClickFlipVertical}
+              >
+                <FlipVerticalIcon />
+              </button>
+            </>
+          )}
 
           {isCalibrating && (
+            <DimensionsInput
+              width={width}
+              height={height}
+              handleWidthChange={handleWidthChange}
+              handleHeightChange={handleHeightChange}
+            />
+          )}
+
+          <FullScreenButton className="z-10 ml-auto" handle={handle} />
+        </div>
+
+        {isCalibrating && (
+          <div>
             <CalibrationCanvas
               className="absolute cursor-crosshair z-10"
               onMouseDown={(e: MouseEvent) => handleMouseDown(e)}
@@ -221,27 +274,45 @@ export default function Home() {
               onMouseUp={(e: MouseEvent) => handleMouseUp(e)}
               draw={draw}
             />
-          )}
-
-          {!isCalibrating && (
-            <PDFViewer
-              file={file}
+            <div
+              onMouseDown={(e: MouseEvent) => handleMouseDown(e)}
+              onMouseMove={(e: MouseEvent) => handleMouseMove(e)}
+              onMouseUp={(e: MouseEvent) => handleMouseUp(e)}
               style={{
-                transform: matrix3d,
+                cursor: "crosshair",
+                zIndex: 20,
+                position: "absolute",
+                transform: calibrationMatrix3d,
                 transformOrigin: "0 0",
-                filter: `invert(${inverted ? "1" : "0"})`,
-                // width: "100%",
-                // height: "100%",
-                // TODO: add grid overlay
-                margin: "0",
-                zoom: "100%",
+                // assuming inches
+                width: `${+width * 96 + 1}px`, // 96 pixels per inch in CSS
+                height: `${+height * 96 + 1}px`,
+                inset: "0 0 0 0",
+                //margin: "0",
                 backgroundImage:
                   "repeating-linear-gradient(#fff 0 1px, transparent 1px 100%), repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 100%)",
                 backgroundSize: "1in 1in",
               }}
+            ></div>
+          </div>
+        )}
+
+        {!isCalibrating && (
+          <Draggable
+            localTransform={localTransform}
+            setLocalTransform={setLocalTransform}
+            perspective={perspective}
+          >
+            <PDFViewer
+              file={file}
+              style={{
+                transform: `${matrix3d} scale(${scale.x}, ${scale.y})`,
+                transformOrigin: "0 0",
+                filter: `invert(${inverted ? "1" : "0"})`,
+              }}
             />
-          )}
-        </Draggable>
+          </Draggable>
+        )}
       </FullScreen>
     </main>
   );
