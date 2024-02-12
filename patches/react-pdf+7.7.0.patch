@@ -1,0 +1,40 @@
+diff --git a/node_modules/react-pdf/dist/cjs/Page/PageCanvas.js b/node_modules/react-pdf/dist/cjs/Page/PageCanvas.js
+index b5e8e11..5fb6371 100644
+--- a/node_modules/react-pdf/dist/cjs/Page/PageCanvas.js
++++ b/node_modules/react-pdf/dist/cjs/Page/PageCanvas.js
+@@ -82,8 +82,13 @@ function PageCanvas(props) {
+         }
+         canvas.width = renderViewport.width;
+         canvas.height = renderViewport.height;
+-        canvas.style.width = `${Math.floor(viewport.width)}px`;
+-        canvas.style.height = `${Math.floor(viewport.height)}px`;
++        
++        const CSS = 96.0;
++        const PDF = 72.0;
++        const PDF_TO_CSS_UNITS = CSS / PDF;
++
++        canvas.style.width = `${Math.floor(viewport.width) * PDF_TO_CSS_UNITS}px`;
++        canvas.style.height = `${Math.floor(viewport.height) * PDF_TO_CSS_UNITS}px`;
+         canvas.style.visibility = 'hidden';
+         const renderContext = {
+             annotationMode: renderForms ? ANNOTATION_MODE.ENABLE_FORMS : ANNOTATION_MODE.ENABLE,
+diff --git a/node_modules/react-pdf/dist/esm/Page/PageCanvas.js b/node_modules/react-pdf/dist/esm/Page/PageCanvas.js
+index 1b72392..0df7d1a 100644
+--- a/node_modules/react-pdf/dist/esm/Page/PageCanvas.js
++++ b/node_modules/react-pdf/dist/esm/Page/PageCanvas.js
+@@ -54,8 +54,13 @@ export default function PageCanvas(props) {
+         }
+         canvas.width = renderViewport.width;
+         canvas.height = renderViewport.height;
+-        canvas.style.width = `${Math.floor(viewport.width)}px`;
+-        canvas.style.height = `${Math.floor(viewport.height)}px`;
++        
++        const CSS = 96.0;
++        const PDF = 72.0;
++        const PDF_TO_CSS_UNITS = CSS / PDF;
++
++        canvas.style.width = `${Math.floor(viewport.width) * PDF_TO_CSS_UNITS}px`;
++        canvas.style.height = `${Math.floor(viewport.height) * PDF_TO_CSS_UNITS}px`;
+         canvas.style.visibility = 'hidden';
+         const renderContext = {
+             annotationMode: renderForms ? ANNOTATION_MODE.ENABLE_FORMS : ANNOTATION_MODE.ENABLE,
