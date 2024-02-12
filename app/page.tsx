@@ -34,11 +34,16 @@ export default function Home() {
   const maxPoints = 4; // One point per vertex in rectangle
   const radius = 30;
 
-  const [points, setPoints] = useState<Point[]>([]);
+  const [points, setPoints] = useState<Point[]>([
+    // Default points that match closely enough to my setup with a 24 x 18 inch mat
+    { x: 190, y: 190 },
+    { x: 1150, y: 160 },
+    { x: 1150, y: 900 },
+    { x: 160, y: 900 },
+  ]);
   const [pointToModiy, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
-  const [unit, setUnit] = useState(Unit.Inches);
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
   const [localTransform, setLocalTransform] = useState<Matrix>(
@@ -55,7 +60,6 @@ export default function Home() {
 
   function draw(ctx: CanvasRenderingContext2D) {
     const rect = ctx.canvas.getBoundingClientRect(); // Find position of canvas below navbar to offset x and y
-    //const rect = { top: 0, left: 0 };
     ctx.strokeStyle = "#36cf11";
 
     let prev = points[0];
@@ -87,10 +91,6 @@ export default function Home() {
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const width = removeNonDigits(e.target.value);
     setWidth(width);
-  }
-
-  function handleUnitChange(e: ChangeEvent<HTMLInputElement>) {
-    setUnit(e.target.id as Unit);
   }
 
   function sqrdist(a: Point, b: Point): number {
