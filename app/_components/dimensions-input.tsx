@@ -11,18 +11,16 @@ import LabelledRadioInput from "./labelled-radio-input";
 export default function DimensionsInput({
   handleHeightChange,
   handleWidthChange,
-  handleUnitChange,
   height,
   width,
 }: {
   handleHeightChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleWidthChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleUnitChange: (e: ChangeEvent<HTMLInputElement>) => void;
   height: string;
   width: string;
 }) {
   return (
-    <div className="flex gap-x-4">
+    <div className="flex flex-wrap items-center gap-4">
       <LabelledInput
         handleChange={handleWidthChange}
         id="width"
@@ -40,24 +38,6 @@ export default function DimensionsInput({
         name="height"
         value={height}
       />
-
-      <fieldset className="bg-gray-700 rounded">
-        <LabelledRadioInput
-          handleChange={handleUnitChange}
-          defaultChecked={true}
-          id={Unit.Inches}
-          inputTestId="inches"
-          label="in"
-          name="unit"
-        />
-        <LabelledRadioInput
-          handleChange={handleUnitChange}
-          id={Unit.Centimetres}
-          inputTestId="centimetres"
-          label="cm"
-          name="unit"
-        />
-      </fieldset>
     </div>
   );
 }
