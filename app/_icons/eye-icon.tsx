@@ -1,19 +1,21 @@
-export default function Maximize() {
+export default function EyeIcon() {
   return (
     <svg
-      aria-label="maximize"
       className="w-6 h-6 text-gray-800 dark:text-white"
-      data-test-id="maximize"
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
     >
       <path
         stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
         stroke-width="2"
-        d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5"
+        d="M21 12c0 1.2-4 6-9 6s-9-4.8-9-6c0-1.2 4-6 9-6s9 4.8 9 6Z"
+      />
+      <path
+        stroke="currentColor"
+        stroke-width="2"
+        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
       />
     </svg>
   );
