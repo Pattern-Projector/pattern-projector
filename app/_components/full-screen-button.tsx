@@ -1,8 +1,13 @@
 import { FullScreenHandle } from "react-full-screen";
 
-import MinimizeIcon from "@/_icons/minimize-icon";
 import MaximizeIcon from "@/_icons/maximize-icon";
+import MinimizeIcon from "@/_icons/minimize-icon";
 
+/**
+ *
+ * @param className - Class names to apply to button
+ * @param handle - Full screen handler
+ */
 export default function FullScreenButton({
   className,
   handle,
