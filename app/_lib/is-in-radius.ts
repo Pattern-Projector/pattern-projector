@@ -1,4 +1,4 @@
-import Point from "./interfaces/point";
+import Point from './point';
 
 /**
  * Checks if p1 is in the radius of p2

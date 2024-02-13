@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import { transformPoint, translate } from "@/_lib/get-perspective-transform";
-import Point from "@/_lib/interfaces/point";
+import Point from "@/_lib/point";
 
 export default function Draggable({
   children,

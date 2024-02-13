@@ -14,8 +14,8 @@ import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import getPerspectiveTransform from "@/_lib/get-perspective-transform";
-import Point from "@/_lib/interfaces/point";
 import isValidPDF from "@/_lib/is-valid-pdf";
+import Point from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import toMatrix3d from "@/_lib/to-matrix3d";
 

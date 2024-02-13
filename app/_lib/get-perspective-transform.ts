@@ -41,9 +41,9 @@
 //
 //M*/
 
-import { Matrix, solve } from "ml-matrix";
+import { Matrix, solve } from 'ml-matrix';
 
-import Point from "./interfaces/point";
+import Point from './point';
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
