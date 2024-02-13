@@ -10,6 +10,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
+/**
+ *
+ * @param className - Class names to apply to PdfViewer
+ * @param file - File to be opened by PdfViewer
+ * @param style - Style to be applied to PdfViewer
+ */
 export default function PdfViewer({
   className,
   file,
