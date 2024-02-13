@@ -3,7 +3,11 @@ import { ChangeEvent } from "react";
 import LabelledInput from "./labelled-input";
 
 /**
- * A component for inputing the width and height of the user's selected rectangle from the cutting mat in either inches or centimetres
+ * A component for inputing the width and height of the user's selected rectangle from the cutting mat in inches
+ * @param handleHeightChange - Controls height input
+ * @param handleWidthChange - Controls width input
+ * @param height - Height of calibration space in inches
+ * @param width - Width of calibration space in inches
  */
 export default function DimensionsInput({
   handleHeightChange,
