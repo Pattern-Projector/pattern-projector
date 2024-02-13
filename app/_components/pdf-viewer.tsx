@@ -1,7 +1,6 @@
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import { Matrix } from "ml-matrix";
 import { CSSProperties, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
@@ -12,9 +11,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 export default function PdfViewer({
+  className,
   file,
   style,
 }: {
+  className: string | undefined;
   file: File | null;
   style: CSSProperties;
 }) {
@@ -28,10 +29,10 @@ export default function PdfViewer({
 
   return (
     <>
-      <div className="absolute z-0" style={style}>
+      <div className={className} style={style}>
         <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
           {Array.from(new Array(numPages), (el, index) => (
-            <Page key={`page_${index + 1}`} pageNumber={index + 1} /> //seems to fix sizing issue.
+            <Page key={`page_${index + 1}`} pageNumber={index + 1} />
           ))}
         </Document>
       </div>

@@ -296,6 +296,7 @@ export default function Page() {
             perspective={perspective}
           >
             <PDFViewer
+              className={"absolute z-0"}
               file={file}
               style={{
                 transform: `${matrix3d} scale(${scale.x}, ${scale.y})`,
