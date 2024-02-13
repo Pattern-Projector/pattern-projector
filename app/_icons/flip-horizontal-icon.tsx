@@ -1,19 +1,28 @@
+/**
+ * Copyright 2024 Pawel Kuna
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 export default function FlipHorizontalIcon() {
   return (
     <svg
-      className="w-6 h-6 text-gray-800 dark:text-white"
-      aria-hidden="true"
+      aria-label="flip horizontal"
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      className="w-6 h-6 text-gray-800 dark:text-white"
+      width="24"
+      height="24"
       viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     >
-      <path
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M4 16h13M4 16l4-4m-4 4 4 4M20 8H7m13 0-4 4m4-4-4-4"
-      />
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <polyline points="7 16 17 16 7 21 7 16" />
+      <polyline points="7 8 17 8 7 3 7 8" />
     </svg>
   );
 }
