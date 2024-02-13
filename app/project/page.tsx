@@ -7,8 +7,8 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import CalibrationCanvas from "@/_components/calibration-canvas";
 import DimensionsInput from "@/_components/dimensions-input";
 import Draggable from "@/_components/draggable";
+import FileInput from "@/_components/file-input";
 import FullScreenButton from "@/_components/full-screen-button";
-import LabelledFileInput from "@/_components/labelled-file-input";
 import PDFViewer from "@/_components/pdf-viewer";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
@@ -211,13 +211,11 @@ export default function Page() {
           </button>
           {!isCalibrating && (
             <>
-              <LabelledFileInput
+              <FileInput
                 accept="application/pdf"
                 handleChange={handleFileChange}
                 id="pdfFile"
-                inputTestId="pdfFile"
-                label=""
-              ></LabelledFileInput>
+              ></FileInput>
 
               <button
                 className={"z-10"}
