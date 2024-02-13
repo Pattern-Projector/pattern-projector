@@ -56,7 +56,6 @@ export default function Draggable({
   }
   return (
     <div
-      // https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/guides/preset-styles.md#phase-dragging-droppable-element
       className="cursor-grabbing select-none"
       onMouseMove={handleOnMouseMove}
     >
