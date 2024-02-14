@@ -13,11 +13,15 @@ import PDFViewer from "@/_components/pdf-viewer";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
-import getPerspectiveTransform from "@/_lib/get-perspective-transform";
+import {
+  getPerspectiveTransform,
+  minIndex,
+  sqrdist,
+  toMatrix3d,
+} from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import Point from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
-import toMatrix3d from "@/_lib/to-matrix3d";
 
 export default function Page() {
   const defaultWidthDimensionValue = "24";
@@ -85,22 +89,6 @@ export default function Page() {
     setWidth(width);
   }
 
-  function sqrdist(a: Point, b: Point): number {
-    let dx = a.x - b.x;
-    let dy = a.y - b.y;
-    return dx * dx + dy * dy;
-  }
-
-  function minIndex(a: number[]): number {
-    var min = 0;
-    for (var i = 1; i < a.length; i++) {
-      if (a[i] < a[min]) {
-        min = i;
-      }
-    }
-    return min;
-  }
-
   function toCanvasPoint(e: MouseEvent): Point {
     return { x: e.clientX, y: e.clientY };
   }
@@ -137,22 +125,6 @@ export default function Page() {
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
     }
-  }
-
-  function handleOnClickInvert(): void {
-    setInverted(!inverted);
-  }
-
-  function handleOnClickFlipHorizontal(): void {
-    setScale({ x: scale.x, y: scale.y * -1 });
-  }
-
-  function handleOnClickFlipVertical(): void {
-    setScale({ x: scale.x * -1, y: scale.y });
-  }
-
-  function handleOnClickCalibrate(): void {
-    setIsCalibrating(!isCalibrating);
   }
 
   // EFFECTS
@@ -205,7 +177,7 @@ export default function Page() {
         <div className="flex flex-wrap items-center gap-4 m-4">
           <button
             className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-            onClick={handleOnClickCalibrate}
+            onClick={() => setIsCalibrating(!isCalibrating)}
           >
             {isCalibrating ? "Show Pattern" : "Show Calibration"}
           </button>
@@ -220,7 +192,7 @@ export default function Page() {
               <button
                 className={"z-10"}
                 name={"Flip horizontally"}
-                onClick={handleOnClickInvert}
+                onClick={() => setInverted(!inverted)}
               >
                 <InvertColorIcon />
               </button>
@@ -228,7 +200,7 @@ export default function Page() {
               <button
                 className={"z-10"}
                 name={"Flip horizontally"}
-                onClick={handleOnClickFlipHorizontal}
+                onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
               >
                 <FlipHorizontalIcon />
               </button>
@@ -236,7 +208,7 @@ export default function Page() {
               <button
                 className={"z-10"}
                 name={"Flip vertically"}
-                onClick={handleOnClickFlipVertical}
+                onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
               >
                 <FlipVerticalIcon />
               </button>

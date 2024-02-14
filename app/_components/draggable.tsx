@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 
-import { transformPoint, translate } from "@/_lib/get-perspective-transform";
+import { transformPoint, translate } from "@/_lib/geometry";
 import Point from "@/_lib/point";
 
 export default function Draggable({
