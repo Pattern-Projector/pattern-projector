@@ -13,8 +13,11 @@ import FullScreenButton from "@/_components/full-screen-button";
 import PDFViewer from "@/_components/pdf-viewer";
 import ArrowBackIcon from "@/_icons/arrow-back-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
+import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
+import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
+import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import {
   getPerspectiveTransform,
   minIndex,
@@ -196,18 +199,10 @@ export default function Page() {
 
               <button
                 className={"z-10"}
-                name={"Flip horizontally"}
+                name={"Invert colors"}
                 onClick={() => setInverted(!inverted)}
               >
-                <InvertColorIcon />
-              </button>
-
-              <button
-                className={"z-10"}
-                name={"Flip horizontally"}
-                onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
-              >
-                <FlipHorizontalIcon />
+                {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
               </button>
 
               <button
@@ -215,7 +210,23 @@ export default function Page() {
                 name={"Flip vertically"}
                 onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
               >
-                <FlipVerticalIcon />
+                {scale.x === -1 ? (
+                  <FlipVerticalOffIcon />
+                ) : (
+                  <FlipVerticalIcon />
+                )}
+              </button>
+
+              <button
+                className={"z-10"}
+                name={"Flip horizontally"}
+                onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
+              >
+                {scale.y === -1 ? (
+                  <FlipHorizontalOffIcon />
+                ) : (
+                  <FlipHorizontalIcon />
+                )}
               </button>
             </>
           )}
