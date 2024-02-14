@@ -18,6 +18,7 @@ import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
+import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import {
   getPerspectiveTransform,
   minIndex,
@@ -42,6 +43,7 @@ export default function Page() {
     { x: 1150, y: 900 },
     { x: 160, y: 900 },
   ]);
+  const [degrees, setDegrees] = useState<number>(0);
   const [pointToModiy, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
@@ -228,6 +230,14 @@ export default function Page() {
                   <FlipHorizontalIcon />
                 )}
               </button>
+
+              <button
+                className={"z-10"}
+                name={"Rotate 90 degrees clockwise"}
+                onClick={() => setDegrees((degrees + 90) % 360)}
+              >
+                <Rotate90DegreesCWIcon />
+              </button>
             </>
           )}
 
@@ -281,15 +291,23 @@ export default function Page() {
             setLocalTransform={setLocalTransform}
             perspective={perspective}
           >
-            <PDFViewer
+            <div
               className={"absolute z-0"}
-              file={file}
               style={{
-                transform: `${matrix3d} scale(${scale.x}, ${scale.y})`,
+                transform: `${matrix3d}`,
                 transformOrigin: "0 0",
                 filter: `invert(${inverted ? "1" : "0"})`,
               }}
-            />
+            >
+              <div
+                style={{
+                  transform: `scale(${scale.x}, ${scale.y}) rotate(${degrees}deg)`,
+                  transformOrigin: "center",
+                }}
+              >
+                <PDFViewer file={file} />
+              </div>
+            </div>
           </Draggable>
         )}
       </FullScreen>
