@@ -59,6 +59,8 @@ export default function Page() {
   const [inverted, setInverted] = useState<boolean>(true);
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
   const [gridOn, setGridOn] = useState<boolean>(false);
+  const [controlsOn, setControlsOn] = useState<boolean>(false);
+  const [lastMoveTime, setLastMoveTime] = useState<number>(Date.now());
 
   function draw(ctx: CanvasRenderingContext2D): void {
     const rect = ctx.canvas.getBoundingClientRect(); // Find position of canvas below navbar to offset x and y
@@ -124,7 +126,27 @@ export default function Page() {
     }
   }
 
+  function handleShowControls(
+    e: React.MouseEvent<Element> | React.TouchEvent<Element>
+  ): void {
+    setControlsOn(true);
+    setLastMoveTime(Date.now());
+  }
+
   // EFFECTS
+
+  useEffect(() => {
+    const controlTimeoutInMilliseconds = 3000;
+    const interval = setInterval(() => {
+      if (
+        controlsOn &&
+        Date.now() - lastMoveTime > controlTimeoutInMilliseconds
+      ) {
+        setControlsOn(false);
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, [controlsOn, lastMoveTime]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -164,87 +186,93 @@ export default function Page() {
   }, [points, width, height]);
 
   return (
-    <main>
+    <main
+      onMouseMove={(e) => handleShowControls(e)}
+      onTouchStart={(e) => handleShowControls(e)}
+      style={{ height: "100vh", width: "100vw" }}
+    >
       <FullScreen handle={handle}>
-        <div className="flex flex-wrap items-center gap-4 m-4">
-          <Link href="/">
-            <ArrowBackIcon />
-          </Link>
-          <button
-            className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-            onClick={() => setIsCalibrating(!isCalibrating)}
-          >
-            {isCalibrating ? "Show Pattern" : "Show Calibration"}
-          </button>
-          {!isCalibrating && (
-            <>
-              <FileInput
-                accept="application/pdf"
-                handleChange={handleFileChange}
-                id="pdfFile"
-              ></FileInput>
+        {controlsOn && (
+          <div className="flex flex-wrap items-center gap-4 m-4">
+            <Link href="/">
+              <ArrowBackIcon />
+            </Link>
+            <button
+              className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              onClick={() => setIsCalibrating(!isCalibrating)}
+            >
+              {isCalibrating ? "Show Pattern" : "Show Calibration"}
+            </button>
+            {!isCalibrating && (
+              <>
+                <FileInput
+                  accept="application/pdf"
+                  handleChange={handleFileChange}
+                  id="pdfFile"
+                ></FileInput>
 
-              <button
-                className={"z-10"}
-                name={"Invert colors"}
-                onClick={() => setInverted(!inverted)}
-              >
-                {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
-              </button>
+                <button
+                  className={"z-10"}
+                  name={"Invert colors"}
+                  onClick={() => setInverted(!inverted)}
+                >
+                  {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
+                </button>
 
-              <button
-                className={"z-10"}
-                name={"Flip vertically"}
-                onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
-              >
-                {scale.x === -1 ? (
-                  <FlipVerticalOffIcon />
-                ) : (
-                  <FlipVerticalIcon />
-                )}
-              </button>
+                <button
+                  className={"z-10"}
+                  name={"Flip vertically"}
+                  onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
+                >
+                  {scale.x === -1 ? (
+                    <FlipVerticalOffIcon />
+                  ) : (
+                    <FlipVerticalIcon />
+                  )}
+                </button>
 
-              <button
-                className={"z-10"}
-                name={"Flip horizontally"}
-                onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
-              >
-                {scale.y === -1 ? (
-                  <FlipHorizontalOffIcon />
-                ) : (
-                  <FlipHorizontalIcon />
-                )}
-              </button>
+                <button
+                  className={"z-10"}
+                  name={"Flip horizontally"}
+                  onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
+                >
+                  {scale.y === -1 ? (
+                    <FlipHorizontalOffIcon />
+                  ) : (
+                    <FlipHorizontalIcon />
+                  )}
+                </button>
 
-              <button
-                className={"z-10"}
-                name={"Rotate 90 degrees clockwise"}
-                onClick={() => setDegrees((degrees + 90) % 360)}
-              >
-                <Rotate90DegreesCWIcon />
-              </button>
+                <button
+                  className={"z-10"}
+                  name={"Rotate 90 degrees clockwise"}
+                  onClick={() => setDegrees((degrees + 90) % 360)}
+                >
+                  <Rotate90DegreesCWIcon />
+                </button>
 
-              <button
-                className={"z-10"}
-                name={"Toggle calibration grid"}
-                onClick={() => setGridOn(!gridOn)}
-              >
-                {gridOn ? <GridOnIcon /> : <GridOffIcon />}
-              </button>
-            </>
-          )}
+                <button
+                  className={"z-10"}
+                  name={"Toggle calibration grid"}
+                  onClick={() => setGridOn(!gridOn)}
+                >
+                  {gridOn ? <GridOnIcon /> : <GridOffIcon />}
+                </button>
+              </>
+            )}
 
-          {isCalibrating && (
-            <DimensionsInput
-              width={width}
-              height={height}
-              handleWidthChange={handleWidthChange}
-              handleHeightChange={handleHeightChange}
-            />
-          )}
+            {isCalibrating && (
+              <DimensionsInput
+                width={width}
+                height={height}
+                handleWidthChange={handleWidthChange}
+                handleHeightChange={handleHeightChange}
+              />
+            )}
 
-          <FullScreenButton className="z-10 ml-auto" handle={handle} />
-        </div>
+            <FullScreenButton className="z-10 ml-auto" handle={handle} />
+          </div>
+        )}
 
         {isCalibrating && (
           <CalibrationCanvas
