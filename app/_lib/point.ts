@@ -2,7 +2,7 @@
  * The location of a pixel on the screen
  * https://developer.mozilla.org/en-US/docs/Web/CSS/CSSOM_view/Coordinate_systems
  */
-export default interface Point {
+export interface Point {
   /**
    * Horizontal offset from the left of the screen
    */
@@ -11,4 +11,12 @@ export default interface Point {
    * Vertical offset from the top of the screen
    */
   readonly y: number;
+}
+
+export function mouseToCanvasPoint(e: React.MouseEvent<Element>): Point {
+  return { x: e.clientX, y: e.clientY };
+}
+
+export function touchToCanvasPoint(e: React.TouchEvent<Element>): Point {
+  return { x: e.touches[0].clientX, y: e.touches[0].clientY };
 }

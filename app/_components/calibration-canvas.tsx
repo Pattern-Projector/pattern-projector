@@ -1,14 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import Point from "@/_lib/point";
-
-function mouseToCanvasPoint(e: React.MouseEvent<Element>): Point {
-  return { x: e.clientX, y: e.clientY };
-}
-
-function touchToCanvasPoint(e: React.TouchEvent<Element>): Point {
-  return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-}
+import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
 
 /**
  * A window width and height canvas used for projector calibration

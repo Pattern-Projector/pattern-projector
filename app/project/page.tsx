@@ -26,7 +26,7 @@ import {
   toMatrix3d,
 } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
-import Point from "@/_lib/point";
+import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 
 export default function Page() {
@@ -141,7 +141,7 @@ export default function Page() {
   // EFFECTS
 
   useEffect(() => {
-    const controlTimeoutInMilliseconds = 3000;
+    const controlTimeoutInMilliseconds = 5000;
     const interval = setInterval(() => {
       if (
         controlsOn &&

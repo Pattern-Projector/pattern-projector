@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import { transformPoint, translate } from "@/_lib/geometry";
-import Point from "@/_lib/point";
+import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
 
 export default function Draggable({
   children,
@@ -26,24 +26,27 @@ export default function Draggable({
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
 
-  function handleOnMouseUp(e: MouseEvent<HTMLDivElement>): void {
+  function handleOnEnd(): void {
     setDragStart(null);
     setTransformStart(null);
   }
 
   function handleOnMouseMove(e: MouseEvent<HTMLDivElement>): void {
     if (e.buttons & 1 && dragStart === null) {
-      handleOnMouseDown(e);
+      handleOnStart(mouseToCanvasPoint(e));
       return;
     }
 
     if ((e.buttons & 1) === 0 && dragStart !== null) {
-      handleOnMouseUp(e);
+      handleOnEnd();
       return;
     }
+    handleMove(mouseToCanvasPoint(e));
+  }
 
+  function handleMove(p: Point) {
     if (transformStart !== null && dragStart !== null) {
-      var dest = transformPoint({ x: e.clientX, y: e.clientY }, perspective);
+      var dest = transformPoint(p, perspective);
       var tx = dest.x - dragStart.x;
       var ty = dest.y - dragStart.y;
       let m = translate({ x: tx, y: ty });
@@ -51,13 +54,19 @@ export default function Draggable({
     }
   }
 
-  function handleOnMouseDown(e: MouseEvent<HTMLDivElement>): void {
-    var pt = transformPoint({ x: e.clientX, y: e.clientY }, perspective);
+  function handleOnStart(p: Point): void {
+    var pt = transformPoint(p, perspective);
     setDragStart(pt);
     setTransformStart(localTransform.clone());
   }
   return (
-    <div className={className} onMouseMove={handleOnMouseMove}>
+    <div
+      className={className}
+      onMouseMove={handleOnMouseMove}
+      onTouchMove={(e) => handleMove(touchToCanvasPoint(e))}
+      onTouchStart={(e) => handleOnStart(touchToCanvasPoint(e))}
+      onTouchEnd={handleOnEnd}
+    >
       {children}
     </div>
   );
