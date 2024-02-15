@@ -45,15 +45,15 @@ export default function CalibrationCanvas({
   return (
     <canvas
       ref={canvasRef}
-      className="absolute cursor-crosshair z-10"
-      onMouseDown={(e: React.MouseEvent) => {
+      className={className}
+      onMouseMove={(e: React.MouseEvent) => {
         if ((e.buttons & 1) == 0) {
           handleUp();
         } else {
           handleMove(mouseToCanvasPoint(e));
         }
       }}
-      onMouseMove={(e) => handleMove(mouseToCanvasPoint(e))}
+      onMouseDown={(e) => handleDown(mouseToCanvasPoint(e))}
       onMouseUp={() => handleUp()}
       onTouchStart={(e: React.TouchEvent) => handleDown(touchToCanvasPoint(e))}
       onTouchMove={(e: React.TouchEvent) => handleMove(touchToCanvasPoint(e))}
