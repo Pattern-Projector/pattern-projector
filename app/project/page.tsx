@@ -82,6 +82,14 @@ export default function Page() {
     }
   }
 
+  function visible(b: boolean): string {
+    if (b) {
+      return "visible";
+    } else {
+      return "hidden";
+    }
+  }
+
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
@@ -186,118 +194,111 @@ export default function Page() {
     <main
       onMouseMove={(e) => handleShowControls(e)}
       onTouchStart={(e) => handleShowControls(e)}
-      style={{ height: "100vh", width: "100vw" }}
+      style={{ height: "100vh", width: "100vw", overflow: "hidden" }}
     >
-      <FullScreen handle={handle}>
-        {controlsOn && (
-          <div className="flex flex-wrap items-center gap-4 m-4">
-            <Link href="/">
-              <ArrowBackIcon />
-            </Link>
-            <button
-              className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-              onClick={() => setIsCalibrating(!isCalibrating)}
-            >
-              {isCalibrating ? "Show Pattern" : "Show Calibration"}
-            </button>
-            {!isCalibrating && (
-              <>
-                <FileInput
-                  accept="application/pdf"
-                  handleChange={handleFileChange}
-                  id="pdfFile"
-                ></FileInput>
+      <FullScreen handle={handle} className="flex">
+        <div
+          className={`absolute z-20 flex flex-wrap items-center gap-4 m-4 w-[calc(100%-2rem)] ${visible(
+            controlsOn
+          )}`}
+        >
+          <Link href="/">
+            <ArrowBackIcon />
+          </Link>
+          <button
+            className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+            onClick={() => setIsCalibrating(!isCalibrating)}
+          >
+            {isCalibrating ? "Show Pattern" : "Show Calibration"}
+          </button>
+          <FileInput
+            accept="application/pdf"
+            className={`z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-indigo-500 focus:border-indigo-500 ${visible(
+              !isCalibrating
+            )}`}
+            handleChange={handleFileChange}
+            id="pdfFile"
+          ></FileInput>
 
-                <button
-                  className={"z-10"}
-                  name={"Invert colors"}
-                  onClick={() => setInverted(!inverted)}
-                >
-                  {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
-                </button>
+          <button
+            className={`z-10 ${visible(!isCalibrating)}`}
+            name={"Invert colors"}
+            onClick={() => setInverted(!inverted)}
+          >
+            {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
+          </button>
 
-                <button
-                  className={"z-10"}
-                  name={"Flip vertically"}
-                  onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
-                >
-                  {scale.x === -1 ? (
-                    <FlipVerticalOffIcon />
-                  ) : (
-                    <FlipVerticalIcon />
-                  )}
-                </button>
+          <button
+            className={`z-10 ${visible(!isCalibrating)}`}
+            name={"Flip vertically"}
+            onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
+          >
+            {scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
+          </button>
 
-                <button
-                  className={"z-10"}
-                  name={"Flip horizontally"}
-                  onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
-                >
-                  {scale.y === -1 ? (
-                    <FlipHorizontalOffIcon />
-                  ) : (
-                    <FlipHorizontalIcon />
-                  )}
-                </button>
-
-                <button
-                  className={"z-10"}
-                  name={"Rotate 90 degrees clockwise"}
-                  onClick={() => setDegrees((degrees + 90) % 360)}
-                >
-                  <Rotate90DegreesCWIcon />
-                </button>
-              </>
+          <button
+            className={`z-10 ${visible(!isCalibrating)}`}
+            name={"Flip horizontally"}
+            onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
+          >
+            {scale.y === -1 ? (
+              <FlipHorizontalOffIcon />
+            ) : (
+              <FlipHorizontalIcon />
             )}
+          </button>
 
-            {isCalibrating && (
-              <DimensionsInput
-                width={width}
-                height={height}
-                handleWidthChange={handleWidthChange}
-                handleHeightChange={handleHeightChange}
-              />
-            )}
+          <button
+            className={`z-10 ${visible(!isCalibrating)}`}
+            name={"Rotate 90 degrees clockwise"}
+            onClick={() => setDegrees((degrees + 90) % 360)}
+          >
+            <Rotate90DegreesCWIcon />
+          </button>
 
-            <FullScreenButton className="z-10 ml-auto" handle={handle} />
-          </div>
-        )}
-
-        {isCalibrating && (
-          <CalibrationCanvas
-            className="absolute cursor-crosshair z-10"
-            handleDown={handleDown}
-            handleUp={handleUp}
-            handleMove={handleMove}
-            draw={draw}
+          <DimensionsInput
+            className={`${visible(isCalibrating)}`}
+            width={width}
+            height={height}
+            handleWidthChange={handleWidthChange}
+            handleHeightChange={handleHeightChange}
           />
-        )}
 
-        {!isCalibrating && (
-          <Draggable
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
-            perspective={perspective}
+          <FullScreenButton className="flex z-10 ml-auto" handle={handle} />
+        </div>
+
+        <CalibrationCanvas
+          className={`absolute cursor-crosshair z-10 ${visible(isCalibrating)}`}
+          handleDown={handleDown}
+          handleUp={handleUp}
+          handleMove={handleMove}
+          draw={draw}
+        />
+
+        <Draggable
+          className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
+          localTransform={localTransform}
+          setLocalTransform={setLocalTransform}
+          perspective={perspective}
+        >
+          <div
+            className={"absolute z-0"}
+            style={{
+              transform: `${matrix3d}`,
+              transformOrigin: "0 0",
+              filter: `invert(${inverted ? "1" : "0"})`,
+            }}
           >
             <div
-              className={"absolute z-0"}
               style={{
-                transform: `${matrix3d}`,
-                transformOrigin: "0 0",
-                filter: `invert(${inverted ? "1" : "0"})`,
+                transform: `scale(${scale.x}, ${scale.y}) rotate(${degrees}deg)`,
+                transformOrigin: "center",
               }}
             >
-              <div
-                style={{
-                  transform: `scale(${scale.x}, ${scale.y}) rotate(${degrees}deg)`,
-                  transformOrigin: "center",
-                }}
-              >
-                <PDFViewer file={file} />
-              </div>
+              <PDFViewer file={file} />
             </div>
-          </Draggable>
-        )}
+          </div>
+        </Draggable>
       </FullScreen>
     </main>
   );

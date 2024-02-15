@@ -12,11 +12,13 @@ import Point from "@/_lib/point";
 
 export default function Draggable({
   children,
+  className,
   localTransform,
   setLocalTransform,
   perspective,
 }: {
   children: ReactNode;
+  className: string | undefined;
   localTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   perspective: Matrix;
@@ -55,10 +57,7 @@ export default function Draggable({
     setTransformStart(localTransform.clone());
   }
   return (
-    <div
-      className="cursor-grabbing select-none"
-      onMouseMove={handleOnMouseMove}
-    >
+    <div className={className} onMouseMove={handleOnMouseMove}>
       {children}
     </div>
   );

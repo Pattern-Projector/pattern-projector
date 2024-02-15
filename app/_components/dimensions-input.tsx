@@ -10,18 +10,20 @@ import LabelledInput from "./labelled-input";
  * @param width - Width of calibration space in inches
  */
 export default function DimensionsInput({
+  className,
   handleHeightChange,
   handleWidthChange,
   height,
   width,
 }: {
+  className: string | undefined;
   handleHeightChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleWidthChange: (e: ChangeEvent<HTMLInputElement>) => void;
   height: string;
   width: string;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className={className}>
       <LabelledInput
         handleChange={handleWidthChange}
         id="width"

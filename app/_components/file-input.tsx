@@ -8,17 +8,19 @@ import { ChangeEvent } from "react";
  */
 export default function FileInput({
   accept,
+  className,
   handleChange,
   id,
 }: {
   accept: string;
+  className: string | undefined;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   id: string;
 }) {
   return (
     <input
       accept={accept}
-      className="z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-indigo-500 focus:border-indigo-500"
+      className={className}
       id={id}
       onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
       type="file"
