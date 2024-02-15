@@ -14,7 +14,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
  *
  * @param file - File to be opened by PdfViewer
  */
-export default function PdfViewer({ file }: { file: File | null }) {
+export default function PdfViewer({ file }: { file: any }) {
   const [numPages, setNumPages] = useState<number>();
 
   function onDocumentLoadSuccess({
