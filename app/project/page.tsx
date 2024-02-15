@@ -2,7 +2,7 @@
 
 import Matrix from "ml-matrix";
 import Link from "next/link";
-import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
@@ -53,15 +53,11 @@ export default function Page() {
     Matrix.identity(3, 3)
   );
   const [matrix3d, setMatrix3d] = useState<string>("");
-  const [calibrationMatrix3d, setCalibrationMatrix3d] = useState<string>("");
-  const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
-  );
   const [file, setFile] = useState<File | null>(null);
   const [inverted, setInverted] = useState<boolean>(true);
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
 
-  function draw(ctx: CanvasRenderingContext2D) {
+  function draw(ctx: CanvasRenderingContext2D): void {
     const rect = ctx.canvas.getBoundingClientRect(); // Find position of canvas below navbar to offset x and y
     ctx.strokeStyle = "#36cf11";
 
@@ -96,12 +92,7 @@ export default function Page() {
     setWidth(width);
   }
 
-  function toCanvasPoint(e: MouseEvent): Point {
-    return { x: e.clientX, y: e.clientY };
-  }
-
-  function handleMouseDown(e: MouseEvent) {
-    const newPoint = toCanvasPoint(e);
+  function handleDown(newPoint: Point) {
     if (points.length < maxPoints) {
       setPoints([...points, newPoint]);
     } else {
@@ -109,19 +100,15 @@ export default function Page() {
     }
   }
 
-  function handleMouseMove(e: MouseEvent) {
+  function handleMove(p: Point) {
     if (pointToModiy !== null) {
-      if ((e.buttons & 1) == 0) {
-        setPointToModify(null);
-      } else {
-        const newPoints = [...points];
-        newPoints[pointToModiy] = toCanvasPoint(e);
-        setPoints(newPoints);
-      }
+      const newPoints = [...points];
+      newPoints[pointToModiy] = p;
+      setPoints(newPoints);
     }
   }
 
-  function handleMouseUp(e: MouseEvent) {
+  function handleUp() {
     localStorage.setItem("points", JSON.stringify(points));
     setPointToModify(null);
   }
@@ -144,10 +131,6 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    setCalibrationMatrix3d(toMatrix3d(calibrationTransform));
-  }, [calibrationTransform]);
-
-  useEffect(() => {
     setMatrix3d(toMatrix3d(localTransform));
   }, [localTransform]);
 
@@ -155,7 +138,6 @@ export default function Page() {
     if (points.length === maxPoints) {
       let m = getPerspectiveTransform(points, getDstVertices());
       let n = getPerspectiveTransform(getDstVertices(), points);
-      setCalibrationTransform(n);
       setPerspective(m);
       setLocalTransform(n);
     }
@@ -254,35 +236,13 @@ export default function Page() {
         </div>
 
         {isCalibrating && (
-          <div>
-            <CalibrationCanvas
-              className="absolute cursor-crosshair z-10"
-              onMouseDown={(e: MouseEvent) => handleMouseDown(e)}
-              onMouseMove={(e: MouseEvent) => handleMouseMove(e)}
-              onMouseUp={(e: MouseEvent) => handleMouseUp(e)}
-              draw={draw}
-            />
-            <div
-              onMouseDown={(e: MouseEvent) => handleMouseDown(e)}
-              onMouseMove={(e: MouseEvent) => handleMouseMove(e)}
-              onMouseUp={(e: MouseEvent) => handleMouseUp(e)}
-              style={{
-                cursor: "crosshair",
-                zIndex: 20,
-                position: "absolute",
-                transform: calibrationMatrix3d,
-                transformOrigin: "0 0",
-                // assuming inches
-                width: `${+width * 96 + 1}px`, // 96 pixels per inch in CSS
-                height: `${+height * 96 + 1}px`,
-                inset: "0 0 0 0",
-                //margin: "0",
-                backgroundImage:
-                  "repeating-linear-gradient(#fff 0 1px, transparent 1px 100%), repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 100%)",
-                backgroundSize: "1in 1in",
-              }}
-            ></div>
-          </div>
+          <CalibrationCanvas
+            className="absolute cursor-crosshair z-10"
+            handleDown={handleDown}
+            handleUp={handleUp}
+            handleMove={handleMove}
+            draw={draw}
+          />
         )}
 
         {!isCalibrating && (
