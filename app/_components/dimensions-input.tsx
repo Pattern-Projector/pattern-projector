@@ -30,7 +30,6 @@ export default function DimensionsInput({
         name="width"
         value={width}
       />
-
       <LabelledInput
         handleChange={handleHeightChange}
         id="height"
@@ -39,6 +38,7 @@ export default function DimensionsInput({
         name="height"
         value={height}
       />
+      in inches
     </div>
   );
 }
