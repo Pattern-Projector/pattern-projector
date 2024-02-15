@@ -61,7 +61,7 @@ export default function Page() {
 
   function draw(ctx: CanvasRenderingContext2D): void {
     const rect = ctx.canvas.getBoundingClientRect(); // Find position of canvas below navbar to offset x and y
-    ctx.strokeStyle = "#36cf11";
+    ctx.strokeStyle = "#ffffff";
 
     let prev = points[0];
     for (let point of points) {
