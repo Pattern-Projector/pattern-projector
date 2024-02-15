@@ -16,8 +16,6 @@ import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
-import GridOffIcon from "@/_icons/grid-off-icon";
-import GridOnIcon from "@/_icons/grid-on-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
@@ -58,7 +56,6 @@ export default function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [inverted, setInverted] = useState<boolean>(true);
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
-  const [gridOn, setGridOn] = useState<boolean>(false);
   const [controlsOn, setControlsOn] = useState<boolean>(false);
   const [lastMoveTime, setLastMoveTime] = useState<number>(Date.now());
 
@@ -250,14 +247,6 @@ export default function Page() {
                 >
                   <Rotate90DegreesCWIcon />
                 </button>
-
-                <button
-                  className={"z-10"}
-                  name={"Toggle calibration grid"}
-                  onClick={() => setGridOn(!gridOn)}
-                >
-                  {gridOn ? <GridOnIcon /> : <GridOffIcon />}
-                </button>
               </>
             )}
 
@@ -304,15 +293,7 @@ export default function Page() {
                   transformOrigin: "center",
                 }}
               >
-                {gridOn ? (
-                  <PDFViewer
-                    file={{
-                      url: "/1-inch-grid.pdf",
-                    }}
-                  />
-                ) : (
-                  <PDFViewer file={file} />
-                )}
+                <PDFViewer file={file} />
               </div>
             </div>
           </Draggable>
