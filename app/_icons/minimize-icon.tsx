@@ -23,7 +23,7 @@
 export default function MinimizeIcon() {
   return (
     <svg
-      aria-label="minimize"
+      aria-label="Minimize"
       data-test-id="minimize"
       className="w-6 h-6 text-gray-800 dark:text-white"
       xmlns="http://www.w3.org/2000/svg"
