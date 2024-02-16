@@ -36,11 +36,11 @@ export default function Page() {
   const maxPoints = 4; // One point per vertex in rectangle
 
   const [points, setPoints] = useState<Point[]>([
-    // Default points that match closely enough to my setup with a 24 x 18 inch mat
-    { x: 190, y: 190 },
-    { x: 1150, y: 160 },
-    { x: 1150, y: 900 },
-    { x: 160, y: 900 },
+    // Default points that fit on and iPhone SE
+    { x: 100, y: 300 },
+    { x: 300, y: 300 },
+    { x: 300, y: 600 },
+    { x: 100, y: 600 },
   ]);
   const [degrees, setDegrees] = useState<number>(0);
   const [pointToModiy, setPointToModify] = useState<number | null>(null);
@@ -122,7 +122,6 @@ export default function Page() {
       if (windowScreen.x !== p.x || windowScreen.y !== p.y) {
         setWindowScreen(p);
       }
-      console.log(window.visualViewport?.offsetTop);
     }, 500);
   });
 
@@ -151,6 +150,7 @@ export default function Page() {
   }, [localTransform]);
 
   useEffect(() => {
+    console.log(points);
     if (points.length === maxPoints) {
       let m = getPerspectiveTransform(points, getDstVertices());
       let n = getPerspectiveTransform(getDstVertices(), points);
@@ -184,7 +184,7 @@ export default function Page() {
     >
       <FullScreen handle={handle} className="flex">
         <div
-          className={`absolute z-20 flex flex-wrap items-center gap-4 m-4 w-[calc(100%-2rem)] ${visible(
+          className={`absolute z-20 flex flex-wrap items-center gap-4 m-4 ${visible(
             controlsOn
           )}`}
         >
@@ -261,7 +261,10 @@ export default function Page() {
             value={height}
           />
         </div>
-        <FullScreenButton className="z-10 ml-auto m-4 mt-7" handle={handle} />
+        <FullScreenButton
+          className={`z-10 ml-auto m-4 mt-7 ${visible(controlsOn)}`}
+          handle={handle}
+        />
 
         <CalibrationCanvas
           className={`absolute cursor-crosshair z-10 ${visible(isCalibrating)}`}
