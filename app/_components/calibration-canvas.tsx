@@ -36,6 +36,7 @@ export default function CalibrationCanvas({
     ctx.translate(-dx, -dy);
 
     let prev = points[0];
+    let start = Math.PI / 2; // Adds 3/4 circle around nodes to show which corners they belong in
     for (let point of points) {
       ctx.moveTo(prev.x, prev.y);
       ctx.lineTo(point.x, point.y);
@@ -44,7 +45,18 @@ export default function CalibrationCanvas({
       ctx.beginPath();
       ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
       ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(
+        point.x,
+        point.y,
+        radius + 5,
+        start,
+        start + Math.PI + Math.PI / 2
+      );
+      ctx.stroke();
       prev = point;
+      start += Math.PI / 2;
     }
 
     if (points.length === maxPoints) {
