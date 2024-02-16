@@ -70,13 +70,13 @@ export default function Page() {
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
-    const height = removeNonDigits(e.target.value);
-    setHeight(height);
+    const h = removeNonDigits(e.target.value, height);
+    setHeight(h);
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
-    const width = removeNonDigits(e.target.value);
-    setWidth(width);
+    const w = removeNonDigits(e.target.value, width);
+    setWidth(w);
   }
 
   function handleDown(newPoint: Point) {
