@@ -122,7 +122,6 @@ export function getPerspectiveTransform(
   X.push(1);
 
   var s = Matrix.from1DArray(3, 3, X);
-  console.log(s);
   return s;
 }
 
@@ -156,7 +155,6 @@ export function scale(s: number): Matrix {
  */
 export function toMatrix3d(m: Matrix): string {
   var r = m.clone();
-  console.log(r);
   // Make the 3x3 into 4x4 by inserting a z component in the 3rd column.
   r.addColumn(2, AbstractMatrix.zeros(1, 3));
   r.addRow(2, AbstractMatrix.from1DArray(1, 4, [0, 0, 1, 0]));
