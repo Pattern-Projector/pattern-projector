@@ -10,6 +10,7 @@ import { ChangeEvent } from "react";
  * @param value - Input value
  */
 export default function LabelledInput({
+  className,
   handleChange,
   id,
   inputTestId,
@@ -17,6 +18,7 @@ export default function LabelledInput({
   name,
   value,
 }: {
+  className: string | undefined;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   id: string;
   inputTestId: string;
@@ -25,7 +27,7 @@ export default function LabelledInput({
   value: string;
 }) {
   return (
-    <>
+    <div className={className}>
       <label className="font-bold text-white" htmlFor={id}>
         {label}
       </label>
@@ -38,6 +40,6 @@ export default function LabelledInput({
         required
         value={value}
       />
-    </>
+    </div>
   );
 }
