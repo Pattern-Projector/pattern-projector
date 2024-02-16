@@ -184,7 +184,7 @@ export default function Page() {
     >
       <FullScreen handle={handle} className="flex">
         <div
-          className={`absolute z-20 flex flex-wrap items-center gap-4 m-4 ${visible(
+          className={`absolute z-20 flex flex-wrap items-center gap-4 m-4 w-[calc(100%-4rem)] ${visible(
             controlsOn
           )}`}
         >
@@ -199,7 +199,7 @@ export default function Page() {
           </button>
           <FileInput
             accept="application/pdf"
-            className={`z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-4 focus:ring-gray-200 ${visible(
+            className={`w-full sm:w-fit z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-4 focus:ring-gray-200 ${visible(
               !isCalibrating
             )}`}
             handleChange={handleFileChange}
