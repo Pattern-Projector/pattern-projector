@@ -192,14 +192,14 @@ export default function Page() {
             <ArrowBackIcon />
           </Link>
           <button
-            className="z-10 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+            className="z-10 text-white bg-gray-800 border border-gray-600 focus:outline-none hover:bg-gray-700 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
             onClick={() => setIsCalibrating(!isCalibrating)}
           >
             {isCalibrating ? "Show Pattern" : "Show Calibration"}
           </button>
           <FileInput
             accept="application/pdf"
-            className={`z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-indigo-500 focus:border-indigo-500 ${visible(
+            className={`z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-4 focus:ring-gray-200 ${visible(
               !isCalibrating
             )}`}
             handleChange={handleFileChange}
