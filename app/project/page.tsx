@@ -11,7 +11,7 @@ import FileInput from "@/_components/file-input";
 import FullScreenButton from "@/_components/full-screen-button";
 import LabelledInput from "@/_components/labelled-input";
 import PDFViewer from "@/_components/pdf-viewer";
-import ArrowBackIcon from "@/_icons/arrow-back-icon";
+import CloseIcon from "@/_icons/close-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
@@ -189,7 +189,7 @@ export default function Page() {
           )}`}
         >
           <Link href="/">
-            <ArrowBackIcon />
+            <CloseIcon />
           </Link>
           <button
             className="z-10 text-white bg-gray-800 border border-gray-600 focus:outline-none hover:bg-gray-700 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
@@ -260,12 +260,8 @@ export default function Page() {
             name="height"
             value={height}
           />
-
-          <FullScreenButton
-            className="sm:order-2 flex z-10 ml-auto"
-            handle={handle}
-          />
         </div>
+        <FullScreenButton className="z-10 ml-auto m-4 mt-7" handle={handle} />
 
         <CalibrationCanvas
           className={`absolute cursor-crosshair z-10 ${visible(isCalibrating)}`}
