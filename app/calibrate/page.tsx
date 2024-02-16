@@ -182,7 +182,7 @@ export default function Page() {
       onTouchStart={(e) => handleShowControls(e)}
       style={{ height: "100vh", width: "100vw", overflow: "hidden" }}
     >
-      <FullScreen handle={handle} className="flex">
+      <FullScreen handle={handle} className="flex items-start">
         <div
           className={`absolute z-20 flex flex-wrap items-center gap-4 m-4 w-[calc(100%-4rem)] ${visible(
             controlsOn
@@ -192,7 +192,7 @@ export default function Page() {
             <CloseIcon />
           </Link>
           <button
-            className="z-10 text-white bg-gray-800 border border-gray-600 focus:outline-none hover:bg-gray-700 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
+            className="text-white bg-gray-800 border border-gray-600 focus:outline-none hover:bg-gray-700 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
             onClick={() => setIsCalibrating(!isCalibrating)}
           >
             {isCalibrating ? "Show Pattern" : "Show Calibration"}
@@ -207,7 +207,7 @@ export default function Page() {
           ></FileInput>
 
           <button
-            className={`z-10 ${visible(!isCalibrating)}`}
+            className={`${visible(!isCalibrating)}`}
             name={"Invert colors"}
             onClick={() => setInverted(!inverted)}
           >
@@ -215,7 +215,7 @@ export default function Page() {
           </button>
 
           <button
-            className={`z-10 ${visible(!isCalibrating)}`}
+            className={`${visible(!isCalibrating)}`}
             name={"Flip vertically"}
             onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
           >
@@ -223,7 +223,7 @@ export default function Page() {
           </button>
 
           <button
-            className={`z-10 ${visible(!isCalibrating)}`}
+            className={`${visible(!isCalibrating)}`}
             name={"Flip horizontally"}
             onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
           >
@@ -235,7 +235,7 @@ export default function Page() {
           </button>
 
           <button
-            className={`z-10 ${visible(!isCalibrating)}`}
+            className={`${visible(!isCalibrating)}`}
             name={"Rotate 90 degrees clockwise"}
             onClick={() => setDegrees((degrees + 90) % 360)}
           >
@@ -262,7 +262,7 @@ export default function Page() {
           />
         </div>
         <FullScreenButton
-          className={`z-10 ml-auto m-4 mt-7 ${visible(controlsOn)}`}
+          className={`z-20 ml-auto m-4 mt-7 ${visible(controlsOn)}`}
           handle={handle}
         />
 
