@@ -14,9 +14,9 @@ export interface Point {
 }
 
 export function mouseToCanvasPoint(e: React.MouseEvent<Element>): Point {
-  return { x: e.clientX, y: e.clientY };
+  return { x: e.screenX, y: e.screenY };
 }
 
 export function touchToCanvasPoint(e: React.TouchEvent<Element>): Point {
-  return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  return { x: e.touches[0].screenX, y: e.touches[0].screenY };
 }

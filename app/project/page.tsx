@@ -6,10 +6,10 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
-import DimensionsInput from "@/_components/dimensions-input";
 import Draggable from "@/_components/draggable";
 import FileInput from "@/_components/file-input";
 import FullScreenButton from "@/_components/full-screen-button";
+import LabelledInput from "@/_components/labelled-input";
 import PDFViewer from "@/_components/pdf-viewer";
 import ArrowBackIcon from "@/_icons/arrow-back-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
@@ -34,7 +34,6 @@ export default function Page() {
   const defaultHeightDimensionValue = "18";
   const handle = useFullScreenHandle();
   const maxPoints = 4; // One point per vertex in rectangle
-  const radius = 30;
 
   const [points, setPoints] = useState<Point[]>([
     // Default points that match closely enough to my setup with a 24 x 18 inch mat
@@ -58,29 +57,7 @@ export default function Page() {
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
   const [controlsOn, setControlsOn] = useState<boolean>(false);
   const [lastMoveTime, setLastMoveTime] = useState<number>(Date.now());
-
-  function draw(ctx: CanvasRenderingContext2D): void {
-    const rect = ctx.canvas.getBoundingClientRect(); // Find position of canvas below navbar to offset x and y
-    ctx.strokeStyle = "#ffffff";
-
-    let prev = points[0];
-    for (let point of points) {
-      ctx.moveTo(prev.x - rect.left, prev.y - rect.top);
-      ctx.lineTo(point.x - rect.left, point.y - rect.top);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(point.x - rect.left, point.y - rect.top, radius, 0, Math.PI * 2);
-      ctx.stroke();
-      prev = point;
-    }
-
-    if (points.length === maxPoints) {
-      ctx.moveTo(prev.x - rect.left, prev.y - rect.top);
-      ctx.lineTo(points[0].x - rect.left, points[0].y - rect.top);
-      ctx.stroke();
-    }
-  }
+  const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
 
   function visible(b: boolean): string {
     if (b) {
@@ -139,6 +116,15 @@ export default function Page() {
   }
 
   // EFFECTS
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const p = { x: window.screenX, y: window.screenY };
+      if (windowScreen.x !== p.x || windowScreen.y !== p.y) {
+        setWindowScreen(p);
+      }
+      console.log(window.visualViewport?.offsetTop);
+    }, 500);
+  });
 
   useEffect(() => {
     const controlTimeoutInMilliseconds = 5000;
@@ -256,15 +242,29 @@ export default function Page() {
             <Rotate90DegreesCWIcon />
           </button>
 
-          <DimensionsInput
+          <LabelledInput
             className={`${visible(isCalibrating)}`}
-            width={width}
-            height={height}
-            handleWidthChange={handleWidthChange}
-            handleHeightChange={handleHeightChange}
+            handleChange={handleWidthChange}
+            id="width"
+            inputTestId="width"
+            label="Width"
+            name="width"
+            value={width}
+          />
+          <LabelledInput
+            className={`${visible(isCalibrating)}`}
+            handleChange={handleHeightChange}
+            id="height"
+            inputTestId="height"
+            label="Height"
+            name="height"
+            value={height}
           />
 
-          <FullScreenButton className="flex z-10 ml-auto" handle={handle} />
+          <FullScreenButton
+            className="sm:order-2 flex z-10 ml-auto"
+            handle={handle}
+          />
         </div>
 
         <CalibrationCanvas
@@ -272,7 +272,8 @@ export default function Page() {
           handleDown={handleDown}
           handleUp={handleUp}
           handleMove={handleMove}
-          draw={draw}
+          windowScreen={windowScreen}
+          points={points}
         />
 
         <Draggable

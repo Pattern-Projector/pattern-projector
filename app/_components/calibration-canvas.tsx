@@ -7,19 +7,52 @@ import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
  * @param draw - Draws in the canvas rendering context
  */
 export default function CalibrationCanvas({
-  draw,
   className,
   handleDown,
   handleMove,
   handleUp,
+  windowScreen,
+  points,
 }: {
-  draw: (ctx: CanvasRenderingContext2D) => void;
   className: string | undefined;
   handleDown: (p: Point) => void;
   handleMove: (p: Point) => void;
   handleUp: () => void;
+  windowScreen: Point;
+  points: Point[];
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const maxPoints = 4; // One point per vertex in rectangle
+  const radius = 30;
+
+  function draw(
+    ctx: CanvasRenderingContext2D,
+    windowScreen: Point,
+    points: Point[]
+  ): void {
+    ctx.strokeStyle = "#ffffff";
+    const dy = windowScreen.y + window.outerHeight - window.innerHeight;
+    const dx = windowScreen.x + window.outerWidth - window.innerWidth;
+    ctx.translate(-dx, -dy);
+
+    let prev = points[0];
+    for (let point of points) {
+      ctx.moveTo(prev.x, prev.y);
+      ctx.lineTo(point.x, point.y);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      ctx.stroke();
+      prev = point;
+    }
+
+    if (points.length === maxPoints) {
+      ctx.moveTo(prev.x, prev.y);
+      ctx.lineTo(points[0].x, points[0].y);
+      ctx.stroke();
+    }
+  }
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
@@ -29,10 +62,10 @@ export default function CalibrationCanvas({
       if (ctx !== null) {
         ctx.canvas.width = window.innerWidth;
         ctx.canvas.height = window.innerHeight;
-        draw(ctx);
+        draw(ctx, windowScreen, points);
       }
     }
-  }, [draw]);
+  }, [windowScreen, points]);
 
   return (
     <canvas
