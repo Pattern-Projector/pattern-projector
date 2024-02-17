@@ -12,13 +12,13 @@ import FullScreenButton from "@/_components/full-screen-button";
 import LabelledInput from "@/_components/labelled-input";
 import PDFViewer from "@/_components/pdf-viewer";
 import CloseIcon from "@/_icons/close-icon";
+import DeleteIcon from "@/_icons/delete-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
-import ResetWrenchIcon from "@/_icons/reset-wrench-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
@@ -260,10 +260,10 @@ export default function Page() {
             <span className={`${visible(isCalibrating)}`}>in inches</span>
             <button
               className={`${visible(isCalibrating)}`}
-              name={"Reset points"}
+              name={"Delete points"}
               onClick={() => resetPoints()}
             >
-              <ResetWrenchIcon />
+              <DeleteIcon />
             </button>
           </div>
           <FullScreenButton
