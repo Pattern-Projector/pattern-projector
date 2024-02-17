@@ -1,6 +1,7 @@
 export default function ResetWrenchIcon() {
   return (
     <svg
+      aria-label="Reset points"
       xmlns="http://www.w3.org/2000/svg"
       height="24"
       viewBox="0 -960 960 960"
