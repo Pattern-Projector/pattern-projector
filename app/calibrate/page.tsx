@@ -184,87 +184,91 @@ export default function Page() {
     >
       <FullScreen handle={handle} className="flex items-start">
         <div
-          className={`absolute z-20 flex flex-wrap items-center gap-4 m-4 w-[calc(100%-4rem)] ${visible(
+          className={`absolute flex z-20 w-full ${visible(
             isCalibrating || controlsOn
           )}`}
         >
-          <Link href="/">
-            <CloseIcon />
-          </Link>
-          <button
-            className="text-white bg-gray-800 border border-gray-600 focus:outline-none hover:bg-gray-700 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
-            onClick={() => setIsCalibrating(!isCalibrating)}
+          <div
+            className={`flex flex-wrap items-center gap-4 m-4 w-[calc(100%-4rem)]`}
           >
-            {isCalibrating ? "Show Pattern" : "Show Calibration"}
-          </button>
-          <FileInput
-            accept="application/pdf"
-            className={`w-full sm:w-fit z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-4 focus:ring-gray-200 ${visible(
-              !isCalibrating
-            )}`}
-            handleChange={handleFileChange}
-            id="pdfFile"
-          ></FileInput>
+            <Link href="/">
+              <CloseIcon />
+            </Link>
+            <button
+              className="text-white bg-gray-800 border border-gray-600 focus:outline-none hover:bg-gray-700 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
+              onClick={() => setIsCalibrating(!isCalibrating)}
+            >
+              {isCalibrating ? "Show Pattern" : "Show Calibration"}
+            </button>
+            <FileInput
+              accept="application/pdf"
+              className={`w-full sm:w-fit z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-4 focus:ring-gray-200 ${visible(
+                !isCalibrating
+              )}`}
+              handleChange={handleFileChange}
+              id="pdfFile"
+            ></FileInput>
 
-          <button
-            className={`${visible(!isCalibrating)}`}
-            name={"Invert colors"}
-            onClick={() => setInverted(!inverted)}
-          >
-            {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
-          </button>
+            <button
+              className={`${visible(!isCalibrating)}`}
+              name={"Invert colors"}
+              onClick={() => setInverted(!inverted)}
+            >
+              {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
+            </button>
 
-          <button
-            className={`${visible(!isCalibrating)}`}
-            name={"Flip vertically"}
-            onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
-          >
-            {scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
-          </button>
+            <button
+              className={`${visible(!isCalibrating)}`}
+              name={"Flip vertically"}
+              onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
+            >
+              {scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
+            </button>
 
-          <button
-            className={`${visible(!isCalibrating)}`}
-            name={"Flip horizontally"}
-            onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
-          >
-            {scale.y === -1 ? (
-              <FlipHorizontalOffIcon />
-            ) : (
-              <FlipHorizontalIcon />
-            )}
-          </button>
+            <button
+              className={`${visible(!isCalibrating)}`}
+              name={"Flip horizontally"}
+              onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
+            >
+              {scale.y === -1 ? (
+                <FlipHorizontalOffIcon />
+              ) : (
+                <FlipHorizontalIcon />
+              )}
+            </button>
 
-          <button
-            className={`${visible(!isCalibrating)}`}
-            name={"Rotate 90 degrees clockwise"}
-            onClick={() => setDegrees((degrees + 90) % 360)}
-          >
-            <Rotate90DegreesCWIcon />
-          </button>
+            <button
+              className={`${visible(!isCalibrating)}`}
+              name={"Rotate 90 degrees clockwise"}
+              onClick={() => setDegrees((degrees + 90) % 360)}
+            >
+              <Rotate90DegreesCWIcon />
+            </button>
 
-          <LabelledInput
-            className={`${visible(isCalibrating)}`}
-            handleChange={handleWidthChange}
-            id="width"
-            inputTestId="width"
-            label="Width"
-            name="width"
-            value={width}
-          />
-          <LabelledInput
-            className={`${visible(isCalibrating)}`}
-            handleChange={handleHeightChange}
-            id="height"
-            inputTestId="height"
-            label="Height"
-            name="height"
-            value={height}
+            <LabelledInput
+              className={`${visible(isCalibrating)}`}
+              handleChange={handleWidthChange}
+              id="width"
+              inputTestId="width"
+              label="Width"
+              name="width"
+              value={width}
+            />
+            <LabelledInput
+              className={`${visible(isCalibrating)}`}
+              handleChange={handleHeightChange}
+              id="height"
+              inputTestId="height"
+              label="Height"
+              name="height"
+              value={height}
+            />
+          </div>
+          <FullScreenButton
+            className={`z-20 absolute right-0 p-4 pt-7`}
+            handle={handle}
           />
         </div>
-        <FullScreenButton
-          className={`z-20 ml-auto m-4 mt-7 ${visible(controlsOn)}`}
-          handle={handle}
-        />
 
         <CalibrationCanvas
           className={`absolute cursor-crosshair z-10 ${visible(isCalibrating)}`}
