@@ -33,8 +33,8 @@ export default function PatternProjectorIcon() {
         >
           <g
             transform="matrix(.26458 0 0 .26458 130.18 149.19)"
-            fill-opacity="0"
-            stroke-linejoin="round"
+            fillOpacity="0"
+            strokeLinejoin="round"
             strokeWidth="5"
           >
             <path d="m-17.872 83.485-54.407-61.637 83.652-34.592 54.407 61.637z" />
