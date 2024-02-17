@@ -18,6 +18,7 @@ import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
+import ResetWrenchIcon from "@/_icons/reset-wrench-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import {
   getPerspectiveTransform,
@@ -32,25 +33,24 @@ import removeNonDigits from "@/_lib/remove-non-digits";
 export default function Page() {
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "18";
-  const handle = useFullScreenHandle();
-  const maxPoints = 4; // One point per vertex in rectangle
-
-  const [points, setPoints] = useState<Point[]>([
-    // Default points that fit on and iPhone SE
+  const defaultPoints = [
+    // Points that fit on an iPhone SE
     { x: 100, y: 300 },
     { x: 300, y: 300 },
     { x: 300, y: 600 },
     { x: 100, y: 600 },
-  ]);
+  ];
+  const maxPoints = 4; // One point per vertex in rectangle
+
+  const handle = useFullScreenHandle();
+
+  const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [degrees, setDegrees] = useState<number>(0);
   const [pointToModiy, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
-  const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
-  );
   const [matrix3d, setMatrix3d] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [inverted, setInverted] = useState<boolean>(false);
@@ -58,6 +58,9 @@ export default function Page() {
   const [controlsOn, setControlsOn] = useState<boolean>(true);
   const [lastMoveTime, setLastMoveTime] = useState<number>(Date.now());
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
+  const [localTransform, setLocalTransform] = useState<Matrix>(
+    Matrix.identity(3, 3)
+  );
 
   function visible(b: boolean): string {
     if (b) {
@@ -272,6 +275,13 @@ export default function Page() {
               value={height}
             />
             <p className={`${visible(isCalibrating)}`}>in inches</p>
+            <button
+              className={`${visible(isCalibrating)}`}
+              name={"Reset points"}
+              onClick={() => setPoints(defaultPoints)}
+            >
+              <ResetWrenchIcon />
+            </button>
           </div>
           <FullScreenButton
             className={`z-20 absolute right-0 p-4 pt-7`}
