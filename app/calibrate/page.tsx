@@ -166,7 +166,6 @@ export default function Page() {
   }, [localTransform]);
 
   useEffect(() => {
-    console.log(points);
     if (points.length === maxPoints) {
       let m = getPerspectiveTransform(points, getDstVertices());
       let n = getPerspectiveTransform(getDstVertices(), points);
