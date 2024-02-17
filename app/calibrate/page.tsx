@@ -20,12 +20,7 @@ import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import ResetWrenchIcon from "@/_icons/reset-wrench-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
-import {
-  getPerspectiveTransform,
-  minIndex,
-  sqrdist,
-  toMatrix3d,
-} from "@/_lib/geometry";
+import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
@@ -33,19 +28,18 @@ import removeNonDigits from "@/_lib/remove-non-digits";
 export default function Page() {
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "18";
-  // TODO: make these relative to screen size and default aspect ratio.
-  const defaultPoints = [
+  const maxPoints = 4; // One point per vertex in rectangle
+
+  const handle = useFullScreenHandle();
+  const sePoints = [
     // Points that fit on an iPhone SE
     { x: 100, y: 300 },
     { x: 300, y: 300 },
     { x: 300, y: 600 },
     { x: 100, y: 600 },
   ];
-  const maxPoints = 4; // One point per vertex in rectangle
 
-  const handle = useFullScreenHandle();
-
-  const [points, setPoints] = useState<Point[]>(defaultPoints);
+  const [points, setPoints] = useState<Point[]>(sePoints);
   const [degrees, setDegrees] = useState<number>(0);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
@@ -62,6 +56,9 @@ export default function Page() {
   const [localTransform, setLocalTransform] = useState<Matrix>(
     Matrix.identity(3, 3)
   );
+  const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
+    Matrix.identity(3, 3)
+  );
 
   function visible(b: boolean): string {
     if (b) {
@@ -69,6 +66,10 @@ export default function Page() {
     } else {
       return "hidden";
     }
+  }
+
+  function resetPoints(): void {
+    setPoints(sePoints); // TODO: Do based on screen size
   }
 
   // HANDLERS
@@ -138,6 +139,8 @@ export default function Page() {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
       setPoints(JSON.parse(localPoints));
+    } else {
+      resetPoints();
     }
   }, []);
 
@@ -146,11 +149,12 @@ export default function Page() {
   }, [localTransform]);
 
   useEffect(() => {
-    if (points.length === maxPoints) {
+    if (points && points.length === maxPoints) {
       let m = getPerspectiveTransform(points, getDstVertices());
       let n = getPerspectiveTransform(getDstVertices(), points);
       setPerspective(m);
       setLocalTransform(n);
+      setCalibrationTransform(n);
     }
 
     function getDstVertices(): Point[] {
@@ -253,11 +257,11 @@ export default function Page() {
               name="height"
               value={height}
             />
-            <p className={`${visible(isCalibrating)}`}>in inches</p>
+            <span className={`${visible(isCalibrating)}`}>in inches</span>
             <button
               className={`${visible(isCalibrating)}`}
               name={"Reset points"}
-              onClick={() => setPoints(defaultPoints)}
+              onClick={() => resetPoints()}
             >
               <ResetWrenchIcon />
             </button>
@@ -275,6 +279,9 @@ export default function Page() {
           setPoints={setPoints}
           pointToModify={pointToModify}
           setPointToModify={setPointToModify}
+          perspective={calibrationTransform}
+          width={+width}
+          height={+height}
         />
 
         <Draggable

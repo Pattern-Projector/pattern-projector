@@ -1,12 +1,13 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import Matrix from "ml-matrix";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 
-import {
-  getPerspectiveTransform,
-  interp,
-  minIndex,
-  sqrdist,
-  toMatrix3d,
-} from "@/_lib/geometry";
+import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
 
 /**
@@ -20,6 +21,9 @@ export default function CalibrationCanvas({
   setPoints,
   pointToModify,
   setPointToModify,
+  perspective,
+  width,
+  height,
 }: {
   className: string | undefined;
   windowScreen: Point;
@@ -27,50 +31,18 @@ export default function CalibrationCanvas({
   setPoints: Dispatch<SetStateAction<Point[]>>;
   pointToModify: number | null;
   setPointToModify: Dispatch<SetStateAction<number | null>>;
+  perspective: Matrix;
+  width: number;
+  height: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const maxPoints = 4; // One point per vertex in rectangle
   const radius = 30;
 
-  function draw(
-    ctx: CanvasRenderingContext2D,
-    windowScreen: Point,
-    points: Point[]
-  ): void {
-    ctx.strokeStyle = "#ffffff";
-    const dy = windowScreen.y + window.outerHeight - window.innerHeight;
-    const dx = windowScreen.x + window.outerWidth - window.innerWidth;
-    ctx.translate(-dx, -dy);
-
-    let prev = points[0];
-    let start = Math.PI / 2; // Adds 3/4 circle around nodes to show which corners they belong in
-    for (let point of points) {
-      ctx.moveTo(prev.x, prev.y);
-      ctx.lineTo(point.x, point.y);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(
-        point.x,
-        point.y,
-        radius + 5,
-        start,
-        start + Math.PI + Math.PI / 2
-      );
-      ctx.stroke();
-      prev = point;
-      start += Math.PI / 2;
-    }
-
-    if (points.length === maxPoints) {
-      ctx.moveTo(prev.x, prev.y);
-      ctx.lineTo(points[0].x, points[0].y);
-      ctx.stroke();
-    }
+  function drawLine(ctx: CanvasRenderingContext2D, p1: Point, p2: Point): void {
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
   }
 
   useEffect(() => {
@@ -81,10 +53,72 @@ export default function CalibrationCanvas({
       if (ctx !== null) {
         ctx.canvas.width = window.innerWidth;
         ctx.canvas.height = window.innerHeight;
+
+        function drawGrid(ctx: CanvasRenderingContext2D): void {
+          for (let i = 1; i + 1 <= width; i++) {
+            // TODO: fix needing dpi added in here.
+            const line = transformPoints(
+              [
+                { x: i * 96, y: 0 },
+                { x: i * 96, y: height * 96 },
+              ],
+              perspective
+            );
+            drawLine(ctx, line[0], line[1]);
+          }
+          for (let i = 1; i + 1 <= height; i++) {
+            const line = transformPoints(
+              [
+                { x: 0, y: i * 96 },
+                { x: width * 96, y: i * 96 },
+              ],
+              perspective
+            );
+            drawLine(ctx, line[0], line[1]);
+          }
+        }
+        function draw(
+          ctx: CanvasRenderingContext2D,
+          windowScreen: Point,
+          points: Point[]
+        ): void {
+          ctx.strokeStyle = "#ffffff";
+          const dy = windowScreen.y + window.outerHeight - window.innerHeight;
+          const dx = windowScreen.x + window.outerWidth - window.innerWidth;
+          ctx.translate(-dx, -dy);
+
+          let prev = points[0];
+          let start = Math.PI / 2; // Adds 3/4 circle around nodes to show which corners they belong in
+          for (let point of points) {
+            drawLine(ctx, prev, point);
+
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(
+              point.x,
+              point.y,
+              radius + 5,
+              start,
+              start + Math.PI + Math.PI / 2
+            );
+            ctx.stroke();
+            prev = point;
+            start += Math.PI / 2;
+          }
+
+          if (points.length === maxPoints) {
+            drawLine(ctx, points[0], prev);
+          }
+
+          drawGrid(ctx);
+        }
         draw(ctx, windowScreen, points);
       }
     }
-  }, [windowScreen, points]);
+  }, [windowScreen, points, perspective, width, height]);
 
   function handleDown(newPoint: Point) {
     if (points.length < maxPoints) {
