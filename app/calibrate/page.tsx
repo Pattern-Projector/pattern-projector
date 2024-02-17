@@ -208,7 +208,6 @@ export default function Page() {
               handleChange={handleFileChange}
               id="pdfFile"
             ></FileInput>
-
             <button
               className={`${visible(!isCalibrating)}`}
               name={"Invert colors"}
@@ -216,7 +215,6 @@ export default function Page() {
             >
               {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
             </button>
-
             <button
               className={`${visible(!isCalibrating)}`}
               name={"Flip vertically"}
@@ -224,7 +222,6 @@ export default function Page() {
             >
               {scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
             </button>
-
             <button
               className={`${visible(!isCalibrating)}`}
               name={"Flip horizontally"}
@@ -236,7 +233,6 @@ export default function Page() {
                 <FlipHorizontalIcon />
               )}
             </button>
-
             <button
               className={`${visible(!isCalibrating)}`}
               name={"Rotate 90 degrees clockwise"}
@@ -244,7 +240,6 @@ export default function Page() {
             >
               <Rotate90DegreesCWIcon />
             </button>
-
             <LabelledInput
               className={`${visible(isCalibrating)}`}
               handleChange={handleWidthChange}
@@ -263,6 +258,7 @@ export default function Page() {
               name="height"
               value={height}
             />
+            in inches
           </div>
           <FullScreenButton
             className={`z-20 absolute right-0 p-4 pt-7`}
