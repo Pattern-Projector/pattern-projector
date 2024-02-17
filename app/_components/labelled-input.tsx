@@ -32,7 +32,7 @@ export default function LabelledInput({
         {label}
       </label>
       <input
-        className="mx-4 my-1 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-4 focus:ring-gray-200 w-20"
+        className="ml-4 my-1 appearance-none border-2 rounded py-2 pl-4 leading-tight bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-4 focus:ring-gray-200 w-20"
         id={id}
         data-test-id={inputTestId}
         name={name}
