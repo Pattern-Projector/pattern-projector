@@ -8,11 +8,49 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 const inter = Inter({ subsets: ["latin"] });
 
+const APP_NAME = "Pattern Projector";
+const APP_DEFAULT_TITLE = "Pattern Projector";
+const APP_TITLE_TEMPLATE = "%s - Pattern Projector";
+const APP_DESCRIPTION =
+  "Calibrates projectors for projecting sewing patterns with accurate scaling and without perspective distortion";
+
 export const metadata: Metadata = {
-  title: "Pattern Projector",
   description: "Calibrate your projector for sewing patterns",
   viewport:
     "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1",
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  themeColor: "#000",
 };
 
 export default function RootLayout({
