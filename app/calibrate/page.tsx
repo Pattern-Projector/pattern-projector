@@ -184,9 +184,9 @@ export default function Page() {
     >
       <FullScreen handle={handle} className="flex items-start">
         <div
-          className={`absolute flex z-20 w-full ${visible(
-            isCalibrating || controlsOn
-          )}`}
+          className={`absolute flex z-20 w-full ${
+            isCalibrating || controlsOn ? "opacity-100" : "opacity-0"
+          } transition-opacity ease-in-out duration-1000 `}
         >
           <div
             className={`flex flex-wrap items-center gap-4 m-4 w-[calc(100%-4rem)]`}
