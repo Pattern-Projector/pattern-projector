@@ -11,7 +11,7 @@ export default function GithubIcon() {
         clip-rule="evenodd"
         fill="#fff"
         fill-rule="evenodd"
-        stroke-width=".50191"
+        strokeWidth=".50191"
       />
     </svg>
   );
