@@ -58,7 +58,6 @@ export default function Page() {
   const [controlsOn, setControlsOn] = useState<boolean>(true);
   const [lastMoveTime, setLastMoveTime] = useState<number>(Date.now());
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
-  const [wakeLock, setWakeLock] = useState(null);
 
   function visible(b: boolean): string {
     if (b) {
@@ -120,7 +119,9 @@ export default function Page() {
 
   const requestWakeLock = useCallback(async () => {
     if ("wakeLock" in navigator) {
-      await navigator.wakeLock.request("screen");
+      try {
+        await navigator.wakeLock.request("screen");
+      } catch (e) {}
     }
   }, []);
 
