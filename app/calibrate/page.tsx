@@ -53,9 +53,9 @@ export default function Page() {
   );
   const [matrix3d, setMatrix3d] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
-  const [inverted, setInverted] = useState<boolean>(true);
+  const [inverted, setInverted] = useState<boolean>(false);
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
-  const [controlsOn, setControlsOn] = useState<boolean>(false);
+  const [controlsOn, setControlsOn] = useState<boolean>(true);
   const [lastMoveTime, setLastMoveTime] = useState<number>(Date.now());
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
 
@@ -185,7 +185,7 @@ export default function Page() {
       <FullScreen handle={handle} className="flex items-start">
         <div
           className={`absolute z-20 flex flex-wrap items-center gap-4 m-4 w-[calc(100%-4rem)] ${visible(
-            controlsOn
+            isCalibrating || controlsOn
           )}`}
         >
           <Link href="/">
