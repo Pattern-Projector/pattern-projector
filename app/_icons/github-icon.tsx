@@ -1,6 +1,7 @@
 export default function GithubIcon() {
   return (
     <svg
+      aria-label="Github"
       width="49"
       height="48"
       xmlns="http://www.w3.org/2000/svg"
