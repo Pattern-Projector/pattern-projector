@@ -258,7 +258,7 @@ export default function Page() {
               name="height"
               value={height}
             />
-            in inches
+            <p className={`${visible(isCalibrating)}`}>in inches</p>
           </div>
           <FullScreenButton
             className={`z-20 absolute right-0 p-4 pt-7`}
