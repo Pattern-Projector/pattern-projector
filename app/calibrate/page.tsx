@@ -33,6 +33,7 @@ import removeNonDigits from "@/_lib/remove-non-digits";
 export default function Page() {
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "18";
+  // TODO: make these relative to screen size and default aspect ratio.
   const defaultPoints = [
     // Points that fit on an iPhone SE
     { x: 100, y: 300 },
@@ -46,7 +47,7 @@ export default function Page() {
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [degrees, setDegrees] = useState<number>(0);
-  const [pointToModiy, setPointToModify] = useState<number | null>(null);
+  const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
@@ -80,27 +81,6 @@ export default function Page() {
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
-  }
-
-  function handleDown(newPoint: Point) {
-    if (points.length < maxPoints) {
-      setPoints([...points, newPoint]);
-    } else {
-      setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
-    }
-  }
-
-  function handleMove(p: Point) {
-    if (pointToModiy !== null) {
-      const newPoints = [...points];
-      newPoints[pointToModiy] = p;
-      setPoints(newPoints);
-    }
-  }
-
-  function handleUp() {
-    localStorage.setItem("points", JSON.stringify(points));
-    setPointToModify(null);
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -290,11 +270,11 @@ export default function Page() {
 
         <CalibrationCanvas
           className={`absolute cursor-crosshair z-10 ${visible(isCalibrating)}`}
-          handleDown={handleDown}
-          handleUp={handleUp}
-          handleMove={handleMove}
           windowScreen={windowScreen}
           points={points}
+          setPoints={setPoints}
+          pointToModify={pointToModify}
+          setPointToModify={setPointToModify}
         />
 
         <Draggable

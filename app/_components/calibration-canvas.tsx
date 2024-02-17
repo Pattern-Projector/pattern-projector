@@ -1,5 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
+import {
+  getPerspectiveTransform,
+  interp,
+  minIndex,
+  sqrdist,
+  toMatrix3d,
+} from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
 
 /**
@@ -8,18 +15,18 @@ import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
  */
 export default function CalibrationCanvas({
   className,
-  handleDown,
-  handleMove,
-  handleUp,
   windowScreen,
   points,
+  setPoints,
+  pointToModify,
+  setPointToModify,
 }: {
   className: string | undefined;
-  handleDown: (p: Point) => void;
-  handleMove: (p: Point) => void;
-  handleUp: () => void;
   windowScreen: Point;
   points: Point[];
+  setPoints: Dispatch<SetStateAction<Point[]>>;
+  pointToModify: number | null;
+  setPointToModify: Dispatch<SetStateAction<number | null>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const maxPoints = 4; // One point per vertex in rectangle
@@ -79,6 +86,27 @@ export default function CalibrationCanvas({
     }
   }, [windowScreen, points]);
 
+  function handleDown(newPoint: Point) {
+    if (points.length < maxPoints) {
+      setPoints([...points, newPoint]);
+    } else {
+      setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
+    }
+  }
+
+  function handleMove(p: Point, filter: number) {
+    if (pointToModify !== null) {
+      const newPoints = [...points];
+      newPoints[pointToModify] = interp(newPoints[pointToModify], p, filter);
+      setPoints(newPoints);
+    }
+  }
+
+  function handleUp() {
+    localStorage.setItem("points", JSON.stringify(points));
+    setPointToModify(null);
+  }
+
   return (
     <canvas
       ref={canvasRef}
@@ -87,13 +115,15 @@ export default function CalibrationCanvas({
         if ((e.buttons & 1) == 0) {
           handleUp();
         } else {
-          handleMove(mouseToCanvasPoint(e));
+          handleMove(mouseToCanvasPoint(e), 1);
         }
       }}
       onMouseDown={(e) => handleDown(mouseToCanvasPoint(e))}
       onMouseUp={() => handleUp()}
       onTouchStart={(e: React.TouchEvent) => handleDown(touchToCanvasPoint(e))}
-      onTouchMove={(e: React.TouchEvent) => handleMove(touchToCanvasPoint(e))}
+      onTouchMove={(e: React.TouchEvent) =>
+        handleMove(touchToCanvasPoint(e), 0.05)
+      }
       onTouchEnd={() => handleUp()}
     />
   );

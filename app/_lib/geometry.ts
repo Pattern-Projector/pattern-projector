@@ -180,4 +180,7 @@ export function minIndex(a: number[]): number {
   return min;
 }
 
-
+export function interp(from: Point, to: Point, portion: number): Point {
+  const rest = 1.0 - portion;
+  return { x: to.x * portion + from.x * rest, y: to.y * portion + from.y * rest };
+}
