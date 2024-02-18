@@ -279,7 +279,7 @@ export default function Page() {
         </div>
 
         <CalibrationCanvas
-          className={`absolute cursor-crosshair z-10 ${visible(isCalibrating)}`}
+          className={`absolute z-10 ${visible(isCalibrating)}`}
           windowScreen={windowScreen}
           points={points}
           setPoints={setPoints}

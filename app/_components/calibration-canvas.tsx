@@ -161,6 +161,7 @@ export default function CalibrationCanvas({
         handleMove(touchToCanvasPoint(e), 0.05)
       }
       onTouchEnd={() => handleUp()}
+      style={{ cursor: "url('/crosshair.png') 11 11, crosshair" }}
     />
   );
 }
