@@ -17,7 +17,7 @@
     }
   ],
   "display": "fullscreen",
-  "background_color": "#000",
+  "background_color": "#fff",
   "description": "Calibrates projectors for projecting sewing patterns with accurate scaling and without perspective distortion",
-  "theme_color": "#000"
+  "theme_color": "#fff"
 }

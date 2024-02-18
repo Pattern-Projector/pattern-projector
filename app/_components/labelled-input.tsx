@@ -28,7 +28,7 @@ export default function LabelledInput({
 }) {
   return (
     <div className={className}>
-      <label className="font-bold text-white" htmlFor={id}>
+      <label className="font-bold text-black" htmlFor={id}>
         {label}
       </label>
       <input

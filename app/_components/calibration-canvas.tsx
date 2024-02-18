@@ -5,7 +5,6 @@ import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
 
 const maxPoints = 4; // One point per vertex in rectangle
-const radius = 30;
 
 function draw(
   ctx: CanvasRenderingContext2D,
@@ -20,20 +19,15 @@ function draw(
   const dx = windowScreen.x + window.outerWidth - window.innerWidth;
   ctx.translate(-dx, -dy);
 
+  ctx.fillStyle = "#000";
+  drawPolygon(ctx, points);
+  ctx.fill();
+
   let prev = points[0];
-  let start = Math.PI / 2; // Adds 3/4 circle around nodes to show which corners they belong in
   for (let point of points) {
     drawLine(ctx, prev, point);
 
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, radius + 5, start, start + Math.PI + Math.PI / 2);
-    ctx.stroke();
     prev = point;
-    start += Math.PI / 2;
   }
 
   if (points.length === maxPoints) {
@@ -78,6 +72,18 @@ function drawLine(ctx: CanvasRenderingContext2D, p1: Point, p2: Point): void {
   ctx.stroke();
 }
 
+function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
+  const last = points.at(-1);
+  if (last === undefined) {
+    return;
+  }
+  ctx.beginPath();
+  ctx.moveTo(last.x, last.y);
+  for (let p of points) {
+    ctx.lineTo(p.x, p.y);
+  }
+  ctx.closePath();
+}
 /**
  * A window width and height canvas used for projector calibration
  * @param draw - Draws in the canvas rendering context

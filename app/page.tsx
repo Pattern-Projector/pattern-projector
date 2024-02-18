@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import FlipHorizontalIcon from "./_icons/flip-horizontal-icon";
 import FlipVerticalIcon from "./_icons/flip-vertical-icon";
+import MaximizeIcon from "./_icons/fullscreen-icon";
 import GithubIcon from "./_icons/github-icon";
 import InvertColorIcon from "./_icons/invert-color-icon";
-import MaximizeIcon from "./_icons/maximize-icon";
 import PatternProjectorIcon from "./_icons/pattern-projector-icon";
 import Rotate90DegreesCWIcon from "./_icons/rotate-90-degrees-cw-icon";
 

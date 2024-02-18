@@ -17,7 +17,7 @@ const APP_DESCRIPTION =
 export const metadata: Metadata = {
   description: "Calibrate your projector for sewing patterns",
   viewport:
-    "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1",
+    "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no",
   applicationName: APP_NAME,
   title: {
     default: APP_DEFAULT_TITLE,

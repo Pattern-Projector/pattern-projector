@@ -6,7 +6,7 @@ export default function CloseIcon() {
       height="24"
       viewBox="0 -960 960 960"
       width="24"
-      fill="#ffffff"
+      fill="#000"
     >
       <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
     </svg>

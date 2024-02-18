@@ -176,9 +176,14 @@ export default function Page() {
     <main
       onMouseMove={(e) => handleShowControls(e)}
       onTouchStart={(e) => handleShowControls(e)}
-      style={{ height: "100vh", width: "100vw", overflow: "hidden" }}
+      style={{
+        height: "100vh",
+        width: "100vw",
+        overflow: "hidden",
+        backgroundColor: "white",
+      }}
     >
-      <FullScreen handle={handle} className="flex items-start">
+      <FullScreen handle={handle} className="flex items-start bg-white">
         <div
           className={`absolute flex z-20 w-full ${
             isCalibrating || controlsOn ? "opacity-100" : "opacity-0"
@@ -233,6 +238,10 @@ export default function Page() {
               className={`${visible(!isCalibrating)}`}
               name={"Rotate 90 degrees clockwise"}
               onClick={() => setDegrees((degrees + 90) % 360)}
+              style={{
+                transform: `rotate(${degrees}deg)`,
+                transformOrigin: "center",
+              }}
             >
               <Rotate90DegreesCWIcon />
             </button>

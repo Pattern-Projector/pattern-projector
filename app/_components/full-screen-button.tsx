@@ -1,7 +1,7 @@
 import { FullScreenHandle } from "react-full-screen";
 
-import MaximizeIcon from "@/_icons/maximize-icon";
-import MinimizeIcon from "@/_icons/minimize-icon";
+import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
+import FullscreenIcon from "@/_icons/fullscreen-icon";
 
 /**
  *
@@ -22,7 +22,7 @@ export default function FullScreenButton({
       name={handle.active ? "Exit full screen" : "Enter full screen"}
       onClick={handle.active ? handle.exit : handle.enter}
     >
-      {handle.active ? <MinimizeIcon /> : <MaximizeIcon />}
+      {handle.active ? <FullscreenExitIcon /> : <FullscreenIcon />}
     </button>
   );
 }
