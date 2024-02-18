@@ -25,19 +25,24 @@ import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 
+const sePoints = [
+  // Points that fit on an iPhone SE
+  { x: 100, y: 300 },
+  { x: 300, y: 300 },
+  { x: 300, y: 600 },
+  { x: 100, y: 600 },
+];
+
+function resetPoints(): Point[] {
+  return sePoints; // TODO: Do based on screen size
+}
+
 export default function Page() {
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "18";
   const maxPoints = 4; // One point per vertex in rectangle
 
   const handle = useFullScreenHandle();
-  const sePoints = [
-    // Points that fit on an iPhone SE
-    { x: 100, y: 300 },
-    { x: 300, y: 300 },
-    { x: 300, y: 600 },
-    { x: 100, y: 600 },
-  ];
 
   const [points, setPoints] = useState<Point[]>(sePoints);
   const [degrees, setDegrees] = useState<number>(0);
@@ -61,15 +66,7 @@ export default function Page() {
   );
 
   function visible(b: boolean): string {
-    if (b) {
-      return "visible";
-    } else {
-      return "hidden";
-    }
-  }
-
-  function resetPoints(): void {
-    setPoints(sePoints); // TODO: Do based on screen size
+    return b ? "visible" : "hidden";
   }
 
   // HANDLERS
@@ -140,7 +137,7 @@ export default function Page() {
     if (localPoints !== null) {
       setPoints(JSON.parse(localPoints));
     } else {
-      resetPoints();
+      setPoints(resetPoints());
     }
   }, []);
 
