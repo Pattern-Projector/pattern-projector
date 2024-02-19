@@ -28,11 +28,11 @@ export default function LabelledInput({
 }) {
   return (
     <div className={className}>
-      <label className="text-sm font-medium block text-black mb-2" htmlFor={id}>
+      <label className="text-sm font-medium text-black mb-2" htmlFor={id}>
         {label}
       </label>
       <input
-        className="p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20"
+        className="p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20"
         id={id}
         data-test-id={inputTestId}
         name={name}

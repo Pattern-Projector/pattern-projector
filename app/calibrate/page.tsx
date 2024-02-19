@@ -236,17 +236,20 @@ export default function Page() {
           <div
             className={`items-center gap-4 m-4 flex-col flex h-screen justify-center`}
           >
-            <Link href="/">
+            <Link
+              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+              href="/"
+            >
               <CloseIcon />
             </Link>
             <button
-              className=" text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               onClick={() => setIsCalibrating(!isCalibrating)}
             >
               {isCalibrating ? "Project" : "Calibrate"}
             </button>
             <label
-              className={`items-center justify-center m-4 block ${visible(
+              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating
               )}`}
             >
@@ -259,21 +262,27 @@ export default function Page() {
               <PdfIcon />
             </label>
             <button
-              className={`${visible(!isCalibrating)} block  m-4`}
+              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+                !isCalibrating
+              )}`}
               name={"Invert colors"}
               onClick={() => setInverted(!inverted)}
             >
               {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
             </button>
             <button
-              className={`${visible(!isCalibrating)} block  m-4`}
+              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+                !isCalibrating
+              )}`}
               name={"Flip vertically"}
               onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
             >
               {scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
             </button>
             <button
-              className={`${visible(!isCalibrating)} block m-4`}
+              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+                !isCalibrating
+              )}`}
               name={"Flip horizontally"}
               onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
             >
@@ -284,7 +293,9 @@ export default function Page() {
               )}
             </button>
             <button
-              className={`${visible(!isCalibrating)} block m-4`}
+              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+                !isCalibrating
+              )}`}
               name={"Rotate 90 degrees clockwise"}
               onClick={() => setDegrees((degrees + 90) % 360)}
               style={{
@@ -295,7 +306,7 @@ export default function Page() {
               <Rotate90DegreesCWIcon />
             </button>
             <div
-              className={`${visible(
+              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating && pageCount > 1
               )} flex m-4 items-center`}
             >
@@ -316,7 +327,9 @@ export default function Page() {
               </button>
             </div>
             <LabelledInput
-              className={`${visible(isCalibrating)}`}
+              className={`${visible(
+                isCalibrating
+              )} flex flex-col justify-center items-center`}
               handleChange={handleWidthChange}
               id="width"
               inputTestId="width"
@@ -325,7 +338,9 @@ export default function Page() {
               value={width}
             />
             <LabelledInput
-              className={`${visible(isCalibrating)}`}
+              className={`${visible(
+                isCalibrating
+              )} flex flex-col justify-center items-center`}
               handleChange={handleHeightChange}
               id="height"
               inputTestId="height"
@@ -334,13 +349,20 @@ export default function Page() {
               value={height}
             />
             <button
-              className={`${visible(isCalibrating)} block m-4`}
+              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+                isCalibrating
+              )}`}
               name={"Delete points"}
               onClick={() => setPoints(getDefaultPoints())}
             >
               <DeleteIcon />
             </button>
-            <FullScreenButton className={`z-20 block m-4`} handle={handle} />
+            <FullScreenButton
+              className={`z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+                !isCalibrating
+              )}`}
+              handle={handle}
+            />
           </div>
         </div>
 
