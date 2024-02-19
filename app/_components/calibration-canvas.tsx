@@ -8,16 +8,14 @@ const maxPoints = 4; // One point per vertex in rectangle
 
 function draw(
   ctx: CanvasRenderingContext2D,
-  windowScreen: Point,
+  offset: Point,
   points: Point[],
   width: number,
   height: number,
   perspective: Matrix,
   isCalibrating: boolean
 ): void {
-  const dy = windowScreen.y + window.outerHeight - window.innerHeight;
-  const dx = windowScreen.x + window.outerWidth - window.innerWidth;
-  ctx.translate(-dx, -dy);
+  ctx.translate(offset.x, offset.y);
 
   ctx.fillStyle = "#000";
 
@@ -65,13 +63,6 @@ function draw(
     ctx.setLineDash([t * 3, t]);
     ctx.stroke();
     ctx.setLineDash([]);
-  }
-}
-
-function drawVertices(ctx: CanvasRenderingContext2D, points: Point[]): void {
-  for (let point of points) {
-    ctx.moveTo(point.x, point.y);
-    ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
   }
 }
 
@@ -127,7 +118,7 @@ function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
  */
 export default function CalibrationCanvas({
   className,
-  windowScreen,
+  canvasOffset,
   points,
   setPoints,
   pointToModify,
@@ -138,7 +129,7 @@ export default function CalibrationCanvas({
   isCalibrating,
 }: {
   className: string | undefined;
-  windowScreen: Point;
+  canvasOffset: Point;
   points: Point[];
   setPoints: Dispatch<SetStateAction<Point[]>>;
   pointToModify: number | null;
@@ -158,7 +149,7 @@ export default function CalibrationCanvas({
         ctx.canvas.height = window.innerHeight;
         draw(
           ctx,
-          windowScreen,
+          canvasOffset,
           points,
           width,
           height,
@@ -167,7 +158,7 @@ export default function CalibrationCanvas({
         );
       }
     }
-  }, [windowScreen, points, perspective, width, height, isCalibrating]);
+  }, [canvasOffset, points, perspective, width, height, isCalibrating]);
 
   function handleDown(newPoint: Point) {
     if (points.length < maxPoints) {

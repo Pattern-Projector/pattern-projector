@@ -62,8 +62,8 @@ export default function Draggable({
     setTransformStart(localTransform.clone());
   }
   // TODO: move rendering on screen after transform?
-  //const dy = -(windowScreen.y + window.outerHeight - window.innerHeight);
-  //const dx = -(windowScreen.x + window.outerWidth - window.innerWidth);
+  const dy = -(windowScreen.y + window.outerHeight - window.innerHeight);
+  const dx = -(windowScreen.x + window.outerWidth - window.innerWidth);
   return (
     <div
       className={className}

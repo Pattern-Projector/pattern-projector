@@ -21,7 +21,11 @@ import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
-import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
+import {
+  getPerspectiveTransform,
+  toMatrix3d,
+  translate,
+} from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
@@ -65,6 +69,7 @@ export default function Page() {
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3)
   );
+  const [canvasOffset, setCanvasOffset] = useState<Point>({ x: 0, y: 0 });
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -112,6 +117,12 @@ export default function Page() {
   });
 
   useEffect(() => {
+    const dy = windowScreen.y + window.outerHeight - window.innerHeight;
+    const dx = windowScreen.x + window.outerWidth - window.innerWidth;
+    setCanvasOffset({ x: -dx, y: -dy });
+  }, [windowScreen]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       const p = { x: window.screenX, y: window.screenY };
       if (windowScreen.x !== p.x || windowScreen.y !== p.y) {
@@ -143,8 +154,9 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    setMatrix3d(toMatrix3d(localTransform));
-  }, [localTransform]);
+    const offset = translate(canvasOffset);
+    setMatrix3d(toMatrix3d(offset.mmul(localTransform)));
+  }, [localTransform, canvasOffset]);
 
   useEffect(() => {
     if (points && points.length === maxPoints) {
@@ -186,7 +198,7 @@ export default function Page() {
     >
       <FullScreen handle={handle} className="flex items-start bg-white">
         <div
-          className={`z-20 h-full  ${
+          className={`z-20 h-full absolute ${
             isCalibrating || controlsOn ? "opacity-100" : "opacity-0"
           } transition-opacity ease-in-out duration-1000 `}
         >
@@ -282,7 +294,7 @@ export default function Page() {
 
         <CalibrationCanvas
           className={`absolute z-10`}
-          windowScreen={windowScreen}
+          canvasOffset={canvasOffset}
           points={points}
           setPoints={setPoints}
           pointToModify={pointToModify}
