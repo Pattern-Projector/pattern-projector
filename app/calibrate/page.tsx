@@ -19,6 +19,7 @@ import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
+import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
@@ -185,46 +186,51 @@ export default function Page() {
     >
       <FullScreen handle={handle} className="flex items-start bg-white">
         <div
-          className={`absolute flex z-20 w-full ${
+          className={`z-20 h-full  ${
             isCalibrating || controlsOn ? "opacity-100" : "opacity-0"
           } transition-opacity ease-in-out duration-1000 `}
         >
           <div
-            className={`flex flex-wrap items-center gap-4 m-4 w-[calc(100%-4rem)]`}
+            className={`items-center gap-4 m-4 flex-col flex h-screen justify-center`}
           >
             <Link href="/">
               <CloseIcon />
             </Link>
             <button
-              className="text-white bg-gray-800 border border-gray-600 focus:outline-none hover:bg-gray-700 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
+              className=" text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               onClick={() => setIsCalibrating(!isCalibrating)}
             >
-              {isCalibrating ? "Show Pattern" : "Show Calibration"}
+              {isCalibrating ? "Project" : "Calibrate"}
             </button>
-            <FileInput
-              accept="application/pdf"
-              className={`w-full sm:w-fit z-10 appearance-none border-2 rounded py-2 px-4 leading-tight bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-4 focus:ring-gray-200 ${visible(
+            <label
+              className={`items-center justify-center m-4 block ${visible(
                 !isCalibrating
               )}`}
-              handleChange={handleFileChange}
-              id="pdfFile"
-            ></FileInput>
+            >
+              <FileInput
+                accept="application/pdf"
+                className={`hidden`}
+                handleChange={handleFileChange}
+                id="pdfFile"
+              ></FileInput>
+              <PdfIcon />
+            </label>
             <button
-              className={`${visible(!isCalibrating)}`}
+              className={`${visible(!isCalibrating)} block  m-4`}
               name={"Invert colors"}
               onClick={() => setInverted(!inverted)}
             >
               {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
             </button>
             <button
-              className={`${visible(!isCalibrating)}`}
+              className={`${visible(!isCalibrating)} block  m-4`}
               name={"Flip vertically"}
               onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
             >
               {scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
             </button>
             <button
-              className={`${visible(!isCalibrating)}`}
+              className={`${visible(!isCalibrating)} block m-4`}
               name={"Flip horizontally"}
               onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
             >
@@ -235,7 +241,7 @@ export default function Page() {
               )}
             </button>
             <button
-              className={`${visible(!isCalibrating)}`}
+              className={`${visible(!isCalibrating)} block m-4`}
               name={"Rotate 90 degrees clockwise"}
               onClick={() => setDegrees((degrees + 90) % 360)}
               style={{
@@ -250,7 +256,7 @@ export default function Page() {
               handleChange={handleWidthChange}
               id="width"
               inputTestId="width"
-              label="Width"
+              label="Width (in)"
               name="width"
               value={width}
             />
@@ -259,23 +265,19 @@ export default function Page() {
               handleChange={handleHeightChange}
               id="height"
               inputTestId="height"
-              label="Height"
+              label="Height (in)"
               name="height"
               value={height}
             />
-            <span className={`${visible(isCalibrating)}`}>in inches</span>
             <button
-              className={`${visible(isCalibrating)}`}
+              className={`${visible(isCalibrating)} block m-4`}
               name={"Delete points"}
               onClick={() => resetPoints()}
             >
               <DeleteIcon />
             </button>
+            <FullScreenButton className={`z-20 block m-4`} handle={handle} />
           </div>
-          <FullScreenButton
-            className={`z-20 absolute right-0 p-4 pt-7`}
-            handle={handle}
-          />
         </div>
 
         <CalibrationCanvas
