@@ -237,7 +237,7 @@ export default function Page() {
             className={`items-center gap-4 m-4 flex-col flex h-screen justify-center`}
           >
             <Link
-              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
               href="/"
             >
               <CloseIcon />
@@ -249,7 +249,7 @@ export default function Page() {
               {isCalibrating ? "Project" : "Calibrate"}
             </button>
             <label
-              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating
               )}`}
             >
@@ -262,7 +262,7 @@ export default function Page() {
               <PdfIcon />
             </label>
             <button
-              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating
               )}`}
               name={"Invert colors"}
@@ -271,7 +271,7 @@ export default function Page() {
               {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
             </button>
             <button
-              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating
               )}`}
               name={"Flip vertically"}
@@ -280,7 +280,7 @@ export default function Page() {
               {scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
             </button>
             <button
-              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating
               )}`}
               name={"Flip horizontally"}
@@ -293,7 +293,7 @@ export default function Page() {
               )}
             </button>
             <button
-              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+              className={`bg-white  cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating
               )}`}
               name={"Rotate 90 degrees clockwise"}
@@ -306,7 +306,7 @@ export default function Page() {
               <Rotate90DegreesCWIcon />
             </button>
             <div
-              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating && pageCount > 1
               )} flex m-4 items-center`}
             >
@@ -358,7 +358,7 @@ export default function Page() {
               <DeleteIcon />
             </button>
             <FullScreenButton
-              className={`z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+              className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 !isCalibrating
               )}`}
               handle={handle}
