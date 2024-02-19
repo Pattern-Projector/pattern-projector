@@ -21,7 +21,7 @@ export default function PatternProjectorIcon() {
           x="130.95731"
           y="156.49669"
           fill="#000000"
-          font-Size="3.175px"
+          fontSize="3.175px"
           strokeWidth=".26458"
         >
           <tspan x="130.95731" y="156.49669" strokeWidth=".26458" />

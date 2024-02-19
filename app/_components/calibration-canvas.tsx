@@ -14,7 +14,6 @@ function draw(
   height: number,
   perspective: Matrix
 ): void {
-  ctx.strokeStyle = "#ffffff";
   const dy = windowScreen.y + window.outerHeight - window.innerHeight;
   const dx = windowScreen.x + window.outerWidth - window.innerWidth;
   ctx.translate(-dx, -dy);
@@ -23,18 +22,22 @@ function draw(
   drawPolygon(ctx, points);
   ctx.fill();
 
-  let prev = points[0];
-  for (let point of points) {
-    drawLine(ctx, prev, point);
-
-    prev = point;
-  }
-
-  if (points.length === maxPoints) {
-    drawLine(ctx, points[0], prev);
-  }
-
+  ctx.strokeStyle = "#fff";
+  ctx.beginPath();
   drawGrid(ctx, width, height, perspective);
+  ctx.stroke();
+
+  ctx.fillStyle = "#000";
+  ctx.beginPath();
+  drawVertices(ctx, points);
+  ctx.fill();
+}
+
+function drawVertices(ctx: CanvasRenderingContext2D, points: Point[]): void {
+  for (let point of points) {
+    ctx.moveTo(point.x, point.y);
+    ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
+  }
 }
 
 function drawGrid(
@@ -43,7 +46,7 @@ function drawGrid(
   height: number,
   perspective: Matrix
 ): void {
-  for (let i = 1; i + 1 <= width; i++) {
+  for (let i = 0; i < width; i++) {
     // TODO: fix needing dpi added in here.
     const line = transformPoints(
       [
@@ -54,7 +57,7 @@ function drawGrid(
     );
     drawLine(ctx, line[0], line[1]);
   }
-  for (let i = 1; i + 1 <= height; i++) {
+  for (let i = 0; i < height; i++) {
     const line = transformPoints(
       [
         { x: 0, y: i * 96 },
@@ -69,7 +72,6 @@ function drawGrid(
 function drawLine(ctx: CanvasRenderingContext2D, p1: Point, p2: Point): void {
   ctx.moveTo(p1.x, p1.y);
   ctx.lineTo(p2.x, p2.y);
-  ctx.stroke();
 }
 
 function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
@@ -77,13 +79,12 @@ function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
   if (last === undefined) {
     return;
   }
-  ctx.beginPath();
   ctx.moveTo(last.x, last.y);
   for (let p of points) {
     ctx.lineTo(p.x, p.y);
   }
-  ctx.closePath();
 }
+
 /**
  * A window width and height canvas used for projector calibration
  * @param draw - Draws in the canvas rendering context
@@ -161,7 +162,9 @@ export default function CalibrationCanvas({
         handleMove(touchToCanvasPoint(e), 0.05)
       }
       onTouchEnd={() => handleUp()}
-      style={{ cursor: "url('/crosshair.png') 11 11, crosshair" }}
+      style={{
+        cursor: "url('/crosshair.png') 11 11, crosshair",
+      }}
     />
   );
 }
