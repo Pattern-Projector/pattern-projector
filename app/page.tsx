@@ -10,8 +10,8 @@ import Rotate90DegreesCWIcon from "./_icons/rotate-90-degrees-cw-icon";
 
 export default function Home() {
   return (
-    <main>
-      <nav className="flex m-4 items-center">
+    <main className="m-4">
+      <nav className="flex items-center">
         <PatternProjectorIcon />
         <Link
           href="https://github.com/Pattern-Projector/pattern-projector"
