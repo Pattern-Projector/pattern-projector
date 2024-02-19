@@ -30,17 +30,13 @@ import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 
-const sePoints = [
+const defaultPoints = [
   // Points that fit on an iPhone SE
   { x: 100, y: 300 },
   { x: 300, y: 300 },
   { x: 300, y: 600 },
   { x: 100, y: 600 },
 ];
-
-function resetPoints(): Point[] {
-  return sePoints; // TODO: Do based on screen size
-}
 
 export default function Page() {
   const defaultWidthDimensionValue = "24";
@@ -49,7 +45,7 @@ export default function Page() {
 
   const handle = useFullScreenHandle();
 
-  const [points, setPoints] = useState<Point[]>(sePoints);
+  const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [degrees, setDegrees] = useState<number>(0);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
@@ -73,6 +69,23 @@ export default function Page() {
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
+  }
+
+  function getDefaultPoints() {
+    const o = 150;
+    const minx = window.innerWidth * 0.2 - canvasOffset.x;
+    const miny = window.innerHeight * 0.2 - canvasOffset.y;
+    const maxx = window.innerWidth * 0.8 - canvasOffset.x;
+    const maxy = window.innerHeight * 0.8 - canvasOffset.y;
+
+    const p = [
+      { x: minx, y: miny },
+      { x: maxx, y: miny },
+      { x: maxx, y: maxy },
+      { x: minx, y: maxy },
+    ];
+    console.log(p);
+    return p;
   }
 
   // HANDLERS
@@ -149,7 +162,7 @@ export default function Page() {
     if (localPoints !== null) {
       setPoints(JSON.parse(localPoints));
     } else {
-      setPoints(resetPoints());
+      setPoints(getDefaultPoints());
     }
   }, []);
 
@@ -284,7 +297,7 @@ export default function Page() {
             <button
               className={`${visible(isCalibrating)} block m-4`}
               name={"Delete points"}
-              onClick={() => resetPoints()}
+              onClick={() => setPoints(getDefaultPoints())}
             >
               <DeleteIcon />
             </button>
