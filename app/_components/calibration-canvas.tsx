@@ -12,25 +12,60 @@ function draw(
   points: Point[],
   width: number,
   height: number,
-  perspective: Matrix
+  perspective: Matrix,
+  isCalibrating: boolean
 ): void {
   const dy = windowScreen.y + window.outerHeight - window.innerHeight;
   const dx = windowScreen.x + window.outerWidth - window.innerWidth;
   ctx.translate(-dx, -dy);
 
   ctx.fillStyle = "#000";
+
   drawPolygon(ctx, points);
-  ctx.fill();
+  if (isCalibrating) {
+    ctx.fill();
+  } else {
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.lineDashOffset = 0;
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#fff";
+    ctx.stroke();
+  }
 
   ctx.strokeStyle = "#fff";
   ctx.beginPath();
-  drawGrid(ctx, width, height, perspective);
-  ctx.stroke();
+  if (isCalibrating) {
+    drawGrid(ctx, width, height, perspective, 2);
+    const v = 1;
+    ctx.strokeStyle = "#000";
+    ctx.setLineDash([v * 3, v]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.strokeStyle = "#fff";
+    ctx.beginPath();
+    drawGrid(ctx, width, height, perspective, 0);
+    ctx.stroke();
+  } else {
+    drawGrid(ctx, width, height, perspective, 8);
+    const v = 1;
+    ctx.setLineDash([1]);
+    ctx.strokeStyle = "#000000";
+    //ctx.setLineDash([v * 3, v]);
+    ctx.stroke();
 
-  ctx.fillStyle = "#000";
-  ctx.beginPath();
-  drawVertices(ctx, points);
-  ctx.fill();
+    ctx.setLineDash([]);
+
+    ctx.beginPath();
+    drawGrid(ctx, width, height, perspective, 0);
+    const t = 1;
+    ctx.strokeStyle = "#aaaaaa88";
+    ctx.setLineDash([t * 3, t]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
 }
 
 function drawVertices(ctx: CanvasRenderingContext2D, points: Point[]): void {
@@ -44,24 +79,25 @@ function drawGrid(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  perspective: Matrix
+  perspective: Matrix,
+  outset: number
 ): void {
-  for (let i = 0; i < width; i++) {
+  for (let i = 1; i < width; i++) {
     // TODO: fix needing dpi added in here.
     const line = transformPoints(
       [
-        { x: i * 96, y: 0 },
-        { x: i * 96, y: height * 96 },
+        { x: i * 96, y: -outset * 96 },
+        { x: i * 96, y: (height + outset) * 96 },
       ],
       perspective
     );
     drawLine(ctx, line[0], line[1]);
   }
-  for (let i = 0; i < height; i++) {
+  for (let i = 1; i < height; i++) {
     const line = transformPoints(
       [
-        { x: 0, y: i * 96 },
-        { x: width * 96, y: i * 96 },
+        { x: -outset * 96, y: i * 96 },
+        { x: (width + outset) * 96, y: i * 96 },
       ],
       perspective
     );
@@ -99,6 +135,7 @@ export default function CalibrationCanvas({
   perspective,
   width,
   height,
+  isCalibrating,
 }: {
   className: string | undefined;
   windowScreen: Point;
@@ -109,6 +146,7 @@ export default function CalibrationCanvas({
   perspective: Matrix;
   width: number;
   height: number;
+  isCalibrating: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
@@ -118,10 +156,18 @@ export default function CalibrationCanvas({
       if (ctx !== null) {
         ctx.canvas.width = window.innerWidth;
         ctx.canvas.height = window.innerHeight;
-        draw(ctx, windowScreen, points, width, height, perspective);
+        draw(
+          ctx,
+          windowScreen,
+          points,
+          width,
+          height,
+          perspective,
+          isCalibrating
+        );
       }
     }
-  }, [windowScreen, points, perspective, width, height]);
+  }, [windowScreen, points, perspective, width, height, isCalibrating]);
 
   function handleDown(newPoint: Point) {
     if (points.length < maxPoints) {
@@ -164,6 +210,7 @@ export default function CalibrationCanvas({
       onTouchEnd={() => handleUp()}
       style={{
         cursor: "url('/crosshair.png') 11 11, crosshair",
+        pointerEvents: isCalibrating ? "auto" : "none",
       }}
     />
   );

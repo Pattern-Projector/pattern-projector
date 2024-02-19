@@ -279,7 +279,7 @@ export default function Page() {
         </div>
 
         <CalibrationCanvas
-          className={`absolute z-10 ${visible(isCalibrating)}`}
+          className={`absolute z-10`}
           windowScreen={windowScreen}
           points={points}
           setPoints={setPoints}
@@ -288,13 +288,14 @@ export default function Page() {
           perspective={calibrationTransform}
           width={+width}
           height={+height}
+          isCalibrating={isCalibrating}
         />
-
         <Draggable
           className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
           localTransform={localTransform}
           setLocalTransform={setLocalTransform}
           perspective={perspective}
+          windowScreen={windowScreen}
         >
           <div
             className={"absolute z-0"}
