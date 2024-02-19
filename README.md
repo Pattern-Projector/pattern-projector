@@ -1,34 +1,61 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Welcome to Pattern Projector!
 
-## Getting Started
+Pattern projector is a free and open source web app that helps users quickly calibrate projectors for sewing patterns. This project is currently in beta, so expect large changes and new features to be added as we iterate.
 
-First, run the development server:
+## What You’ll Need
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+* Projector: at least 720p recommended
+* Cutting mat: ideally with grid lines at every inch
+* Tripod or wall/shelf/table mount for projector
+* Computer or tablet to connect to the projector
+* A PDF sewing pattern: single layer, single page PDF is best
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Place the projector above the cutting mat, pointing at the cutting mat. Try to place the projector directly above the cutting mat and pointing directly at it.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Connect your computer or tablet to the projector and either mirror or extend the display.
 
-## Learn More
+Adjust the focus on the projector, until text is crisp in the centre of the projection.  If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended  by the manufacturer.
 
-To learn more about Next.js, take a look at the following resources:
+If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Calibration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Open “Calibration”.
 
-## Deploy on Vercel
+Enter the width and height of your mat into the page.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Enter fullscreen mode by clicking (or tapping) “Fullscreen”
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on the tablet or computer.
+Adjust the placement of the corners until the projected grid matches your mat’s grid.
+
+When the projected grid is aligned with your mat, click (or tap) “Project Pattern”
+
+## Projecting a Pattern
+
+Click (or tap) “Open File” to load the  PDF document.
+
+Cut along the projected design.
+
+In projection mode there are several tools provided:
+
+* Drag to move: Move the PDF by dragging it around the screen.
+
+* Invert Colours: When projecting, it’s usually easier to see white lines on black. Click “invert” to invert the colours.
+
+* Flip Vertical/Horizontal: helpful to unwrap fold lines in patterns
+
+* Rotate: to change the orientation of the pattern
+
+* Fullscreen: It’s generally easier to use the software in fullscreen mode, tap or click “Fullscreen”
+
+## FAQ
+
+Layer Support: planned for upcoming release.
+Annotation Support: planned for upcoming release.
+Chromecast/Miracast: While it’s possible to cast this webpage, the lag in the connection can be frustrating, especially when calibrating.
+Phones: While possible to visit and use the webpage on a Phone, the limited screen size makes it difficult to use.
+
+Feedback and feature requests are welcome.
