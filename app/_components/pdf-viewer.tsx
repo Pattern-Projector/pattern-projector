@@ -1,7 +1,7 @@
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy } from "pdfjs-dist";
@@ -13,21 +13,27 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 /**
  *
  * @param file - File to be opened by PdfViewer
+ * @param pageNumber - Number of page to be displayed
  */
-export default function PdfViewer({ file }: { file: any }) {
-  const [numPages, setNumPages] = useState<number>();
-
-  function onDocumentLoadSuccess({
-    numPages: nextNumPages,
-  }: PDFDocumentProxy): void {
-    setNumPages(nextNumPages);
+export default function PdfViewer({
+  file,
+  setPageCount,
+  setPageNumber,
+  pageNumber,
+}: {
+  file: any;
+  setPageCount: Dispatch<SetStateAction<number>>;
+  setPageNumber: Dispatch<SetStateAction<number>>;
+  pageNumber: number;
+}) {
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+    setPageCount(numPages);
+    setPageNumber(1);
   }
 
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-      {Array.from(new Array(numPages), (el, index) => (
-        <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-      ))}
+      <Page pageNumber={pageNumber} />
     </Document>
   );
 }

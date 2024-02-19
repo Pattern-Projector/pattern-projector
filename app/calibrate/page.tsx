@@ -11,6 +11,8 @@ import FileInput from "@/_components/file-input";
 import FullScreenButton from "@/_components/full-screen-button";
 import LabelledInput from "@/_components/labelled-input";
 import PDFViewer from "@/_components/pdf-viewer";
+import ArrowBackIcon from "@/_icons/arrow-back-icon";
+import ArrowForwardIcon from "@/_icons/arrow-forward-icon";
 import CloseIcon from "@/_icons/close-icon";
 import DeleteIcon from "@/_icons/delete-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
@@ -66,6 +68,8 @@ export default function Page() {
     Matrix.identity(3, 3)
   );
   const [canvasOffset, setCanvasOffset] = useState<Point>({ x: 0, y: 0 });
+  const [pageCount, setPageCount] = useState<number>(1);
+  const [pageNumber, setPageNumber] = useState(1);
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -113,6 +117,20 @@ export default function Page() {
   ): void {
     setControlsOn(true);
     setLastMoveTime(Date.now());
+  }
+
+  function changePage(offset: number) {
+    setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
+  }
+
+  function handlePreviousPage() {
+    console.log(`previous page`);
+    changePage(-1);
+  }
+
+  function handleNextPage() {
+    console.log(`next page`);
+    changePage(1);
   }
 
   // EFFECTS
@@ -276,6 +294,27 @@ export default function Page() {
             >
               <Rotate90DegreesCWIcon />
             </button>
+            <div
+              className={`${visible(
+                !isCalibrating && pageCount > 1
+              )} flex m-4 items-center`}
+            >
+              <button
+                disabled={pageNumber <= 1}
+                onClick={handlePreviousPage}
+                name="Previous Page"
+              >
+                <ArrowBackIcon />
+              </button>
+              {pageNumber}
+              <button
+                disabled={pageNumber >= pageCount}
+                onClick={handleNextPage}
+                name="Next Page"
+              >
+                <ArrowForwardIcon />
+              </button>
+            </div>
             <LabelledInput
               className={`${visible(isCalibrating)}`}
               handleChange={handleWidthChange}
@@ -337,7 +376,12 @@ export default function Page() {
                 transformOrigin: "center",
               }}
             >
-              <PDFViewer file={file} />
+              <PDFViewer
+                file={file}
+                setPageCount={setPageCount}
+                setPageNumber={setPageNumber}
+                pageNumber={pageNumber}
+              />
             </div>
           </div>
         </Draggable>
