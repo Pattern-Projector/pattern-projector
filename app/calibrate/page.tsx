@@ -309,7 +309,6 @@ export default function Page() {
           localTransform={localTransform}
           setLocalTransform={setLocalTransform}
           perspective={perspective}
-          windowScreen={windowScreen}
         >
           <div
             className={"absolute z-0"}

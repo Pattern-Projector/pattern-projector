@@ -16,14 +16,12 @@ export default function Draggable({
   localTransform,
   setLocalTransform,
   perspective,
-  windowScreen,
 }: {
   children: ReactNode;
   className: string | undefined;
   localTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   perspective: Matrix;
-  windowScreen: Point;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
@@ -61,9 +59,7 @@ export default function Draggable({
     setDragStart(pt);
     setTransformStart(localTransform.clone());
   }
-  // TODO: move rendering on screen after transform?
-  const dy = -(windowScreen.y + window.outerHeight - window.innerHeight);
-  const dx = -(windowScreen.x + window.outerWidth - window.innerWidth);
+
   return (
     <div
       className={className}
