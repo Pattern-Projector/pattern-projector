@@ -149,6 +149,14 @@ export default function Home() {
             limited screen size makes it difficult to use.
           </li>
         </ul>
+        <h2 id="support">Support</h2>
+        <p>
+          If you would like to support the development of this tool, please
+          consider{" "}
+          <Link href="https://www.buymeacoffee.com/patternprojector">
+            buying me a coffee.
+          </Link>
+        </p>
         <p>Feedback and feature requests are welcome!</p>
       </article>
       <footer className="bg-white rounded-lg shadow m-4">
