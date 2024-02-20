@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import FullscreenIcon from "@/_icons/fullscreen-icon";
@@ -81,6 +82,7 @@ export default function Home() {
           placement of the corners until the projected grid matches your
           mat&apos;s grid.
         </p>
+        <Image src="/demo.gif" width={640} height={260} alt=""></Image>
         <p>
           When the projected grid is aligned with your mat, click (or tap)
           “Project.”
