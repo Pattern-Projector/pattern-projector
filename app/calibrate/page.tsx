@@ -234,7 +234,7 @@ export default function Page() {
           } transition-opacity ease-in-out duration-1000 `}
         >
           <div
-            className={`items-center gap-4 m-4 flex-col flex h-screen justify-center`}
+            className={`items-center gap-4 ml-4 flex-col flex h-screen justify-center`}
           >
             <Link
               className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
@@ -349,7 +349,7 @@ export default function Page() {
               value={height}
             />
             <button
-              className={`cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
                 isCalibrating
               )}`}
               name={"Delete points"}

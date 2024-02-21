@@ -13,7 +13,8 @@ function draw(
   width: number,
   height: number,
   perspective: Matrix,
-  isCalibrating: boolean
+  isCalibrating: boolean,
+  pointToModify: number | null
 ): void {
   ctx.translate(offset.x, offset.y);
 
@@ -46,6 +47,20 @@ function draw(
     ctx.beginPath();
     drawGrid(ctx, width, height, perspective, 0);
     ctx.stroke();
+
+    if (pointToModify !== null) {
+      ctx.beginPath();
+      ctx.arc(
+        points[pointToModify].x,
+        points[pointToModify].y,
+        20,
+        0,
+        2 * Math.PI
+      );
+      ctx.strokeStyle = "#3b82f6";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+    }
   } else {
     drawGrid(ctx, width, height, perspective, 8);
     const v = 1;
@@ -154,11 +169,20 @@ export default function CalibrationCanvas({
           width,
           height,
           perspective,
-          isCalibrating
+          isCalibrating,
+          pointToModify
         );
       }
     }
-  }, [canvasOffset, points, perspective, width, height, isCalibrating]);
+  }, [
+    canvasOffset,
+    points,
+    perspective,
+    width,
+    height,
+    isCalibrating,
+    pointToModify,
+  ]);
 
   function handleDown(newPoint: Point) {
     if (points.length < maxPoints) {
@@ -176,33 +200,69 @@ export default function CalibrationCanvas({
     }
   }
 
-  function handleUp() {
+  function handleMouseUp() {
+    localStorage.setItem("points", JSON.stringify(points));
+  }
+
+  function handleTouchUp() {
     localStorage.setItem("points", JSON.stringify(points));
     setPointToModify(null);
+  }
+
+  function modifyPoint(xOffset: number, yOffset: number): void {
+    if (pointToModify !== null) {
+      const newPoints = [...points];
+      newPoints[pointToModify] = {
+        x: newPoints[pointToModify].x + xOffset,
+        y: newPoints[pointToModify].y + yOffset,
+      };
+      setPoints(newPoints);
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLElement>) {
+    if (pointToModify !== null) {
+      switch (e.code) {
+        case "ArrowLeft":
+          modifyPoint(-1, 0);
+          break;
+        case "ArrowUp":
+          modifyPoint(0, -1);
+          break;
+        case "ArrowRight":
+          modifyPoint(1, 0);
+          break;
+        case "ArrowDown":
+          modifyPoint(0, 1);
+          break;
+      }
+    }
   }
 
   return (
     <canvas
       ref={canvasRef}
-      className={className}
+      className={className + " outline-none"}
+      onKeyDown={(e) => handleKeyDown(e)}
       onMouseMove={(e: React.MouseEvent) => {
         if ((e.buttons & 1) == 0) {
-          handleUp();
+          handleMouseUp();
         } else {
           handleMove(mouseToCanvasPoint(e), 1);
         }
       }}
       onMouseDown={(e) => handleDown(mouseToCanvasPoint(e))}
-      onMouseUp={() => handleUp()}
+      onMouseUp={() => handleMouseUp()}
       onTouchStart={(e: React.TouchEvent) => handleDown(touchToCanvasPoint(e))}
       onTouchMove={(e: React.TouchEvent) =>
         handleMove(touchToCanvasPoint(e), 0.05)
       }
-      onTouchEnd={() => handleUp()}
+      onTouchEnd={() => handleTouchUp()}
       style={{
         cursor: "url('/crosshair.png') 11 11, crosshair",
         pointerEvents: isCalibrating ? "auto" : "none",
       }}
+      tabIndex={-1}
     />
   );
 }
