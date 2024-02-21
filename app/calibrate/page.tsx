@@ -31,6 +31,7 @@ import {
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
+import Header from "@/_components/header";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -97,17 +98,20 @@ export default function Page() {
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
+    localStorage.setItem("canvasSettings", JSON.stringify({ canvasOffset, height, width }));
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
+    localStorage.setItem("canvasSettings", JSON.stringify({ canvasOffset, height, width }));
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
     const { files } = e.target;
 
     if (files && files[0] && isValidPDF(files[0])) {
+      console.log('setting file', files[0]);
       setFile(files[0]);
     }
   }
@@ -151,7 +155,7 @@ export default function Page() {
     const dy = windowScreen.y + window.outerHeight - window.innerHeight;
     const dx = windowScreen.x + window.outerWidth - window.innerWidth;
     setCanvasOffset({ x: -dx, y: -dy });
-  }, [windowScreen]);
+  }, [windowScreen.x, windowScreen.y]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -160,7 +164,10 @@ export default function Page() {
         setWindowScreen(p);
       }
     }, 500);
-  });
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     const controlTimeoutInMilliseconds = 5000;
@@ -181,6 +188,19 @@ export default function Page() {
       setPoints(JSON.parse(localPoints));
     } else {
       setPoints(getDefaultPoints());
+    }
+    const localSettingString = localStorage.getItem("canvasSettings");
+    if (localSettingString !== null) {
+      const localSettings = JSON.parse(localSettingString);
+      if (localSettings.canvasOffset) {
+        setCanvasOffset(localSettings.canvasOffset);
+      }
+      if (localSettings.height) {
+        setHeight(localSettings.height);
+      }
+      if (localSettings.width) {
+        setWidth(localSettings.width);
+      }
     }
   }, []);
 
@@ -227,185 +247,198 @@ export default function Page() {
         backgroundColor: "white",
       }}
     >
-      <FullScreen handle={handle} className="flex items-start bg-white">
+      <FullScreen handle={handle} className="bg-white">
         <div
-          className={`z-20 h-full absolute ${
+          className={`z-20 absolute ${
             isCalibrating || controlsOn ? "opacity-100" : "opacity-0"
           } transition-opacity ease-in-out duration-1000 `}
-        >
-          <div
-            className={`items-center gap-4 ml-4 flex-col flex h-screen justify-center`}
-          >
-            <Link
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
-              href="/"
-            >
-              <CloseIcon />
-            </Link>
-            <button
-              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              onClick={() => setIsCalibrating(!isCalibrating)}
-            >
-              {isCalibrating ? "Project" : "Calibrate"}
-            </button>
-            <label
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-                !isCalibrating
-              )}`}
-            >
-              <FileInput
-                accept="application/pdf"
-                className={`hidden`}
-                handleChange={handleFileChange}
-                id="pdfFile"
-              ></FileInput>
-              <PdfIcon />
-            </label>
-            <button
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-                !isCalibrating
-              )}`}
-              name={"Invert colors"}
-              onClick={() => setInverted(!inverted)}
-            >
-              {inverted ? <InvertColorOffIcon /> : <InvertColorIcon />}
-            </button>
-            <button
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-                !isCalibrating
-              )}`}
-              name={"Flip vertically"}
-              onClick={() => setScale({ x: scale.x * -1, y: scale.y })}
-            >
-              {scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
-            </button>
-            <button
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-                !isCalibrating
-              )}`}
-              name={"Flip horizontally"}
-              onClick={() => setScale({ x: scale.x, y: scale.y * -1 })}
-            >
-              {scale.y === -1 ? (
-                <FlipHorizontalOffIcon />
-              ) : (
-                <FlipHorizontalIcon />
-              )}
-            </button>
-            <button
-              className={`bg-white  cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-                !isCalibrating
-              )}`}
-              name={"Rotate 90 degrees clockwise"}
-              onClick={() => setDegrees((degrees + 90) % 360)}
-              style={{
-                transform: `rotate(${degrees}deg)`,
-                transformOrigin: "center",
-              }}
-            >
-              <Rotate90DegreesCWIcon />
-            </button>
-            <div
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-                !isCalibrating && pageCount > 1
-              )} flex m-4 items-center`}
-            >
-              <button
-                disabled={pageNumber <= 1}
-                onClick={handlePreviousPage}
-                name="Previous Page"
-              >
-                <ArrowBackIcon />
-              </button>
-              {pageNumber}
-              <button
-                disabled={pageNumber >= pageCount}
-                onClick={handleNextPage}
-                name="Next Page"
-              >
-                <ArrowForwardIcon />
-              </button>
-            </div>
-            <LabelledInput
-              className={`${visible(
-                isCalibrating
-              )} flex flex-col justify-center items-center`}
-              handleChange={handleWidthChange}
-              id="width"
-              inputTestId="width"
-              label="Width (in)"
-              name="width"
-              value={width}
-            />
-            <LabelledInput
-              className={`${visible(
-                isCalibrating
-              )} flex flex-col justify-center items-center`}
-              handleChange={handleHeightChange}
-              id="height"
-              inputTestId="height"
-              label="Height (in)"
-              name="height"
-              value={height}
-            />
-            <button
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-                isCalibrating
-              )}`}
-              name={"Delete points"}
-              onClick={() => setPoints(getDefaultPoints())}
-            >
-              <DeleteIcon />
-            </button>
-            <FullScreenButton
-              className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
-              handle={handle}
-            />
-          </div>
-        </div>
-
-        <CalibrationCanvas
-          className={`absolute z-10`}
-          canvasOffset={canvasOffset}
-          points={points}
-          setPoints={setPoints}
-          pointToModify={pointToModify}
-          setPointToModify={setPointToModify}
-          perspective={calibrationTransform}
-          width={+width}
-          height={+height}
-          isCalibrating={isCalibrating}
         />
-        <Draggable
-          className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
-          localTransform={localTransform}
-          setLocalTransform={setLocalTransform}
-          perspective={perspective}
-        >
-          <div
-            className={"absolute z-0"}
-            style={{
-              transform: `${matrix3d}`,
-              transformOrigin: "0 0",
-              filter: `invert(${inverted ? "1" : "0"})`,
+        <Header
+          isCalibrating={isCalibrating}
+          setIsCalibrating={setIsCalibrating}
+          height={height}
+          width={width}
+          handleHeightChange={handleHeightChange}
+          handleWidthChange={handleWidthChange}
+          handleResetCalibration={() => setPoints(getDefaultPoints())}
+          handleFileChange={handleFileChange}
+          fullScreenHandle={handle}
+        />
+            {/*<div*/}
+            {/*  className={`items-center gap-4 ml-4 flex h-screen justify-center`}*/}
+            {/*>*/}
+            {/*  <Link*/}
+            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}*/}
+            {/*    href="/"*/}
+            {/*  >*/}
+            {/*    <CloseIcon/>*/}
+            {/*  </Link>*/}
+            {/*  <button*/}
+            {/*    className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"*/}
+            {/*    onClick={() => setIsCalibrating(!isCalibrating)}*/}
+            {/*  >*/}
+            {/*    {isCalibrating ? "Project" : "Calibrate"}*/}
+            {/*  </button>*/}
+            {/*  <label*/}
+            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
+            {/*      !isCalibrating*/}
+            {/*    )}`}*/}
+            {/*  >*/}
+            {/*    <FileInput*/}
+            {/*      accept="application/pdf"*/}
+            {/*      className={`hidden`}*/}
+            {/*      handleChange={handleFileChange}*/}
+            {/*      id="pdfFile"*/}
+            {/*    ></FileInput>*/}
+            {/*    <PdfIcon/>*/}
+            {/*  </label>*/}
+            {/*  <button*/}
+            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
+            {/*      !isCalibrating*/}
+            {/*    )}`}*/}
+            {/*    name={"Invert colors"}*/}
+            {/*    onClick={() => setInverted(!inverted)}*/}
+            {/*  >*/}
+            {/*    {inverted ? <InvertColorOffIcon/> : <InvertColorIcon/>}*/}
+            {/*  </button>*/}
+            {/*  <button*/}
+            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
+            {/*      !isCalibrating*/}
+            {/*    )}`}*/}
+            {/*    name={"Flip vertically"}*/}
+            {/*    onClick={() => setScale({x: scale.x * -1, y: scale.y})}*/}
+            {/*  >*/}
+            {/*    {scale.x === -1 ? <FlipVerticalOffIcon/> : <FlipVerticalIcon/>}*/}
+            {/*  </button>*/}
+            {/*  <button*/}
+            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
+            {/*      !isCalibrating*/}
+            {/*    )}`}*/}
+            {/*    name={"Flip horizontally"}*/}
+            {/*    onClick={() => setScale({x: scale.x, y: scale.y * -1})}*/}
+            {/*  >*/}
+            {/*    {scale.y === -1 ? (*/}
+            {/*      <FlipHorizontalOffIcon/>*/}
+            {/*    ) : (*/}
+            {/*      <FlipHorizontalIcon/>*/}
+            {/*    )}*/}
+            {/*  </button>*/}
+            {/*  <button*/}
+            {/*    className={`bg-white  cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
+            {/*      !isCalibrating*/}
+            {/*    )}`}*/}
+            {/*    name={"Rotate 90 degrees clockwise"}*/}
+            {/*    onClick={() => setDegrees((degrees + 90) % 360)}*/}
+            {/*    style={{*/}
+            {/*      transform: `rotate(${degrees}deg)`,*/}
+            {/*      transformOrigin: "center",*/}
+            {/*    }}*/}
+            {/*  >*/}
+            {/*    <Rotate90DegreesCWIcon/>*/}
+            {/*  </button>*/}
+            {/*  <div*/}
+            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
+            {/*      !isCalibrating && pageCount > 1*/}
+            {/*    )} flex m-4 items-center`}*/}
+            {/*  >*/}
+            {/*    <button*/}
+            {/*      disabled={pageNumber <= 1}*/}
+            {/*      onClick={handlePreviousPage}*/}
+            {/*      name="Previous Page"*/}
+            {/*    >*/}
+            {/*      <ArrowBackIcon/>*/}
+            {/*    </button>*/}
+            {/*    {pageNumber}*/}
+            {/*    <button*/}
+            {/*      disabled={pageNumber >= pageCount}*/}
+            {/*      onClick={handleNextPage}*/}
+            {/*      name="Next Page"*/}
+            {/*    >*/}
+            {/*      <ArrowForwardIcon/>*/}
+            {/*    </button>*/}
+            {/*  </div>*/}
+            {/*  <LabelledInput*/}
+            {/*    className={`${visible(*/}
+            {/*      isCalibrating*/}
+            {/*    )} flex flex-col justify-center items-center`}*/}
+            {/*    handleChange={handleWidthChange}*/}
+            {/*    id="width"*/}
+            {/*    inputTestId="width"*/}
+            {/*    label="Width (in)"*/}
+            {/*    name="width"*/}
+            {/*    value={width}*/}
+            {/*  />*/}
+            {/*  <LabelledInput*/}
+            {/*    className={`${visible(*/}
+            {/*      isCalibrating*/}
+            {/*    )} flex flex-col justify-center items-center`}*/}
+            {/*    handleChange={handleHeightChange}*/}
+            {/*    id="height"*/}
+            {/*    inputTestId="height"*/}
+            {/*    label="Height (in)"*/}
+            {/*    name="height"*/}
+            {/*    value={height}*/}
+            {/*  />*/}
+            {/*  <button*/}
+            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
+            {/*      isCalibrating*/}
+            {/*    )}`}*/}
+            {/*    name={"Delete points"}*/}
+            {/*    onClick={() => setPoints(getDefaultPoints())}*/}
+            {/*  >*/}
+            {/*    <DeleteIcon/>*/}
+            {/*  </button>*/}
+            {/*  <FullScreenButton*/}
+            {/*    className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}*/}
+            {/*    handle={handle}*/}
+            {/*  />*/}
+            {/*</div>*/}
+          <CalibrationCanvas
+            className={`absolute z-10`}
+            canvasOffset={canvasOffset}
+            setCanvasOffset={(newOffset) => {
+              setCanvasOffset(newOffset);
+              localStorage.setItem("canvasSettings", JSON.stringify({ canvasOffset: newOffset, height, width }));
             }}
+            points={points}
+            setPoints={setPoints}
+            pointToModify={pointToModify}
+            setPointToModify={setPointToModify}
+            perspective={calibrationTransform}
+            width={+width}
+            height={+height}
+            isCalibrating={isCalibrating}
+          />
+          <Draggable
+            className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
+            localTransform={localTransform}
+            setLocalTransform={setLocalTransform}
+            perspective={perspective}
           >
             <div
+              className={"absolute z-0 border-8 border-purple-700"}
               style={{
-                transform: `scale(${scale.x}, ${scale.y}) rotate(${degrees}deg)`,
-                transformOrigin: "center",
+                transform: `${matrix3d}`,
+                transformOrigin: "0 0",
+                filter: `invert(${inverted ? "1" : "0"})`,
               }}
             >
-              <PDFViewer
-                file={file}
-                setPageCount={setPageCount}
-                setPageNumber={setPageNumber}
-                pageNumber={pageNumber}
-              />
+              <div
+                style={{
+                  transform: `scale(${scale.x}, ${scale.y}) rotate(${degrees}deg)`,
+                  transformOrigin: "center",
+                }}
+              >
+                <PDFViewer
+                  file={file}
+                  setPageCount={setPageCount}
+                  setPageNumber={setPageNumber}
+                  pageNumber={pageNumber}
+                />
+              </div>
             </div>
-          </div>
-        </Draggable>
+          </Draggable>
       </FullScreen>
     </main>
-  );
+);
 }

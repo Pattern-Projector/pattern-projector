@@ -1,5 +1,5 @@
 import Matrix from "ml-matrix";
-import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
 
 import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
@@ -127,6 +127,8 @@ function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
   }
 }
 
+const CORNER_MARGIN = 150;
+
 /**
  * A window width and height canvas used for projector calibration
  * @param draw - Draws in the canvas rendering context
@@ -134,6 +136,7 @@ function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
 export default function CalibrationCanvas({
   className,
   canvasOffset,
+  setCanvasOffset,
   points,
   setPoints,
   pointToModify,
@@ -145,6 +148,7 @@ export default function CalibrationCanvas({
 }: {
   className: string | undefined;
   canvasOffset: Point;
+  setCanvasOffset: Dispatch<SetStateAction<Point>>;
   points: Point[];
   setPoints: Dispatch<SetStateAction<Point[]>>;
   pointToModify: number | null;
@@ -155,6 +159,13 @@ export default function CalibrationCanvas({
   isCalibrating: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [panStart, setPanStart] = useState<Point | null>(null);
+  const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
+
+  const calculateFinalOffset = (inputCanvasOffset: Point, inputDragOffset: Point):Point => {
+    return { x: inputCanvasOffset.x + inputDragOffset.x, y: inputCanvasOffset.y + inputDragOffset.y };
+  };
+
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
       const canvas = canvasRef.current;
@@ -164,7 +175,7 @@ export default function CalibrationCanvas({
         ctx.canvas.height = window.innerHeight;
         draw(
           ctx,
-          canvasOffset,
+          calculateFinalOffset(canvasOffset, dragOffset),
           points,
           width,
           height,
@@ -176,6 +187,7 @@ export default function CalibrationCanvas({
     }
   }, [
     canvasOffset,
+    dragOffset,
     points,
     perspective,
     width,
@@ -188,7 +200,15 @@ export default function CalibrationCanvas({
     if (points.length < maxPoints) {
       setPoints([...points, newPoint]);
     } else {
-      setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
+      const shortestDist: number = points.map((a) => (
+          Math.sqrt(sqrdist(a, newPoint))
+        )).reduce((final, a) => (!final || a < final ? a : final));
+      if (shortestDist < CORNER_MARGIN) {
+        setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
+      } else {
+        setPointToModify(null);
+        setPanStart(newPoint);
+      }
     }
   }
 
@@ -197,16 +217,24 @@ export default function CalibrationCanvas({
       const newPoints = [...points];
       newPoints[pointToModify] = interp(newPoints[pointToModify], p, filter);
       setPoints(newPoints);
+    } else if (panStart !== null) {
+      setDragOffset({ x: p.x - panStart.x, y: p.y - panStart.y });
     }
   }
 
   function handleMouseUp() {
     localStorage.setItem("points", JSON.stringify(points));
+    if (panStart) {
+      setCanvasOffset(calculateFinalOffset(canvasOffset, dragOffset));
+      setDragOffset({ x: 0, y: 0 });
+      setPanStart(null);
+    }
   }
 
   function handleTouchUp() {
     localStorage.setItem("points", JSON.stringify(points));
     setPointToModify(null);
+    setPanStart(null);
   }
 
   function modifyPoint(xOffset: number, yOffset: number): void {
@@ -259,7 +287,8 @@ export default function CalibrationCanvas({
       }
       onTouchEnd={() => handleTouchUp()}
       style={{
-        cursor: "url('/crosshair.png') 11 11, crosshair",
+        cursor: pointToModify !== null ?
+          "url('/crosshair.png') 11 11, crosshair" : "grab",
         pointerEvents: isCalibrating ? "auto" : "none",
       }}
       tabIndex={-1}
