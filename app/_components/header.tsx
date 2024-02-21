@@ -7,6 +7,8 @@ import FullScreenButton from "@/_components/full-screen-button";
 import {FullScreenHandle} from "react-full-screen";
 import FileInput from "@/_components/file-input";
 import PdfIcon from "@/_icons/pdf-icon";
+import InlineSelect from "@/_components/inline-select";
+import {CM, IN} from "@/calibrate/page";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -21,6 +23,8 @@ export default function Header({
   handleResetCalibration,
   handleFileChange,
   fullScreenHandle,
+  unitOfMeasure,
+  setUnitOfMeasure,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -31,6 +35,8 @@ export default function Header({
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleResetCalibration: () => void;
   fullScreenHandle: FullScreenHandle;
+  unitOfMeasure: string;
+  setUnitOfMeasure: Dispatch<SetStateAction<string>>;
 }) {
   return (<header className="bg-white absolute top-0 left-0 w-full z-30 border-b-2">
     <nav className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8" aria-label="Global">
@@ -54,7 +60,7 @@ export default function Header({
           id="height"
           inputTestId="height"
           label="H:"
-          labelRight="in"
+          labelRight={unitOfMeasure === CM ? 'cm' : 'in'}
           name="height"
           value={height}
         />
@@ -64,9 +70,17 @@ export default function Header({
           id="height"
           inputTestId="height"
           label="W:"
-          labelRight="in"
+          labelRight={unitOfMeasure === CM ? 'cm' : 'in'}
           name="width"
           value={width}
+        />
+        <InlineSelect
+          handleChange={(e) => setUnitOfMeasure(e.target.value)}
+          id="unit_of_measure"
+          inputTestId="unit_of_measure"
+          name="unit_of_measure"
+          value={unitOfMeasure}
+          options={[{ value: IN, label: 'in' }, { value: CM, label: 'cm' }]}
         />
         <button
           className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(

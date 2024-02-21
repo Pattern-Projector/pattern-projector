@@ -20,3 +20,7 @@ export function mouseToCanvasPoint(e: React.MouseEvent<Element>): Point {
 export function touchToCanvasPoint(e: React.TouchEvent<Element>): Point {
   return { x: e.touches[0].screenX, y: e.touches[0].screenY };
 }
+
+export function applyOffset(point:Point, offset:Point): Point {
+  return { x: point.x + offset.x, y: point.y + offset.y };
+}

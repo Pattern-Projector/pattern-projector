@@ -41,6 +41,8 @@ const defaultPoints = [
   { x: 100, y: 600 },
 ];
 
+export const { CM, IN} = { IN: 'IN', CM: 'CM' };
+
 export default function Page() {
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "18";
@@ -71,6 +73,7 @@ export default function Page() {
   const [canvasOffset, setCanvasOffset] = useState<Point>({ x: 0, y: 0 });
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
+  const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -93,18 +96,20 @@ export default function Page() {
     return p;
   }
 
+  const ptDensity = unitOfMeasure === CM ? (96 / 2.54) : 96;
+
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
-    localStorage.setItem("canvasSettings", JSON.stringify({ canvasOffset, height, width }));
+    localStorage.setItem("canvasSettings", JSON.stringify({ height, width }));
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
-    localStorage.setItem("canvasSettings", JSON.stringify({ canvasOffset, height, width }));
+    localStorage.setItem("canvasSettings", JSON.stringify({ height, width }));
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -192,9 +197,6 @@ export default function Page() {
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
       const localSettings = JSON.parse(localSettingString);
-      if (localSettings.canvasOffset) {
-        setCanvasOffset(localSettings.canvasOffset);
-      }
       if (localSettings.height) {
         setHeight(localSettings.height);
       }
@@ -219,11 +221,10 @@ export default function Page() {
     }
 
     function getDstVertices(): Point[] {
-      const ppi = 96; // defined by css.
       const ox = 0;
       const oy = 0;
-      const mx = +width * ppi + ox;
-      const my = +height * ppi + oy;
+      const mx = +width * ptDensity + ox;
+      const my = +height * ptDensity + oy;
 
       const dstVertices = [
         { x: ox, y: oy },
@@ -234,7 +235,7 @@ export default function Page() {
 
       return dstVertices;
     }
-  }, [points, width, height]);
+  }, [points, width, height, unitOfMeasure]);
 
   return (
     <main
@@ -263,6 +264,8 @@ export default function Page() {
           handleResetCalibration={() => setPoints(getDefaultPoints())}
           handleFileChange={handleFileChange}
           fullScreenHandle={handle}
+          unitOfMeasure={unitOfMeasure}
+          setUnitOfMeasure={setUnitOfMeasure}
         />
             {/*<div*/}
             {/*  className={`items-center gap-4 ml-4 flex h-screen justify-center`}*/}
@@ -396,10 +399,6 @@ export default function Page() {
           <CalibrationCanvas
             className={`absolute z-10`}
             canvasOffset={canvasOffset}
-            setCanvasOffset={(newOffset) => {
-              setCanvasOffset(newOffset);
-              localStorage.setItem("canvasSettings", JSON.stringify({ canvasOffset: newOffset, height, width }));
-            }}
             points={points}
             setPoints={setPoints}
             pointToModify={pointToModify}
@@ -408,6 +407,7 @@ export default function Page() {
             width={+width}
             height={+height}
             isCalibrating={isCalibrating}
+            ptDensity={ptDensity}
           />
           <Draggable
             className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}

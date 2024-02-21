@@ -35,7 +35,7 @@ export default function InlineInput({
         {label}
       </label>
       <input
-        className="p-2.5 pl-6 pr-6 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right"
+        className="py-2.5 pl-6 pr-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right"
         id={id}
         data-test-id={inputTestId}
         name={name}

@@ -32,7 +32,7 @@ export default function PdfViewer({
   }
 
   return (
-    <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+    <Document  file={file} onLoadSuccess={onDocumentLoadSuccess}>
       <Page pageNumber={pageNumber} />
     </Document>
   );

@@ -2,7 +2,7 @@ import Matrix from "ml-matrix";
 import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
 
 import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
-import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
+import {applyOffset, mouseToCanvasPoint, Point, touchToCanvasPoint} from "@/_lib/point";
 
 const maxPoints = 4; // One point per vertex in rectangle
 
@@ -14,7 +14,8 @@ function draw(
   height: number,
   perspective: Matrix,
   isCalibrating: boolean,
-  pointToModify: number | null
+  pointToModify: number | null,
+  ptDensity: number,
 ): void {
   ctx.translate(offset.x, offset.y);
 
@@ -37,7 +38,7 @@ function draw(
   ctx.strokeStyle = "#fff";
   ctx.beginPath();
   if (isCalibrating) {
-    drawGrid(ctx, width, height, perspective, 2);
+    drawGrid(ctx, width, height, perspective, 2, ptDensity);
     const v = 1;
     ctx.strokeStyle = "#000";
     ctx.setLineDash([v * 3, v]);
@@ -45,7 +46,7 @@ function draw(
     ctx.setLineDash([]);
     ctx.strokeStyle = "#fff";
     ctx.beginPath();
-    drawGrid(ctx, width, height, perspective, 0);
+    drawGrid(ctx, width, height, perspective, 0, ptDensity);
     ctx.stroke();
 
     if (pointToModify !== null) {
@@ -62,7 +63,7 @@ function draw(
       ctx.stroke();
     }
   } else {
-    drawGrid(ctx, width, height, perspective, 8);
+    drawGrid(ctx, width, height, perspective, 8, ptDensity);
     const v = 1;
     ctx.setLineDash([1]);
     ctx.strokeStyle = "#000000";
@@ -72,7 +73,7 @@ function draw(
     ctx.setLineDash([]);
 
     ctx.beginPath();
-    drawGrid(ctx, width, height, perspective, 0);
+    drawGrid(ctx, width, height, perspective, 0, ptDensity);
     const t = 1;
     ctx.strokeStyle = "#aaaaaa88";
     ctx.setLineDash([t * 3, t]);
@@ -86,14 +87,15 @@ function drawGrid(
   width: number,
   height: number,
   perspective: Matrix,
-  outset: number
+  outset: number,
+  ptDensity: number,
 ): void {
   for (let i = 1; i < width; i++) {
     // TODO: fix needing dpi added in here.
     const line = transformPoints(
       [
-        { x: i * 96, y: -outset * 96 },
-        { x: i * 96, y: (height + outset) * 96 },
+        { x: i * ptDensity, y: -outset * ptDensity },
+        { x: i * ptDensity, y: (height + outset) * ptDensity },
       ],
       perspective
     );
@@ -102,8 +104,8 @@ function drawGrid(
   for (let i = 1; i < height; i++) {
     const line = transformPoints(
       [
-        { x: -outset * 96, y: i * 96 },
-        { x: (width + outset) * 96, y: i * 96 },
+        { x: -outset * ptDensity, y: i * ptDensity },
+        { x: (width + outset) * ptDensity, y: i * ptDensity },
       ],
       perspective
     );
@@ -136,7 +138,6 @@ const CORNER_MARGIN = 150;
 export default function CalibrationCanvas({
   className,
   canvasOffset,
-  setCanvasOffset,
   points,
   setPoints,
   pointToModify,
@@ -145,10 +146,10 @@ export default function CalibrationCanvas({
   width,
   height,
   isCalibrating,
+  ptDensity,
 }: {
   className: string | undefined;
   canvasOffset: Point;
-  setCanvasOffset: Dispatch<SetStateAction<Point>>;
   points: Point[];
   setPoints: Dispatch<SetStateAction<Point[]>>;
   pointToModify: number | null;
@@ -157,14 +158,11 @@ export default function CalibrationCanvas({
   width: number;
   height: number;
   isCalibrating: boolean;
+  ptDensity: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
   const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
-
-  const calculateFinalOffset = (inputCanvasOffset: Point, inputDragOffset: Point):Point => {
-    return { x: inputCanvasOffset.x + inputDragOffset.x, y: inputCanvasOffset.y + inputDragOffset.y };
-  };
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
@@ -175,13 +173,14 @@ export default function CalibrationCanvas({
         ctx.canvas.height = window.innerHeight;
         draw(
           ctx,
-          calculateFinalOffset(canvasOffset, dragOffset),
+          applyOffset(canvasOffset, dragOffset),
           points,
           width,
           height,
           perspective,
           isCalibrating,
-          pointToModify
+          pointToModify,
+          ptDensity,
         );
       }
     }
@@ -194,9 +193,11 @@ export default function CalibrationCanvas({
     height,
     isCalibrating,
     pointToModify,
+    ptDensity,
   ]);
 
   function handleDown(newPoint: Point) {
+    console.log('point', newPoint, 'offset', canvasOffset, 'points', points[0]);
     if (points.length < maxPoints) {
       setPoints([...points, newPoint]);
     } else {
@@ -225,7 +226,7 @@ export default function CalibrationCanvas({
   function handleMouseUp() {
     localStorage.setItem("points", JSON.stringify(points));
     if (panStart) {
-      setCanvasOffset(calculateFinalOffset(canvasOffset, dragOffset));
+      setPoints(points.map((p) => (applyOffset(p, dragOffset))));
       setDragOffset({ x: 0, y: 0 });
       setPanStart(null);
     }
