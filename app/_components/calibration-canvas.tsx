@@ -1,8 +1,19 @@
 import Matrix from "ml-matrix";
-import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
-import {applyOffset, mouseToCanvasPoint, Point, touchToCanvasPoint} from "@/_lib/point";
+import {
+  applyOffset,
+  mouseToCanvasPoint,
+  Point,
+  touchToCanvasPoint,
+} from "@/_lib/point";
 
 const maxPoints = 4; // One point per vertex in rectangle
 
@@ -15,7 +26,7 @@ function draw(
   perspective: Matrix,
   isCalibrating: boolean,
   pointToModify: number | null,
-  ptDensity: number,
+  ptDensity: number
 ): void {
   ctx.translate(offset.x, offset.y);
 
@@ -25,6 +36,7 @@ function draw(
   if (isCalibrating) {
     ctx.fill();
   } else {
+    // Draw border
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 5;
     ctx.stroke();
@@ -88,7 +100,7 @@ function drawGrid(
   height: number,
   perspective: Matrix,
   outset: number,
-  ptDensity: number,
+  ptDensity: number
 ): void {
   for (let i = 1; i < width; i++) {
     // TODO: fix needing dpi added in here.
@@ -180,7 +192,7 @@ export default function CalibrationCanvas({
           perspective,
           isCalibrating,
           pointToModify,
-          ptDensity,
+          ptDensity
         );
       }
     }
@@ -200,9 +212,9 @@ export default function CalibrationCanvas({
     if (points.length < maxPoints) {
       setPoints([...points, newPoint]);
     } else {
-      const shortestDist: number = points.map((a) => (
-          Math.sqrt(sqrdist(a, newPoint))
-        )).reduce((final, a) => (!final || a < final ? a : final));
+      const shortestDist: number = points
+        .map((a) => Math.sqrt(sqrdist(a, newPoint)))
+        .reduce((final, a) => (!final || a < final ? a : final));
       if (shortestDist < CORNER_MARGIN) {
         setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
       } else {
@@ -225,7 +237,7 @@ export default function CalibrationCanvas({
   function handleMouseUp() {
     localStorage.setItem("points", JSON.stringify(points));
     if (panStart) {
-      setPoints(points.map((p) => (applyOffset(p, dragOffset))));
+      setPoints(points.map((p) => applyOffset(p, dragOffset)));
       setDragOffset({ x: 0, y: 0 });
       setPanStart(null);
     }
@@ -287,8 +299,10 @@ export default function CalibrationCanvas({
       }
       onTouchEnd={() => handleTouchUp()}
       style={{
-        cursor: pointToModify !== null ?
-          "url('/crosshair.png') 11 11, crosshair" : "grab",
+        cursor:
+          pointToModify !== null
+            ? "url('/crosshair.png') 11 11, crosshair"
+            : "grab",
         pointerEvents: isCalibrating ? "auto" : "none",
       }}
       tabIndex={-1}

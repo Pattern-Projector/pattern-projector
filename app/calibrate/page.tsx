@@ -41,6 +41,7 @@ export default function Page() {
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
     getDefaultTransforms()
   );
+  const [gridOn, setGridOn] = useState<boolean>(true);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
@@ -232,9 +233,11 @@ export default function Page() {
           pageNumber={pageNumber}
           setPageNumber={setPageNumber}
           pageCount={pageCount}
+          gridOn={gridOn}
+          setGridOn={setGridOn}
         />
         <CalibrationCanvas
-          className={`absolute z-10`}
+          className={`absolute z-10 ${visible(gridOn)}`}
           canvasOffset={canvasOffset}
           points={points}
           setPoints={setPoints}

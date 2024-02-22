@@ -13,6 +13,8 @@ import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
+import GridOffIcon from "@/_icons/grid-off-icon";
+import GridOnIcon from "@/_icons/grid-on-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
@@ -40,6 +42,8 @@ export default function Header({
   pageNumber,
   setPageNumber,
   pageCount,
+  gridOn,
+  setGridOn,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -57,6 +61,8 @@ export default function Header({
   pageNumber: number;
   setPageNumber: Dispatch<SetStateAction<number>>;
   pageCount: number;
+  gridOn: boolean;
+  setGridOn: Dispatch<SetStateAction<boolean>>;
 }) {
   function changePage(offset: number) {
     setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
@@ -137,6 +143,13 @@ export default function Header({
           </button>
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
+          <button
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            name={"Toggle grid visibility"}
+            onClick={() => setGridOn(!gridOn)}
+          >
+            {gridOn ? <GridOnIcon /> : <GridOffIcon />}
+          </button>
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Invert colors"}
