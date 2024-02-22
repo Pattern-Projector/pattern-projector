@@ -32,6 +32,7 @@ import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import Header from "@/_components/header";
+import {getDefaultTransforms, TransformSettings} from "@/_lib/transform-settings";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -41,7 +42,7 @@ const defaultPoints = [
   { x: 100, y: 600 },
 ];
 
-export const { CM, IN} = { IN: 'IN', CM: 'CM' };
+export const { CM, IN } = { IN: 'IN', CM: 'CM' };
 
 export default function Page() {
   const defaultWidthDimensionValue = "24";
@@ -51,7 +52,7 @@ export default function Page() {
   const handle = useFullScreenHandle();
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
-  const [degrees, setDegrees] = useState<number>(0);
+  const [transformSettings, setTransformSettings] = useState<TransformSettings>(getDefaultTransforms());
   const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
@@ -59,10 +60,6 @@ export default function Page() {
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
   const [matrix3d, setMatrix3d] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
-  const [inverted, setInverted] = useState<boolean>(false);
-  const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
-  const [controlsOn, setControlsOn] = useState<boolean>(true);
-  const [lastMoveTime, setLastMoveTime] = useState<number>(Date.now());
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
   const [localTransform, setLocalTransform] = useState<Matrix>(
     Matrix.identity(3, 3)
@@ -116,30 +113,8 @@ export default function Page() {
     const { files } = e.target;
 
     if (files && files[0] && isValidPDF(files[0])) {
-      console.log('setting file', files[0]);
       setFile(files[0]);
     }
-  }
-
-  function handleShowControls(
-    e: React.MouseEvent<Element> | React.TouchEvent<Element>
-  ): void {
-    setControlsOn(true);
-    setLastMoveTime(Date.now());
-  }
-
-  function changePage(offset: number) {
-    setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
-  }
-
-  function handlePreviousPage() {
-    console.log(`previous page`);
-    changePage(-1);
-  }
-
-  function handleNextPage() {
-    console.log(`next page`);
-    changePage(1);
   }
 
   // EFFECTS
@@ -173,19 +148,6 @@ export default function Page() {
       clearInterval(interval);
     };
   }, []);
-
-  useEffect(() => {
-    const controlTimeoutInMilliseconds = 5000;
-    const interval = setInterval(() => {
-      if (
-        controlsOn &&
-        Date.now() - lastMoveTime > controlTimeoutInMilliseconds
-      ) {
-        setControlsOn(false);
-      }
-    }, 500);
-    return () => clearInterval(interval);
-  }, [controlsOn, lastMoveTime]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -239,8 +201,6 @@ export default function Page() {
 
   return (
     <main
-      onMouseMove={(e) => handleShowControls(e)}
-      onTouchStart={(e) => handleShowControls(e)}
       style={{
         height: "100vh",
         width: "100vw",
@@ -250,9 +210,7 @@ export default function Page() {
     >
       <FullScreen handle={handle} className="bg-white">
         <div
-          className={`z-20 absolute ${
-            isCalibrating || controlsOn ? "opacity-100" : "opacity-0"
-          } transition-opacity ease-in-out duration-1000 `}
+          className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
         />
         <Header
           isCalibrating={isCalibrating}
@@ -266,136 +224,12 @@ export default function Page() {
           fullScreenHandle={handle}
           unitOfMeasure={unitOfMeasure}
           setUnitOfMeasure={setUnitOfMeasure}
+          transformSettings={transformSettings}
+          setTransformSettings={setTransformSettings}
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          pageCount={pageCount}
         />
-            {/*<div*/}
-            {/*  className={`items-center gap-4 ml-4 flex h-screen justify-center`}*/}
-            {/*>*/}
-            {/*  <Link*/}
-            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}*/}
-            {/*    href="/"*/}
-            {/*  >*/}
-            {/*    <CloseIcon/>*/}
-            {/*  </Link>*/}
-            {/*  <button*/}
-            {/*    className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"*/}
-            {/*    onClick={() => setIsCalibrating(!isCalibrating)}*/}
-            {/*  >*/}
-            {/*    {isCalibrating ? "Project" : "Calibrate"}*/}
-            {/*  </button>*/}
-            {/*  <label*/}
-            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
-            {/*      !isCalibrating*/}
-            {/*    )}`}*/}
-            {/*  >*/}
-            {/*    <FileInput*/}
-            {/*      accept="application/pdf"*/}
-            {/*      className={`hidden`}*/}
-            {/*      handleChange={handleFileChange}*/}
-            {/*      id="pdfFile"*/}
-            {/*    ></FileInput>*/}
-            {/*    <PdfIcon/>*/}
-            {/*  </label>*/}
-            {/*  <button*/}
-            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
-            {/*      !isCalibrating*/}
-            {/*    )}`}*/}
-            {/*    name={"Invert colors"}*/}
-            {/*    onClick={() => setInverted(!inverted)}*/}
-            {/*  >*/}
-            {/*    {inverted ? <InvertColorOffIcon/> : <InvertColorIcon/>}*/}
-            {/*  </button>*/}
-            {/*  <button*/}
-            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
-            {/*      !isCalibrating*/}
-            {/*    )}`}*/}
-            {/*    name={"Flip vertically"}*/}
-            {/*    onClick={() => setScale({x: scale.x * -1, y: scale.y})}*/}
-            {/*  >*/}
-            {/*    {scale.x === -1 ? <FlipVerticalOffIcon/> : <FlipVerticalIcon/>}*/}
-            {/*  </button>*/}
-            {/*  <button*/}
-            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
-            {/*      !isCalibrating*/}
-            {/*    )}`}*/}
-            {/*    name={"Flip horizontally"}*/}
-            {/*    onClick={() => setScale({x: scale.x, y: scale.y * -1})}*/}
-            {/*  >*/}
-            {/*    {scale.y === -1 ? (*/}
-            {/*      <FlipHorizontalOffIcon/>*/}
-            {/*    ) : (*/}
-            {/*      <FlipHorizontalIcon/>*/}
-            {/*    )}*/}
-            {/*  </button>*/}
-            {/*  <button*/}
-            {/*    className={`bg-white  cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
-            {/*      !isCalibrating*/}
-            {/*    )}`}*/}
-            {/*    name={"Rotate 90 degrees clockwise"}*/}
-            {/*    onClick={() => setDegrees((degrees + 90) % 360)}*/}
-            {/*    style={{*/}
-            {/*      transform: `rotate(${degrees}deg)`,*/}
-            {/*      transformOrigin: "center",*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    <Rotate90DegreesCWIcon/>*/}
-            {/*  </button>*/}
-            {/*  <div*/}
-            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
-            {/*      !isCalibrating && pageCount > 1*/}
-            {/*    )} flex m-4 items-center`}*/}
-            {/*  >*/}
-            {/*    <button*/}
-            {/*      disabled={pageNumber <= 1}*/}
-            {/*      onClick={handlePreviousPage}*/}
-            {/*      name="Previous Page"*/}
-            {/*    >*/}
-            {/*      <ArrowBackIcon/>*/}
-            {/*    </button>*/}
-            {/*    {pageNumber}*/}
-            {/*    <button*/}
-            {/*      disabled={pageNumber >= pageCount}*/}
-            {/*      onClick={handleNextPage}*/}
-            {/*      name="Next Page"*/}
-            {/*    >*/}
-            {/*      <ArrowForwardIcon/>*/}
-            {/*    </button>*/}
-            {/*  </div>*/}
-            {/*  <LabelledInput*/}
-            {/*    className={`${visible(*/}
-            {/*      isCalibrating*/}
-            {/*    )} flex flex-col justify-center items-center`}*/}
-            {/*    handleChange={handleWidthChange}*/}
-            {/*    id="width"*/}
-            {/*    inputTestId="width"*/}
-            {/*    label="Width (in)"*/}
-            {/*    name="width"*/}
-            {/*    value={width}*/}
-            {/*  />*/}
-            {/*  <LabelledInput*/}
-            {/*    className={`${visible(*/}
-            {/*      isCalibrating*/}
-            {/*    )} flex flex-col justify-center items-center`}*/}
-            {/*    handleChange={handleHeightChange}*/}
-            {/*    id="height"*/}
-            {/*    inputTestId="height"*/}
-            {/*    label="Height (in)"*/}
-            {/*    name="height"*/}
-            {/*    value={height}*/}
-            {/*  />*/}
-            {/*  <button*/}
-            {/*    className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(*/}
-            {/*      isCalibrating*/}
-            {/*    )}`}*/}
-            {/*    name={"Delete points"}*/}
-            {/*    onClick={() => setPoints(getDefaultPoints())}*/}
-            {/*  >*/}
-            {/*    <DeleteIcon/>*/}
-            {/*  </button>*/}
-            {/*  <FullScreenButton*/}
-            {/*    className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}*/}
-            {/*    handle={handle}*/}
-            {/*  />*/}
-            {/*</div>*/}
           <CalibrationCanvas
             className={`absolute z-10`}
             canvasOffset={canvasOffset}
@@ -420,12 +254,12 @@ export default function Page() {
               style={{
                 transform: `${matrix3d}`,
                 transformOrigin: "0 0",
-                filter: `invert(${inverted ? "1" : "0"})`,
+                filter: `invert(${transformSettings.inverted ? "1" : "0"})`,
               }}
             >
               <div
                 style={{
-                  transform: `scale(${scale.x}, ${scale.y}) rotate(${degrees}deg)`,
+                  transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
                   transformOrigin: "center",
                 }}
               >
