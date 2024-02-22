@@ -6,6 +6,7 @@ import FullscreenIcon from "@/_icons/fullscreen-icon";
 import FlipHorizontalIcon from "./_icons/flip-horizontal-icon";
 import FlipVerticalIcon from "./_icons/flip-vertical-icon";
 import GithubIcon from "./_icons/github-icon";
+import GridOnIcon from "./_icons/grid-on-icon";
 import InvertColorIcon from "./_icons/invert-color-icon";
 import PatternProjectorIcon from "./_icons/pattern-projector-icon";
 import PdfIcon from "./_icons/pdf-icon";
@@ -103,6 +104,15 @@ export default function Home() {
           </li>
           <li>
             <div className="flex gap-4">
+              <GridOnIcon />
+            </div>
+            <p>
+              Show/hide grid: when projecting, it shows/hides a faint grid to
+              verify that your calibration is correct.
+            </p>
+          </li>
+          <li>
+            <div className="flex gap-4">
               <InvertColorIcon />
             </div>
             <p>
@@ -139,6 +149,43 @@ export default function Home() {
         </ul>
         <h2 id="faq">FAQ</h2>
         <ul>
+          <li>
+            <div>
+              Having trouble dragging the grid corners to the edge of your mat?
+            </div>{" "}
+            You don&apos;t have to calibrate using your entire mat, instead
+            choose the largest area you can fit the calibration grid in and make
+            sure your width and height inputs match the width and height of the
+            grid.
+          </li>
+          <li>
+            <div>Is your PDF projecting too small or large?</div>The Pattern
+            Projector calibration tool has no zoom because the scale of the
+            projection comes from the size information in the PDF. Make sure
+            your pattern has the correct scale. A good way to check if the scale
+            of your pattern is off is by projecting a{" "}
+            <a href="https://www.mathed.page/puzzles/one-inch-graph-paper.pdf">
+              one inch
+            </a>{" "}
+            or{" "}
+            <a href="https://mathbits.com/MathBits/StudentResources/GraphPaper/CentimeterFullPage.pdf">
+              one centimetre
+            </a>{" "}
+            grid to see if it matches your cutting mat.
+          </li>
+          <li>
+            <div>Do you want to save Pattern Projector as an app?</div>Pattern
+            Projector is a Progressive Web App (PWA) so it can be saved as an
+            app. On a Desktop, you can install it using{" "}
+            <a href="https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DDesktop">
+              Chrome
+            </a>{" "}
+            or{" "}
+            <a href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/ux#installing-a-pwa">
+              Edge
+            </a>
+            . On a tablet, open the Share menu and tap Add to Home Screen.
+          </li>
           <li>Layer Support: planned for upcoming release.</li>
           <li>Annotation Support: planned for upcoming release.</li>
           <li>
