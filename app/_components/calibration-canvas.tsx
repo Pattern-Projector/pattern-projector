@@ -197,7 +197,6 @@ export default function CalibrationCanvas({
   ]);
 
   function handleDown(newPoint: Point) {
-    console.log('point', newPoint, 'offset', canvasOffset, 'points', points[0]);
     if (points.length < maxPoints) {
       setPoints([...points, newPoint]);
     } else {
