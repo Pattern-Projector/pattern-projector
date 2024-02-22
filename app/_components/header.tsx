@@ -139,7 +139,7 @@ export default function Header({
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Toggle grid visibility"}
             onClick={() => setGridOn(!gridOn)}
           >
