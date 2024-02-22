@@ -1,23 +1,24 @@
 import Link from "next/link";
-import ArrowBackIcon from "@/_icons/arrow-back-icon";
-import {ChangeEvent, Dispatch, MouseEventHandler, SetStateAction} from "react";
-import InlineInput from "@/_components/inline-input";
-import DeleteIcon from "@/_icons/delete-icon";
-import FullScreenButton from "@/_components/full-screen-button";
-import {FullScreenHandle} from "react-full-screen";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { FullScreenHandle } from "react-full-screen";
+
 import FileInput from "@/_components/file-input";
-import PdfIcon from "@/_icons/pdf-icon";
+import FullScreenButton from "@/_components/full-screen-button";
+import InlineInput from "@/_components/inline-input";
 import InlineSelect from "@/_components/inline-select";
-import {CM, IN} from "@/calibrate/page";
-import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
-import InvertColorIcon from "@/_icons/invert-color-icon";
-import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
-import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
-import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
-import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
-import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
-import {TransformSettings} from "@/_lib/transform-settings";
+import ArrowBackIcon from "@/_icons/arrow-back-icon";
 import ArrowForwardIcon from "@/_icons/arrow-forward-icon";
+import DeleteIcon from "@/_icons/delete-icon";
+import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
+import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
+import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
+import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
+import InvertColorIcon from "@/_icons/invert-color-icon";
+import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
+import PdfIcon from "@/_icons/pdf-icon";
+import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
+import { TransformSettings } from "@/_lib/transform-settings";
+import { CM, IN } from "@/_lib/unit";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -71,16 +72,22 @@ export default function Header({
     changePage(1);
   }
 
-  return (<header className="bg-white absolute top-0 left-0 w-full z-30 border-b-2">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8" aria-label="Global">
+  return (
+    <header className="bg-white absolute top-0 left-0 w-full z-30 border-b-2">
+      <nav
+        className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8"
+        aria-label="Global"
+      >
         <div className="flex items-center">
           <Link
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             href="/"
           >
-            <ArrowBackIcon/>
+            <ArrowBackIcon />
           </Link>
-          <h2 className="mr-2">{isCalibrating ? 'Calibrating' : 'Projecting'}</h2>
+          <h2 className="mr-2">
+            {isCalibrating ? "Calibrating" : "Projecting"}
+          </h2>
           <FullScreenButton
             className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             handle={fullScreenHandle}
@@ -93,7 +100,7 @@ export default function Header({
             id="height"
             inputTestId="height"
             label="H:"
-            labelRight={unitOfMeasure === CM ? 'cm' : 'in'}
+            labelRight={unitOfMeasure === CM ? "cm" : "in"}
             name="height"
             value={height}
           />
@@ -103,7 +110,7 @@ export default function Header({
             id="height"
             inputTestId="height"
             label="W:"
-            labelRight={unitOfMeasure === CM ? 'cm' : 'in'}
+            labelRight={unitOfMeasure === CM ? "cm" : "in"}
             name="width"
             value={width}
           />
@@ -114,7 +121,10 @@ export default function Header({
             inputTestId="unit_of_measure"
             name="unit_of_measure"
             value={unitOfMeasure}
-            options={[{value: IN, label: 'in'}, {value: CM, label: 'cm'}]}
+            options={[
+              { value: IN, label: "in" },
+              { value: CM, label: "cm" },
+            ]}
           />
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
@@ -123,28 +133,57 @@ export default function Header({
             name={"Delete points"}
             onClick={handleResetCalibration}
           >
-            <DeleteIcon/>
+            <DeleteIcon />
           </button>
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Invert colors"}
-            onClick={() => setTransformSettings({ ...transformSettings, inverted: !transformSettings.inverted })}
+            onClick={() =>
+              setTransformSettings({
+                ...transformSettings,
+                inverted: !transformSettings.inverted,
+              })
+            }
           >
-            {transformSettings.inverted ? <InvertColorOffIcon/> : <InvertColorIcon/>}
+            {transformSettings.inverted ? (
+              <InvertColorOffIcon />
+            ) : (
+              <InvertColorIcon />
+            )}
           </button>
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Flip vertically"}
-            onClick={() => setTransformSettings({ ...transformSettings, scale: { x: transformSettings.scale.x * -1, y: transformSettings.scale.y } })}
+            onClick={() =>
+              setTransformSettings({
+                ...transformSettings,
+                scale: {
+                  x: transformSettings.scale.x * -1,
+                  y: transformSettings.scale.y,
+                },
+              })
+            }
           >
-            {transformSettings.scale.x === -1 ? <FlipVerticalOffIcon /> : <FlipVerticalIcon />}
+            {transformSettings.scale.x === -1 ? (
+              <FlipVerticalOffIcon />
+            ) : (
+              <FlipVerticalIcon />
+            )}
           </button>
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Flip horizontally"}
-            onClick={() => setTransformSettings({ ...transformSettings, scale: { x: transformSettings.scale.x, y: transformSettings.scale.y * -1 } })}
+            onClick={() =>
+              setTransformSettings({
+                ...transformSettings,
+                scale: {
+                  x: transformSettings.scale.x,
+                  y: transformSettings.scale.y * -1,
+                },
+              })
+            }
           >
             {transformSettings.scale.y === -1 ? (
               <FlipHorizontalOffIcon />
@@ -155,7 +194,12 @@ export default function Header({
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             name={"Rotate 90 degrees clockwise"}
-            onClick={() => setTransformSettings({ ...transformSettings, degrees: ((transformSettings.degrees + 90) % 360) })}
+            onClick={() =>
+              setTransformSettings({
+                ...transformSettings,
+                degrees: (transformSettings.degrees + 90) % 360,
+              })
+            }
           >
             <Rotate90DegreesCWIcon />
           </button>
@@ -190,9 +234,9 @@ export default function Header({
               id="pdfFile"
             ></FileInput>
             <span className="mr-2">
-             <PdfIcon/>
-          </span>
-            Upload PDF
+              <PdfIcon fill="#7e22ce" />
+            </span>
+            Open PDF
           </label>
           <button
             className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
