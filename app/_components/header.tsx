@@ -108,6 +108,7 @@ export default function Header({
             value={width}
           />
           <InlineSelect
+            className="mr-1"
             handleChange={(e) => setUnitOfMeasure(e.target.value)}
             id="unit_of_measure"
             inputTestId="unit_of_measure"
