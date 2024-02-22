@@ -1,28 +1,13 @@
 "use client";
 
 import Matrix from "ml-matrix";
-import Link from "next/link";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
-import FileInput from "@/_components/file-input";
-import FullScreenButton from "@/_components/full-screen-button";
-import LabelledInput from "@/_components/labelled-input";
+import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import ArrowBackIcon from "@/_icons/arrow-back-icon";
-import ArrowForwardIcon from "@/_icons/arrow-forward-icon";
-import CloseIcon from "@/_icons/close-icon";
-import DeleteIcon from "@/_icons/delete-icon";
-import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
-import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
-import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
-import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
-import InvertColorIcon from "@/_icons/invert-color-icon";
-import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
-import PdfIcon from "@/_icons/pdf-icon";
-import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import {
   getPerspectiveTransform,
   toMatrix3d,
@@ -31,8 +16,11 @@ import {
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
-import Header from "@/_components/header";
-import {getDefaultTransforms, TransformSettings} from "@/_lib/transform-settings";
+import {
+  getDefaultTransforms,
+  TransformSettings,
+} from "@/_lib/transform-settings";
+import { CM, IN } from "@/_lib/unit";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -42,8 +30,6 @@ const defaultPoints = [
   { x: 100, y: 600 },
 ];
 
-export const { CM, IN } = { IN: 'IN', CM: 'CM' };
-
 export default function Page() {
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "18";
@@ -52,7 +38,9 @@ export default function Page() {
   const handle = useFullScreenHandle();
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
-  const [transformSettings, setTransformSettings] = useState<TransformSettings>(getDefaultTransforms());
+  const [transformSettings, setTransformSettings] = useState<TransformSettings>(
+    getDefaultTransforms()
+  );
   const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
@@ -93,20 +81,26 @@ export default function Page() {
     return p;
   }
 
-  const ptDensity = unitOfMeasure === CM ? (96 / 2.54) : 96;
+  const ptDensity = unitOfMeasure === CM ? 96 / 2.54 : 96;
 
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
-    localStorage.setItem("canvasSettings", JSON.stringify({ height: h, width, unitOfMeasure }));
+    localStorage.setItem(
+      "canvasSettings",
+      JSON.stringify({ height: h, width, unitOfMeasure })
+    );
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
-    localStorage.setItem("canvasSettings", JSON.stringify({ height, width: w, unitOfMeasure }));
+    localStorage.setItem(
+      "canvasSettings",
+      JSON.stringify({ height, width: w, unitOfMeasure })
+    );
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -228,7 +222,10 @@ export default function Page() {
           unitOfMeasure={unitOfMeasure}
           setUnitOfMeasure={(newUnit) => {
             setUnitOfMeasure(newUnit);
-            localStorage.setItem("canvasSettings", JSON.stringify({ height, width, unitOfMeasure: newUnit }));
+            localStorage.setItem(
+              "canvasSettings",
+              JSON.stringify({ height, width, unitOfMeasure: newUnit })
+            );
           }}
           transformSettings={transformSettings}
           setTransformSettings={setTransformSettings}
@@ -236,49 +233,49 @@ export default function Page() {
           setPageNumber={setPageNumber}
           pageCount={pageCount}
         />
-          <CalibrationCanvas
-            className={`absolute z-10`}
-            canvasOffset={canvasOffset}
-            points={points}
-            setPoints={setPoints}
-            pointToModify={pointToModify}
-            setPointToModify={setPointToModify}
-            perspective={calibrationTransform}
-            width={+width}
-            height={+height}
-            isCalibrating={isCalibrating}
-            ptDensity={ptDensity}
-          />
-          <Draggable
-            className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
-            perspective={perspective}
+        <CalibrationCanvas
+          className={`absolute z-10`}
+          canvasOffset={canvasOffset}
+          points={points}
+          setPoints={setPoints}
+          pointToModify={pointToModify}
+          setPointToModify={setPointToModify}
+          perspective={calibrationTransform}
+          width={+width}
+          height={+height}
+          isCalibrating={isCalibrating}
+          ptDensity={ptDensity}
+        />
+        <Draggable
+          className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
+          localTransform={localTransform}
+          setLocalTransform={setLocalTransform}
+          perspective={perspective}
+        >
+          <div
+            className={"absolute z-0 border-8 border-purple-700"}
+            style={{
+              transform: `${matrix3d}`,
+              transformOrigin: "0 0",
+              filter: `invert(${transformSettings.inverted ? "1" : "0"})`,
+            }}
           >
             <div
-              className={"absolute z-0 border-8 border-purple-700"}
               style={{
-                transform: `${matrix3d}`,
-                transformOrigin: "0 0",
-                filter: `invert(${transformSettings.inverted ? "1" : "0"})`,
+                transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
+                transformOrigin: "center",
               }}
             >
-              <div
-                style={{
-                  transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
-                  transformOrigin: "center",
-                }}
-              >
-                <PDFViewer
-                  file={file}
-                  setPageCount={setPageCount}
-                  setPageNumber={setPageNumber}
-                  pageNumber={pageNumber}
-                />
-              </div>
+              <PDFViewer
+                file={file}
+                setPageCount={setPageCount}
+                setPageNumber={setPageNumber}
+                pageNumber={pageNumber}
+              />
             </div>
-          </Draggable>
+          </div>
+        </Draggable>
       </FullScreen>
     </main>
-);
+  );
 }
