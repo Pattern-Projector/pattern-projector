@@ -100,13 +100,13 @@ export default function Page() {
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
-    localStorage.setItem("canvasSettings", JSON.stringify({ height, width }));
+    localStorage.setItem("canvasSettings", JSON.stringify({ height, width, unitOfMeasure }));
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
-    localStorage.setItem("canvasSettings", JSON.stringify({ height, width }));
+    localStorage.setItem("canvasSettings", JSON.stringify({ height, width, unitOfMeasure }));
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -164,6 +164,9 @@ export default function Page() {
       }
       if (localSettings.width) {
         setWidth(localSettings.width);
+      }
+      if (localSettings.unitOfMeasure) {
+        setUnitOfMeasure(localSettings.unitOfMeasure);
       }
     }
   }, []);
@@ -223,7 +226,10 @@ export default function Page() {
           handleFileChange={handleFileChange}
           fullScreenHandle={handle}
           unitOfMeasure={unitOfMeasure}
-          setUnitOfMeasure={setUnitOfMeasure}
+          setUnitOfMeasure={(newUnit) => {
+            setUnitOfMeasure(newUnit);
+            localStorage.setItem("canvasSettings", JSON.stringify({ height, width, unitOfMeasure: newUnit }));
+          }}
           transformSettings={transformSettings}
           setTransformSettings={setTransformSettings}
           pageNumber={pageNumber}
