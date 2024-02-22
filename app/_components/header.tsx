@@ -15,6 +15,7 @@ import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import GridOffIcon from "@/_icons/grid-off-icon";
 import GridOnIcon from "@/_icons/grid-on-icon";
+import InfoIcon from "@/_icons/info-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
@@ -85,15 +86,9 @@ export default function Header({
         aria-label="Global"
       >
         <div className="flex items-center">
-          <Link
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
-            href="/"
-          >
-            <ArrowBackIcon />
-          </Link>
-          <h2 className="mr-2">
+          <h1 className="mr-2">
             {isCalibrating ? "Calibrating" : "Projecting"}
-          </h2>
+          </h1>
           <FullScreenButton
             className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             handle={fullScreenHandle}
@@ -257,6 +252,12 @@ export default function Header({
           >
             {isCalibrating ? "Project" : "Calibrate"}
           </button>
+          <Link
+            className={`ml-1 bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            href="/"
+          >
+            <InfoIcon />
+          </Link>
         </div>
       </nav>
     </header>
