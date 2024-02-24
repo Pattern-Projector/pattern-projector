@@ -26,7 +26,7 @@ function draw(
   perspective: Matrix,
   isCalibrating: boolean,
   pointToModify: number | null,
-  ptDensity: number
+  ptDensity: number,
 ): void {
   ctx.translate(offset.x, offset.y);
 
@@ -68,7 +68,7 @@ function draw(
         points[pointToModify].y,
         20,
         0,
-        2 * Math.PI
+        2 * Math.PI,
       );
       ctx.strokeStyle = "#3b82f6";
       ctx.lineWidth = 4;
@@ -100,7 +100,7 @@ function drawGrid(
   height: number,
   perspective: Matrix,
   outset: number,
-  ptDensity: number
+  ptDensity: number,
 ): void {
   for (let i = 1; i < width; i++) {
     // TODO: fix needing dpi added in here.
@@ -109,7 +109,7 @@ function drawGrid(
         { x: i * ptDensity, y: -outset * ptDensity },
         { x: i * ptDensity, y: (height + outset) * ptDensity },
       ],
-      perspective
+      perspective,
     );
     drawLine(ctx, line[0], line[1]);
   }
@@ -119,7 +119,7 @@ function drawGrid(
         { x: -outset * ptDensity, y: i * ptDensity },
         { x: (width + outset) * ptDensity, y: i * ptDensity },
       ],
-      perspective
+      perspective,
     );
     drawLine(ctx, line[0], line[1]);
   }
@@ -175,6 +175,7 @@ export default function CalibrationCanvas({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
   const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
+  const [cursorMode, setCursorMode] = useState<string>(null);
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
@@ -192,7 +193,7 @@ export default function CalibrationCanvas({
           perspective,
           isCalibrating,
           pointToModify,
-          ptDensity
+          ptDensity,
         );
       }
     }
@@ -208,13 +209,17 @@ export default function CalibrationCanvas({
     ptDensity,
   ]);
 
+  function getShortestDistance(p: Point): number {
+    return points
+      .map((a) => Math.sqrt(sqrdist(a, p)))
+      .reduce((final, a) => (!final || a < final ? a : final));
+  }
+
   function handleDown(newPoint: Point) {
     if (points.length < maxPoints) {
       setPoints([...points, newPoint]);
     } else {
-      const shortestDist: number = points
-        .map((a) => Math.sqrt(sqrdist(a, newPoint)))
-        .reduce((final, a) => (!final || a < final ? a : final));
+      const shortestDist: number = getShortestDistance(newPoint);
       if (shortestDist < CORNER_MARGIN) {
         setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
       } else {
@@ -231,6 +236,15 @@ export default function CalibrationCanvas({
       setPoints(newPoints);
     } else if (panStart !== null) {
       setDragOffset({ x: p.x - panStart.x, y: p.y - panStart.y });
+    }
+  }
+
+  function handleHover(p: Point) {
+    const shortestDist: number = getShortestDistance(p);
+    if (shortestDist < CORNER_MARGIN) {
+      setCursorMode("corner");
+    } else {
+      setCursorMode("pan");
     }
   }
 
@@ -287,6 +301,7 @@ export default function CalibrationCanvas({
       onMouseMove={(e: React.MouseEvent) => {
         if ((e.buttons & 1) == 0) {
           handleMouseUp();
+          handleHover(mouseToCanvasPoint(e));
         } else {
           handleMove(mouseToCanvasPoint(e), 1);
         }
@@ -300,7 +315,7 @@ export default function CalibrationCanvas({
       onTouchEnd={() => handleTouchUp()}
       style={{
         cursor:
-          pointToModify !== null
+          cursorMode === "corner"
             ? "url('/crosshair.png') 11 11, crosshair"
             : "grab",
         pointerEvents: isCalibrating ? "auto" : "none",
