@@ -21,6 +21,8 @@ import {
   TransformSettings,
 } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
+import Modal from "@/_components/modal/modal";
+import PdfErrorModal from "@/_components/pdf-error-modal";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -39,7 +41,7 @@ export default function Page() {
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
-    getDefaultTransforms()
+    getDefaultTransforms(),
   );
   const [gridOn, setGridOn] = useState<boolean>(true);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
@@ -51,15 +53,19 @@ export default function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
   const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
+    Matrix.identity(3, 3),
   );
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
+    Matrix.identity(3, 3),
   );
   const [canvasOffset, setCanvasOffset] = useState<Point>({ x: 0, y: 0 });
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
+  const [pdfError, setPdfError] = useState<{
+    type: string;
+    error: Error;
+  } | null>(null);
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -91,7 +97,7 @@ export default function Page() {
     setHeight(h);
     localStorage.setItem(
       "canvasSettings",
-      JSON.stringify({ height: h, width, unitOfMeasure })
+      JSON.stringify({ height: h, width, unitOfMeasure }),
     );
   }
 
@@ -100,7 +106,7 @@ export default function Page() {
     setWidth(w);
     localStorage.setItem(
       "canvasSettings",
-      JSON.stringify({ height, width: w, unitOfMeasure })
+      JSON.stringify({ height, width: w, unitOfMeasure }),
     );
   }
 
@@ -225,7 +231,7 @@ export default function Page() {
             setUnitOfMeasure(newUnit);
             localStorage.setItem(
               "canvasSettings",
-              JSON.stringify({ height, width, unitOfMeasure: newUnit })
+              JSON.stringify({ height, width, unitOfMeasure: newUnit }),
             );
           }}
           transformSettings={transformSettings}
@@ -274,11 +280,24 @@ export default function Page() {
                 setPageCount={setPageCount}
                 setPageNumber={setPageNumber}
                 pageNumber={pageNumber}
+                onError={(type, error) => {
+                  if (error) {
+                    setPdfError({ type, error });
+                  }
+                }}
               />
             </div>
           </div>
         </Draggable>
       </FullScreen>
+      <PdfErrorModal
+        open={!!pdfError}
+        email="courtney@patternprojector.com"
+        error={pdfError}
+        onClose={() => {
+          setPdfError(null);
+        }}
+      />
     </main>
   );
 }
