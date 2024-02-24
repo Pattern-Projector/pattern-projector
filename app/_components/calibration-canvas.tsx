@@ -175,7 +175,7 @@ export default function CalibrationCanvas({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
   const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
-  const [cursorMode, setCursorMode] = useState<string>(null);
+  const [cursorMode, setCursorMode] = useState<string | null>(null);
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
