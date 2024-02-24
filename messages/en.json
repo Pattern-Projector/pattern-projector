@@ -119,5 +119,9 @@
     "arrowBack": "Back 1 page",
     "arrowForward": "Forward 1 page",
     "info": "Info page"
+  },
+  "FullscreenButton": {
+    "fullscreen": "Enter fullscreen",
+    "fullscreenExit": "Exit fullscreen"
   }
 }
