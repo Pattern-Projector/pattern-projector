@@ -1,18 +1,20 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
 import FullscreenIcon from "@/_icons/fullscreen-icon";
 
-import FlipHorizontalIcon from "./_icons/flip-horizontal-icon";
-import FlipVerticalIcon from "./_icons/flip-vertical-icon";
-import GithubIcon from "./_icons/github-icon";
-import GridOnIcon from "./_icons/grid-on-icon";
-import InvertColorIcon from "./_icons/invert-color-icon";
-import PatternProjectorIcon from "./_icons/pattern-projector-icon";
-import PdfIcon from "./_icons/pdf-icon";
-import Rotate90DegreesCWIcon from "./_icons/rotate-90-degrees-cw-icon";
+import FlipHorizontalIcon from "../_icons/flip-horizontal-icon";
+import FlipVerticalIcon from "../_icons/flip-vertical-icon";
+import GithubIcon from "../_icons/github-icon";
+import GridOnIcon from "../_icons/grid-on-icon";
+import InvertColorIcon from "../_icons/invert-color-icon";
+import PatternProjectorIcon from "../_icons/pattern-projector-icon";
+import PdfIcon from "../_icons/pdf-icon";
+import Rotate90DegreesCWIcon from "../_icons/rotate-90-degrees-cw-icon";
 
 export default function Home() {
+  const t = useTranslations("HomePage");
   return (
     <main className="m-4">
       <nav className="flex items-center">
@@ -22,73 +24,51 @@ export default function Home() {
           href="https://github.com/Pattern-Projector/pattern-projector"
           className="ml-auto"
         >
-          <GithubIcon />
+          <GithubIcon ariaLabel={t("github")} />
         </Link>
         <Link
           className="ml-4 text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           href="/calibrate"
         >
-          Start Calibrating
+          {t("calibrate")}
         </Link>
       </nav>
       <article className="prose lg:prose-xl m-auto">
-        <h1 id="welcome-to-pattern-projector">Welcome to Pattern Projector!</h1>
-        <p>
-          Pattern projector is a free and open source web app that helps users
-          quickly calibrate projectors for sewing patterns. This project is
-          currently in beta, so expect large changes and new features to be
-          added as we iterate.
-        </p>
-        <h2 id="what-youll-need">What You’ll Need</h2>
+        <h1>{t("welcome.title")}</h1>
+        <p>{t("welcome.description")}</p>
+        <h2>{t("requirements.title")}</h2>
         <ul>
-          <li>Projector: at least 720p recommended</li>
-          <li>Cutting mat: ideally with grid lines at every inch</li>
-          <li>Tripod or wall/shelf/table mount for projector</li>
-          <li>Computer or tablet to connect to the projector</li>
+          <li>{t("requirements.projector")}</li>
+          <li>{t("requirements.mat")}</li>
+          <li>{t("requirements.mount")}</li>
+          <li>{t("requirements.computer")}</li>
           <li>
-            A PDF sewing pattern: consider using{" "}
-            <a href="https://www.pdfstitcher.org/">PDFStitcher</a> if your
-            pattern has layers or multiple pages
+            {t.rich("requirements.pattern", {
+              pdfstitcher: (chunks) => (
+                <a href={t("pdfstitcherHref")}>{chunks}</a>
+              ),
+            })}
           </li>
         </ul>
-        <h2 id="setup">Setup</h2>
-        <p>
-          Place the projector above the cutting mat, pointing at the cutting
-          mat. Try to place the projector directly above the cutting mat and
-          pointing directly at it.
-        </p>
-        <p>
-          Connect your computer or tablet to the projector and either mirror or
-          extend the display.
-        </p>
-        <p>
-          Adjust the focus on the projector, until text is crisp in the centre
-          of the projection. If you cannot get a clear image, ensure the
-          distance between the projector and cutting mat is within the
-          functional range recommended by the manufacturer.
-        </p>
-        <p>
-          If your projector has a keystone, adjust it so that projection is
-          close to rectangular and focus near the edges improves.
-        </p>
-        <h2 id="calibration">Calibration</h2>
-        <p>Click (or tap) “Start Calibrating.”</p>
-        <p>Input the width and height of your mat.</p>
+        <h2>{t("setup.title")}</h2>
+        <ol>
+          <li>{t("setup.place")}</li>
+          <li>{t("setup.connect")}</li>
+          <li>{t("setup.focus")}</li>
+          <li>{t("setup.keystone")}</li>
+        </ol>
+
+        <h2>{t("calibration.title")}</h2>
+        <p>{t("calibration.start")}</p>
+        <p>{t("calibration.input")}</p>
         <p className="flex mr-4 gap-4">
-          Enter fullscreen mode by clicking (or tapping) <FullscreenIcon />
+          {t("calibration.fullscreen")}
+          <FullscreenIcon />
         </p>
-        <p>
-          Drag the corners of the grid to align with your mat. With your eyes on
-          the mat, adjust the corners on your tablet or computer. Adjust the
-          placement of the corners until the projected grid matches your
-          mat&apos;s grid.
-        </p>
+        <p>{t("calibration.drag")}</p>
         <Image src="/demo.gif" width={640} height={260} alt=""></Image>
-        <p>
-          When the projected grid is aligned with your mat, click (or tap)
-          “Project.”
-        </p>
-        <h2 id="projecting-a-pattern">Projecting a Pattern</h2>
+        <p>{t("calibration.project")}</p>
+        <h2>Projecting a Pattern</h2>
         <p className="flex mr-4 gap-4">
           Click (or tap)
           <PdfIcon /> to load the PDF document.

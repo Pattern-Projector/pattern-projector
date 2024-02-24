@@ -53,13 +53,15 @@ export const metadata: Metadata = {
   themeColor: "#000",
 };
 
-export default function RootLayout({
+export default function LocaleLayout({
   children,
+  params: { locale },
 }: {
   children: React.ReactNode;
+  params: { locale: string };
 }) {
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={inter.className}>
         {children}
         <Analytics />

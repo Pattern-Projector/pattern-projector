@@ -1,0 +1,34 @@
+{
+  "HomePage": {
+    "pdfstitcherHref": "https://www.pdfstitcher.org/",
+    "github": "Github icon",
+    "calibrate": "Start Calibrating",
+    "welcome": {
+      "title": "Welcome to Pattern Projector!",
+      "description": "Pattern projector is a free and open source web app that helps users quickly calibrate projectors for sewing patterns. This project is currently in beta, so expect large changes and new features to be added as we iterate."
+    },
+    "requirements": {
+      "title": "What You’ll Need",
+      "projector": "Projector: at least 720p recommended",
+      "mat": "Cutting mat: ideally with grid lines at every inch or centimetre",
+      "mount": "Tripod or wall/shelf/table mount for projector",
+      "computer": "Computer or tablet to connect to the projector",
+      "pattern": "A PDF sewing pattern: consider using <pdfstitcher>PDFStitcher</pdfstitcher> if your pattern has layers or multiple pages"
+    },
+    "setup": {
+      "title": "Setup",
+      "place": "Place the projector above the cutting mat, pointing at the cutting mat. Try to place the projector directly above the cutting mat and pointing directly at it.",
+      "connect": "Connect your computer or tablet to the projector and either mirror or extend the display.",
+      "focus": "Adjust the focus on the projector, until text is crisp in the centre of the projection. If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended by the manufacturer.",
+      "keystone": "If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves."
+    },
+    "calibration": {
+      "title": "Calibration",
+      "start": "Click (or tap) “Start Calibrating.”",
+      "input": "Input the width and height of your mat.",
+      "fullscreen": "Enter fullscreen mode by clicking (or tapping) ",
+      "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your tablet or computer. Adjust the placement of the corners until the projected grid matches your mat&apos;s grid.",
+      "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
+    }
+  }
+}
