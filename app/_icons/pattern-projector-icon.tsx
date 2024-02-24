@@ -1,6 +1,11 @@
-export default function PatternProjectorIcon() {
+export default function PatternProjectorIcon({
+  ariaLabel,
+}: {
+  ariaLabel: string;
+}) {
   return (
     <svg
+      aria-label={ariaLabel}
       width="48mm"
       height="48mm"
       version="1.1"

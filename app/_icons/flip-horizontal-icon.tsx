@@ -1,7 +1,11 @@
-export default function FlipHorizontalIcon() {
+export default function FlipHorizontalIcon({
+  ariaLabel,
+}: {
+  ariaLabel: string;
+}) {
   return (
     <svg
-      aria-label="Flip horizontally"
+      aria-label={ariaLabel}
       xmlns="http://www.w3.org/2000/svg"
       height="24"
       viewBox="0 -960 960 960"

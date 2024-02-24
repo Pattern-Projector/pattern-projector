@@ -1,5 +1,6 @@
 import "./globals.css";
 
+import { NextIntlClientProvider, useMessages } from "next-intl";
 import { Inter } from "next/font/google";
 
 import { Analytics } from "@vercel/analytics/react";
@@ -60,10 +61,13 @@ export default function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
+  const messages = useMessages();
   return (
     <html lang={locale}>
       <body className={inter.className}>
-        {children}
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />
       </body>

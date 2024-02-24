@@ -1,7 +1,7 @@
-export default function InvertColorIcon() {
+export default function InvertColorIcon({ ariaLabel }: { ariaLabel: string }) {
   return (
     <svg
-      aria-label="Invert colors"
+      aria-label={ariaLabel}
       xmlns="http://www.w3.org/2000/svg"
       height="24"
       viewBox="0 -960 960 960"
