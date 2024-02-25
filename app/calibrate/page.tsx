@@ -58,7 +58,6 @@ export default function Page() {
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
-  const [canvasOffset, setCanvasOffset] = useState<Point>({ x: 0, y: 0 });
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
@@ -73,10 +72,10 @@ export default function Page() {
 
   function getDefaultPoints() {
     const o = 150;
-    const minx = window.innerWidth * 0.2 - canvasOffset.x;
-    const miny = window.innerHeight * 0.2 - canvasOffset.y;
-    const maxx = window.innerWidth * 0.8 - canvasOffset.x;
-    const maxy = window.innerHeight * 0.8 - canvasOffset.y;
+    const minx = window.innerWidth * 0.2;
+    const miny = window.innerHeight * 0.2;
+    const maxx = window.innerWidth * 0.8;
+    const maxy = window.innerHeight * 0.8;
 
     const p = [
       { x: minx, y: miny },
@@ -133,12 +132,6 @@ export default function Page() {
   });
 
   useEffect(() => {
-    const dy = windowScreen.y + window.outerHeight - window.innerHeight;
-    const dx = windowScreen.x + window.outerWidth - window.innerWidth;
-    setCanvasOffset({ x: -dx, y: -dy });
-  }, [windowScreen.x, windowScreen.y]);
-
-  useEffect(() => {
     const interval = setInterval(() => {
       const p = { x: window.screenX, y: window.screenY };
       if (windowScreen.x !== p.x || windowScreen.y !== p.y) {
@@ -173,9 +166,8 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    const offset = translate(canvasOffset);
-    setMatrix3d(toMatrix3d(offset.mmul(localTransform)));
-  }, [localTransform, canvasOffset]);
+    setMatrix3d(toMatrix3d(localTransform));
+  }, [localTransform]);
 
   useEffect(() => {
     if (points && points.length === maxPoints) {
@@ -244,7 +236,6 @@ export default function Page() {
         />
         <CalibrationCanvas
           className={`absolute z-10 ${visible(gridOn)}`}
-          canvasOffset={canvasOffset}
           points={points}
           setPoints={setPoints}
           pointToModify={pointToModify}
