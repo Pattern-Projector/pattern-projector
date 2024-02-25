@@ -66,7 +66,7 @@
       },
       "wrongSizePdf": {
         "question": "Is your PDF projecting too small or large?",
-        "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Make sure your pattern has the correct scale. A good way to check if the scale of your pattern is off is by projecting a <inchGridLink>one inch</inchGridLink> or <cmGridLink>one centimetre</cmGridLink> grid to see if it matches your cutting mat."
+        "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Patterns from designers usually have the correct scale, so a change in scale could have been introduced when opening the pattern in Affinity Designer or Inkscape."
       },
       "saveAsApp": {
         "question": "Do you want to save Pattern Projector as an app?",
