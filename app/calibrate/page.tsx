@@ -103,20 +103,12 @@ export default function Page() {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
     updateLocalSettings({ height: h });
-    // localStorage.setItem(
-    //   "canvasSettings",
-    //   JSON.stringify({ height: h, width, unitOfMeasure }),
-    // );
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
     updateLocalSettings({ width: w });
-    // localStorage.setItem(
-    //   "canvasSettings",
-    //   JSON.stringify({ height, width: w, unitOfMeasure }),
-    // );
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
