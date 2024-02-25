@@ -47,7 +47,7 @@
       },
       "flip": {
         "title": "Spiegel Vertikal/Horizontal",
-        "description": "Hilfreich um Stoffbruch oder gespiegelte Schnittteile zu spiegeln."
+        "description": "Hilfreich um Stoffbruch oder gegengleiche Schnitteile zu spiegeln."
       },
       "rotate": {
         "title": "Drehen",
@@ -106,7 +106,7 @@
     "width": "W:",
     "project": "Projekt",
     "calibrate": "Kalibrieren",
-    "delete": "Lösche Punkte",
+    "delete": "Kalibrierung zurücksetzen",
     "gridOn": "Raster ein",
     "gridOff": "Raster aus",
     "invertColor": "Farbumkehrung ein",
