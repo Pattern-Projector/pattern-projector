@@ -149,7 +149,6 @@ const CORNER_MARGIN = 150;
  */
 export default function CalibrationCanvas({
   className,
-  canvasOffset,
   points,
   setPoints,
   pointToModify,
@@ -161,7 +160,6 @@ export default function CalibrationCanvas({
   ptDensity,
 }: {
   className: string | undefined;
-  canvasOffset: Point;
   points: Point[];
   setPoints: Dispatch<SetStateAction<Point[]>>;
   pointToModify: number | null;
@@ -186,7 +184,7 @@ export default function CalibrationCanvas({
         ctx.canvas.height = window.innerHeight;
         draw(
           ctx,
-          applyOffset(canvasOffset, dragOffset),
+          dragOffset,
           points,
           width,
           height,
@@ -198,7 +196,6 @@ export default function CalibrationCanvas({
       }
     }
   }, [
-    canvasOffset,
     dragOffset,
     points,
     perspective,

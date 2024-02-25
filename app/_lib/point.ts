@@ -14,13 +14,13 @@ export interface Point {
 }
 
 export function mouseToCanvasPoint(e: React.MouseEvent<Element>): Point {
-  return { x: e.screenX, y: e.screenY };
+  return { x: e.clientX, y: e.clientY };
 }
 
 export function touchToCanvasPoint(e: React.TouchEvent<Element>): Point {
-  return { x: e.touches[0].screenX, y: e.touches[0].screenY };
+  return { x: e.touches[0].clientX, y: e.touches[0].clientY };
 }
 
-export function applyOffset(point:Point, offset:Point): Point {
+export function applyOffset(point: Point, offset: Point): Point {
   return { x: point.x + offset.x, y: point.y + offset.y };
 }

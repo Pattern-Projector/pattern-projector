@@ -39,7 +39,7 @@ export default function Page() {
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
-    getDefaultTransforms()
+    getDefaultTransforms(),
   );
   const [gridOn, setGridOn] = useState<boolean>(true);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
@@ -51,12 +51,11 @@ export default function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
   const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
+    Matrix.identity(3, 3),
   );
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
+    Matrix.identity(3, 3),
   );
-  const [canvasOffset, setCanvasOffset] = useState<Point>({ x: 0, y: 0 });
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
@@ -67,10 +66,10 @@ export default function Page() {
 
   function getDefaultPoints() {
     const o = 150;
-    const minx = window.innerWidth * 0.2 - canvasOffset.x;
-    const miny = window.innerHeight * 0.2 - canvasOffset.y;
-    const maxx = window.innerWidth * 0.8 - canvasOffset.x;
-    const maxy = window.innerHeight * 0.8 - canvasOffset.y;
+    const minx = window.innerWidth * 0.2;
+    const miny = window.innerHeight * 0.2;
+    const maxx = window.innerWidth * 0.8;
+    const maxy = window.innerHeight * 0.8;
 
     const p = [
       { x: minx, y: miny },
@@ -91,7 +90,7 @@ export default function Page() {
     setHeight(h);
     localStorage.setItem(
       "canvasSettings",
-      JSON.stringify({ height: h, width, unitOfMeasure })
+      JSON.stringify({ height: h, width, unitOfMeasure }),
     );
   }
 
@@ -100,7 +99,7 @@ export default function Page() {
     setWidth(w);
     localStorage.setItem(
       "canvasSettings",
-      JSON.stringify({ height, width: w, unitOfMeasure })
+      JSON.stringify({ height, width: w, unitOfMeasure }),
     );
   }
 
@@ -125,12 +124,6 @@ export default function Page() {
   useEffect(() => {
     requestWakeLock();
   });
-
-  useEffect(() => {
-    const dy = windowScreen.y + window.outerHeight - window.innerHeight;
-    const dx = windowScreen.x + window.outerWidth - window.innerWidth;
-    setCanvasOffset({ x: -dx, y: -dy });
-  }, [windowScreen.x, windowScreen.y]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -167,9 +160,8 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    const offset = translate(canvasOffset);
-    setMatrix3d(toMatrix3d(offset.mmul(localTransform)));
-  }, [localTransform, canvasOffset]);
+    setMatrix3d(toMatrix3d(localTransform));
+  }, [localTransform]);
 
   useEffect(() => {
     if (points && points.length === maxPoints) {
@@ -225,7 +217,7 @@ export default function Page() {
             setUnitOfMeasure(newUnit);
             localStorage.setItem(
               "canvasSettings",
-              JSON.stringify({ height, width, unitOfMeasure: newUnit })
+              JSON.stringify({ height, width, unitOfMeasure: newUnit }),
             );
           }}
           transformSettings={transformSettings}
@@ -238,7 +230,6 @@ export default function Page() {
         />
         <CalibrationCanvas
           className={`absolute z-10 ${visible(gridOn)}`}
-          canvasOffset={canvasOffset}
           points={points}
           setPoints={setPoints}
           pointToModify={pointToModify}
