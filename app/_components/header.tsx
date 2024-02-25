@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -22,6 +22,7 @@ import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
+import { Dropdown } from "@/_components/dropdown/dropdown";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -56,15 +57,17 @@ export default function Header({
   handleResetCalibration: () => void;
   fullScreenHandle: FullScreenHandle;
   unitOfMeasure: string;
-  setUnitOfMeasure: Dispatch<SetStateAction<string>>;
+  setUnitOfMeasure: (newUnit: string) => void;
   transformSettings: TransformSettings;
-  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
+  setTransformSettings: (newTransformSettings: TransformSettings) => void;
   pageNumber: number;
   setPageNumber: Dispatch<SetStateAction<number>>;
   pageCount: number;
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
 }) {
+  const [invertOpen, setInvertOpen] = useState<boolean>(false);
+
   function changePage(offset: number) {
     setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
   }
@@ -129,7 +132,7 @@ export default function Header({
           />
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-              isCalibrating
+              isCalibrating,
             )}`}
             name={"Delete points"}
             onClick={handleResetCalibration}
@@ -145,22 +148,44 @@ export default function Header({
           >
             {gridOn ? <GridOnIcon /> : <GridOffIcon />}
           </button>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-            name={"Invert colors"}
-            onClick={() =>
-              setTransformSettings({
-                ...transformSettings,
-                inverted: !transformSettings.inverted,
-              })
-            }
-          >
-            {transformSettings.inverted ? (
-              <InvertColorOffIcon />
-            ) : (
-              <InvertColorIcon />
-            )}
-          </button>
+          <div className="relative inline-block text-left">
+            <button
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+              name={"Invert colors"}
+              onClick={(e) => {
+                e.stopPropagation();
+                setTransformSettings({
+                  ...transformSettings,
+                  inverted: !transformSettings.inverted,
+                });
+                setInvertOpen(!transformSettings.inverted);
+              }}
+            >
+              {transformSettings.inverted ? (
+                <InvertColorOffIcon />
+              ) : (
+                <InvertColorIcon />
+              )}
+            </button>
+            <Dropdown open={invertOpen} onClose={() => setInvertOpen(false)}>
+              <div className="px-3 py-3">
+                <label>
+                  <input
+                    type="checkbox"
+                    className="accent-purple-500 mr-2"
+                    checked={transformSettings.isInvertedGreen}
+                    onChange={(e) =>
+                      setTransformSettings({
+                        ...transformSettings,
+                        isInvertedGreen: e.target.checked,
+                      })
+                    }
+                  />
+                  Use Green Highlight
+                </label>
+              </div>
+            </Dropdown>
+          </div>
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Flip vertically"}
@@ -232,7 +257,7 @@ export default function Header({
         <div className="flex items-center">
           <label
             className={`${visible(
-              !isCalibrating
+              !isCalibrating,
             )} outline mr-2 outline-purple-700 flex items-center text-purple-800 focus:ring-2 focus:outline-none focus:ring-blue-300 hover:bg-purple-100 font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
           >
             <FileInput
