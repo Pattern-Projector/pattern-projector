@@ -25,7 +25,6 @@ export function Dropdown({
 
   const handleClickAway = useCallback(
     (event: any) => {
-      console.log("clicked away", open);
       if (open && !ref?.current?.contains(event.target)) {
         onClose();
       }
