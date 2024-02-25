@@ -131,7 +131,7 @@ export default function Header({
             ]}
           />
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
               isCalibrating,
             )}`}
             name={"Delete points"}
@@ -142,7 +142,7 @@ export default function Header({
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Toggle grid visibility"}
             onClick={() => setGridOn(!gridOn)}
           >
@@ -150,44 +150,40 @@ export default function Header({
           </button>
           <div className="relative inline-block text-left">
             <button
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
               name={"Invert colors"}
               onClick={(e) => {
-                e.stopPropagation();
+                let newInverted;
+                let newIsGreenInverted;
+                if (!transformSettings.inverted) {
+                  newInverted = true;
+                  newIsGreenInverted = false;
+                } else if (!transformSettings.isInvertedGreen) {
+                  newInverted = true;
+                  newIsGreenInverted = true;
+                } else {
+                  newInverted = false;
+                  newIsGreenInverted = false;
+                }
                 setTransformSettings({
                   ...transformSettings,
-                  inverted: !transformSettings.inverted,
+                  inverted: newInverted,
+                  isInvertedGreen: newIsGreenInverted,
                 });
                 setInvertOpen(!transformSettings.inverted);
               }}
             >
               {transformSettings.inverted ? (
-                <InvertColorOffIcon />
+                <InvertColorOffIcon
+                  fill={transformSettings.isInvertedGreen ? "#32CD32" : "#000"}
+                />
               ) : (
                 <InvertColorIcon />
               )}
             </button>
-            <Dropdown open={invertOpen} onClose={() => setInvertOpen(false)}>
-              <div className="px-3 py-3">
-                <label>
-                  <input
-                    type="checkbox"
-                    className="accent-purple-500 mr-2"
-                    checked={transformSettings.isInvertedGreen}
-                    onChange={(e) =>
-                      setTransformSettings({
-                        ...transformSettings,
-                        isInvertedGreen: e.target.checked,
-                      })
-                    }
-                  />
-                  Use Green Highlight
-                </label>
-              </div>
-            </Dropdown>
           </div>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Flip vertically"}
             onClick={() =>
               setTransformSettings({
@@ -206,7 +202,7 @@ export default function Header({
             )}
           </button>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Flip horizontally"}
             onClick={() =>
               setTransformSettings({
@@ -225,7 +221,7 @@ export default function Header({
             )}
           </button>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             name={"Rotate 90 degrees clockwise"}
             onClick={() =>
               setTransformSettings({
@@ -272,13 +268,13 @@ export default function Header({
             Open PDF
           </label>
           <button
-            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             onClick={() => setIsCalibrating(!isCalibrating)}
           >
             {isCalibrating ? "Project" : "Calibrate"}
           </button>
           <Link
-            className={`ml-1 bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            className={`ml-1 bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             href="/"
           >
             <InfoIcon />
