@@ -271,11 +271,6 @@ export default function Page() {
                 setPageCount={setPageCount}
                 setPageNumber={setPageNumber}
                 pageNumber={pageNumber}
-                onError={(type, error) => {
-                  if (error) {
-                    setPdfError({ type, error });
-                  }
-                }}
               />
             </div>
           </div>
