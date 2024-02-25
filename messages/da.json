@@ -3,86 +3,86 @@
     "beta": "beta",
     "pdfstitcherHref": "https://www.pdfstitcher.org/",
     "github": "Github icon",
-    "calibrate": "Start Calibrating",
+    "calibrate": "Begynd kalibrering",
     "welcome": {
-      "title": "Welcome to Pattern Projector!",
-      "description": "Pattern projector is a free and open source web app that helps users quickly calibrate projectors for sewing patterns. This project is currently in beta, so expect large changes and new features to be added as we iterate."
+      "title": "Velkommen til Pattern Projector",
+      "description": "Pattern Projector er en gratis og open source webapp, der hjælper brugere med hurtigt at kalibrere projektorer til brug med symønstre. Dette projekt er lige nu i beta, så forvent store ændringer og tilføjelse af nye funktioner med tiden. "
     },
     "requirements": {
-      "title": "What You’ll Need",
-      "projector": "Projector: at least 720p recommended",
-      "mat": "Cutting mat: ideally with grid lines at every inch or centimetre",
-      "mount": "Tripod or wall/shelf/table mount for projector",
-      "computer": "Computer or tablet to connect to the projector",
-      "pattern": "A PDF sewing pattern: consider using <pdfstitcher>PDFStitcher</pdfstitcher> if your pattern has layers or multiple pages"
+      "title": "Hvad du skal bruge",
+      "projector": "Projektor, mindst 720p anbefalet",
+      "mat": "Skæremåtte, gerne med gitter og tern for hver tomme / centimeter",
+      "mount": "Tripod eller beslag/holder på væg, hylde eller bord til projektor",
+      "computer": "Computer eller tablet til at forbinde til projektoren",
+      "pattern": "Et PDF-mønster, overvej at bruge <pdfstitcher>PDFStitcher</pdfstitcher> hvis dit mønster har lag eller mange sider"
     },
     "setup": {
-      "title": "Setup",
-      "place": "Place the projector above the cutting mat, pointing at the cutting mat. Try to place the projector directly above the cutting mat and pointing directly at it.",
-      "connect": "Connect your computer or tablet to the projector and either mirror or extend the display.",
-      "focus": "Adjust the focus on the projector, until text is crisp in the centre of the projection. If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended by the manufacturer.",
-      "keystone": "If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves."
+      "title": "Montering",
+      "place": "Placér projektoren direkte over skæremåtten, så den lyser ned på måtten. Prøv at placere projektoren direkte over skæremåtten, så den peger lige ned. ",
+      "connect": "Forbind din computer eller tablet til projektoren. Spejl eller udvid skærm.",
+      "focus": "Justér fokus på projektoren indtil teksten står skarpt i midten af projektorbilledet. Hvis du ikke kan få et tydeligt billede, skal du kontrollere, om afstanden mellem projektoren og skæremåtten er inden for producentens anbefalinger. ",
+      "keystone": "Hvis din projektor har mulighed for at justere keystone, så justér den indtil projektorbilledet er tæt på regtangulær og fokus ude i kanten forbedres. "
     },
     "calibration": {
-      "title": "Calibration",
-      "start": "Click (or tap) “Start Calibrating.”",
-      "input": "Input the width and height of your mat.",
-      "fullscreen": "Enter fullscreen mode by clicking (or tapping) ",
-      "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your tablet or computer. Adjust the placement of the corners until the projected grid matches your mat's grid.",
-      "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
+      "title": "Kalibrering",
+      "start": "Start kalibrering",
+      "input": "Indtast bredde og højde på din skæremåtte.",
+      "fullscreen": "Gå til fuld skærm ved at klikke eller tappe ",
+      "drag": "Træk i hjørnerne af gitteret, så ternene kommer til at passe med ternene på din skæremåtte. Justér hjørnerne på din tablet eller computer, mens du kigger på skæremåtten. Justér hjørnernes placering indtil gitteret i projektorbilledet passer med skæremåttens gitter. ",
+      "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap"
     },
     "project": {
-      "title": "Projecting a Pattern",
-      "open": "Click (or tap) <pdficon></pdficon> to open the PDF document.",
-      "move": "Move the PDF by clicking and dragging it around the screen.",
-      "cut": "Cut along the projected design.",
-      "tools": "In projection mode there are several tools provided:",
+      "title": "Vis et mønster",
+      "open": "Klik eller tap <pdficon></pdficon> for at åbne PDF-dokumentet.",
+      "move": "Flyt PDF’en ved at klikke og trække det rundt på skærmen. ",
+      "cut": "Skær ud efter mønsteret",
+      "tools": "Under Visning er der flere værktøjer tilgængelige",
       "showGrid": {
-        "title": "Show/hide grid",
-        "description": "When projecting, it shows/hides a faint grid to verify that your calibration is correct."
+        "title": "Vis/skjul gitter",
+        "description": "Når mønsteret vises, vil man kunne vælge at se et svagt gitter for kunne kontrollere, at kalibreringen er korrekt. "
       },
       "invert": {
-        "title": "Invert Colors",
-        "description": "When projecting, it's usually easier to see white lines on black."
+        "title": "Omvendte farver",
+        "description": "Når mønsteret vises, er det som regel nemmere at se hvide linjer på sort. "
       },
       "flip": {
-        "title": "Flip Vertical/Horizontal",
-        "description": "Helpful to unwrap fold lines in patterns."
+        "title": "Vend lodret/vandret",
+        "description": "Nyttigt til at spejle halve mønsterdele"
       },
       "rotate": {
-        "title": "Rotate",
-        "description": "Change the orientation of the pattern by 90 degrees."
+        "title": "Rotér",
+        "description": "Ændre mønsterets retning med 90 grader"
       },
       "fullscreen": {
-        "title": "Fullscreen",
-        "description": "It's generally easier to use the software in fullscreen mode."
+        "title": "Fuld skærm",
+        "description": "Det er som regel nemmere at bruge softwaren i fuld skærm. "
       }
     },
     "faq": {
-      "title": "FAQ",
+      "title": "FAQ / OSS",
       "gridSize": {
-        "question": "Having trouble dragging the grid corners to the edge of your mat?",
-        "answer": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and make sure your width and height inputs match the width and height of the grid."
+        "question": "Spørgsmål: Problemer med at trække gitterets hjørner til kanten af din skæremåtte? ",
+        "answer": "Svar: Du behøver ikke at bruge hele din skæremåtte, når du kalibrerer. Brug i stedet så stort et område som muligt, hvor du kan få kalibreringsgitteret til at passe i. Vær sikker på at målene (bredde og højde) på måtten passer med de indtastede mål. "
       },
       "wrongSizePdf": {
-        "question": "Is your PDF projecting too small or large?",
-        "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Make sure your pattern has the correct scale. A good way to check if the scale of your pattern is off is by projecting a <inchGridLink>one inch</inchGridLink> or <cmGridLink>one centimetre</cmGridLink> grid to see if it matches your cutting mat."
+        "question": "Vises PDF’en for stort eller for småt? ",
+        "answer": "Pattern Projector kalibreringsværktæj har ingen zoom, fordi skaleringen bestemmes af størrelsesinfomationen i PDF’en. Vær sikker på, at skaleringen er rigtigt. En god måde at tjekke skaleringen er korrekt eller ej er at vise en tomme eller en centimeter på projektoren og se, om den matcher din skæremåtte. "
       },
       "saveAsApp": {
-        "question": "Do you want to save Pattern Projector as an app?",
-        "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
+        "question": "Vil du gemme Pattern Projector som en app? ",
+        "answer": "Pattern Projector er en Progressive Web App (PWA) og kan gemmes som en app. På en computer kan du installere den med  <googleChromeLink>Chrome</googleChromeLink> eller <microsoftEdgeLink>Edge</microsoftEdgeLink>. På en tablet skal du åbne Del-menu og trykke på Tilføj til hjemmeskærm”."
       },
       "layerSupport": {
-        "question": "Do you have support for layers?",
-        "answer": "Not yet; but it's planned for an upcoming release."
+        "question": "Er der mulighed for vælge lag? ",
+        "answer": "Ikke endnu, men det kommer i en senere udgave. "
       },
       "annotationSupport": {
-        "question": "Do you have support for adding annotations?",
-        "answer": "Not yet; but it's planned for an upcoming release."
+        "question": "Er der mulighed for at lave anmærkninger? ",
+        "answer": "Ikke endnu, men det kommer i en senere udgave. "
       },
       "chromecastSupport": {
-        "question": "Do you have support Chromecast?",
-        "answer": "While it's possible to cast this webpage in Chrome, the lag in the connection can be frustrating, especially when calibrating. Better support for Chromecast is planned in an upcoming release."
+        "question": "Er der mulighed for at bruge Chromecast? ",
+        "answer": "Det er muligt at bruge Chromecast til at vise denne webside, men der er lag (forsinkelse), som kan være frustrerende. Der er planer om bedre understøttelse af Chromecast i en senere udgave. "
       },
       "mobileSupport": {
         "question": "Do you have support mobile phones and tablets?",
@@ -90,34 +90,34 @@
       }
     },
     "contribute": {
-      "title": "Contribute to the project",
-      "donation": "If you would like to support the development of this tool, please consider <donateLink>buying me a coffee</donateLink>",
-      "develop": "Help implement features and fix issues on <githubLink>GitHub</githubLink>.",
-      "translate": "Translate the project into more languages.",
-      "feedback": "Feedback and feature requests are welcome!"
+      "title": "Bidrag til projektet",
+      "donation": "Hvis du har lyst til at støtte udviklingen af dette værktøj, så overvej at købe mig <donateLink>en kop kaffe</donateLink>. ",
+      "develop": "Hjælp med at implementere funktioner og fixe problemer på  <githubLink>GitHub</githubLink>.",
+      "translate": "Oversæt projektet til flere sprog",
+      "feedback": "Feedback og forslag til funktioner er velkomne! "
     },
-    "contact": "Contact"
+    "contact": "Kontakt"
   },
   "Header": {
-    "projecting": "Projecting",
-    "calibrating": "Calibrating",
-    "openPDF": "Open PDF",
+    "projecting": "Visning",
+    "calibrating": "Kaliberering",
+    "openPDF": "Åbn PDF",
     "height": "H:",
-    "width": "W:",
-    "project": "Project",
-    "calibrate": "Calibrate",
-    "delete": "Delete points",
-    "gridOn": "Grid on",
-    "gridOff": "Grid off",
-    "invertColor": "Invert colors",
-    "invertColorOff": "Invert colors off",
-    "flipVertical": "Flip vertically",
-    "flipVerticalOff": "Flip vertically off",
-    "flipHorizontal": "Flip horizontally",
-    "flipHorizontalOff": "Flip horizontally off",
-    "rotate90": "Rotate 90 degrees clockwise",
-    "arrowBack": "Back 1 page",
-    "arrowForward": "Forward 1 page",
-    "info": "Info page"
+    "width": "B:",
+    "project": "Vis",
+    "calibrate": "Kalibrér",
+    "delete": "Reset calibration",
+    "gridOn": "Vis gitter",
+    "gridOff": "Skjul gitter",
+    "invertColor": "Vis farver omvendt",
+    "invertColorOff": "Vis farver normalt",
+    "flipVertical": "Vend lodret",
+    "flipVerticalOff": "Vend lodret til normal",
+    "flipHorizontal": "Vend vandret",
+    "flipHorizontalOff": "Vend vandret til normal",
+    "rotate90": "Rotér 90 grader med uret",
+    "arrowBack": "Gå en side tilbage",
+    "arrowForward": "Gå en side frem",
+    "info": "Infoside"
   }
 }
