@@ -24,12 +24,12 @@
       "keystone": "Wenn dein Beamer Keystones hat, dann versuche es so nah wie möglich am vorgesehenen Rechteck auszurichten."
     },
     "calibration": {
-      "title": "Kalibration",
+      "title": "Kalibrierung",
       "start": "Klicke auf “Starte Kalibrierung.”",
       "input": "Füge die Weite und Höhe deiner Schneidematte ein.",
       "fullscreen": "Gehe auf Vollbildmodus, indem du auf das Ikon klickst",
       "drag": "Ziehe die Ecken des Rasters auf die Ecken deiner Schneidematte. Mit Blick auf die Matte, justiere die Ecken am PC oder Tablet. Justiere es solange, bis die Ecken und Linien mit deiner Schneidematte übereinstimmen.",
-      "project": "When das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf "Beamen"."
+      "project": "When das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf \"Beamen\"."
     },
     "project": {
       "title": "Projiziere ein Schnittmuster",
