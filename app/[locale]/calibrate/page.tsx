@@ -39,7 +39,7 @@ export default function Page() {
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
-    getDefaultTransforms()
+    getDefaultTransforms(),
   );
   const [gridOn, setGridOn] = useState<boolean>(true);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
@@ -51,12 +51,11 @@ export default function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
   const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
+    Matrix.identity(3, 3),
   );
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
+    Matrix.identity(3, 3),
   );
-  const [canvasOffset, setCanvasOffset] = useState<Point>({ x: 0, y: 0 });
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
@@ -67,10 +66,10 @@ export default function Page() {
 
   function getDefaultPoints() {
     const o = 150;
-    const minx = window.innerWidth * 0.2 - canvasOffset.x;
-    const miny = window.innerHeight * 0.2 - canvasOffset.y;
-    const maxx = window.innerWidth * 0.8 - canvasOffset.x;
-    const maxy = window.innerHeight * 0.8 - canvasOffset.y;
+    const minx = window.innerWidth * 0.2;
+    const miny = window.innerHeight * 0.2;
+    const maxx = window.innerWidth * 0.8;
+    const maxy = window.innerHeight * 0.8;
 
     const p = [
       { x: minx, y: miny },
@@ -84,24 +83,32 @@ export default function Page() {
 
   const ptDensity = unitOfMeasure === CM ? 96 / 2.54 : 96;
 
+  function updateLocalSettings(newSettings: {}) {
+    const settingString = localStorage.getItem("canvasSettings");
+    let currSettings = {};
+    if (settingString) {
+      try {
+        currSettings = JSON.parse(settingString);
+      } catch (e) {
+        currSettings = {};
+      }
+    }
+    const merged = Object.assign({}, currSettings, newSettings);
+    localStorage.setItem("canvasSettings", JSON.stringify(merged));
+  }
+
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
-    localStorage.setItem(
-      "canvasSettings",
-      JSON.stringify({ height: h, width, unitOfMeasure })
-    );
+    updateLocalSettings({ height: h });
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
-    localStorage.setItem(
-      "canvasSettings",
-      JSON.stringify({ height, width: w, unitOfMeasure })
-    );
+    updateLocalSettings({ width: w });
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -125,12 +132,6 @@ export default function Page() {
   useEffect(() => {
     requestWakeLock();
   });
-
-  useEffect(() => {
-    const dy = windowScreen.y + window.outerHeight - window.innerHeight;
-    const dx = windowScreen.x + window.outerWidth - window.innerWidth;
-    setCanvasOffset({ x: -dx, y: -dy });
-  }, [windowScreen.x, windowScreen.y]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -163,13 +164,25 @@ export default function Page() {
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
+      const newTransformSettings: {
+        inverted?: boolean;
+        isInvertedGreen?: boolean;
+      } = {};
+      if (localSettings.inverted) {
+        newTransformSettings.inverted = localSettings.inverted;
+      }
+      if (localSettings.isInvertedGreen) {
+        newTransformSettings.isInvertedGreen = localSettings.isInvertedGreen;
+      }
+      if (Object.keys(newTransformSettings).length > 0) {
+        setTransformSettings({ ...transformSettings, ...newTransformSettings });
+      }
     }
   }, []);
 
   useEffect(() => {
-    const offset = translate(canvasOffset);
-    setMatrix3d(toMatrix3d(offset.mmul(localTransform)));
-  }, [localTransform, canvasOffset]);
+    setMatrix3d(toMatrix3d(localTransform));
+  }, [localTransform]);
 
   useEffect(() => {
     if (points && points.length === maxPoints) {
@@ -197,6 +210,13 @@ export default function Page() {
     }
   }, [points, width, height, unitOfMeasure]);
 
+  function getInversionFilters(inverted: boolean, isGreen: boolean): string {
+    if (!inverted) {
+      return "invert(0)";
+    }
+    return `invert(1) ${isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""}`;
+  }
+
   return (
     <main
       style={{
@@ -223,13 +243,18 @@ export default function Page() {
           unitOfMeasure={unitOfMeasure}
           setUnitOfMeasure={(newUnit) => {
             setUnitOfMeasure(newUnit);
-            localStorage.setItem(
-              "canvasSettings",
-              JSON.stringify({ height, width, unitOfMeasure: newUnit })
-            );
+            updateLocalSettings({ unitOfMeasure: newUnit });
           }}
           transformSettings={transformSettings}
-          setTransformSettings={setTransformSettings}
+          setTransformSettings={(newSettings) => {
+            setTransformSettings(newSettings);
+            if (newSettings) {
+              updateLocalSettings({
+                inverted: newSettings.inverted,
+                isInvertedGreen: newSettings.isInvertedGreen,
+              });
+            }
+          }}
           pageNumber={pageNumber}
           setPageNumber={setPageNumber}
           pageCount={pageCount}
@@ -238,7 +263,6 @@ export default function Page() {
         />
         <CalibrationCanvas
           className={`absolute z-10 ${visible(gridOn)}`}
-          canvasOffset={canvasOffset}
           points={points}
           setPoints={setPoints}
           pointToModify={pointToModify}
@@ -260,7 +284,10 @@ export default function Page() {
             style={{
               transform: `${matrix3d}`,
               transformOrigin: "0 0",
-              filter: `invert(${transformSettings.inverted ? "1" : "0"})`,
+              filter: getInversionFilters(
+                transformSettings.inverted,
+                transformSettings.isInvertedGreen,
+              ),
             }}
           >
             <div

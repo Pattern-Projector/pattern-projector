@@ -1,8 +1,9 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
+import { Dropdown } from "@/_components/dropdown/dropdown";
 import FileInput from "@/_components/file-input";
 import FullScreenButton from "@/_components/full-screen-button";
 import InlineInput from "@/_components/inline-input";
@@ -57,9 +58,9 @@ export default function Header({
   handleResetCalibration: () => void;
   fullScreenHandle: FullScreenHandle;
   unitOfMeasure: string;
-  setUnitOfMeasure: Dispatch<SetStateAction<string>>;
+  setUnitOfMeasure: (newUnit: string) => void;
   transformSettings: TransformSettings;
-  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
+  setTransformSettings: (newTransformSettings: TransformSettings) => void;
   pageNumber: number;
   setPageNumber: Dispatch<SetStateAction<number>>;
   pageCount: number;
@@ -67,6 +68,8 @@ export default function Header({
   setGridOn: Dispatch<SetStateAction<boolean>>;
 }) {
   const t = useTranslations("Header");
+
+  const [invertOpen, setInvertOpen] = useState<boolean>(false);
 
   function changePage(offset: number) {
     setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
@@ -129,7 +132,7 @@ export default function Header({
             ]}
           />
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
               isCalibrating
             )}`}
             name={"Delete points"}
@@ -140,7 +143,7 @@ export default function Header({
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Toggle grid visibility"}
             onClick={() => setGridOn(!gridOn)}
           >
@@ -150,24 +153,43 @@ export default function Header({
               <GridOffIcon ariaLabel={t("gridOff")} />
             )}
           </button>
+          <div className="relative inline-block text-left">
+            <button
+              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+              name={t("invertColor")}
+              onClick={(e) => {
+                let newInverted;
+                let newIsGreenInverted;
+                if (!transformSettings.inverted) {
+                  newInverted = true;
+                  newIsGreenInverted = false;
+                } else if (!transformSettings.isInvertedGreen) {
+                  newInverted = true;
+                  newIsGreenInverted = true;
+                } else {
+                  newInverted = false;
+                  newIsGreenInverted = false;
+                }
+                setTransformSettings({
+                  ...transformSettings,
+                  inverted: newInverted,
+                  isInvertedGreen: newIsGreenInverted,
+                });
+                setInvertOpen(!transformSettings.inverted);
+              }}
+            >
+              {transformSettings.inverted ? (
+                <InvertColorOffIcon
+                  fill={transformSettings.isInvertedGreen ? "#32CD32" : "#000"}
+                  ariaLabel={t("invertColorOff")}
+                />
+              ) : (
+                <InvertColorIcon ariaLabel={t("invertColor")} />
+              )}
+            </button>
+          </div>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-            name={"Invert colors"}
-            onClick={() =>
-              setTransformSettings({
-                ...transformSettings,
-                inverted: !transformSettings.inverted,
-              })
-            }
-          >
-            {transformSettings.inverted ? (
-              <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
-            ) : (
-              <InvertColorIcon ariaLabel={t("invertColor")} />
-            )}
-          </button>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Flip vertically"}
             onClick={() =>
               setTransformSettings({
@@ -186,7 +208,7 @@ export default function Header({
             )}
           </button>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Flip horizontally"}
             onClick={() =>
               setTransformSettings({
@@ -205,7 +227,7 @@ export default function Header({
             )}
           </button>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             name={"Rotate 90 degrees clockwise"}
             onClick={() =>
               setTransformSettings({
@@ -252,13 +274,13 @@ export default function Header({
             {t("openPDF")}
           </label>
           <button
-            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             onClick={() => setIsCalibrating(!isCalibrating)}
           >
             {isCalibrating ? t("project") : t("calibrate")}
           </button>
           <Link
-            className={`ml-1 bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            className={`ml-1 bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             href="/"
           >
             <InfoIcon ariaLabel={t("info")} />
