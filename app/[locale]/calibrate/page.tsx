@@ -280,7 +280,7 @@ export default function Page() {
           perspective={perspective}
         >
           <div
-            className={"absolute z-0 border-8 border-purple-700"}
+            className={"absolute z-0"}
             style={{
               transform: `${matrix3d}`,
               transformOrigin: "0 0",
@@ -291,6 +291,7 @@ export default function Page() {
             }}
           >
             <div
+              className={"border-8 border-purple-700"}
               style={{
                 transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
                 transformOrigin: "center",
