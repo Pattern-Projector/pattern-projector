@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { FullScreenHandle } from "react-full-screen";
 
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
@@ -15,6 +16,7 @@ export default function FullScreenButton({
   className?: string | undefined;
   handle: FullScreenHandle;
 }) {
+  const t = useTranslations("FullscreenButton");
   return (
     <button
       className={className}
@@ -22,7 +24,11 @@ export default function FullScreenButton({
       name={handle.active ? "Exit full screen" : "Enter full screen"}
       onClick={handle.active ? handle.exit : handle.enter}
     >
-      {handle.active ? <FullscreenExitIcon /> : <FullscreenIcon />}
+      {handle.active ? (
+        <FullscreenExitIcon ariaLabel={t("fullscreen")} />
+      ) : (
+        <FullscreenIcon ariaLabel={t("fullscreenExit")} />
+      )}
     </button>
   );
 }

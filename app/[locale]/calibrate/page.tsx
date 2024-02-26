@@ -89,24 +89,32 @@ export default function Page() {
 
   const ptDensity = unitOfMeasure === CM ? 96 / 2.54 : 96;
 
+  function updateLocalSettings(newSettings: {}) {
+    const settingString = localStorage.getItem("canvasSettings");
+    let currSettings = {};
+    if (settingString) {
+      try {
+        currSettings = JSON.parse(settingString);
+      } catch (e) {
+        currSettings = {};
+      }
+    }
+    const merged = Object.assign({}, currSettings, newSettings);
+    localStorage.setItem("canvasSettings", JSON.stringify(merged));
+  }
+
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
-    localStorage.setItem(
-      "canvasSettings",
-      JSON.stringify({ height: h, width, unitOfMeasure }),
-    );
+    updateLocalSettings({ height: h });
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
-    localStorage.setItem(
-      "canvasSettings",
-      JSON.stringify({ height, width: w, unitOfMeasure }),
-    );
+    updateLocalSettings({ width: w });
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -162,6 +170,19 @@ export default function Page() {
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
+      const newTransformSettings: {
+        inverted?: boolean;
+        isInvertedGreen?: boolean;
+      } = {};
+      if (localSettings.inverted) {
+        newTransformSettings.inverted = localSettings.inverted;
+      }
+      if (localSettings.isInvertedGreen) {
+        newTransformSettings.isInvertedGreen = localSettings.isInvertedGreen;
+      }
+      if (Object.keys(newTransformSettings).length > 0) {
+        setTransformSettings({ ...transformSettings, ...newTransformSettings });
+      }
     }
   }, []);
 
@@ -195,6 +216,13 @@ export default function Page() {
     }
   }, [points, width, height, unitOfMeasure]);
 
+  function getInversionFilters(inverted: boolean, isGreen: boolean): string {
+    if (!inverted) {
+      return "invert(0)";
+    }
+    return `invert(1) ${isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""}`;
+  }
+
   return (
     <main
       style={{
@@ -221,13 +249,18 @@ export default function Page() {
           unitOfMeasure={unitOfMeasure}
           setUnitOfMeasure={(newUnit) => {
             setUnitOfMeasure(newUnit);
-            localStorage.setItem(
-              "canvasSettings",
-              JSON.stringify({ height, width, unitOfMeasure: newUnit }),
-            );
+            updateLocalSettings({ unitOfMeasure: newUnit });
           }}
           transformSettings={transformSettings}
-          setTransformSettings={setTransformSettings}
+          setTransformSettings={(newSettings) => {
+            setTransformSettings(newSettings);
+            if (newSettings) {
+              updateLocalSettings({
+                inverted: newSettings.inverted,
+                isInvertedGreen: newSettings.isInvertedGreen,
+              });
+            }
+          }}
           pageNumber={pageNumber}
           setPageNumber={setPageNumber}
           pageCount={pageCount}
@@ -253,14 +286,18 @@ export default function Page() {
           perspective={perspective}
         >
           <div
-            className={"absolute z-0 border-8 border-purple-700"}
+            className={"absolute z-0"}
             style={{
               transform: `${matrix3d}`,
               transformOrigin: "0 0",
-              filter: `invert(${transformSettings.inverted ? "1" : "0"})`,
+              filter: getInversionFilters(
+                transformSettings.inverted,
+                transformSettings.isInvertedGreen
+              ),
             }}
           >
             <div
+              className={"border-8 border-purple-700"}
               style={{
                 transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
                 transformOrigin: "center",

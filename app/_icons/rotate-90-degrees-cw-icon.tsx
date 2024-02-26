@@ -1,7 +1,11 @@
-export default function Rotate90DegreesCWIcon() {
+export default function Rotate90DegreesCWIcon({
+  ariaLabel,
+}: {
+  ariaLabel: string;
+}) {
   return (
     <svg
-      aria-label="Rotate 90 degrees clockwise"
+      aria-label={ariaLabel}
       xmlns="http://www.w3.org/2000/svg"
       height="24"
       viewBox="0 -960 960 960"
