@@ -11,5 +11,5 @@ export default createMiddleware({
 export const config = {
   // Match only internationalized pathnames
   // Match /calibrate for people who saved a link to /calibrate before internationalization was added
-  matcher: ['/', '/(de|en|da)/:path*', '/calibrate']
+  matcher: ['/', '/(da|de|en)/:path*', '/calibrate']
 };
