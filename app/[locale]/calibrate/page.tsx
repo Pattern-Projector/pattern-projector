@@ -21,8 +21,6 @@ import {
   TransformSettings,
 } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
-import Modal from "@/_components/modal/modal";
-import PdfErrorModal from "@/_components/pdf-error-modal";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -61,10 +59,6 @@ export default function Page() {
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
-  const [pdfError, setPdfError] = useState<{
-    type: string;
-    error: Error;
-  } | null>(null);
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -292,7 +286,7 @@ export default function Page() {
               transformOrigin: "0 0",
               filter: getInversionFilters(
                 transformSettings.inverted,
-                transformSettings.isInvertedGreen
+                transformSettings.isInvertedGreen,
               ),
             }}
           >
@@ -313,14 +307,6 @@ export default function Page() {
           </div>
         </Draggable>
       </FullScreen>
-      <PdfErrorModal
-        open={!!pdfError}
-        email="courtney@patternprojector.com"
-        error={pdfError}
-        onClose={() => {
-          setPdfError(null);
-        }}
-      />
     </main>
   );
 }
