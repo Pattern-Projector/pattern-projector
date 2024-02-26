@@ -44,6 +44,7 @@ export default function CustomRenderer() {
         if (groups) {
           Object.keys(groups).forEach((key, i) => {
             if (i > 5) {
+              // Hiding all layers after the first 6 layers
               optionalContentConfig.setVisibility(key, false); // Hide the layer
             }
           });
