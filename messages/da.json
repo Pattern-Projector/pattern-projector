@@ -85,8 +85,8 @@
         "answer": "Det er muligt at bruge Chromecast til at vise denne webside, men der er lag (forsinkelse), som kan være frustrerende. Der er planer om bedre understøttelse af Chromecast i en senere udgave. "
       },
       "mobileSupport": {
-        "question": "Do you have support mobile phones and tablets?",
-        "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use. Better mobile support is planned in an upcoming release."
+        "question": "Er der mulighed for at bruge en mobiltelefon eller tablet?",
+        "answer": "Det er muligt at bruge hjemmesiden på en smartphone, men den begrænsede skærmstørrelse gør det svært at bruge. Der er planer om bedre funktionalitet på mobile enheder i en senere udgave."
       }
     },
     "contribute": {
@@ -119,5 +119,9 @@
     "arrowBack": "Gå en side tilbage",
     "arrowForward": "Gå en side frem",
     "info": "Infoside"
+  },
+  "FullscreenButton": {
+    "fullscreen": "Fuld skærm",
+    "fullscreenExit": "Fuld skærm"
   }
 }
