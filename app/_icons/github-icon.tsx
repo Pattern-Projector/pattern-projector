@@ -1,6 +1,7 @@
-export default function GithubIcon() {
+export default function GithubIcon({ ariaLabel }: { ariaLabel: string }) {
   return (
     <svg
+      aria-label={ariaLabel}
       width="40"
       height="40"
       version="1.1"

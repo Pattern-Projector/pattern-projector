@@ -1,7 +1,7 @@
-export default function ArrowForwardIcon() {
+export default function ArrowForwardIcon({ ariaLabel }: { ariaLabel: string }) {
   return (
     <svg
-      aria-label="Arrow Forward"
+      aria-label={ariaLabel}
       xmlns="http://www.w3.org/2000/svg"
       height="24"
       viewBox="0 -960 960 960"

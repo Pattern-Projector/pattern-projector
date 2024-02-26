@@ -1,7 +1,9 @@
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
+import { Dropdown } from "@/_components/dropdown/dropdown";
 import FileInput from "@/_components/file-input";
 import FullScreenButton from "@/_components/full-screen-button";
 import InlineInput from "@/_components/inline-input";
@@ -22,7 +24,6 @@ import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
-import { Dropdown } from "@/_components/dropdown/dropdown";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -66,6 +67,8 @@ export default function Header({
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
 }) {
+  const t = useTranslations("Header");
+
   const [invertOpen, setInvertOpen] = useState<boolean>(false);
 
   function changePage(offset: number) {
@@ -73,12 +76,10 @@ export default function Header({
   }
 
   function handlePreviousPage() {
-    console.log(`previous page`);
     changePage(-1);
   }
 
   function handleNextPage() {
-    console.log(`next page`);
     changePage(1);
   }
 
@@ -90,7 +91,7 @@ export default function Header({
       >
         <div className="flex items-center">
           <h1 className="mr-2">
-            {isCalibrating ? "Calibrating" : "Projecting"}
+            {isCalibrating ? t("calibrating") : t("projecting")}
           </h1>
           <FullScreenButton
             className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
@@ -103,7 +104,7 @@ export default function Header({
             handleChange={handleHeightChange}
             id="height"
             inputTestId="height"
-            label="H:"
+            label={t("height")}
             labelRight={unitOfMeasure === CM ? "cm" : "in"}
             name="height"
             value={height}
@@ -113,7 +114,7 @@ export default function Header({
             handleChange={handleWidthChange}
             id="height"
             inputTestId="height"
-            label="W:"
+            label={t("width")}
             labelRight={unitOfMeasure === CM ? "cm" : "in"}
             name="width"
             value={width}
@@ -132,12 +133,12 @@ export default function Header({
           />
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-              isCalibrating,
+              isCalibrating
             )}`}
             name={"Delete points"}
             onClick={handleResetCalibration}
           >
-            <DeleteIcon />
+            <DeleteIcon ariaLabel={t("delete")} />
           </button>
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
@@ -146,12 +147,16 @@ export default function Header({
             name={"Toggle grid visibility"}
             onClick={() => setGridOn(!gridOn)}
           >
-            {gridOn ? <GridOnIcon /> : <GridOffIcon />}
+            {gridOn ? (
+              <GridOnIcon ariaLabel={t("gridOn")} />
+            ) : (
+              <GridOffIcon ariaLabel={t("gridOff")} />
+            )}
           </button>
           <div className="relative inline-block text-left">
             <button
               className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-              name={"Invert colors"}
+              name={t("invertColor")}
               onClick={(e) => {
                 let newInverted;
                 let newIsGreenInverted;
@@ -176,9 +181,10 @@ export default function Header({
               {transformSettings.inverted ? (
                 <InvertColorOffIcon
                   fill={transformSettings.isInvertedGreen ? "#32CD32" : "#000"}
+                  ariaLabel={t("invertColorOff")}
                 />
               ) : (
-                <InvertColorIcon />
+                <InvertColorIcon ariaLabel={t("invertColor")} />
               )}
             </button>
           </div>
@@ -196,9 +202,9 @@ export default function Header({
             }
           >
             {transformSettings.scale.x === -1 ? (
-              <FlipVerticalOffIcon />
+              <FlipVerticalOffIcon ariaLabel={t("flipVerticalOff")} />
             ) : (
-              <FlipVerticalIcon />
+              <FlipVerticalIcon ariaLabel={t("flipVertical")} />
             )}
           </button>
           <button
@@ -215,9 +221,9 @@ export default function Header({
             }
           >
             {transformSettings.scale.y === -1 ? (
-              <FlipHorizontalOffIcon />
+              <FlipHorizontalOffIcon ariaLabel={t("flipHorizontalOff")} />
             ) : (
-              <FlipHorizontalIcon />
+              <FlipHorizontalIcon ariaLabel={t("flipHorizontal")} />
             )}
           </button>
           <button
@@ -230,7 +236,7 @@ export default function Header({
               })
             }
           >
-            <Rotate90DegreesCWIcon />
+            <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
           </button>
           <div className={`flex items-center ml-3 ${visible(pageCount > 1)}`}>
             <button
@@ -238,7 +244,7 @@ export default function Header({
               onClick={handlePreviousPage}
               name="Previous Page"
             >
-              <ArrowBackIcon />
+              <ArrowBackIcon ariaLabel={t("arrowBack")} />
             </button>
             {pageNumber}
             <button
@@ -246,14 +252,14 @@ export default function Header({
               onClick={handleNextPage}
               name="Next Page"
             >
-              <ArrowForwardIcon />
+              <ArrowForwardIcon ariaLabel={t("arrowForward")} />
             </button>
           </div>
         </div>
         <div className="flex items-center">
           <label
             className={`${visible(
-              !isCalibrating,
+              !isCalibrating
             )} outline mr-2 outline-purple-700 flex items-center text-purple-800 focus:ring-2 focus:outline-none focus:ring-blue-300 hover:bg-purple-100 font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
           >
             <FileInput
@@ -263,21 +269,21 @@ export default function Header({
               id="pdfFile"
             ></FileInput>
             <span className="mr-2">
-              <PdfIcon fill="#7e22ce" />
+              <PdfIcon ariaLabel={t("openPDF")} fill="#7e22ce" />
             </span>
-            Open PDF
+            {t("openPDF")}
           </label>
           <button
             className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             onClick={() => setIsCalibrating(!isCalibrating)}
           >
-            {isCalibrating ? "Project" : "Calibrate"}
+            {isCalibrating ? t("project") : t("calibrate")}
           </button>
           <Link
             className={`ml-1 bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
             href="/"
           >
-            <InfoIcon />
+            <InfoIcon ariaLabel={t("info")} />
           </Link>
         </div>
       </nav>

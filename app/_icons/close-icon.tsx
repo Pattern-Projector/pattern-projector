@@ -1,8 +1,8 @@
-export default function CloseIcon() {
+export default function CloseIcon({ ariaLabel }: { ariaLabel: string }) {
   return (
     <svg
+      aria-label={ariaLabel}
       xmlns="http://www.w3.org/2000/svg"
-      aria-label="Close"
       height="24"
       viewBox="0 -960 960 960"
       width="24"

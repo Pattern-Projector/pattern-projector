@@ -1,6 +1,7 @@
-export default function InfoIcon() {
+export default function InfoIcon({ ariaLabel }: { ariaLabel: string }) {
   return (
     <svg
+      aria-label={ariaLabel}
       xmlns="http://www.w3.org/2000/svg"
       height="24"
       viewBox="0 -960 960 960"
