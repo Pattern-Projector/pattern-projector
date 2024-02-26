@@ -16,7 +16,7 @@ export default function FullScreenButton({
   className?: string | undefined;
   handle: FullScreenHandle;
 }) {
-  const t = useTranslations("Header");
+  const t = useTranslations("FullscreenButton");
   return (
     <button
       className={className}
