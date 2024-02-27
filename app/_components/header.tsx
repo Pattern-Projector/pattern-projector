@@ -24,6 +24,7 @@ import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
+import FourCorners from "@/_icons/four-corners";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -110,9 +111,9 @@ export default function Header({
             }
           >
             {transformSettings.isFourCorners ? (
-              <FlipHorizontalOffIcon ariaLabel={t("flipHorizontalOff")} />
+              <FourCorners ariaLabel={t("flipHorizontalOff")} />
             ) : (
-              <FlipHorizontalIcon ariaLabel={t("flipHorizontal")} />
+              <FourCorners ariaLabel={t("flipHorizontal")} />
             )}
           </button>
           <InlineInput
