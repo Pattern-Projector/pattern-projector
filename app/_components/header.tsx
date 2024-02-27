@@ -112,10 +112,7 @@ export default function Header({
             }
           >
             {transformSettings.isFourCorners ? (
-              <FourCorners
-                ariaLabel={t("flipHorizontalOff")}
-                on={transformSettings.isFourCorners}
-              />
+              <FourCorners ariaLabel={t("flipHorizontalOff")} />
             ) : (
               <FourCornersOff ariaLabel={t("flipHorizontalOff")} />
             )}
