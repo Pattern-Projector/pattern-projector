@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
-import { Dropdown } from "@/_components/dropdown/dropdown";
 import FileInput from "@/_components/file-input";
 import FullScreenButton from "@/_components/full-screen-button";
 import InlineInput from "@/_components/inline-input";

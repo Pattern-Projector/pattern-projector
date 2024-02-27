@@ -1,4 +1,4 @@
-import { Point } from "@/_lib/point";
+import { Point } from '@/_lib/point';
 
 export interface TransformSettings {
   scale: Point;
@@ -14,6 +14,6 @@ export function getDefaultTransforms() {
     scale: { x: 1, y: 1 },
     inverted: false,
     isInvertedGreen: false,
-    isFourCorners: false,
+    isFourCorners: true,
   };
 }
