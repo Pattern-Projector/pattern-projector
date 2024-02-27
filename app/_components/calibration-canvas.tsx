@@ -14,8 +14,19 @@ import {
   Point,
   touchToCanvasPoint,
 } from "@/_lib/point";
+import { TransformSettings } from "@/_lib/transform-settings";
+import { CornerColorHex } from "@/_components/theme/colors";
 
 const maxPoints = 4; // One point per vertex in rectangle
+
+function getStrokeStyle(pointToModify: number) {
+  return [
+    CornerColorHex.TOPLEFT,
+    CornerColorHex.TOPRIGHT,
+    CornerColorHex.BOTTOMRIGHT,
+    CornerColorHex.BOTTOMLEFT,
+  ][pointToModify % 4];
+}
 
 function draw(
   ctx: CanvasRenderingContext2D,
@@ -27,6 +38,7 @@ function draw(
   isCalibrating: boolean,
   pointToModify: number | null,
   ptDensity: number,
+  displayAllCorners?: boolean,
 ): void {
   ctx.translate(offset.x, offset.y);
 
@@ -61,7 +73,19 @@ function draw(
     drawGrid(ctx, width, height, perspective, 0, ptDensity);
     ctx.stroke();
 
-    if (pointToModify !== null) {
+    if (displayAllCorners) {
+      points.forEach((point, index) => {
+        ctx.beginPath();
+        ctx.strokeStyle = getStrokeStyle(index);
+        if (index !== pointToModify) {
+          ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
+        } else {
+          ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
+        }
+        ctx.lineWidth = 4;
+        ctx.stroke();
+      });
+    } else if (pointToModify !== null) {
       ctx.beginPath();
       ctx.arc(
         points[pointToModify].x,
@@ -70,7 +94,7 @@ function draw(
         0,
         2 * Math.PI,
       );
-      ctx.strokeStyle = "#3b82f6";
+      ctx.strokeStyle = getStrokeStyle(pointToModify);
       ctx.lineWidth = 4;
       ctx.stroke();
     }
@@ -158,6 +182,8 @@ export default function CalibrationCanvas({
   height,
   isCalibrating,
   ptDensity,
+  transformSettings,
+  setTransformSettings,
 }: {
   className: string | undefined;
   points: Point[];
@@ -169,6 +195,8 @@ export default function CalibrationCanvas({
   height: number;
   isCalibrating: boolean;
   ptDensity: number;
+  transformSettings: TransformSettings;
+  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
@@ -192,6 +220,7 @@ export default function CalibrationCanvas({
           isCalibrating,
           pointToModify,
           ptDensity,
+          transformSettings.isFourCorners,
         );
       }
     }
@@ -204,6 +233,7 @@ export default function CalibrationCanvas({
     isCalibrating,
     pointToModify,
     ptDensity,
+    transformSettings.isFourCorners,
   ]);
 
   function getShortestDistance(p: Point): number {
@@ -286,6 +316,18 @@ export default function CalibrationCanvas({
         case "ArrowDown":
           modifyPoint(0, 1);
           break;
+      }
+      if (e.code === "Tab") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          setTransformSettings({
+            ...transformSettings,
+            isFourCorners: !transformSettings.isFourCorners,
+          });
+        } else {
+          const newPointToModify = ((pointToModify || 0) + 1) % points.length;
+          setPointToModify(newPointToModify);
+        }
       }
     }
   }
