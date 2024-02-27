@@ -77,7 +77,6 @@ export default function Page() {
       { x: maxx, y: maxy },
       { x: minx, y: maxy },
     ];
-    console.log(p);
     return p;
   }
 
@@ -189,6 +188,9 @@ export default function Page() {
       setPerspective(m);
       setLocalTransform(n);
       setCalibrationTransform(n);
+      if (pointToModify === null) {
+        setPointToModify(0);
+      }
     }
 
     function getDstVertices(): Point[] {
