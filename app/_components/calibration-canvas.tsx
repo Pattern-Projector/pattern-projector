@@ -15,11 +15,17 @@ import {
   touchToCanvasPoint,
 } from "@/_lib/point";
 import { TransformSettings } from "@/_lib/transform-settings";
+import { CornerColorHex } from "@/_components/theme/colors";
 
 const maxPoints = 4; // One point per vertex in rectangle
 
 function getStrokeStyle(pointToModify: number) {
-  return ["#3b82f6", "#9333ea", "#c2410c", "#65a30d"][pointToModify % 4];
+  return [
+    CornerColorHex.TOPLEFT,
+    CornerColorHex.TOPRIGHT,
+    CornerColorHex.BOTTOMRIGHT,
+    CornerColorHex.BOTTOMLEFT,
+  ][pointToModify % 4];
 }
 
 function draw(

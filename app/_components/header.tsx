@@ -25,6 +25,7 @@ import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
 import FourCorners from "@/_icons/four-corners";
+import FourCornersOff from "@/_icons/four-corners-off";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -111,11 +112,15 @@ export default function Header({
             }
           >
             {transformSettings.isFourCorners ? (
-              <FourCorners ariaLabel={t("flipHorizontalOff")} />
+              <FourCorners
+                ariaLabel={t("flipHorizontalOff")}
+                on={transformSettings.isFourCorners}
+              />
             ) : (
-              <FourCorners ariaLabel={t("flipHorizontal")} />
+              <FourCornersOff ariaLabel={t("flipHorizontalOff")} />
             )}
           </button>
+
           <InlineInput
             className="mr-1"
             handleChange={handleHeightChange}
