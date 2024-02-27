@@ -46,6 +46,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
+    "prettier": "3.2.5",
     "ts-node": "^10.9.2"
   }
 }
