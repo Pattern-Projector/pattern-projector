@@ -8,11 +8,7 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import {
-  getPerspectiveTransform,
-  toMatrix3d,
-  translate,
-} from "@/_lib/geometry";
+import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
@@ -21,6 +17,8 @@ import {
   TransformSettings,
 } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
+import { Layer } from "@/_lib/layer";
+import LayerMenu from "@/_components/layer-menu";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -39,7 +37,7 @@ export default function Page() {
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
-    getDefaultTransforms(),
+    getDefaultTransforms()
   );
   const [gridOn, setGridOn] = useState<boolean>(true);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
@@ -51,14 +49,15 @@ export default function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
   const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3),
+    Matrix.identity(3, 3)
   );
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
-    Matrix.identity(3, 3),
+    Matrix.identity(3, 3)
   );
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
+  const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -214,7 +213,9 @@ export default function Page() {
     if (!inverted) {
       return "invert(0)";
     }
-    return `invert(1) ${isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""}`;
+    return `invert(1) ${
+      isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""
+    }`;
   }
 
   return (
@@ -223,7 +224,6 @@ export default function Page() {
         height: "100vh",
         width: "100vw",
         overflow: "hidden",
-        backgroundColor: "white",
       }}
     >
       <FullScreen handle={handle} className="bg-white">
@@ -261,6 +261,9 @@ export default function Page() {
           gridOn={gridOn}
           setGridOn={setGridOn}
         />
+
+        <LayerMenu layers={layers} setLayers={setLayers} />
+
         <CalibrationCanvas
           className={`absolute z-10 ${visible(gridOn)}`}
           points={points}
@@ -302,6 +305,8 @@ export default function Page() {
                 setPageCount={setPageCount}
                 setPageNumber={setPageNumber}
                 pageNumber={pageNumber}
+                setLayers={setLayers}
+                layers={layers}
               />
             </div>
           </div>

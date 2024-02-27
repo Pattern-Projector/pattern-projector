@@ -1,30 +1,33 @@
-import { useEffect, useMemo, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
 import invariant from "tiny-invariant";
-import { pdfjs, useDocumentContext, usePageContext } from "react-pdf";
+import { usePageContext, useDocumentContext } from "react-pdf";
 
 import type { RenderParameters } from "pdfjs-dist/types/src/display/api.js";
-import { OptionalContentConfig } from "pdfjs-dist/types/web/pdf_viewer";
+import { Layer } from "@/_lib/layer";
 
-export default function CustomRenderer() {
+export default function CustomRenderer(
+  setLayers: Dispatch<SetStateAction<Map<string, Layer>>>,
+  layers: Map<string, Layer>
+) {
   const pageContext = usePageContext();
-  const docContext = useDocumentContext();
 
   invariant(pageContext, "Unable to find Page context.");
 
-  const { _className, page, rotate, scale } = pageContext;
-  const { pdf } = docContext;
+  const docContext = useDocumentContext();
 
-  invariant(
-    page,
-    "Attempted to render page canvas, but no page was specified.",
-  );
+  invariant(docContext, "Unable to find Document context.");
 
+  const _className = pageContext._className;
+  const page = pageContext.page;
+  const pdf = docContext.pdf;
   const canvasElement = useRef<HTMLCanvasElement>(null);
+  const CSS = 96.0;
+  const PDF = 72.0;
+  const PDF_TO_CSS_UNITS = CSS / PDF;
 
-  const viewport = useMemo(
-    () => page.getViewport({ scale, rotation: rotate }),
-    [page, rotate, scale],
-  );
+  const viewport = useMemo(() => {
+    page.getViewport({ scale: PDF_TO_CSS_UNITS });
+  }, [page, PDF_TO_CSS_UNITS]);
 
   function drawPageOnCanvas() {
     if (!page) {
@@ -42,12 +45,22 @@ export default function CustomRenderer() {
         const optionalContentConfig = await pdf.getOptionalContentConfig();
         const groups = optionalContentConfig.getGroups();
         if (groups) {
-          Object.keys(groups).forEach((key, i) => {
-            if (i > 5) {
-              // Hiding all layers after the first 6 layers
-              optionalContentConfig.setVisibility(key, false); // Hide the layer
+          if (layers.size === 0) {
+            const l = new Map<string, Layer>();
+            Object.keys(groups).forEach((key, i) => {
+              l.set(key, {
+                name: String(groups[key].name) ?? key,
+                visible: true,
+              });
+              setLayers(l);
+            });
+          } else {
+            for (let entry of layers) {
+              const key = entry[0];
+              const layer = entry[1];
+              optionalContentConfig.setVisibility(key, layer.visible);
             }
-          });
+          }
         }
         return optionalContentConfig;
       }
@@ -74,7 +87,7 @@ export default function CustomRenderer() {
     };
   }
 
-  useEffect(drawPageOnCanvas, [canvasElement, page, viewport]);
+  useEffect(drawPageOnCanvas, [canvasElement, page, viewport, layers]);
 
   return (
     <canvas

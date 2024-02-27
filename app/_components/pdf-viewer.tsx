@@ -6,9 +6,10 @@ import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
+import { Layer } from "@/_lib/layer";
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
-  import.meta.url,
+  import.meta.url
 ).toString();
 
 /**
@@ -18,17 +19,21 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
  */
 export default function PdfViewer({
   file,
+  setLayers,
   setPageCount,
   setPageNumber,
   pageNumber,
+  layers,
 }: {
   file: any;
+  setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
   setPageCount: Dispatch<SetStateAction<number>>;
   setPageNumber: Dispatch<SetStateAction<number>>;
   pageNumber: number;
+  layers: Map<string, Layer>;
 }) {
   const [documentProxy, setDocumentProxy] = useState<PDFDocumentProxy | null>(
-    null,
+    null
   );
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
@@ -44,7 +49,7 @@ export default function PdfViewer({
           pageNumber={pageNumber}
           pdf={documentProxy}
           renderMode="custom"
-          customRenderer={CustomRenderer}
+          customRenderer={() => CustomRenderer(setLayers, layers)}
         />
       );
     }
