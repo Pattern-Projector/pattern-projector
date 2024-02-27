@@ -17,6 +17,10 @@ import {
 
 const maxPoints = 4; // One point per vertex in rectangle
 
+function getStrokeStyle(pointToModify: number) {
+  return ["#3b82f6", "#9333ea", "#c2410c", "#65a30d"][pointToModify % 4];
+}
+
 function draw(
   ctx: CanvasRenderingContext2D,
   offset: Point,
@@ -27,6 +31,7 @@ function draw(
   isCalibrating: boolean,
   pointToModify: number | null,
   ptDensity: number,
+  displayAllCorners?: boolean,
 ): void {
   ctx.translate(offset.x, offset.y);
 
@@ -61,7 +66,19 @@ function draw(
     drawGrid(ctx, width, height, perspective, 0, ptDensity);
     ctx.stroke();
 
-    if (pointToModify !== null) {
+    if (displayAllCorners) {
+      points.forEach((point, index) => {
+        ctx.beginPath();
+        ctx.strokeStyle = getStrokeStyle(index);
+        if (index !== pointToModify) {
+          ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
+        } else {
+          ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
+        }
+        ctx.lineWidth = 4;
+        ctx.stroke();
+      });
+    } else if (pointToModify !== null) {
       ctx.beginPath();
       ctx.arc(
         points[pointToModify].x,
@@ -70,7 +87,7 @@ function draw(
         0,
         2 * Math.PI,
       );
-      ctx.strokeStyle = "#3b82f6";
+      ctx.strokeStyle = getStrokeStyle(pointToModify);
       ctx.lineWidth = 4;
       ctx.stroke();
     }
@@ -174,6 +191,7 @@ export default function CalibrationCanvas({
   const [panStart, setPanStart] = useState<Point | null>(null);
   const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
   const [cursorMode, setCursorMode] = useState<string | null>(null);
+  const [displayAllCorners, setDisplayAllCorners] = useState<boolean>(false);
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
@@ -192,6 +210,7 @@ export default function CalibrationCanvas({
           isCalibrating,
           pointToModify,
           ptDensity,
+          displayAllCorners,
         );
       }
     }
@@ -204,6 +223,7 @@ export default function CalibrationCanvas({
     isCalibrating,
     pointToModify,
     ptDensity,
+    displayAllCorners,
   ]);
 
   function getShortestDistance(p: Point): number {
@@ -286,6 +306,15 @@ export default function CalibrationCanvas({
         case "ArrowDown":
           modifyPoint(0, 1);
           break;
+      }
+      if (e.code === "Tab") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          setDisplayAllCorners(!displayAllCorners);
+        } else {
+          const newPointToModify = ((pointToModify || 0) + 1) % points.length;
+          setPointToModify(newPointToModify);
+        }
       }
     }
   }
