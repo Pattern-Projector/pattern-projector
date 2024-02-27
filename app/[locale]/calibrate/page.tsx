@@ -167,16 +167,14 @@ export default function Page() {
       const newTransformSettings: {
         inverted?: boolean;
         isInvertedGreen?: boolean;
+        isFourCorners?: boolean;
       } = {};
-      if (localSettings.inverted) {
-        newTransformSettings.inverted = localSettings.inverted;
-      }
-      if (localSettings.isInvertedGreen) {
-        newTransformSettings.isInvertedGreen = localSettings.isInvertedGreen;
-      }
-      if (Object.keys(newTransformSettings).length > 0) {
-        setTransformSettings({ ...transformSettings, ...newTransformSettings });
-      }
+
+      newTransformSettings.inverted = localSettings.inverted || false;
+      newTransformSettings.isInvertedGreen =
+        localSettings.isInvertedGreen || false;
+      newTransformSettings.isFourCorners = localSettings.isFourCorners || false;
+      setTransformSettings({ ...transformSettings, ...newTransformSettings });
     }
   }, []);
 
@@ -252,6 +250,7 @@ export default function Page() {
               updateLocalSettings({
                 inverted: newSettings.inverted,
                 isInvertedGreen: newSettings.isInvertedGreen,
+                isFourCorners: newSettings.isFourCorners,
               });
             }
           }}
@@ -272,6 +271,8 @@ export default function Page() {
           height={+height}
           isCalibrating={isCalibrating}
           ptDensity={ptDensity}
+          transformSettings={transformSettings}
+          setTransformSettings={setTransformSettings}
         />
         <Draggable
           className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
