@@ -286,7 +286,7 @@ export default function Page() {
               transformOrigin: "0 0",
               filter: getInversionFilters(
                 transformSettings.inverted,
-                transformSettings.isInvertedGreen
+                transformSettings.isInvertedGreen,
               ),
             }}
           >
