@@ -14,6 +14,7 @@ import {
   Point,
   touchToCanvasPoint,
 } from "@/_lib/point";
+import { TransformSettings } from "@/_lib/transform-settings";
 
 const maxPoints = 4; // One point per vertex in rectangle
 
@@ -175,6 +176,8 @@ export default function CalibrationCanvas({
   height,
   isCalibrating,
   ptDensity,
+  transformSettings,
+  setTransformSettings,
 }: {
   className: string | undefined;
   points: Point[];
@@ -186,12 +189,13 @@ export default function CalibrationCanvas({
   height: number;
   isCalibrating: boolean;
   ptDensity: number;
+  transformSettings: TransformSettings;
+  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
   const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
   const [cursorMode, setCursorMode] = useState<string | null>(null);
-  const [displayAllCorners, setDisplayAllCorners] = useState<boolean>(false);
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
@@ -210,7 +214,7 @@ export default function CalibrationCanvas({
           isCalibrating,
           pointToModify,
           ptDensity,
-          displayAllCorners,
+          transformSettings.isFourCorners,
         );
       }
     }
@@ -223,7 +227,7 @@ export default function CalibrationCanvas({
     isCalibrating,
     pointToModify,
     ptDensity,
-    displayAllCorners,
+    transformSettings.isFourCorners,
   ]);
 
   function getShortestDistance(p: Point): number {
@@ -310,7 +314,10 @@ export default function CalibrationCanvas({
       if (e.code === "Tab") {
         e.preventDefault();
         if (e.shiftKey) {
-          setDisplayAllCorners(!displayAllCorners);
+          setTransformSettings({
+            ...transformSettings,
+            isFourCorners: !transformSettings.isFourCorners,
+          });
         } else {
           const newPointToModify = ((pointToModify || 0) + 1) % points.length;
           setPointToModify(newPointToModify);
