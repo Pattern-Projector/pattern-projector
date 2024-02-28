@@ -2,7 +2,10 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
 import invariant from "tiny-invariant";
 import { usePageContext, useDocumentContext } from "react-pdf";
 
-import type { RenderParameters } from "pdfjs-dist/types/src/display/api.js";
+import type {
+  RenderParameters,
+  PDFDocumentProxy,
+} from "pdfjs-dist/types/src/display/api.js";
 import { Layer } from "@/_lib/layer";
 
 export default function CustomRenderer(
@@ -24,10 +27,13 @@ export default function CustomRenderer(
   const CSS = 96.0;
   const PDF = 72.0;
   const PDF_TO_CSS_UNITS = CSS / PDF;
+  invariant(page, "Unable to find page.");
+  invariant(pdf, "Unable to find pdf.");
 
-  const viewport = useMemo(() => {
-    page.getViewport({ scale: PDF_TO_CSS_UNITS });
-  }, [page, PDF_TO_CSS_UNITS]);
+  const viewport = useMemo(
+    () => page.getViewport({ scale: PDF_TO_CSS_UNITS }),
+    [page, PDF_TO_CSS_UNITS]
+  );
 
   function drawPageOnCanvas() {
     if (!page) {
@@ -40,31 +46,28 @@ export default function CustomRenderer(
       return;
     }
 
-    async function optionalContentConfigPromise() {
-      if (pdf) {
-        const optionalContentConfig = await pdf.getOptionalContentConfig();
-        const groups = optionalContentConfig.getGroups();
-        if (groups) {
-          if (layers.size === 0) {
-            const l = new Map<string, Layer>();
-            Object.keys(groups).forEach((key, i) => {
-              l.set(key, {
-                name: String(groups[key].name) ?? key,
-                visible: true,
-              });
-              setLayers(l);
+    async function optionalContentConfigPromise(pdf: PDFDocumentProxy) {
+      const optionalContentConfig = await pdf.getOptionalContentConfig();
+      const groups = optionalContentConfig.getGroups();
+      if (groups) {
+        if (layers.size === 0) {
+          const l = new Map<string, Layer>();
+          Object.keys(groups).forEach((key, i) => {
+            l.set(key, {
+              name: String(groups[key].name) ?? key,
+              visible: true,
             });
-          } else {
-            for (let entry of layers) {
-              const key = entry[0];
-              const layer = entry[1];
-              optionalContentConfig.setVisibility(key, layer.visible);
-            }
+            setLayers(l);
+          });
+        } else {
+          for (let entry of layers) {
+            const key = entry[0];
+            const layer = entry[1];
+            optionalContentConfig.setVisibility(key, layer.visible);
           }
         }
-        return optionalContentConfig;
       }
-      return null; // Need to figure out how to create a default optionalContentConfig
+      return optionalContentConfig;
     }
 
     const renderContext: RenderParameters = {
@@ -72,7 +75,9 @@ export default function CustomRenderer(
         alpha: false,
       }) as CanvasRenderingContext2D,
       viewport,
-      optionalContentConfigPromise: optionalContentConfigPromise(),
+      optionalContentConfigPromise: pdf
+        ? optionalContentConfigPromise(pdf)
+        : undefined,
     };
 
     const cancellable = page.render(renderContext);
