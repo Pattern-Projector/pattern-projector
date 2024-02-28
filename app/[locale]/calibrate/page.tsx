@@ -14,13 +14,14 @@ import {
   translate,
 } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
-import { Point } from "@/_lib/point";
+import { applyOffset, Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   getDefaultTransforms,
   TransformSettings,
 } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
+import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -214,6 +215,31 @@ export default function Page() {
     }
     return `invert(1) ${isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""}`;
   }
+
+  function moveWithArrowKey(key: string, px: number) {
+    console.log("px", px);
+    let offset: Point = { x: 0, y: 0 };
+    switch (key) {
+      case "ArrowUp":
+        offset = applyOffset(offset, { y: -px, x: 0 });
+        break;
+      case "ArrowDown":
+        offset = applyOffset(offset, { y: px, x: 0 });
+        break;
+      case "ArrowLeft":
+        offset = applyOffset(offset, { y: 0, x: -px });
+        break;
+      case "ArrowRight":
+        offset = applyOffset(offset, { y: 0, x: px });
+        break;
+      default:
+        break;
+    }
+    const translation = translate(offset);
+    setLocalTransform(localTransform.mmul(translation));
+  }
+
+  useProgArrowKeyHandler(moveWithArrowKey, !isCalibrating);
 
   return (
     <main
