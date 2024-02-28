@@ -217,7 +217,6 @@ export default function Page() {
   }
 
   function moveWithArrowKey(key: string, px: number) {
-    console.log("px", px);
     let offset: Point = { x: 0, y: 0 };
     switch (key) {
       case "ArrowUp":
