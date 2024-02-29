@@ -285,7 +285,7 @@ export default function Header({
             )}
           </button>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Rotate 90 degrees clockwise"}
             onClick={() =>
               setTransformSettings({
