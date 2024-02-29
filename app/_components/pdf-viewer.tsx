@@ -32,33 +32,18 @@ export default function PdfViewer({
   pageNumber: number;
   layers: Map<string, Layer>;
 }) {
-  const [documentProxy, setDocumentProxy] = useState<PDFDocumentProxy | null>(
-    null
-  );
-
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     setPageNumber(1);
-    setDocumentProxy(docProxy);
-  }
-
-  function renderPage() {
-    if (documentProxy) {
-      return (
-        <Page
-          pageNumber={pageNumber}
-          pdf={documentProxy}
-          renderMode="custom"
-          customRenderer={() => CustomRenderer(setLayers, layers)}
-        />
-      );
-    }
-    return null;
   }
 
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-      {renderPage()}
+      <Page
+        pageNumber={pageNumber}
+        renderMode="custom"
+        customRenderer={() => CustomRenderer(setLayers, layers)}
+      />
     </Document>
   );
 }

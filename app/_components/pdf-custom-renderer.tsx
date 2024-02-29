@@ -1,4 +1,11 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import invariant from "tiny-invariant";
 import { usePageContext, useDocumentContext } from "react-pdf";
 
@@ -39,6 +46,8 @@ export default function CustomRenderer(
     if (!page) {
       return;
     }
+
+    page.cleanup();
 
     const { current: canvas } = canvasElement;
 
@@ -92,14 +101,21 @@ export default function CustomRenderer(
     };
   }
 
-  useEffect(drawPageOnCanvas, [canvasElement, page, viewport, layers]);
+  useEffect(drawPageOnCanvas, [
+    canvasElement,
+    page,
+    viewport,
+    layers,
+    pdf,
+    setLayers,
+  ]);
 
   return (
     <canvas
       className={`${_className}__canvas`}
-      height={viewport.height}
       ref={canvasElement}
-      width={viewport.width}
+      width={Math.ceil(viewport.width)}
+      height={Math.ceil(viewport.height)}
     />
   );
 }
