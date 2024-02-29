@@ -1,4 +1,4 @@
-import { Point } from '@/_lib/point';
+import { Point } from "@/_lib/point";
 
 export interface TransformSettings {
   scale: Point;
