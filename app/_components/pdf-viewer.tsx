@@ -35,6 +35,7 @@ export default function PdfViewer({
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     setPageNumber(1);
+    setLayers(new Map());
   }
 
   return (
@@ -43,6 +44,8 @@ export default function PdfViewer({
         pageNumber={pageNumber}
         renderMode="custom"
         customRenderer={() => CustomRenderer(setLayers, layers)}
+        renderAnnotationLayer={false}
+        renderTextLayer={false}
       />
     </Document>
   );
