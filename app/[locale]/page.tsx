@@ -161,10 +161,6 @@ export default function Home() {
             })}
           </li>
           <li>
-            <div>{t("faq.layerSupport.question")}</div>
-            {t("faq.layerSupport.answer")}
-          </li>
-          <li>
             <div>{t("faq.annotationSupport.question")}</div>
             {t("faq.annotationSupport.answer")}
           </li>

@@ -72,16 +72,12 @@
         "question": "Do you want to save Pattern Projector as an app?",
         "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
       },
-      "layerSupport": {
-        "question": "Is it possible to choose layers?",
-        "answer": "Not yet, but it's planned for an upcoming release."
-      },
       "annotationSupport": {
         "question": "Do you have support for adding annotations?",
         "answer": "Not yet, but it's planned for an upcoming release."
       },
       "chromecastSupport": {
-        "question": "Do you have support Chromecast?",
+        "question": "Do you support Chromecast?",
         "answer": "While it's possible to cast this webpage in Chrome, the lag in the connection can be frustrating, especially when calibrating. Better support for Chromecast is planned in an upcoming release."
       },
       "mobileSupport": {
@@ -120,7 +116,8 @@
     "arrowForward": "Forward 1 page",
     "info": "Info page",
     "layersOn": "Show layer menu",
-    "layersOff": "Hide layer menu"
+    "layersOff": "Hide layer menu",
+    "recenter": "Recenter PDF"
   },
   "FullscreenButton": {
     "fullscreen": "Enter full screen",

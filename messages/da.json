@@ -72,10 +72,6 @@
         "question": "Vil du gemme Pattern Projector som en app? ",
         "answer": "Pattern Projector er en Progressive Web App (PWA) og kan gemmes som en app. På en computer kan du installere den med  <googleChromeLink>Chrome</googleChromeLink> eller <microsoftEdgeLink>Edge</microsoftEdgeLink>. På en tablet skal du åbne Del-menu og trykke på Tilføj til hjemmeskærm”."
       },
-      "layerSupport": {
-        "question": "Er der mulighed for vælge lag? ",
-        "answer": "Ikke endnu, men det kommer i en senere udgave. "
-      },
       "annotationSupport": {
         "question": "Er der mulighed for at lave anmærkninger? ",
         "answer": "Ikke endnu, men det kommer i en senere udgave. "
