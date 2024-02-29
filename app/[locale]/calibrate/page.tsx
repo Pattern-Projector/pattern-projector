@@ -59,6 +59,8 @@ export default function Page() {
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
   const [showLayerMenu, setShowLayerMenu] = useState<boolean>(true);
+  const [pageWidth, setPageWidth] = useState<number>(0);
+  const [pageHeight, setPageHeight] = useState<number>(0);
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -263,6 +265,11 @@ export default function Page() {
           setGridOn={setGridOn}
           showLayerMenu={showLayerMenu}
           setShowLayerMenu={setShowLayerMenu}
+          localTransform={localTransform}
+          setLocalTransform={setLocalTransform}
+          pageWidth={pageWidth}
+          pageHeight={pageHeight}
+          calibrationTransform={calibrationTransform}
         />
 
         <LayerMenu className={"absolute transition-all duration-700  " + (showLayerMenu ? "left-0" : "-left-60")} layers={layers} setLayers={setLayers} />
@@ -310,6 +317,10 @@ export default function Page() {
                 pageNumber={pageNumber}
                 setLayers={setLayers}
                 layers={layers}
+                setPageWidth={setPageWidth}
+                setPageHeight={setPageHeight}
+                setLocalTransform={setLocalTransform}
+                calibrationTransform={calibrationTransform}
               />
             </div>
           </div>

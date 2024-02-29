@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
-import { Dropdown } from "@/_components/dropdown/dropdown";
 import FileInput from "@/_components/file-input";
 import FullScreenButton from "@/_components/full-screen-button";
 import InlineInput from "@/_components/inline-input";
@@ -26,6 +25,9 @@ import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
 import LayersIcon from "@/_icons/layers-icon";
 import LayersOffIcon from "@/_icons/layers-off-icon";
+import RecenterIcon from "@/_icons/recenter-icon";
+import Matrix from "ml-matrix";
+import { translate } from "@/_lib/geometry";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -51,6 +53,11 @@ export default function Header({
   setGridOn,
   showLayerMenu,
   setShowLayerMenu,
+  localTransform,
+  calibrationTransform,
+  setLocalTransform,
+  pageWidth,
+  pageHeight,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -72,6 +79,11 @@ export default function Header({
   setGridOn: Dispatch<SetStateAction<boolean>>;
   showLayerMenu: boolean;
   setShowLayerMenu: Dispatch<SetStateAction<boolean>>;
+  localTransform: Matrix;
+  calibrationTransform: Matrix;
+  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
+  pageWidth: number;
+  pageHeight: number;
 }) {
   const t = useTranslations("Header");
 
@@ -87,6 +99,16 @@ export default function Header({
 
   function handleNextPage() {
     changePage(1);
+  }
+
+  function handleRecenter() {
+    if (localTransform !== null) {
+      const pdfPixels = 72;
+      const tx = (+width * pdfPixels) / 2 - pageWidth / 2;
+      const ty = (+height * pdfPixels) / 2 - pageHeight / 2;
+      const m = translate({ x: tx, y: ty });
+      setLocalTransform(calibrationTransform.mmul(m));
+    }
   }
 
   return (
@@ -254,6 +276,13 @@ export default function Header({
             }
           >
             <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
+          </button>
+          <button
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            name={t("recenter")}
+            onClick={handleRecenter}
+          >
+            <RecenterIcon ariaLabel={t("recenter")} />
           </button>
           <div className={`flex items-center ml-3 ${visible(pageCount > 1)}`}>
             <button
