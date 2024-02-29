@@ -28,6 +28,8 @@ import LayersOffIcon from "@/_icons/layers-off-icon";
 import RecenterIcon from "@/_icons/recenter-icon";
 import Matrix from "ml-matrix";
 import { translate } from "@/_lib/geometry";
+import FourCorners from "@/_icons/four-corners";
+import FourCornersOff from "@/_icons/four-corners-off";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -127,6 +129,23 @@ export default function Header({
           />
         </div>
         <div className={`flex items-center ${visible(isCalibrating)}`}>
+          <button
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            name={"Flip horizontally"}
+            onClick={() =>
+              setTransformSettings({
+                ...transformSettings,
+                isFourCorners: !transformSettings.isFourCorners,
+              })
+            }
+          >
+            {transformSettings.isFourCorners ? (
+              <FourCorners ariaLabel={t("fourCornersOn")} />
+            ) : (
+              <FourCornersOff ariaLabel={t("fourCornersOff")} />
+            )}
+          </button>
+
           <InlineInput
             className="mr-1"
             handleChange={handleHeightChange}
@@ -161,7 +180,7 @@ export default function Header({
           />
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-              isCalibrating
+              isCalibrating,
             )}`}
             name={"Delete points"}
             onClick={handleResetCalibration}
@@ -305,7 +324,7 @@ export default function Header({
         <div className="flex items-center">
           <label
             className={`${visible(
-              !isCalibrating
+              !isCalibrating,
             )} outline mr-2 outline-purple-700 flex items-center text-purple-800 focus:ring-2 focus:outline-none focus:ring-blue-300 hover:bg-purple-100 font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
           >
             <FileInput

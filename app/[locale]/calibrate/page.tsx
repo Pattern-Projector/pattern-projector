@@ -10,7 +10,7 @@ import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
 import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
-import { Point } from "@/_lib/point";
+import { applyOffset, Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   getDefaultTransforms,
@@ -19,6 +19,7 @@ import {
 import { CM, IN } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
+import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -79,7 +80,6 @@ export default function Page() {
       { x: maxx, y: maxy },
       { x: minx, y: maxy },
     ];
-    console.log(p);
     return p;
   }
 
@@ -169,16 +169,14 @@ export default function Page() {
       const newTransformSettings: {
         inverted?: boolean;
         isInvertedGreen?: boolean;
+        isFourCorners?: boolean;
       } = {};
-      if (localSettings.inverted) {
-        newTransformSettings.inverted = localSettings.inverted;
-      }
-      if (localSettings.isInvertedGreen) {
-        newTransformSettings.isInvertedGreen = localSettings.isInvertedGreen;
-      }
-      if (Object.keys(newTransformSettings).length > 0) {
-        setTransformSettings({ ...transformSettings, ...newTransformSettings });
-      }
+
+      newTransformSettings.inverted = localSettings.inverted || false;
+      newTransformSettings.isInvertedGreen =
+        localSettings.isInvertedGreen || false;
+      newTransformSettings.isFourCorners = localSettings.isFourCorners || false;
+      setTransformSettings({ ...transformSettings, ...newTransformSettings });
     }
   }, []);
 
@@ -193,6 +191,9 @@ export default function Page() {
       setPerspective(m);
       setLocalTransform(n);
       setCalibrationTransform(n);
+      if (pointToModify === null) {
+        setPointToModify(0);
+      }
     }
 
     function getDstVertices(): Point[] {
@@ -220,6 +221,30 @@ export default function Page() {
       isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""
     }`;
   }
+
+  function moveWithArrowKey(key: string, px: number) {
+    let offset: Point = { x: 0, y: 0 };
+    switch (key) {
+      case "ArrowUp":
+        offset = applyOffset(offset, { y: -px, x: 0 });
+        break;
+      case "ArrowDown":
+        offset = applyOffset(offset, { y: px, x: 0 });
+        break;
+      case "ArrowLeft":
+        offset = applyOffset(offset, { y: 0, x: -px });
+        break;
+      case "ArrowRight":
+        offset = applyOffset(offset, { y: 0, x: px });
+        break;
+      default:
+        break;
+    }
+    const translation = translate(offset);
+    setLocalTransform(localTransform.mmul(translation));
+  }
+
+  useProgArrowKeyHandler(moveWithArrowKey, !isCalibrating);
 
   return (
     <main
@@ -255,6 +280,7 @@ export default function Page() {
               updateLocalSettings({
                 inverted: newSettings.inverted,
                 isInvertedGreen: newSettings.isInvertedGreen,
+                isFourCorners: newSettings.isFourCorners,
               });
             }
           }}
@@ -285,6 +311,8 @@ export default function Page() {
           height={+height}
           isCalibrating={isCalibrating}
           ptDensity={ptDensity}
+          transformSettings={transformSettings}
+          setTransformSettings={setTransformSettings}
         />
         <Draggable
           className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
@@ -299,7 +327,7 @@ export default function Page() {
               transformOrigin: "0 0",
               filter: getInversionFilters(
                 transformSettings.inverted,
-                transformSettings.isInvertedGreen
+                transformSettings.isInvertedGreen,
               ),
             }}
           >

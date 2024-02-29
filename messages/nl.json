@@ -6,22 +6,22 @@
     "calibrate": "Start kalibreren",
     "welcome": {
       "title": "Welkom bij Pattern Projector!",
-      "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel projektors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan dus grote veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
+      "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projektors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan dus grote veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
     },
     "requirements": {
       "title": "Wat je nodig hebt",
       "projector": "Projector: ten minste 720p aanbevolen",
       "mat": "Snijmat: idealiter met rasterlijnen op regelmatige afstanden",
-      "mount": "Standaard, ophanging of bevestiging aan de muur, plafond of een tafel voor de projector",
+      "mount": "Een standaard, ophanging of bevestiging aan de muur, plafond of aan een tafel",
       "computer": "Computer of tablet om verbinding te maken met de projector",
-      "pattern": "Een PDF naaipatroon: je kan <pdfstitcher>PDFStitcher</pdfstitcher> gebruiken als je patroon lagen of meerdere paginas heeft"
+      "pattern": "Een PDF naaipatroon. Je kan <pdfstitcher>PDFStitcher</pdfstitcher> gebruiken als je patroon lagen of meerdere paginas heeft die je tot 1 bestand wil samenvoegen, of om de lijnen op je patroon dikker te maken."
     },
     "setup": {
       "title": "Installatie",
-      "place": "Zet de projector boven de snijmat, en laat hem naar de mat toe schijnen. Probeer de projector direct boven de snijmat te zetten, en er recht naartoe te laten wijzen.",
-      "connect": "Maak met je computer of tablet verbinding met de projecten en zet het scherm in 'spiegel' ('mirror') of 'uitbreiden' ('extend') modus zodat het beeld van de computer ook op de projector weergegeven wordt.",
-      "focus": "Stel de focus van de projector zo in dat tekst scherp wordt weergegeven in het midden van het projectiebeeld. Als je geen helder beeld kan krijgen, zorg er dan voor dat de afstand tussen de projector en de snijmat zich binnen de door de fabrikant aanbevolen afstanden bevindt.",
-      "keystone": "Als je projector trapeziumcorrectie ('keystone correction') heeft, stel die dan zo in dat de projectie zo rechthoekig mogelijk is, en de scherpte aan de randen verbetert."
+      "place": "Installeer de projector boven de snijmat, en laat hem naar de mat toe schijnen. Probeer de projector direct boven de snijmat te zetten, en er recht naartoe te laten wijzen.",
+      "connect": "Maak met je computer of tablet verbinding met de projector en zet het scherm in 'spiegel' ('mirror') of 'uitbreiden' ('extend') modus (afhankelijk van hoe deze instelling op jouw device heet) zodat het beeld van de computer identiek op de projector weergegeven wordt.",
+      "focus": "Stel de focus van de projector zo in, dat tekst scherp wordt weergegeven, en in het midden van het projectiebeeld. Als je geen helder beeld kan krijgen, zorg er dan voor dat de afstand tussen de projector en de snijmat zich binnen de door de fabrikant aanbevolen afstanden bevindt.",
+      "keystone": "Als je projector trapeziumcorrectie ('keystone correction') heeft, stel die dan zo in dat de projectie zo rechthoekig mogelijk is, en het beeld aan de randen zo scherp mogelijk is."
     },
     "calibration": {
       "title": "Calibratie",
@@ -33,17 +33,17 @@
     },
     "project": {
       "title": "Een patroon projecteren",
-      "open": "Klik (of druk) <pdficon></pdficon> om het PDF document te openen.",
-      "move": "Verplaats de PDF door erop te klikken en hem over het scherm te slepen.",
+      "open": "Klik (of druk) op <pdficon></pdficon> om het PDF document te openen.",
+      "move": "Leg je stof op je snijmat. Verplaats het geprojecteerde beeld door op de PDF te klikken en hem over het scherm te slepen. Zet zo het juiste deel van je patroon op de stof (en snijmat onder de stof).",
       "cut": "Snij, knip of teken langs het geprojecteerde beeld.",
       "tools": "In projectiemodus zijn er verschillende gereedschappen beschikbaar:",
       "showGrid": {
         "title": "Toon/verberg raster",
-        "description": "Toont of verbergt een licht raster tijdens het projecteren om te controleren dat je kalibratie correct is."
+        "description": "Toont of verbergt een licht raster tijdens het projecteren. Handig om te controleren dat je kalibratie correct is."
       },
       "invert": {
         "title": "Draai kleuren om",
-        "description": "Tijdens het projecteren is het meestal makkelijker om witte lijnen op een zwarte achtergrond te zien."
+        "description": "Tijdens het projecteren is het meestal het makkelijkst om witte lijnen op een zwarte achtergrond te zien. Maar met dit gereedschap kan je dat desgewensd omdraaien."
       },
       "flip": {
         "title": "Spiegel vertikaal/horizontaal",
@@ -55,7 +55,7 @@
       },
       "fullscreen": {
         "title": "Volledig scherm",
-        "description": "Het is meestal makkelijker om de software in 'Volledig scherm' modus te gebruiken."
+        "description": "Het is meestal het makkelijkst om de software in 'Volledig scherm' modus te gebruiken."
       }
     },
     "faq": {
@@ -66,7 +66,7 @@
       },
       "wrongSizePdf": {
         "question": "Is je geprojecteerde PDF te klein of te groot?",
-        "answer": "Het Pattern Projector kalibratie gereedschap heeft geen 'zoom' functie omdat de schaal van de projectie uit de informatie in de PDF gehaald wordt. Patronen van ontwerpers hebben meestal de juiste schaal. Het zou kunnen dat er een foute schaal ingekomen is door het patroon te openen in Affinity Designer of Inkscape."
+        "answer": "Het Pattern Projector kalibratie gereedschap heeft geen 'zoom' functie omdat de schaal van de projectie uit de informatie in de PDF gehaald wordt. Patronen van ontwerpers hebben meestal de juiste schaal. Het zou kunnen dat er een foute schaal ingeslopen is door het patroon te openen in Affinity Designer of Inkscape."
       },
       "saveAsApp": {
         "question": "Wil je Pattern Projector als een app opslaan?",
@@ -86,11 +86,11 @@
       }
     },
     "contribute": {
-      "title": "Draag bij aan dit project",
-      "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te komen</donateLink>",
+      "title": "Help dit project",
+      "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink>.",
       "develop": "Help verbeteringen toe te voegen en problemen op te lossen op <githubLink>GitHub</githubLink>.",
       "translate": "Vertaal deze software in meer talen.",
-      "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom! Feedback and feature requests are welcome!"
+      "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom (in het Engels)! Zie mijn contactgegevens bij 'contact' hier onderaan."
     },
     "contact": "Contact"
   },
