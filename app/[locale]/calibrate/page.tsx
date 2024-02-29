@@ -58,6 +58,7 @@ export default function Page() {
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
+  const [showLayerMenu, setShowLayerMenu] = useState<boolean>(true);
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -260,9 +261,11 @@ export default function Page() {
           pageCount={pageCount}
           gridOn={gridOn}
           setGridOn={setGridOn}
+          showLayerMenu={showLayerMenu}
+          setShowLayerMenu={setShowLayerMenu}
         />
 
-        <LayerMenu layers={layers} setLayers={setLayers} />
+        <LayerMenu className={"absolute transition-all duration-700  " + (showLayerMenu ? "left-0" : "-left-60")} layers={layers} setLayers={setLayers} />
 
         <CalibrationCanvas
           className={`absolute z-10 ${visible(gridOn)}`}

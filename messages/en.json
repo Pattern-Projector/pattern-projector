@@ -118,7 +118,9 @@
     "rotate90": "Rotate 90 degrees clockwise",
     "arrowBack": "Back 1 page",
     "arrowForward": "Forward 1 page",
-    "info": "Info page"
+    "info": "Info page",
+    "layersOn": "Show layer menu",
+    "layersOff": "Hide layer menu"
   },
   "FullscreenButton": {
     "fullscreen": "Enter full screen",

@@ -2,9 +2,11 @@ import { Layer } from "@/_lib/layer";
 import { Dispatch, SetStateAction } from "react";
 
 export default function LayerMenu({
+  className,
   layers,
   setLayers,
 }: {
+  className: string | undefined;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
   layers: Map<string, Layer>;
 }) {
@@ -14,7 +16,12 @@ export default function LayerMenu({
   }
 
   return (
-    <menu className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg absolute top-16 z-30">
+    <menu
+      className={
+        "w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg absolute top-16 z-30 " +
+        className
+      }
+    >
       {[...layers.entries()].map((e) => (
         <li key={e[0]} className="w-full border-b border-gray-200 rounded-t-lg">
           <div className="flex items-center ps-3">

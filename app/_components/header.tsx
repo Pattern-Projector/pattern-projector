@@ -24,6 +24,8 @@ import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
+import LayersIcon from "@/_icons/layers-icon";
+import LayersOffIcon from "@/_icons/layers-off-icon";
 
 function visible(b: boolean): string {
   return b ? "visible" : "hidden";
@@ -47,6 +49,8 @@ export default function Header({
   pageCount,
   gridOn,
   setGridOn,
+  showLayerMenu,
+  setShowLayerMenu,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -66,6 +70,8 @@ export default function Header({
   pageCount: number;
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
+  showLayerMenu: boolean;
+  setShowLayerMenu: Dispatch<SetStateAction<boolean>>;
 }) {
   const t = useTranslations("Header");
 
@@ -142,6 +148,17 @@ export default function Header({
           </button>
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
+          <button
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            name={showLayerMenu ? t("layersOn") : t("layersOff")}
+            onClick={() => setShowLayerMenu(!showLayerMenu)}
+          >
+            {showLayerMenu ? (
+              <LayersIcon ariaLabel={t("layersOn")} />
+            ) : (
+              <LayersOffIcon ariaLabel={t("layersOff")} />
+            )}
+          </button>
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Toggle grid visibility"}
