@@ -37,9 +37,12 @@ export default function CustomRenderer(
   invariant(page, "Unable to find page.");
   invariant(pdf, "Unable to find pdf.");
 
-  const viewport = useMemo(
-    () => page.getViewport({ scale: PDF_TO_CSS_UNITS }),
-    [page, PDF_TO_CSS_UNITS]
+  const viewport = useMemo(() => page.getViewport({ scale: 1 }), [page]);
+
+  const renderViewport = useMemo(
+    () =>
+      page.getViewport({ scale: getScale(viewport.width, viewport.height) }),
+    [page, viewport]
   );
 
   function drawPageOnCanvas() {
@@ -83,7 +86,7 @@ export default function CustomRenderer(
       canvasContext: canvas.getContext("2d", {
         alpha: false,
       }) as CanvasRenderingContext2D,
-      viewport,
+      viewport: renderViewport,
       optionalContentConfigPromise: pdf
         ? optionalContentConfigPromise(pdf)
         : undefined,
@@ -105,6 +108,7 @@ export default function CustomRenderer(
     canvasElement,
     page,
     viewport,
+    renderViewport,
     layers,
     pdf,
     setLayers,
@@ -114,8 +118,31 @@ export default function CustomRenderer(
     <canvas
       className={`${_className}__canvas`}
       ref={canvasElement}
-      width={Math.ceil(viewport.width)}
-      height={Math.ceil(viewport.height)}
+      width={Math.floor(renderViewport.width)}
+      height={Math.floor(renderViewport.height)}
+      style={{
+        width: Math.floor(viewport.width * PDF_TO_CSS_UNITS) + "px",
+        height: Math.floor(viewport.height * PDF_TO_CSS_UNITS) + "px",
+      }}
     />
   );
+}
+
+function getScale(w: number, h: number): number {
+  const dpr = window.devicePixelRatio;
+  let renderArea = dpr * dpr * w * h;
+  const maxArea = 16777216; // pdfjs
+  // TODO: increase limit in pdfjs or tile support?
+  // https://github.com/mozilla/pdf.js/issues/17371
+  let scale = dpr;
+  if (renderArea > maxArea) {
+    // drop high dpi.
+    scale = 1;
+    renderArea = w * h;
+    if (renderArea > maxArea) {
+      // scale to fit
+      scale = Math.sqrt(maxArea / renderArea);
+    }
+  }
+  return scale;
 }
