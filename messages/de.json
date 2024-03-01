@@ -111,10 +111,15 @@
     "flipVerticalOff": "Spiegel vertikal aus",
     "flipHorizontal": "Spiegel horizontal",
     "flipHorizontalOff": "Spiegel horizontal aus",
+    "fourCornersOn": "Eckpunkte einblenden",
+    "fourCornersOff": "Eckpunkte ausblenden",
     "rotate90": "Drehe 90 Grad im Uhrzeigersinn",
     "arrowBack": "Zurück 1 Seite",
     "arrowForward": "Vorwärts 1 Seite",
-    "info": "Info Seite"
+    "info": "Info Seite",
+    "layersOn": "Blende Ebenenmenü ein",
+    "layersOff": "Blende Ebenenmenü aus",
+    "recenter": "PDF zentrieren"
   },
   "FullscreenButton": {
     "fullscreen": "Vollbild",
