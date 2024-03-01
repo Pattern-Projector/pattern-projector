@@ -15,6 +15,7 @@ const APP_DESCRIPTION =
 const APP_URL = "https://www.patternprojector.com/";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(APP_URL),
   description: "Calibrate your projector for sewing patterns",
   viewport:
     "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no",
