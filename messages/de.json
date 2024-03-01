@@ -53,6 +53,10 @@
         "title": "Drehen",
         "description": "Dreht das Schnittmuster um 90 Grad."
       },
+      "recenter": {
+        "title": "PDF zentrieren",
+        "description": ""
+      },
       "fullscreen": {
         "title": "Vollbild",
         "description": "Es ist generell einfacher, die Software im Vollbildmodus zu verwenden."
@@ -71,10 +75,6 @@
       "saveAsApp": {
         "question": "Möchtest du Pattern Projector als App speichern?",
         "answer": "Pattern Projector ist eine Progressive Web App (PWA), somit kann es als APP gespeichert werden. Auf dem PC kannst du es installieren, indem du <googleChromeLink>Chrome</googleChromeLink> oder <microsoftEdgeLink>Edge</microsoftEdgeLink> verwendet. Auf dem Tablet, öffne das Menü und füge diese Seite auf dem Hauptbildschirm hinzu."
-      },
-      "layerSupport": {
-        "question": "Hast du eine Ebenenunterstützung?",
-        "answer": "Noch nicht, aber es ist in einem der kommenden Updates geplant."
       },
       "annotationSupport": {
         "question": "Hast du einen Support für weitere Anmerkungen?",
@@ -115,10 +115,15 @@
     "flipVerticalOff": "Spiegel vertikal aus",
     "flipHorizontal": "Spiegel horizontal",
     "flipHorizontalOff": "Spiegel horizontal aus",
+    "fourCornersOn": "Eckpunkte einblenden",
+    "fourCornersOff": "Eckpunkte ausblenden",
     "rotate90": "Drehe 90 Grad im Uhrzeigersinn",
     "arrowBack": "Zurück 1 Seite",
     "arrowForward": "Vorwärts 1 Seite",
-    "info": "Info Seite"
+    "info": "Info Seite",
+    "layersOn": "Blende Ebenenmenü ein",
+    "layersOff": "Blende Ebenenmenü aus",
+    "recenter": "PDF zentrieren"
   },
   "FullscreenButton": {
     "fullscreen": "Vollbild",

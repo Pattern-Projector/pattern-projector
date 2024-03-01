@@ -53,6 +53,10 @@
         "title": "Rotér",
         "description": "Ændre mønsterets retning med 90 grader"
       },
+      "recenter": {
+        "title": "Til midten af PDF'en",
+        "description": ""
+      },
       "fullscreen": {
         "title": "Fuld skærm",
         "description": "Det er som regel nemmere at bruge softwaren i fuld skærm. "
@@ -71,10 +75,6 @@
       "saveAsApp": {
         "question": "Vil du gemme Pattern Projector som en app? ",
         "answer": "Pattern Projector er en Progressive Web App (PWA) og kan gemmes som en app. På en computer kan du installere den med  <googleChromeLink>Chrome</googleChromeLink> eller <microsoftEdgeLink>Edge</microsoftEdgeLink>. På en tablet skal du åbne Del-menu og trykke på Tilføj til hjemmeskærm”."
-      },
-      "layerSupport": {
-        "question": "Er der mulighed for vælge lag? ",
-        "answer": "Ikke endnu, men det kommer i en senere udgave. "
       },
       "annotationSupport": {
         "question": "Er der mulighed for at lave anmærkninger? ",
@@ -115,10 +115,15 @@
     "flipVerticalOff": "Vend lodret til normal",
     "flipHorizontal": "Vend vandret",
     "flipHorizontalOff": "Vend vandret til normal",
+    "fourCornersOn": "Corner Highlights On",
+    "fourCornersOff": "Corner Highlights Off",
     "rotate90": "Rotér 90 grader med uret",
     "arrowBack": "Gå en side tilbage",
     "arrowForward": "Gå en side frem",
-    "info": "Infoside"
+    "info": "Infoside",
+    "layersOn": "Vis lag-menu",
+    "layersOff": "Skjul lag-menu",
+    "recenter": "Til midten af PDF'en" 
   },
   "FullscreenButton": {
     "fullscreen": "Fuld skærm",

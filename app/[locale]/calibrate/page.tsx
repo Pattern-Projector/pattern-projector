@@ -8,11 +8,7 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import {
-  getPerspectiveTransform,
-  toMatrix3d,
-  translate,
-} from "@/_lib/geometry";
+import { getPerspectiveTransform, toMatrix3d, translate } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { applyOffset, Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
@@ -21,7 +17,10 @@ import {
   TransformSettings,
 } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
+import { Layer } from "@/_lib/layer";
+import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
+import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -40,7 +39,7 @@ export default function Page() {
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
-    getDefaultTransforms(),
+    getDefaultTransforms()
   );
   const [gridOn, setGridOn] = useState<boolean>(true);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
@@ -52,14 +51,18 @@ export default function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
   const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3),
+    Matrix.identity(3, 3)
   );
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
-    Matrix.identity(3, 3),
+    Matrix.identity(3, 3)
   );
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
+  const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
+  const [showLayerMenu, setShowLayerMenu] = useState<boolean>(true);
+  const [pageWidth, setPageWidth] = useState<number>(0);
+  const [pageHeight, setPageHeight] = useState<number>(0);
 
   function visible(b: boolean): string {
     return b ? "visible" : "hidden";
@@ -178,9 +181,11 @@ export default function Page() {
     }
   }, []);
 
+  const pdfTranslation = useProgArrowKeyToMatrix(!isCalibrating);
+
   useEffect(() => {
-    setMatrix3d(toMatrix3d(localTransform));
-  }, [localTransform]);
+    setMatrix3d(toMatrix3d(localTransform.mmul(pdfTranslation)));
+  }, [localTransform, pdfTranslation]);
 
   useEffect(() => {
     if (points && points.length === maxPoints) {
@@ -189,9 +194,6 @@ export default function Page() {
       setPerspective(m);
       setLocalTransform(n);
       setCalibrationTransform(n);
-      if (pointToModify === null) {
-        setPointToModify(0);
-      }
     }
 
     function getDstVertices(): Point[] {
@@ -215,32 +217,10 @@ export default function Page() {
     if (!inverted) {
       return "invert(0)";
     }
-    return `invert(1) ${isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""}`;
+    return `invert(1) ${
+      isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""
+    }`;
   }
-
-  function moveWithArrowKey(key: string, px: number) {
-    let offset: Point = { x: 0, y: 0 };
-    switch (key) {
-      case "ArrowUp":
-        offset = applyOffset(offset, { y: -px, x: 0 });
-        break;
-      case "ArrowDown":
-        offset = applyOffset(offset, { y: px, x: 0 });
-        break;
-      case "ArrowLeft":
-        offset = applyOffset(offset, { y: 0, x: -px });
-        break;
-      case "ArrowRight":
-        offset = applyOffset(offset, { y: 0, x: px });
-        break;
-      default:
-        break;
-    }
-    const translation = translate(offset);
-    setLocalTransform(localTransform.mmul(translation));
-  }
-
-  useProgArrowKeyHandler(moveWithArrowKey, !isCalibrating);
 
   return (
     <main
@@ -248,7 +228,6 @@ export default function Page() {
         height: "100vh",
         width: "100vw",
         overflow: "hidden",
-        backgroundColor: "white",
       }}
     >
       <FullScreen handle={handle} className="bg-white">
@@ -286,7 +265,17 @@ export default function Page() {
           pageCount={pageCount}
           gridOn={gridOn}
           setGridOn={setGridOn}
+          showLayerMenu={showLayerMenu}
+          setShowLayerMenu={setShowLayerMenu}
+          localTransform={localTransform}
+          setLocalTransform={setLocalTransform}
+          pageWidth={pageWidth}
+          pageHeight={pageHeight}
+          calibrationTransform={calibrationTransform}
         />
+
+        <LayerMenu className={"absolute transition-all duration-700  " + (showLayerMenu ? "left-0" : "-left-60")} layers={layers} setLayers={setLayers} />
+
         <CalibrationCanvas
           className={`absolute z-10 ${visible(gridOn)}`}
           points={points}
@@ -330,6 +319,12 @@ export default function Page() {
                 setPageCount={setPageCount}
                 setPageNumber={setPageNumber}
                 pageNumber={pageNumber}
+                setLayers={setLayers}
+                layers={layers}
+                setPageWidth={setPageWidth}
+                setPageHeight={setPageHeight}
+                setLocalTransform={setLocalTransform}
+                calibrationTransform={calibrationTransform}
               />
             </div>
           </div>

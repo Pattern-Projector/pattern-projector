@@ -23,6 +23,11 @@ import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
+import LayersIcon from "@/_icons/layers-icon";
+import LayersOffIcon from "@/_icons/layers-off-icon";
+import RecenterIcon from "@/_icons/recenter-icon";
+import Matrix from "ml-matrix";
+import { translate } from "@/_lib/geometry";
 import FourCorners from "@/_icons/four-corners";
 import FourCornersOff from "@/_icons/four-corners-off";
 
@@ -48,6 +53,13 @@ export default function Header({
   pageCount,
   gridOn,
   setGridOn,
+  showLayerMenu,
+  setShowLayerMenu,
+  localTransform,
+  calibrationTransform,
+  setLocalTransform,
+  pageWidth,
+  pageHeight,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -67,6 +79,13 @@ export default function Header({
   pageCount: number;
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
+  showLayerMenu: boolean;
+  setShowLayerMenu: Dispatch<SetStateAction<boolean>>;
+  localTransform: Matrix;
+  calibrationTransform: Matrix;
+  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
+  pageWidth: number;
+  pageHeight: number;
 }) {
   const t = useTranslations("Header");
 
@@ -82,6 +101,16 @@ export default function Header({
 
   function handleNextPage() {
     changePage(1);
+  }
+
+  function handleRecenter() {
+    if (localTransform !== null) {
+      const pdfPixels = 72;
+      const tx = (+width * pdfPixels) / 2 - pageWidth / 2;
+      const ty = (+height * pdfPixels) / 2 - pageHeight / 2;
+      const m = translate({ x: tx, y: ty });
+      setLocalTransform(calibrationTransform.mmul(m));
+    }
   }
 
   return (
@@ -160,6 +189,17 @@ export default function Header({
           </button>
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
+          <button
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
+            name={showLayerMenu ? t("layersOn") : t("layersOff")}
+            onClick={() => setShowLayerMenu(!showLayerMenu)}
+          >
+            {showLayerMenu ? (
+              <LayersIcon ariaLabel={t("layersOn")} />
+            ) : (
+              <LayersOffIcon ariaLabel={t("layersOff")} />
+            )}
+          </button>
           <button
             className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Toggle grid visibility"}
@@ -245,7 +285,7 @@ export default function Header({
             )}
           </button>
           <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
             name={"Rotate 90 degrees clockwise"}
             onClick={() =>
               setTransformSettings({
@@ -255,6 +295,13 @@ export default function Header({
             }
           >
             <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
+          </button>
+          <button
+            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+            name={t("recenter")}
+            onClick={handleRecenter}
+          >
+            <RecenterIcon ariaLabel={t("recenter")} />
           </button>
           <div className={`flex items-center ml-3 ${visible(pageCount > 1)}`}>
             <button

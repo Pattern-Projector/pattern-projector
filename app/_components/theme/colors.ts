@@ -5,10 +5,10 @@ enum ButtonColor {
 }
 
 enum CornerColorHex {
-  TOPLEFT = "#3b82f6",
-  TOPRIGHT = "#9333ea",
-  BOTTOMRIGHT = "#c2410c",
-  BOTTOMLEFT = "#65a30d",
+  TOPLEFT = "#9333ea",
+  TOPRIGHT = "#3b82f6",
+  BOTTOMRIGHT = "#65a30d",
+  BOTTOMLEFT = "#c2410c",
 }
 
 export { ButtonColor, CornerColorHex };

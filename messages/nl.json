@@ -53,6 +53,10 @@
         "title": "Draai",
         "description": "Draai het patroon 90 graden."
       },
+      "recenter": {
+        "title": "Centreer PDF opnieuw",
+        "description": ""
+      },
       "fullscreen": {
         "title": "Volledig scherm",
         "description": "Het is meestal het makkelijkst om de software in 'Volledig scherm' modus te gebruiken."
@@ -71,10 +75,6 @@
       "saveAsApp": {
         "question": "Wil je Pattern Projector als een app opslaan?",
         "answer": "Pattern Projector is een 'Progressive Web App' (PWA), en kan dus als app opgeslagen worden. Op een computer kan je het installeren met <googleChromeLink>Chrome</googleChromeLink> of <microsoftEdgeLink>Edge</microsoftEdgeLink>. Op een tablet open je het 'Delen' menu en drukt op 'Voeg to aan startscherm'."
-      },
-      "layerSupport": {
-        "question": "Is het mogelijk om lagen te kiezen?",
-        "answer": "Nog niet, maar dit is gepland voor een toekomstige versie."
       },
       "annotationSupport": {
         "question": "Ondersteunen jullie het toevoegen van notities?",
@@ -116,9 +116,14 @@
     "flipHorizontal": "Spiegel horizontaal",
     "flipHorizontalOff": "Spiegel horizontaal uit",
     "rotate90": "Draai 90 graden met de klok mee",
+    "fourCornersOn": "Alle hoeken markeren",
+    "fourCornersOff": "Alleen geselecteerde hoek markeren",
     "arrowBack": "1 pagina terug",
     "arrowForward": "1 pagina vooruit",
-    "info": "Informatie pagina"
+    "info": "Informatie pagina",
+    "layersOn": "Toon lagen menu",
+    "layersOff": "Verberg lagen menu",
+    "recenter": "Centreer PDF opnieuw"
   },
   "FullscreenButton": {
     "fullscreen": "Start 'volledig scherm'",

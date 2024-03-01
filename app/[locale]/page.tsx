@@ -12,6 +12,7 @@ import InvertColorIcon from "../_icons/invert-color-icon";
 import PatternProjectorIcon from "../_icons/pattern-projector-icon";
 import PdfIcon from "../_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "../_icons/rotate-90-degrees-cw-icon";
+import RecenterIcon from "@/_icons/recenter-icon";
 
 export default function Home() {
   const t = useTranslations("HomePage");
@@ -116,6 +117,13 @@ export default function Home() {
             </tr>
             <tr>
               <th scope="row">
+                <RecenterIcon ariaLabel="" />
+              </th>
+              <td>{t("project.recenter.title")}</td>
+              <td>{t("project.recenter.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
                 <FullscreenIcon ariaLabel="" />
               </th>
               <td>{t("project.fullscreen.title")}</td>
@@ -159,10 +167,6 @@ export default function Home() {
                 </a>
               ),
             })}
-          </li>
-          <li>
-            <div>{t("faq.layerSupport.question")}</div>
-            {t("faq.layerSupport.answer")}
           </li>
           <li>
             <div>{t("faq.annotationSupport.question")}</div>

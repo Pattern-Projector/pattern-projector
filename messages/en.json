@@ -14,7 +14,7 @@
       "mat": "Cutting mat: ideally with grid lines at every inch or centimeter",
       "mount": "Tripod or wall/shelf/table mount for projector",
       "computer": "Computer or tablet to connect to the projector",
-      "pattern": "A PDF sewing pattern: consider using <pdfstitcher>PDFStitcher</pdfstitcher> if your pattern has layers or multiple pages"
+      "pattern": "A PDF sewing pattern: consider using <pdfstitcher>PDFStitcher</pdfstitcher> if your pattern has multiple pages"
     },
     "setup": {
       "title": "Setup",
@@ -53,6 +53,10 @@
         "title": "Rotate",
         "description": "Change the orientation of the pattern by 90 degrees."
       },
+      "recenter": {
+        "title": "Recenter",
+        "description": "Centers the pattern on the cutting mat."
+      },
       "fullscreen": {
         "title": "Full screen",
         "description": "It's generally easier to use the software in full screen mode."
@@ -72,16 +76,12 @@
         "question": "Do you want to save Pattern Projector as an app?",
         "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
       },
-      "layerSupport": {
-        "question": "Is it possible to choose layers?",
-        "answer": "Not yet, but it's planned for an upcoming release."
-      },
       "annotationSupport": {
         "question": "Do you have support for adding annotations?",
         "answer": "Not yet, but it's planned for an upcoming release."
       },
       "chromecastSupport": {
-        "question": "Do you have support Chromecast?",
+        "question": "Do you support Chromecast?",
         "answer": "While it's possible to cast this webpage in Chrome, the lag in the connection can be frustrating, especially when calibrating. Better support for Chromecast is planned in an upcoming release."
       },
       "mobileSupport": {
@@ -115,12 +115,15 @@
     "flipVerticalOff": "Flip vertically off",
     "flipHorizontal": "Flip horizontally",
     "flipHorizontalOff": "Flip horizontally off",
-    "fourCornersOn": "Corner Highlights On",
-    "fourCornersOff": "Corner Highlights Off",
+    "fourCornersOn": "Highlight all corners",
+    "fourCornersOff": "Only highlight selected corner",
     "rotate90": "Rotate 90 degrees clockwise",
     "arrowBack": "Back 1 page",
     "arrowForward": "Forward 1 page",
-    "info": "Info page"
+    "info": "Info page",
+    "layersOn": "Show layer menu",
+    "layersOff": "Hide layer menu",
+    "recenter": "Recenter PDF"
   },
   "FullscreenButton": {
     "fullscreen": "Enter full screen",
