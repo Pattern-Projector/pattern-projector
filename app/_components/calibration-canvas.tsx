@@ -2,7 +2,9 @@ import Matrix from "ml-matrix";
 import React, {
   Dispatch,
   SetStateAction,
+  useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -16,6 +18,7 @@ import {
 } from "@/_lib/point";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CornerColorHex } from "@/_components/theme/colors";
+import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
 
 const maxPoints = 4; // One point per vertex in rectangle
 
@@ -290,33 +293,8 @@ export default function CalibrationCanvas({
     setPanStart(null);
   }
 
-  function modifyPoint(xOffset: number, yOffset: number): void {
-    if (pointToModify !== null) {
-      const newPoints = [...points];
-      newPoints[pointToModify] = {
-        x: newPoints[pointToModify].x + xOffset,
-        y: newPoints[pointToModify].y + yOffset,
-      };
-      setPoints(newPoints);
-    }
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLElement>) {
-    if (pointToModify !== null) {
-      switch (e.code) {
-        case "ArrowLeft":
-          modifyPoint(-1, 0);
-          break;
-        case "ArrowUp":
-          modifyPoint(0, -1);
-          break;
-        case "ArrowRight":
-          modifyPoint(1, 0);
-          break;
-        case "ArrowDown":
-          modifyPoint(0, 1);
-          break;
-      }
+  const handleKeyDown = useCallback(
+    function (e: React.KeyboardEvent) {
       if (e.code === "Tab") {
         e.preventDefault();
         if (e.shiftKey) {
@@ -325,18 +303,36 @@ export default function CalibrationCanvas({
             isFourCorners: !transformSettings.isFourCorners,
           });
         } else {
-          const newPointToModify = ((pointToModify || 0) + 1) % points.length;
+          const newPointToModify =
+            (pointToModify === null ? 0 : pointToModify + 1) % points.length;
           setPointToModify(newPointToModify);
         }
+      } else if (e.code === "Escape") {
+        if (pointToModify !== null) {
+          if (e.target instanceof HTMLElement) {
+            e.target.blur();
+          }
+          setPointToModify(null);
+        }
       }
-    }
-  }
+    },
+    [
+      pointToModify,
+      transformSettings,
+      setPointToModify,
+      points.length,
+      setTransformSettings,
+    ],
+  );
+
+  useProgArrowKeyPoints(points, setPoints, pointToModify, isCalibrating);
 
   return (
     <canvas
+      tabIndex={0}
       ref={canvasRef}
       className={className + " outline-none"}
-      onKeyDown={(e) => handleKeyDown(e)}
+      onKeyDown={handleKeyDown}
       onMouseMove={(e: React.MouseEvent) => {
         if ((e.buttons & 1) == 0) {
           handleMouseUp();
@@ -359,7 +355,6 @@ export default function CalibrationCanvas({
             : "grab",
         pointerEvents: isCalibrating ? "auto" : "none",
       }}
-      tabIndex={-1}
     />
   );
 }

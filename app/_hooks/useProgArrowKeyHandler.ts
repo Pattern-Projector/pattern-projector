@@ -4,29 +4,29 @@ const PIXEL_LIST = [1, 10, 25, 50];
 export default function useProgArrowKeyHandler(
   handler: (key: string, px: number) => void,
   active: boolean,
+  pixelList: number[] = PIXEL_LIST,
 ) {
   const [pixelIdx, setPixelIdx] = useState<number>(0);
   const [timeoutFunc, setTimeoutFunc] = useState<NodeJS.Timeout | null>();
 
   const keydownHandler = useCallback(
     function (e: KeyboardEvent) {
-      e.preventDefault();
-      if (!timeoutFunc && pixelIdx < PIXEL_LIST.length - 1) {
-        console.log("keydown timeout");
-        setTimeoutFunc(
-          setTimeout(() => {
-            setPixelIdx(pixelIdx + 1);
-            setTimeoutFunc(null);
-          }, 600),
-        );
-      }
       if (
         ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(e.code)
       ) {
-        handler(e.code, PIXEL_LIST[pixelIdx]);
+        e.preventDefault();
+        if (!timeoutFunc && pixelIdx < pixelList.length - 1) {
+          setTimeoutFunc(
+            setTimeout(() => {
+              setPixelIdx(pixelIdx + 1);
+              setTimeoutFunc(null);
+            }, 600),
+          );
+        }
+        handler(e.code, pixelList[pixelIdx]);
       }
     },
-    [timeoutFunc, pixelIdx, handler],
+    [timeoutFunc, pixelIdx, handler, pixelList],
   );
 
   const keyupHandler = useCallback(

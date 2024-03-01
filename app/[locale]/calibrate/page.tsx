@@ -20,6 +20,7 @@ import { CM, IN } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
+import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -180,9 +181,11 @@ export default function Page() {
     }
   }, []);
 
+  const pdfTranslation = useProgArrowKeyToMatrix(!isCalibrating);
+
   useEffect(() => {
-    setMatrix3d(toMatrix3d(localTransform));
-  }, [localTransform]);
+    setMatrix3d(toMatrix3d(localTransform.mmul(pdfTranslation)));
+  }, [localTransform, pdfTranslation]);
 
   useEffect(() => {
     if (points && points.length === maxPoints) {
@@ -191,9 +194,6 @@ export default function Page() {
       setPerspective(m);
       setLocalTransform(n);
       setCalibrationTransform(n);
-      if (pointToModify === null) {
-        setPointToModify(0);
-      }
     }
 
     function getDstVertices(): Point[] {
@@ -221,30 +221,6 @@ export default function Page() {
       isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""
     }`;
   }
-
-  function moveWithArrowKey(key: string, px: number) {
-    let offset: Point = { x: 0, y: 0 };
-    switch (key) {
-      case "ArrowUp":
-        offset = applyOffset(offset, { y: -px, x: 0 });
-        break;
-      case "ArrowDown":
-        offset = applyOffset(offset, { y: px, x: 0 });
-        break;
-      case "ArrowLeft":
-        offset = applyOffset(offset, { y: 0, x: -px });
-        break;
-      case "ArrowRight":
-        offset = applyOffset(offset, { y: 0, x: px });
-        break;
-      default:
-        break;
-    }
-    const translation = translate(offset);
-    setLocalTransform(localTransform.mmul(translation));
-  }
-
-  useProgArrowKeyHandler(moveWithArrowKey, !isCalibrating);
 
   return (
     <main
