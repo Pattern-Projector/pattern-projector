@@ -112,9 +112,14 @@
     "flipHorizontal": "Spiegel horizontaal",
     "flipHorizontalOff": "Spiegel horizontaal uit",
     "rotate90": "Draai 90 graden met de klok mee",
+    "fourCornersOn": "Corner Highlights On",
+    "fourCornersOff": "Corner Highlights Off",
     "arrowBack": "1 pagina terug",
     "arrowForward": "1 pagina vooruit",
-    "info": "Informatie pagina"
+    "info": "Informatie pagina",
+    "layersOn": "Toon lagen menu",
+    "layersOff": "Verberg lagen menu",
+    "recenter": "Centreer PDF opnieuw"
   },
   "FullscreenButton": {
     "fullscreen": "Start 'volledig scherm'",
