@@ -111,10 +111,15 @@
     "flipVerticalOff": "Vend lodret til normal",
     "flipHorizontal": "Vend vandret",
     "flipHorizontalOff": "Vend vandret til normal",
+    "fourCornersOn": "Corner Highlights On",
+    "fourCornersOff": "Corner Highlights Off",
     "rotate90": "Rotér 90 grader med uret",
     "arrowBack": "Gå en side tilbage",
     "arrowForward": "Gå en side frem",
-    "info": "Infoside"
+    "info": "Infoside",
+    "layersOn": "Vis lag-menu",
+    "layersOff": "Skjul lag-menu",
+    "recenter": "Til midten af PDF'en" 
   },
   "FullscreenButton": {
     "fullscreen": "Fuld skærm",
