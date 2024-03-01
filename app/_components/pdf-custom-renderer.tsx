@@ -2,12 +2,14 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
 } from "react";
 import invariant from "tiny-invariant";
 import { usePageContext, useDocumentContext } from "react-pdf";
+import usePDFLayerContext from "@/_hooks/usePDFLayerContext";
 
 import type {
   RenderParameters,
@@ -15,12 +17,9 @@ import type {
 } from "pdfjs-dist/types/src/display/api.js";
 import { Layer } from "@/_lib/layer";
 
-export default function CustomRenderer(
-  setLayers: Dispatch<SetStateAction<Map<string, Layer>>>,
-  layers: Map<string, Layer>
-) {
+export default function CustomRenderer() {
   const pageContext = usePageContext();
-
+  const { layers, setLayers } = usePDFLayerContext();
   invariant(pageContext, "Unable to find Page context.");
 
   const docContext = useDocumentContext();
@@ -42,7 +41,7 @@ export default function CustomRenderer(
   const renderViewport = useMemo(
     () =>
       page.getViewport({ scale: getScale(viewport.width, viewport.height) }),
-    [page, viewport]
+    [page, viewport],
   );
 
   function drawPageOnCanvas() {

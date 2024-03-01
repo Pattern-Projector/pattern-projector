@@ -1,17 +1,18 @@
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
 import { Layer } from "@/_lib/layer";
 import Matrix from "ml-matrix";
+import PDFLayerContext from "@/_hooks/PDFLayerContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
-  import.meta.url
+  import.meta.url,
 ).toString();
 
 /**
@@ -57,14 +58,17 @@ export default function PdfViewer({
 
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-      <Page
-        pageNumber={pageNumber}
-        renderMode="custom"
-        customRenderer={() => CustomRenderer(setLayers, layers)}
-        renderAnnotationLayer={false}
-        renderTextLayer={false}
-        onLoadSuccess={onPageLoadSuccess}
-      />
+      {/* eslint-disable-next-line react/jsx-no-undef */}
+      <PDFLayerContext.Provider value={{ layers, setLayers }}>
+        <Page
+          pageNumber={pageNumber}
+          renderMode="custom"
+          customRenderer={CustomRenderer}
+          renderAnnotationLayer={false}
+          renderTextLayer={false}
+          onLoadSuccess={onPageLoadSuccess}
+        />
+      </PDFLayerContext.Provider>
     </Document>
   );
 }
