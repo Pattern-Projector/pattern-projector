@@ -9,26 +9,22 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 const inter = Inter({ subsets: ["latin"] });
 
-const APP_NAME = "Pattern Projector";
-const APP_DEFAULT_TITLE = "Pattern Projector";
-const APP_TITLE_TEMPLATE = "%s - Pattern Projector";
+const APP_TITLE = "Pattern Projector";
 const APP_DESCRIPTION =
   "Calibrates projectors for projecting sewing patterns with accurate scaling and without perspective distortion";
+const APP_URL = "https://www.patternprojector.com/";
 
 export const metadata: Metadata = {
   description: "Calibrate your projector for sewing patterns",
   viewport:
     "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no",
-  applicationName: APP_NAME,
-  title: {
-    default: APP_DEFAULT_TITLE,
-    template: APP_TITLE_TEMPLATE,
-  },
+  applicationName: APP_TITLE,
+  title: APP_TITLE,
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: APP_DEFAULT_TITLE,
+    title: APP_TITLE,
     // startUpImage: [],
   },
   formatDetection: {
@@ -36,19 +32,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    siteName: APP_NAME,
-    title: {
-      default: APP_DEFAULT_TITLE,
-      template: APP_TITLE_TEMPLATE,
-    },
+    siteName: APP_TITLE,
+    title: APP_TITLE,
     description: APP_DESCRIPTION,
+    url: APP_URL,
   },
   twitter: {
     card: "summary",
-    title: {
-      default: APP_DEFAULT_TITLE,
-      template: APP_TITLE_TEMPLATE,
-    },
+    title: APP_TITLE,
     description: APP_DESCRIPTION,
   },
   themeColor: "#000",
