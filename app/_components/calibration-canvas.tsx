@@ -42,7 +42,6 @@ function draw(
   pointToModify: number | null,
   ptDensity: number,
   displayAllCorners?: boolean,
-  rotateTranspose?: number,
 ): void {
   ctx.translate(offset.x, offset.y);
 
