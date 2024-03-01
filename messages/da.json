@@ -53,6 +53,10 @@
         "title": "Rotér",
         "description": "Ændre mønsterets retning med 90 grader"
       },
+      "recenter": {
+        "title": "Til midten af PDF'en",
+        "description": ""
+      },
       "fullscreen": {
         "title": "Fuld skærm",
         "description": "Det er som regel nemmere at bruge softwaren i fuld skærm. "

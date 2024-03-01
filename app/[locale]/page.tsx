@@ -12,6 +12,7 @@ import InvertColorIcon from "../_icons/invert-color-icon";
 import PatternProjectorIcon from "../_icons/pattern-projector-icon";
 import PdfIcon from "../_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "../_icons/rotate-90-degrees-cw-icon";
+import RecenterIcon from "@/_icons/recenter-icon";
 
 export default function Home() {
   const t = useTranslations("HomePage");
@@ -113,6 +114,13 @@ export default function Home() {
               </th>
               <td>{t("project.rotate.title")}</td>
               <td>{t("project.rotate.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <RecenterIcon ariaLabel="" />
+              </th>
+              <td>{t("project.recenter.title")}</td>
+              <td>{t("project.recenter.description")}</td>
             </tr>
             <tr>
               <th scope="row">

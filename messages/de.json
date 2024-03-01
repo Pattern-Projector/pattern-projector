@@ -53,6 +53,10 @@
         "title": "Drehen",
         "description": "Dreht das Schnittmuster um 90 Grad."
       },
+      "recenter": {
+        "title": "PDF zentrieren",
+        "description": ""
+      },
       "fullscreen": {
         "title": "Vollbild",
         "description": "Es ist generell einfacher, die Software im Vollbildmodus zu verwenden."

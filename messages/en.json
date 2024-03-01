@@ -14,7 +14,7 @@
       "mat": "Cutting mat: ideally with grid lines at every inch or centimeter",
       "mount": "Tripod or wall/shelf/table mount for projector",
       "computer": "Computer or tablet to connect to the projector",
-      "pattern": "A PDF sewing pattern: consider using <pdfstitcher>PDFStitcher</pdfstitcher> if your pattern has layers or multiple pages"
+      "pattern": "A PDF sewing pattern: consider using <pdfstitcher>PDFStitcher</pdfstitcher> if your pattern has multiple pages"
     },
     "setup": {
       "title": "Setup",
@@ -52,6 +52,10 @@
       "rotate": {
         "title": "Rotate",
         "description": "Change the orientation of the pattern by 90 degrees."
+      },
+      "recenter": {
+        "title": "Recenter",
+        "description": "Centers the pattern on the cutting mat."
       },
       "fullscreen": {
         "title": "Full screen",

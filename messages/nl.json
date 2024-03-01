@@ -53,6 +53,10 @@
         "title": "Draai",
         "description": "Draai het patroon 90 graden."
       },
+      "recenter": {
+        "title": "Centreer PDF opnieuw",
+        "description": ""
+      },
       "fullscreen": {
         "title": "Volledig scherm",
         "description": "Het is meestal het makkelijkst om de software in 'Volledig scherm' modus te gebruiken."
