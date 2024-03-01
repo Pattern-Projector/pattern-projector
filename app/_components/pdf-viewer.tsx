@@ -1,7 +1,7 @@
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
@@ -55,12 +55,14 @@ export default function PdfViewer({
     setPageHeight(pdfProxy.view[3]);
   }
 
+  const customRenderer = useCallback(() => CustomRenderer(setLayers, layers), [setLayers, layers]);
+
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
       <Page
         pageNumber={pageNumber}
         renderMode="custom"
-        customRenderer={() => CustomRenderer(setLayers, layers)}
+        customRenderer={customRenderer}
         renderAnnotationLayer={false}
         renderTextLayer={false}
         onLoadSuccess={onPageLoadSuccess}
