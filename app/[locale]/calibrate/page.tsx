@@ -8,7 +8,11 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import { getPerspectiveTransform, toMatrix3d, translate } from "@/_lib/geometry";
+import {
+  getPerspectiveTransform,
+  toMatrix3d,
+  translate,
+} from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { applyOffset, Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
@@ -21,6 +25,7 @@ import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
+import { visible } from "@/_components/theme/css-functions";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -39,7 +44,7 @@ export default function Page() {
 
   const [points, setPoints] = useState<Point[]>(defaultPoints);
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
-    getDefaultTransforms()
+    getDefaultTransforms(),
   );
   const [gridOn, setGridOn] = useState<boolean>(true);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
@@ -51,10 +56,10 @@ export default function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
   const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
+    Matrix.identity(3, 3),
   );
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
-    Matrix.identity(3, 3)
+    Matrix.identity(3, 3),
   );
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState(1);
@@ -63,10 +68,6 @@ export default function Page() {
   const [showLayerMenu, setShowLayerMenu] = useState<boolean>(true);
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
-
-  function visible(b: boolean): string {
-    return b ? "visible" : "hidden";
-  }
 
   function getDefaultPoints() {
     const o = 150;
@@ -274,7 +275,14 @@ export default function Page() {
           calibrationTransform={calibrationTransform}
         />
 
-        <LayerMenu className={"absolute transition-all duration-700  " + (showLayerMenu ? "left-0" : "-left-60")} layers={layers} setLayers={setLayers} />
+        <LayerMenu
+          className={
+            "absolute transition-all duration-700  " +
+            (showLayerMenu ? "left-0" : "-left-60")
+          }
+          layers={layers}
+          setLayers={setLayers}
+        />
 
         <CalibrationCanvas
           className={`absolute z-10 ${visible(gridOn)}`}

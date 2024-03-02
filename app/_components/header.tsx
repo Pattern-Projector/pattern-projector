@@ -30,10 +30,10 @@ import Matrix from "ml-matrix";
 import { translate } from "@/_lib/geometry";
 import FourCorners from "@/_icons/four-corners";
 import FourCornersOff from "@/_icons/four-corners-off";
+import { visible } from "@/_components/theme/css-functions";
+import { IconButton } from "@/_components/buttons/icon-button";
+import Tooltip from "@/_components/tooltip/tooltip";
 
-function visible(b: boolean): string {
-  return b ? "visible" : "hidden";
-}
 export default function Header({
   isCalibrating,
   setIsCalibrating,
@@ -88,6 +88,7 @@ export default function Header({
   pageHeight: number;
 }) {
   const t = useTranslations("Header");
+  const fbt = useTranslations("FullscreenButton");
 
   const [invertOpen, setInvertOpen] = useState<boolean>(false);
 
@@ -123,28 +124,32 @@ export default function Header({
           <h1 className="mr-2">
             {isCalibrating ? t("calibrating") : t("projecting")}
           </h1>
-          <FullScreenButton
-            className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
-            handle={fullScreenHandle}
-          />
+          <Tooltip description={fbt("fullscreen")}>
+            <FullScreenButton
+              className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
+              handle={fullScreenHandle}
+            />
+          </Tooltip>
         </div>
         <div className={`flex items-center ${visible(isCalibrating)}`}>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-            name={"Flip horizontally"}
-            onClick={() =>
-              setTransformSettings({
-                ...transformSettings,
-                isFourCorners: !transformSettings.isFourCorners,
-              })
-            }
-          >
-            {transformSettings.isFourCorners ? (
-              <FourCorners ariaLabel={t("fourCornersOn")} />
-            ) : (
-              <FourCornersOff ariaLabel={t("fourCornersOff")} />
-            )}
-          </button>
+          <Tooltip description={t("fourCornersOn")}>
+            <IconButton
+              name={"Corner Highlights"}
+              className="p-2.5 mr-1"
+              onClick={() =>
+                setTransformSettings({
+                  ...transformSettings,
+                  isFourCorners: !transformSettings.isFourCorners,
+                })
+              }
+            >
+              {transformSettings.isFourCorners ? (
+                <FourCorners ariaLabel={t("fourCornersOn")} />
+              ) : (
+                <FourCornersOff ariaLabel={t("fourCornersOff")} />
+              )}
+            </IconButton>
+          </Tooltip>
 
           <InlineInput
             className="mr-1"
@@ -178,147 +183,163 @@ export default function Header({
               { value: CM, label: "cm" },
             ]}
           />
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 ${visible(
-              isCalibrating,
-            )}`}
-            name={"Delete points"}
-            onClick={handleResetCalibration}
-          >
-            <DeleteIcon ariaLabel={t("delete")} />
-          </button>
+          <Tooltip description={t("delete")}>
+            <IconButton
+              className={`p-2.5 ${visible(isCalibrating)}`}
+              name={"Delete points"}
+              onClick={handleResetCalibration}
+            >
+              <DeleteIcon ariaLabel={t("delete")} />
+            </IconButton>
+          </Tooltip>
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-            name={showLayerMenu ? t("layersOn") : t("layersOff")}
-            onClick={() => setShowLayerMenu(!showLayerMenu)}
-          >
-            {showLayerMenu ? (
-              <LayersIcon ariaLabel={t("layersOn")} />
-            ) : (
-              <LayersOffIcon ariaLabel={t("layersOff")} />
-            )}
-          </button>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-            name={"Toggle grid visibility"}
-            onClick={() => setGridOn(!gridOn)}
-          >
-            {gridOn ? (
-              <GridOnIcon ariaLabel={t("gridOn")} />
-            ) : (
-              <GridOffIcon ariaLabel={t("gridOff")} />
-            )}
-          </button>
+          <Tooltip description={t("layersOn")}>
+            <IconButton
+              className="p-2.5 mr-2"
+              name={showLayerMenu ? t("layersOn") : t("layersOff")}
+              onClick={() => setShowLayerMenu(!showLayerMenu)}
+            >
+              {showLayerMenu ? (
+                <LayersIcon ariaLabel={t("layersOn")} />
+              ) : (
+                <LayersOffIcon ariaLabel={t("layersOff")} />
+              )}
+            </IconButton>
+          </Tooltip>
+          <Tooltip description={t("gridOn")}>
+            <IconButton
+              className="p-2.5 mr-2"
+              name={"Toggle grid visibility"}
+              onClick={() => setGridOn(!gridOn)}
+            >
+              {gridOn ? (
+                <GridOnIcon ariaLabel={t("gridOn")} />
+              ) : (
+                <GridOffIcon ariaLabel={t("gridOff")} />
+              )}
+            </IconButton>
+          </Tooltip>
           <div className="relative inline-block text-left">
-            <button
-              className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-              name={t("invertColor")}
-              onClick={(e) => {
-                let newInverted;
-                let newIsGreenInverted;
-                if (!transformSettings.inverted) {
-                  newInverted = true;
-                  newIsGreenInverted = false;
-                } else if (!transformSettings.isInvertedGreen) {
-                  newInverted = true;
-                  newIsGreenInverted = true;
-                } else {
-                  newInverted = false;
-                  newIsGreenInverted = false;
-                }
+            <Tooltip description={t("invertColor")}>
+              <IconButton
+                className="p-2.5 mr-2"
+                name={t("invertColor")}
+                onClick={(e) => {
+                  let newInverted;
+                  let newIsGreenInverted;
+                  if (!transformSettings.inverted) {
+                    newInverted = true;
+                    newIsGreenInverted = false;
+                  } else if (!transformSettings.isInvertedGreen) {
+                    newInverted = true;
+                    newIsGreenInverted = true;
+                  } else {
+                    newInverted = false;
+                    newIsGreenInverted = false;
+                  }
+                  setTransformSettings({
+                    ...transformSettings,
+                    inverted: newInverted,
+                    isInvertedGreen: newIsGreenInverted,
+                  });
+                  setInvertOpen(!transformSettings.inverted);
+                }}
+              >
+                {transformSettings.inverted ? (
+                  <InvertColorOffIcon
+                    fill={
+                      transformSettings.isInvertedGreen ? "#32CD32" : "#000"
+                    }
+                    ariaLabel={t("invertColorOff")}
+                  />
+                ) : (
+                  <InvertColorIcon ariaLabel={t("invertColor")} />
+                )}
+              </IconButton>
+            </Tooltip>
+          </div>
+          <Tooltip description={t("flipVerticalOff")}>
+            <IconButton
+              className="p-2.5 mr-2"
+              name={"Flip vertically"}
+              onClick={() =>
                 setTransformSettings({
                   ...transformSettings,
-                  inverted: newInverted,
-                  isInvertedGreen: newIsGreenInverted,
-                });
-                setInvertOpen(!transformSettings.inverted);
-              }}
+                  scale: {
+                    x: transformSettings.scale.x * -1,
+                    y: transformSettings.scale.y,
+                  },
+                })
+              }
             >
-              {transformSettings.inverted ? (
-                <InvertColorOffIcon
-                  fill={transformSettings.isInvertedGreen ? "#32CD32" : "#000"}
-                  ariaLabel={t("invertColorOff")}
-                />
+              {transformSettings.scale.x === -1 ? (
+                <FlipVerticalOffIcon ariaLabel={t("flipVerticalOff")} />
               ) : (
-                <InvertColorIcon ariaLabel={t("invertColor")} />
+                <FlipVerticalIcon ariaLabel={t("flipVertical")} />
               )}
-            </button>
-          </div>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-            name={"Flip vertically"}
-            onClick={() =>
-              setTransformSettings({
-                ...transformSettings,
-                scale: {
-                  x: transformSettings.scale.x * -1,
-                  y: transformSettings.scale.y,
-                },
-              })
-            }
-          >
-            {transformSettings.scale.x === -1 ? (
-              <FlipVerticalOffIcon ariaLabel={t("flipVerticalOff")} />
-            ) : (
-              <FlipVerticalIcon ariaLabel={t("flipVertical")} />
-            )}
-          </button>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-            name={"Flip horizontally"}
-            onClick={() =>
-              setTransformSettings({
-                ...transformSettings,
-                scale: {
-                  x: transformSettings.scale.x,
-                  y: transformSettings.scale.y * -1,
-                },
-              })
-            }
-          >
-            {transformSettings.scale.y === -1 ? (
-              <FlipHorizontalOffIcon ariaLabel={t("flipHorizontalOff")} />
-            ) : (
-              <FlipHorizontalIcon ariaLabel={t("flipHorizontal")} />
-            )}
-          </button>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5 mr-2`}
-            name={"Rotate 90 degrees clockwise"}
-            onClick={() =>
-              setTransformSettings({
-                ...transformSettings,
-                degrees: (transformSettings.degrees + 90) % 360,
-              })
-            }
-          >
-            <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
-          </button>
-          <button
-            className={`bg-white cursor-pointer from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
-            name={t("recenter")}
-            onClick={handleRecenter}
-          >
-            <RecenterIcon ariaLabel={t("recenter")} />
-          </button>
+            </IconButton>
+          </Tooltip>
+          <Tooltip description={t("flipHorizontalOff")}>
+            <IconButton
+              className="p-2.5 mr-2"
+              name={"Flip horizontally"}
+              onClick={() =>
+                setTransformSettings({
+                  ...transformSettings,
+                  scale: {
+                    x: transformSettings.scale.x,
+                    y: transformSettings.scale.y * -1,
+                  },
+                })
+              }
+            >
+              {transformSettings.scale.y === -1 ? (
+                <FlipHorizontalOffIcon ariaLabel={t("flipHorizontalOff")} />
+              ) : (
+                <FlipHorizontalIcon ariaLabel={t("flipHorizontal")} />
+              )}
+            </IconButton>
+          </Tooltip>
+          <Tooltip description={t("rotate90")}>
+            <IconButton
+              className="p-2.5 mr-2"
+              name={"Rotate 90 degrees clockwise"}
+              onClick={() =>
+                setTransformSettings({
+                  ...transformSettings,
+                  degrees: (transformSettings.degrees + 90) % 360,
+                })
+              }
+            >
+              <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip description={t("recenter")}>
+            <IconButton
+              className="p-2.5"
+              name={t("recenter")}
+              onClick={handleRecenter}
+            >
+              <RecenterIcon ariaLabel={t("recenter")} />
+            </IconButton>
+          </Tooltip>
           <div className={`flex items-center ml-3 ${visible(pageCount > 1)}`}>
-            <button
+            <IconButton
               disabled={pageNumber <= 1}
               onClick={handlePreviousPage}
               name="Previous Page"
             >
               <ArrowBackIcon ariaLabel={t("arrowBack")} />
-            </button>
-            {pageNumber}
-            <button
+            </IconButton>
+            <span className="mx-1">{pageNumber}</span>
+            <IconButton
               disabled={pageNumber >= pageCount}
               onClick={handleNextPage}
               name="Next Page"
             >
               <ArrowForwardIcon ariaLabel={t("arrowForward")} />
-            </button>
+            </IconButton>
           </div>
         </div>
         <div className="flex items-center">
