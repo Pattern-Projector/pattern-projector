@@ -65,7 +65,7 @@ export default function Page() {
   const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
-  const [showLayerMenu, setShowLayerMenu] = useState<boolean>(true);
+  const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
 
@@ -214,6 +214,12 @@ export default function Page() {
     }
   }, [points, width, height, unitOfMeasure]);
 
+  useEffect(() => {
+    if (layers.size > 0) {
+      setShowLayerMenu(true);
+    }
+  }, [layers]);
+
   function getInversionFilters(inverted: boolean, isGreen: boolean): string {
     if (!inverted) {
       return "invert(0)";
@@ -266,6 +272,7 @@ export default function Page() {
           pageCount={pageCount}
           gridOn={gridOn}
           setGridOn={setGridOn}
+          layers={layers}
           showLayerMenu={showLayerMenu}
           setShowLayerMenu={setShowLayerMenu}
           localTransform={localTransform}

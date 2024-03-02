@@ -33,6 +33,7 @@ import FourCornersOff from "@/_icons/four-corners-off";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
+import { Layer } from "@/_lib/layer";
 
 export default function Header({
   isCalibrating,
@@ -53,6 +54,7 @@ export default function Header({
   pageCount,
   gridOn,
   setGridOn,
+  layers,
   showLayerMenu,
   setShowLayerMenu,
   localTransform,
@@ -79,6 +81,7 @@ export default function Header({
   pageCount: number;
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
+  layers: Map<string, Layer>;
   showLayerMenu: boolean;
   setShowLayerMenu: Dispatch<SetStateAction<boolean>>;
   localTransform: Matrix;
@@ -124,7 +127,13 @@ export default function Header({
           <h1 className="mr-2">
             {isCalibrating ? t("calibrating") : t("projecting")}
           </h1>
-          <Tooltip description={fbt("fullscreen")}>
+          <Tooltip
+            description={
+              fullScreenHandle.active
+                ? fbt("fullscreenExit")
+                : fbt("fullscreen")
+            }
+          >
             <FullScreenButton
               className={`bg-white z-20 cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full p-2.5`}
               handle={fullScreenHandle}
@@ -132,7 +141,13 @@ export default function Header({
           </Tooltip>
         </div>
         <div className={`flex items-center ${visible(isCalibrating)}`}>
-          <Tooltip description={t("fourCornersOn")}>
+          <Tooltip
+            description={
+              transformSettings.isFourCorners
+                ? t("fourCornersOn")
+                : t("fourCornersOff")
+            }
+          >
             <IconButton
               name={"Corner Highlights"}
               className="p-2.5 mr-1"
@@ -194,8 +209,9 @@ export default function Header({
           </Tooltip>
         </div>
         <div className={`flex items-center ${visible(!isCalibrating)}`}>
-          <Tooltip description={t("layersOn")}>
+          <Tooltip description={showLayerMenu ? t("layersOn") : t("layersOff")}>
             <IconButton
+              disabled={!layers || layers.size === 0}
               className="p-2.5 mr-2"
               name={showLayerMenu ? t("layersOn") : t("layersOff")}
               onClick={() => setShowLayerMenu(!showLayerMenu)}
@@ -207,7 +223,7 @@ export default function Header({
               )}
             </IconButton>
           </Tooltip>
-          <Tooltip description={t("gridOn")}>
+          <Tooltip description={gridOn ? t("gridOn") : t("gridOff")}>
             <IconButton
               className="p-2.5 mr-2"
               name={"Toggle grid visibility"}
@@ -247,22 +263,22 @@ export default function Header({
                 }}
               >
                 {transformSettings.inverted ? (
-                  <InvertColorOffIcon
+                  <InvertColorIcon
                     fill={
                       transformSettings.isInvertedGreen ? "#32CD32" : "#000"
                     }
-                    ariaLabel={t("invertColorOff")}
+                    ariaLabel={t("invertColor")}
                   />
                 ) : (
-                  <InvertColorIcon ariaLabel={t("invertColor")} />
+                  <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
                 )}
               </IconButton>
             </Tooltip>
           </div>
-          <Tooltip description={t("flipVerticalOff")}>
+          <Tooltip description={t("flipHorizontal")}>
             <IconButton
               className="p-2.5 mr-2"
-              name={"Flip vertically"}
+              name={"Flip horizontally"}
               onClick={() =>
                 setTransformSettings({
                   ...transformSettings,
@@ -274,16 +290,16 @@ export default function Header({
               }
             >
               {transformSettings.scale.x === -1 ? (
-                <FlipVerticalOffIcon ariaLabel={t("flipVerticalOff")} />
+                <FlipVerticalOffIcon ariaLabel={t("flipHorizontal")} />
               ) : (
-                <FlipVerticalIcon ariaLabel={t("flipVertical")} />
+                <FlipVerticalIcon ariaLabel={t("flipHorizontalOff")} />
               )}
             </IconButton>
           </Tooltip>
-          <Tooltip description={t("flipHorizontalOff")}>
+          <Tooltip description={t("flipVertical")}>
             <IconButton
               className="p-2.5 mr-2"
-              name={"Flip horizontally"}
+              name={"Flip vertically"}
               onClick={() =>
                 setTransformSettings({
                   ...transformSettings,
@@ -295,9 +311,9 @@ export default function Header({
               }
             >
               {transformSettings.scale.y === -1 ? (
-                <FlipHorizontalOffIcon ariaLabel={t("flipHorizontalOff")} />
+                <FlipHorizontalOffIcon ariaLabel={t("flipVertical")} />
               ) : (
-                <FlipHorizontalIcon ariaLabel={t("flipHorizontal")} />
+                <FlipHorizontalIcon ariaLabel={t("flipVerticalOff")} />
               )}
             </IconButton>
           </Tooltip>
