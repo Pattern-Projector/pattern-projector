@@ -217,6 +217,8 @@ export default function Page() {
   useEffect(() => {
     if (layers.size > 0) {
       setShowLayerMenu(true);
+    } else {
+      setShowLayerMenu(false);
     }
   }, [layers]);
 
