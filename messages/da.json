@@ -29,6 +29,7 @@
       "input": "Indtast bredde og højde på din skæremåtte.",
       "fullscreen": "Gå til fuld skærm ved at klikke eller tappe ",
       "drag": "Træk i hjørnerne af gitteret, så ternene kommer til at passe med ternene på din skæremåtte. Justér hjørnerne på din tablet eller computer, mens du kigger på skæremåtten. Justér hjørnernes placering indtil gitteret i projektorbilledet passer med skæremåttens gitter. ",
+      "size": "Du behøver ikke at bruge hele din skæremåtte, når du kalibrerer. Brug i stedet så stort et område som muligt, hvor du kan få kalibreringsgitteret til at passe i. Vær sikker på at målene (bredde og højde) på måtten passer med de indtastede mål. ",
       "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap"
     },
     "project": {
@@ -64,10 +65,6 @@
     },
     "faq": {
       "title": "FAQ / OSS",
-      "gridSize": {
-        "question": "Spørgsmål: Problemer med at trække gitterets hjørner til kanten af din skæremåtte? ",
-        "answer": "Svar: Du behøver ikke at bruge hele din skæremåtte, når du kalibrerer. Brug i stedet så stort et område som muligt, hvor du kan få kalibreringsgitteret til at passe i. Vær sikker på at målene (bredde og højde) på måtten passer med de indtastede mål. "
-      },
       "wrongSizePdf": {
         "question": "Vises PDF’en for stort eller for småt? ",
         "answer": "Pattern Projector kalibreringsværktæj har ingen zoom, fordi skaleringen bestemmes af størrelsesinfomationen i PDF’en. Vær sikker på, at skaleringen er rigtigt. En god måde at tjekke skaleringen er korrekt eller ej er at vise en tomme eller en centimeter på projektoren og se, om den matcher din skæremåtte. "
