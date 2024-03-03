@@ -68,6 +68,20 @@ export default function Home() {
             <FullscreenIcon ariaLabel="" />
           </li>
           <li>{t("calibration.drag")}</li>
+          <li>
+            {t.rich("calibration.size", {
+              inchGridLink: (chunks) => (
+                <a href="https://www.mathed.page/puzzles/one-inch-graph-paper.pdf">
+                  {chunks}
+                </a>
+              ),
+              cmGridLink: (chunks) => (
+                <a href="https://mathbits.com/MathBits/StudentResources/GraphPaper/CentimeterFullPage.pdf">
+                  {chunks}
+                </a>
+              ),
+            })}
+          </li>
           <Image src="/demo.gif" width={640} height={260} alt=""></Image>
           <li>{t("calibration.project")}</li>
         </ol>
@@ -134,11 +148,7 @@ export default function Home() {
 
         <h2>{t("faq.title")}</h2>
         <ul>
-          <li>
-            <div>{t("faq.gridSize.question")}</div>
-            {t("faq.gridSize.answer")}
-          </li>
-          <li>
+        <li>
             <div>{t("faq.wrongSizePdf.question")}</div>
             {t.rich("faq.wrongSizePdf.answer", {
               inchGridLink: (chunks) => (

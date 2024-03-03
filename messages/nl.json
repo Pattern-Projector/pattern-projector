@@ -29,6 +29,7 @@
       "input": "Geef de breedte en hoogte van je snijmat in.",
       "fullscreen": "Ga naar 'Volledig scherm' modus door te klikken (of drukken) op  ",
       "drag": "Sleep de hoeken van het raster tot ze overeenkomen met je snijmat. Stel de hoeken op je computer of tablet bij terwijl je naar de projectie kijkt.",
+      "size": "Je hoeft niet te kalibreren met je hele mat. Kies het grootste gebied op je mat waar het kalibratierooster in past en zorg ervoor dat je breedte- en hoogteinstellingen overeenkomen met het aantal vakjes van je raster.",
       "project": "Als het geprojecteerde grid overeen komt met de snijmat, klik (of druk) dan op 'Projecteer'."
     },
     "project": {
@@ -64,10 +65,6 @@
     },
     "faq": {
       "title": "FAQ",
-      "gridSize": {
-        "question": "Lukt het niet om de hoeken van het raster naar de randen van je snijmat te slepen?",
-        "answer": "Je hoeft niet te kalibreren met je hele mat. Kies het grootste gebied op je mat waar het kalibratierooster in past en zorg ervoor dat je breedte- en hoogteinstellingen overeenkomen met het aantal vakjes van je raster."
-      },
       "wrongSizePdf": {
         "question": "Is je geprojecteerde PDF te klein of te groot?",
         "answer": "Het Pattern Projector kalibratie gereedschap heeft geen 'zoom' functie omdat de schaal van de projectie uit de informatie in de PDF gehaald wordt. Patronen van ontwerpers hebben meestal de juiste schaal. Het zou kunnen dat er een foute schaal ingeslopen is door het patroon te openen in Affinity Designer of Inkscape."

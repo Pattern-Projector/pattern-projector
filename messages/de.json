@@ -29,6 +29,7 @@
       "input": "Füge die Weite und Höhe deiner Schneidematte ein.",
       "fullscreen": "Gehe auf Vollbildmodus, indem du auf das Ikon klickst",
       "drag": "Ziehe die Ecken des Rasters auf die Ecken deiner Schneidematte. Mit Blick auf die Matte, justiere die Ecken am PC oder Tablet. Justiere es solange, bis die Ecken und Linien mit deiner Schneidematte übereinstimmen.",
+      "size": "Es muss nicht die gesamte Matte kalibriert werden, sondern nur der größten Bereich, in den das Kalibrierungsgitter passt. Stelle dabei sicher, dass die Breiten- und Höhenangaben mit denen des Gitters übereinstimmen.",
       "project": "When das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf \"Beamen\"."
     },
     "project": {
@@ -64,10 +65,6 @@
     },
     "faq": {
       "title": "FAQ",
-      "gridSize": {
-        "question": "Hast du Probleme, die Ecken des Gitters an den Rand der Matte zu ziehen?",
-        "answer": "Es muss nicht die gesamte Matte kalibriert werden, sondern nur der größten Bereich, in den das Kalibrierungsgitter passt. Stelle dabei sicher, dass die Breiten- und Höhenangaben mit denen des Gitters übereinstimmen."
-      },
       "wrongSizePdf": {
         "question": "Wird die PDF zu groß oder zu klein projiziert?",
         "answer": "Die Kalibrierung hat keinen Zoom, da der Maßstab der Projektion von den Größenangaben in der PDF-Datei stammt. Stellen Sie sicher, dass das Schnittmuster den richtigen Maßstab hat. Eine gute Möglichkeit um zu überprüfen, ob der Maßstab des Schnittmusters stimmt, ist die Projektion eines <inchGridLink>ein Zoll</inchGridLink> oder <cmGridLink>ein Zentimeter</cmGridLink> Rasters, um zu sehen, ob es mit der Schneidematte übereinstimmt."
