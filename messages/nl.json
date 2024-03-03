@@ -123,9 +123,7 @@
     "info": "Informatie pagina",
     "layersOn": "Toon lagen menu",
     "layersOff": "Verberg lagen menu",
-    "recenter": "Centreer PDF opnieuw"
-  },
-  "FullscreenButton": {
+    "recenter": "Centreer PDF opnieuw",
     "fullscreen": "Start 'volledig scherm'",
     "fullscreenExit": "Verlaat 'volledig scherm'"
   }

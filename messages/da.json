@@ -123,9 +123,7 @@
     "info": "Infoside",
     "layersOn": "Vis lag-menu",
     "layersOff": "Skjul lag-menu",
-    "recenter": "Til midten af PDF'en" 
-  },
-  "FullscreenButton": {
+    "recenter": "Til midten af PDF'en",
     "fullscreen": "Fuld skærm",
     "fullscreenExit": "Fuld skærm"
   }

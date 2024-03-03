@@ -2,13 +2,15 @@ import React, { ReactElement } from "react";
 
 export default function Tooltip({
   children,
+  className,
   description,
 }: {
   children: ReactElement;
+  className?: string | undefined;
   description: string;
 }) {
   return (
-    <div className="relative flex flex-col items-center group">
+    <div className={"relative flex flex-col items-center group " + className}>
       {children}
       <div
         className={`absolute top-7 flex flex-col items-center hidden mt-6 group-hover:flex`}

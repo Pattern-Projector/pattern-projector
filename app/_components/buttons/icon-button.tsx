@@ -32,7 +32,7 @@ export function IconButton({
   }
 
   const defaultClasses =
-    "bg-white cursor-pointer focus:ring-4 focus:outline-none rounded-full";
+    "bg-white cursor-pointer focus:ring-4 focus:outline-none rounded-full p-2.5";
 
   return href ? (
     <a
