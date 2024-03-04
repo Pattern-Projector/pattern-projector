@@ -2,7 +2,7 @@
   "HomePage": {
     "beta": "beta",
     "pdfstitcherHref": "https://www.pdfstitcher.org/",
-    "github": "Github icon",
+    "github": "See source code",
     "calibrate": "Start Calibrating",
     "welcome": {
       "title": "Welcome to Pattern Projector!",
@@ -120,9 +120,7 @@
     "info": "Info page",
     "layersOn": "Show layer menu",
     "layersOff": "Hide layer menu",
-    "recenter": "Recenter PDF"
-  },
-  "FullscreenButton": {
+    "recenter": "Recenter PDF",
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen"
   }

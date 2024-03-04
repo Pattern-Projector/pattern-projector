@@ -101,7 +101,7 @@
     "openPDF": "Öffne PDF",
     "height": "H:",
     "width": "W:",
-    "project": "Projekt",
+    "project": "Beamen",
     "calibrate": "Kalibrieren",
     "delete": "Kalibrierung zurücksetzen",
     "gridOn": "Raster ein",
@@ -120,9 +120,7 @@
     "info": "Info Seite",
     "layersOn": "Blende Ebenenmenü ein",
     "layersOff": "Blende Ebenenmenü aus",
-    "recenter": "PDF zentrieren"
-  },
-  "FullscreenButton": {
+    "recenter": "PDF zentrieren",
     "fullscreen": "Vollbild",
     "fullscreenExit": "Vollbild"
   }

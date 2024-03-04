@@ -19,19 +19,25 @@ export default function InlineInput({
   name,
   value,
 }: {
-  className: string | undefined;
+  className?: string | undefined;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   id: string;
-  inputTestId: string;
+  inputTestId?: string;
   label: string;
   labelRight: string | null;
   name: string;
   value: string;
 }) {
   return (
-    <div className={className + " relative flex flex-col justify-center items-center"}>
-      <label className="text-sm font-medium text-gray-500 mb-2 absolute left-2 top-0 h-full flex items-center"
-             htmlFor={id}>
+    <div
+      className={
+        className + " relative flex flex-col justify-center items-center"
+      }
+    >
+      <label
+        className="text-sm font-medium text-gray-500 mb-2 absolute left-2 top-0 h-full flex items-center"
+        htmlFor={id}
+      >
         {label}
       </label>
       <input
@@ -43,7 +49,10 @@ export default function InlineInput({
         required
         value={value}
       />
-      <label className="text-sm text-gray-500 mb-2 absolute right-2 top-0 h-full flex items-center" htmlFor={id}>
+      <label
+        className="text-sm text-gray-500 mb-2 absolute right-2 top-0 h-full flex items-center"
+        htmlFor={id}
+      >
         {labelRight}
       </label>
     </div>

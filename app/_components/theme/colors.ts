@@ -4,6 +4,12 @@ enum ButtonColor {
   PURPLE = "purple",
 }
 
+enum IconButtonStateClass {
+  DEFAULT = "",
+  ACTIVE = "text-purple-700",
+  DISABLED = "text-gray-400",
+}
+
 enum CornerColorHex {
   TOPLEFT = "#9333ea",
   TOPRIGHT = "#3b82f6",
@@ -11,4 +17,4 @@ enum CornerColorHex {
   BOTTOMLEFT = "#c2410c",
 }
 
-export { ButtonColor, CornerColorHex };
+export { ButtonColor, CornerColorHex, IconButtonStateClass };

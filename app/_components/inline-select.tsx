@@ -21,13 +21,17 @@ export default function InlineSelect({
   className?: string;
   handleChange: (e: ChangeEvent<HTMLSelectElement>) => void;
   id: string;
-  inputTestId: string;
+  inputTestId?: string;
   name: string;
   value: string;
   options: SelectOption[];
 }) {
   return (
-    <div className={className + " relative flex flex-col justify-center items-center"}>
+    <div
+      className={
+        className + " relative flex flex-col justify-center items-center"
+      }
+    >
       <select
         className="py-2.5 px-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20"
         id={id}
@@ -37,7 +41,9 @@ export default function InlineSelect({
         value={value}
       >
         {options.map((o, i) => (
-          <option key={i} value={o.value}>{o.label}</option>
+          <option key={i} value={o.value}>
+            {o.label}
+          </option>
         ))}
       </select>
     </div>
