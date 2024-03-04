@@ -41,6 +41,7 @@ function draw(
   isCalibrating: boolean,
   pointToModify: number | null,
   ptDensity: number,
+  unitOfMeasure: string,
   displayAllCorners?: boolean,
 ): void {
   ctx.translate(offset.x, offset.y);
@@ -51,30 +52,15 @@ function draw(
   if (isCalibrating) {
     ctx.fill();
   } else {
-    // Draw border
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 5;
-    ctx.stroke();
-    ctx.lineDashOffset = 0;
-    ctx.setLineDash([4, 4]);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#fff";
-    ctx.stroke();
+    drawBorder(ctx);
   }
 
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = "#000";
   ctx.beginPath();
   if (isCalibrating) {
-    drawGrid(ctx, width, height, perspective, 2, ptDensity);
-    const v = 1;
-    ctx.strokeStyle = "#000";
-    ctx.setLineDash([v * 3, v]);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.strokeStyle = "#fff";
-    ctx.beginPath();
-    drawGrid(ctx, width, height, perspective, 0, ptDensity);
-    ctx.stroke();
+    ctx.strokeStyle = "#32CD32";
+    drawGrid(ctx, width, height, perspective, 2, ptDensity, unitOfMeasure);
+    drawGrid(ctx, width, height, perspective, 0, ptDensity, unitOfMeasure);
 
     if (displayAllCorners) {
       points.forEach((point, index) => {
@@ -102,23 +88,26 @@ function draw(
       ctx.stroke();
     }
   } else {
-    drawGrid(ctx, width, height, perspective, 8, ptDensity);
-    const v = 1;
     ctx.setLineDash([1]);
-    ctx.strokeStyle = "#000000";
-    //ctx.setLineDash([v * 3, v]);
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-
-    ctx.beginPath();
-    drawGrid(ctx, width, height, perspective, 0, ptDensity);
-    const t = 1;
-    ctx.strokeStyle = "#aaaaaa88";
-    ctx.setLineDash([t * 3, t]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    drawGrid(ctx, width, height, perspective, 8, ptDensity, unitOfMeasure);
   }
+}
+
+function drawBorder(ctx: CanvasRenderingContext2D) {
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  ctx.lineDashOffset = 0;
+  ctx.setLineDash([4, 4]);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "#fff";
+  ctx.stroke();
+}
+
+function getLineWidth(i: number, unit: string) {
+  const j = unit == "CM" ? 10 : 5;
+  console.log(i % j == 0 ? 2 : 1);
+  return i % j == 0 ? 2 : 1;
 }
 
 function drawGrid(
@@ -128,8 +117,9 @@ function drawGrid(
   perspective: Matrix,
   outset: number,
   ptDensity: number,
+  unitOfMeasure: string,
 ): void {
-  for (let i = 1; i < width; i++) {
+  for (let i = 0; i <= width; i++) {
     // TODO: fix needing dpi added in here.
     const line = transformPoints(
       [
@@ -138,9 +128,14 @@ function drawGrid(
       ],
       perspective,
     );
-    drawLine(ctx, line[0], line[1]);
+    drawLine(
+      ctx,
+      line[0],
+      line[1],
+      i == width ? 2 : getLineWidth(i, unitOfMeasure),
+    );
   }
-  for (let i = 1; i < height; i++) {
+  for (let i = 0; i <= height; i++) {
     const line = transformPoints(
       [
         { x: -outset * ptDensity, y: i * ptDensity },
@@ -148,13 +143,26 @@ function drawGrid(
       ],
       perspective,
     );
-    drawLine(ctx, line[0], line[1]);
+    drawLine(
+      ctx,
+      line[0],
+      line[1],
+      i == height ? 2 : getLineWidth(i, unitOfMeasure),
+    );
   }
 }
 
-function drawLine(ctx: CanvasRenderingContext2D, p1: Point, p2: Point): void {
+function drawLine(
+  ctx: CanvasRenderingContext2D,
+  p1: Point,
+  p2: Point,
+  lineWidth: number,
+): void {
+  ctx.beginPath();
+  ctx.lineWidth = lineWidth;
   ctx.moveTo(p1.x, p1.y);
   ctx.lineTo(p2.x, p2.y);
+  ctx.stroke();
 }
 
 function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
@@ -187,6 +195,7 @@ export default function CalibrationCanvas({
   ptDensity,
   transformSettings,
   setTransformSettings,
+  unitOfMeasure,
 }: {
   className: string | undefined;
   points: Point[];
@@ -200,6 +209,7 @@ export default function CalibrationCanvas({
   ptDensity: number;
   transformSettings: TransformSettings;
   setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
+  unitOfMeasure: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
@@ -223,6 +233,7 @@ export default function CalibrationCanvas({
           isCalibrating,
           pointToModify,
           ptDensity,
+          unitOfMeasure,
           transformSettings.isFourCorners,
         );
       }
@@ -237,6 +248,7 @@ export default function CalibrationCanvas({
     pointToModify,
     ptDensity,
     transformSettings.isFourCorners,
+    unitOfMeasure,
   ]);
 
   function getShortestDistance(p: Point): number {

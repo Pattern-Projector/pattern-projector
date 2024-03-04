@@ -306,6 +306,7 @@ export default function Page() {
           ptDensity={ptDensity}
           transformSettings={transformSettings}
           setTransformSettings={setTransformSettings}
+          unitOfMeasure={unitOfMeasure}
         />
         <Draggable
           className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
