@@ -294,7 +294,7 @@ export default function Page() {
         />
 
         <CalibrationCanvas
-          className={`absolute z-10 ${visible(gridOn)}`}
+          className={`absolute z-10 ${visible(isCalibrating)}`}
           points={points}
           setPoints={setPoints}
           pointToModify={pointToModify}
