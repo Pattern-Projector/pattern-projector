@@ -111,7 +111,6 @@ function drawGrid(
   const majorLine = 5;
 
   for (let i = 0; i <= width; i++) {
-    // TODO: fix needing dpi added in here.
     let lineWidth = 1;
     if (i % majorLine === 0 || i === width) {
       lineWidth = 2;
@@ -127,13 +126,15 @@ function drawGrid(
   }
   for (let i = 0; i <= height; i++) {
     let lineWidth = 1;
-    if (i % majorLine === 0 || i === width) {
+    if (i % majorLine === 0 || i === height) {
       lineWidth = 2;
     }
+    // Move origin to bottom left to match cutting mat
+    const y = (height - i) * ptDensity;
     const line = transformPoints(
       [
-        { x: -outset * ptDensity, y: i * ptDensity },
-        { x: (width + outset) * ptDensity, y: i * ptDensity },
+        { x: -outset * ptDensity, y: y },
+        { x: (width + outset) * ptDensity, y: y },
       ],
       perspective,
     );
