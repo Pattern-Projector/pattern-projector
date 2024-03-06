@@ -4,7 +4,6 @@ import React, {
   SetStateAction,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -51,30 +50,14 @@ function draw(
   if (isCalibrating) {
     ctx.fill();
   } else {
-    // Draw border
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 5;
-    ctx.stroke();
-    ctx.lineDashOffset = 0;
-    ctx.setLineDash([4, 4]);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#fff";
-    ctx.stroke();
+    drawBorder(ctx);
   }
 
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = "#000";
   ctx.beginPath();
   if (isCalibrating) {
-    drawGrid(ctx, width, height, perspective, 2, ptDensity);
-    const v = 1;
-    ctx.strokeStyle = "#000";
-    ctx.setLineDash([v * 3, v]);
-    ctx.stroke();
-    ctx.setLineDash([]);
     ctx.strokeStyle = "#fff";
-    ctx.beginPath();
     drawGrid(ctx, width, height, perspective, 0, ptDensity);
-    ctx.stroke();
 
     if (displayAllCorners) {
       points.forEach((point, index) => {
@@ -102,23 +85,19 @@ function draw(
       ctx.stroke();
     }
   } else {
-    drawGrid(ctx, width, height, perspective, 8, ptDensity);
-    const v = 1;
     ctx.setLineDash([1]);
-    ctx.strokeStyle = "#000000";
-    //ctx.setLineDash([v * 3, v]);
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-
-    ctx.beginPath();
-    drawGrid(ctx, width, height, perspective, 0, ptDensity);
-    const t = 1;
-    ctx.strokeStyle = "#aaaaaa88";
-    ctx.setLineDash([t * 3, t]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    drawGrid(ctx, width, height, perspective, 8, ptDensity);
   }
+}
+function drawBorder(ctx: CanvasRenderingContext2D) {
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  ctx.lineDashOffset = 0;
+  ctx.setLineDash([4, 4]);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "#fff";
+  ctx.stroke();
 }
 
 function drawGrid(
@@ -129,8 +108,13 @@ function drawGrid(
   outset: number,
   ptDensity: number,
 ): void {
-  for (let i = 1; i < width; i++) {
-    // TODO: fix needing dpi added in here.
+  const majorLine = 5;
+
+  for (let i = 0; i <= width; i++) {
+    let lineWidth = 1;
+    if (i % majorLine === 0 || i === width) {
+      lineWidth = 2;
+    }
     const line = transformPoints(
       [
         { x: i * ptDensity, y: -outset * ptDensity },
@@ -138,23 +122,38 @@ function drawGrid(
       ],
       perspective,
     );
-    drawLine(ctx, line[0], line[1]);
+    drawLine(ctx, line[0], line[1], lineWidth);
   }
-  for (let i = 1; i < height; i++) {
+  for (let i = 0; i <= height; i++) {
+    let lineWidth = 1;
+    if (i % majorLine === 0 || i === height) {
+      lineWidth = 2;
+    }
+    // Move origin to bottom left to match cutting mat
+    const y = (height - i) * ptDensity;
     const line = transformPoints(
       [
-        { x: -outset * ptDensity, y: i * ptDensity },
-        { x: (width + outset) * ptDensity, y: i * ptDensity },
+        { x: -outset * ptDensity, y: y },
+        { x: (width + outset) * ptDensity, y: y },
       ],
       perspective,
     );
-    drawLine(ctx, line[0], line[1]);
+    drawLine(ctx, line[0], line[1], lineWidth);
   }
 }
 
-function drawLine(ctx: CanvasRenderingContext2D, p1: Point, p2: Point): void {
+function drawLine(
+  ctx: CanvasRenderingContext2D,
+  p1: Point,
+  p2: Point,
+  lineWidth: number = 1,
+): void {
+  ctx.beginPath();
+  console.log(lineWidth);
+  ctx.lineWidth = lineWidth;
   ctx.moveTo(p1.x, p1.y);
   ctx.lineTo(p2.x, p2.y);
+  ctx.stroke();
 }
 
 function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
