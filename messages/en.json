@@ -122,6 +122,8 @@
     "layersOff": "Hide layer menu",
     "recenter": "Recenter PDF",
     "fullscreen": "Enter full screen",
-    "fullscreenExit": "Exit full screen"
+    "fullscreenExit": "Exit full screen",
+    "menuShow": "Show menu",
+    "menuHide": "Hide menu"
   }
 }
