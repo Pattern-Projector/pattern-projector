@@ -393,7 +393,7 @@ export default function Header({
         </nav>
         {fullScreenHandle.active ? (
           <IconButton
-            className={`mt-1 px-1 py-1 border-2 border-slate-400 absolute ${showNav ? "top-14" : "top-20"} z-40 left-1/2 transition-all duration-700 focus:ring-0`}
+            className={`mt-1 px-1 py-1 border-2 border-slate-400 absolute ${showNav ? "top-14" : "top-20"} z-40 left-0 right-0 m-auto w-9 transition-all duration-700 focus:ring-0`}
             onClick={() => setShowNav(!showNav)}
           >
             {showNav ? (
