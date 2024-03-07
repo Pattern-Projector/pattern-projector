@@ -131,13 +131,21 @@ export default function Header({
     }
   }, [isCalibrating, setShowLayerMenu]);
 
+  useEffect(() => {
+    if (fullScreenHandle.active) {
+      setShowNav(false);
+    } else {
+      setShowNav(true);
+    }
+  }, [fullScreenHandle.active]);
+
   return (
     <>
       <header
-        className={`bg-white absolute left-0 w-full z-30 border-b-2 h-20 transition-all duration-700 ${showNav ? "top-0" : "-top-28"}`}
+        className={`bg-white absolute left-0 w-full z-30 border-b-2 transition-all duration-700 h-16 flex items-center ${showNav ? "top-0" : "-top-20"}`}
       >
         <nav
-          className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8"
+          className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
           aria-label="Global"
         >
           <div className="flex items-center gap-2">
@@ -383,22 +391,19 @@ export default function Header({
             </Tooltip>
           </div>
         </nav>
+        {fullScreenHandle.active ? (
+          <IconButton
+            className={`mt-1 px-1 py-0 border-2 border-slate-400 absolute ${showNav ? "top-14" : "top-20"} z-40 left-1/2 transition-all duration-700 focus:ring-0`}
+            onClick={() => setShowNav(!showNav)}
+          >
+            {showNav ? (
+              <ExpandLessIcon ariaLabel={t("menuHide")} />
+            ) : (
+              <ExpandMoreIcon ariaLabel={t("menuShow")} />
+            )}
+          </IconButton>
+        ) : null}
       </header>
-      <Tooltip
-        description={showNav ? t("menuHide") : t("menuShow")}
-        className={`z-40 absolute  transition-all duration-700  left-0 right-0 m-auto ${showNav ? "top-12" : "top-0"}`}
-      >
-        <IconButton
-          className={`mt-1 w-8 px-1 py-0`}
-          onClick={() => setShowNav(!showNav)}
-        >
-          {showNav ? (
-            <ExpandLessIcon ariaLabel={t("menuHide")} />
-          ) : (
-            <ExpandMoreIcon ariaLabel={t("menuShow")} />
-          )}
-        </IconButton>
-      </Tooltip>
     </>
   );
 }
