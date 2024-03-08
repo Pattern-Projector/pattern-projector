@@ -124,6 +124,16 @@
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen",
     "menuShow": "Show menu",
-    "menuHide": "Hide menu"
+    "menuHide": "Hide menu",
+    "stitchMenuShow": "Show stitch menu",
+    "stitchMenuHide": "Hide stitch menu"
+  },
+  "StitchMenu": {
+    "columnCount": "Columns",
+    "pageRange": "Pages",
+    "top": "Top",
+    "right": "Right",
+    "bottom": "Bottom",
+    "left": "Left"
   }
 }

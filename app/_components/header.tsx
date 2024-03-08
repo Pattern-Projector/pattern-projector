@@ -42,6 +42,8 @@ import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
+import { EdgeInsets } from "@/_lib/edge-insets";
+import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
 export default function Header({
   isCalibrating,
@@ -70,6 +72,11 @@ export default function Header({
   setLocalTransform,
   pageWidth,
   pageHeight,
+  setColumnCount,
+  setEdgeInsets,
+  setPageRange,
+  setShowStitchMenu,
+  showStitchMenu,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -97,6 +104,11 @@ export default function Header({
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   pageWidth: number;
   pageHeight: number;
+  setColumnCount: Dispatch<SetStateAction<string>>;
+  setEdgeInsets: Dispatch<SetStateAction<EdgeInsets>>;
+  setPageRange: Dispatch<SetStateAction<string>>;
+  setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
+  showStitchMenu: boolean;
 }) {
   const t = useTranslations("Header");
 
@@ -196,6 +208,8 @@ export default function Header({
 
             <div className="flex gap-1">
               <InlineInput
+                className="relative flex flex-col"
+                inputClassName="pl-6 pr-7"
                 handleChange={handleHeightChange}
                 id="height"
                 label={t("height")}
@@ -204,6 +218,8 @@ export default function Header({
                 value={height}
               />
               <InlineInput
+                className="relative flex flex-col"
+                inputClassName="pl-6 pr-7"
                 handleChange={handleWidthChange}
                 id="height"
                 label={t("width")}
@@ -362,6 +378,20 @@ export default function Header({
                 <ArrowForwardIcon ariaLabel={t("arrowForward")} />
               </IconButton>
             </div>
+            <Tooltip
+              description={
+                showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+              }
+              className={`${visible(pageCount > 1)}`}
+            >
+              <IconButton onClick={() => setShowStitchMenu(!showStitchMenu)}>
+                <FlexWrapIcon
+                  ariaLabel={
+                    showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+                  }
+                />
+              </IconButton>
+            </Tooltip>
           </div>
           <div className="flex items-center gap-2">
             <label

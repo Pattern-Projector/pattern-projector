@@ -21,6 +21,8 @@ import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
 import { visible } from "@/_components/theme/css-functions";
+import { EdgeInsets } from "@/_lib/edge-insets";
+import StitchMenu from "@/_components/stitch-menu";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -63,6 +65,16 @@ export default function Page() {
   const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
+
+  const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
+  const [pageRange, setPageRange] = useState<string>("");
+  const [columnCount, setColumnCount] = useState<string>("");
+  const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
+    top: "",
+    right: "",
+    bottom: "",
+    left: "",
+  });
 
   function getDefaultPoints() {
     const o = 150;
@@ -143,6 +155,11 @@ export default function Page() {
       clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    setColumnCount(String(pageCount));
+    setPageRange(`1-${pageCount}`);
+  }, [pageCount]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -277,6 +294,11 @@ export default function Page() {
           pageWidth={pageWidth}
           pageHeight={pageHeight}
           calibrationTransform={calibrationTransform}
+          setColumnCount={setColumnCount}
+          setEdgeInsets={setEdgeInsets}
+          setPageRange={setPageRange}
+          setShowStitchMenu={setShowStitchMenu}
+          showStitchMenu={showStitchMenu}
         />
 
         <LayerMenu
@@ -286,6 +308,17 @@ export default function Page() {
           }
           layers={layers}
           setLayers={setLayers}
+        />
+        {/* TODO: collapse stitch menu state to one object */}
+        <StitchMenu
+          className={`${visible(!isCalibrating)} absolute right-0 top-16 z-30 w-36 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
+          setColumnCount={setColumnCount}
+          setEdgeInsets={setEdgeInsets}
+          setPageRange={setPageRange}
+          columnCount={columnCount}
+          edgeInsets={edgeInsets}
+          pageRange={pageRange}
+          pageCount={pageCount}
         />
 
         <CalibrationCanvas
@@ -330,6 +363,7 @@ export default function Page() {
                 file={file}
                 setPageCount={setPageCount}
                 setPageNumber={setPageNumber}
+                pageCount={pageCount}
                 pageNumber={pageNumber}
                 setLayers={setLayers}
                 layers={layers}
@@ -337,6 +371,11 @@ export default function Page() {
                 setPageHeight={setPageHeight}
                 setLocalTransform={setLocalTransform}
                 calibrationTransform={calibrationTransform}
+                columnCount={columnCount}
+                edgeInsets={edgeInsets}
+                pageRange={pageRange}
+                pageHeight={pageHeight}
+                pageWidth={pageWidth}
               />
             </div>
           </div>
