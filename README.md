@@ -8,7 +8,7 @@ Pattern projector is a free and open source web app that helps users quickly cal
 * Cutting mat: ideally with grid lines at every inch
 * Tripod or wall/shelf/table mount for projector
 * Computer or tablet to connect to the projector
-* A PDF sewing pattern: single layer, single page PDF is best
+* A PDF sewing pattern
 
 ## Setup
 
@@ -53,9 +53,12 @@ In projection mode there are several tools provided:
 
 ## FAQ
 
-Layer Support: planned for upcoming release.
 Annotation Support: planned for upcoming release.
 Chromecast/Miracast: While it’s possible to cast this webpage, the lag in the connection can be frustrating, especially when calibrating.
 Phones: While possible to visit and use the webpage on a Phone, the limited screen size makes it difficult to use.
 
-Feedback and feature requests are welcome.
+## Translations
+
+Pattern Projector uses [Weblate](https://hosted.weblate.org/projects/pattern-projector/pattern-projector/) for translations. It's currently available in English, Dutch, German, and Danish.
+
+Feedback, code contributions, translations, and feature requests are welcome.
