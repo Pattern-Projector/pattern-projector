@@ -123,6 +123,5 @@
     "FullscreenButton": {
         "fullscreen": "Enter full screen",
         "fullscreenExit": "Exit full screen"
-    },
-    "test": "test"
+    }
 }
