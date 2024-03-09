@@ -23,7 +23,6 @@ import {
 import { CM, IN } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
-import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
 import { visible } from "@/_components/theme/css-functions";
 
@@ -181,6 +180,14 @@ export default function Page() {
       setTransformSettings({ ...transformSettings, ...newTransformSettings });
     }
   }, []);
+
+  useEffect(() => {
+    if (file) {
+      setGridOn(false);
+    } else {
+      setGridOn(true);
+    }
+  }, [file]);
 
   const pdfTranslation = useProgArrowKeyToMatrix(!isCalibrating);
 
