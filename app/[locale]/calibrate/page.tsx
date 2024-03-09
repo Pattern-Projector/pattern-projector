@@ -31,8 +31,9 @@ const defaultPoints = [
 ];
 
 export default function Page() {
+  // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
   const defaultWidthDimensionValue = "24";
-  const defaultHeightDimensionValue = "18";
+  const defaultHeightDimensionValue = "16";
   const maxPoints = 4; // One point per vertex in rectangle
 
   const handle = useFullScreenHandle();
