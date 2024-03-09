@@ -30,6 +30,7 @@ export default function PdfViewer({
   layers,
   setLocalTransform,
   calibrationTransform,
+  setGridOn,
 }: {
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
@@ -41,6 +42,7 @@ export default function PdfViewer({
   layers: Map<string, Layer>;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   calibrationTransform: Matrix;
+  setGridOn: Dispatch<SetStateAction<boolean>>;
 }) {
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
@@ -48,6 +50,8 @@ export default function PdfViewer({
     setLayers(new Map());
     // reset local transform
     setLocalTransform(calibrationTransform);
+    // Hide grid to make it more obvious that you can cut outside of it.
+    setGridOn(false);
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
@@ -55,7 +59,10 @@ export default function PdfViewer({
     setPageHeight(pdfProxy.view[3]);
   }
 
-  const customRenderer = useCallback(() => CustomRenderer(setLayers, layers), [setLayers, layers]);
+  const customRenderer = useCallback(
+    () => CustomRenderer(setLayers, layers),
+    [setLayers, layers],
+  );
 
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
