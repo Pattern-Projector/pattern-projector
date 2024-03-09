@@ -1,127 +1,127 @@
 {
-  "HomePage": {
-    "beta": "beta",
-    "pdfstitcherHref": "https://www.pdfstitcher.org/",
-    "github": "Github icoon",
-    "calibrate": "Start kalibreren",
-    "welcome": {
-      "title": "Welkom bij Pattern Projector!",
-      "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel projektors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan dus grote veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
+    "HomePage": {
+        "beta": "beta",
+        "pdfstitcherHref": "https://www.pdfstitcher.org/",
+        "github": "Github icoon",
+        "calibrate": "Start kalibreren",
+        "welcome": {
+            "title": "Welkom bij Pattern Projector!",
+            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel projektors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan dus grote veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
+        },
+        "requirements": {
+            "title": "Wat je nodig hebt",
+            "projector": "Projector: ten minste 720p aanbevolen",
+            "mat": "Snijmat: idealiter met rasterlijnen op regelmatige afstanden",
+            "mount": "Standaard, ophanging of bevestiging aan de muur, plafond of een tafel voor de projector",
+            "computer": "Computer of tablet om verbinding te maken met de projector",
+            "pattern": "Een PDF naaipatroon: je kan <pdfstitcher>PDFStitcher</pdfstitcher> gebruiken als je patroon lagen of meerdere paginas heeft"
+        },
+        "setup": {
+            "title": "Installatie",
+            "place": "Zet de projector boven de snijmat, en laat hem naar de mat toe schijnen. Probeer de projector direct boven de snijmat te zetten, en er recht naartoe te laten wijzen.",
+            "connect": "Maak met je computer of tablet verbinding met de projecten en zet het scherm in 'spiegel' ('mirror') of 'uitbreiden' ('extend') modus zodat het beeld van de computer ook op de projector weergegeven wordt.",
+            "focus": "Stel de focus van de projector zo in dat tekst scherp wordt weergegeven in het midden van het projectiebeeld. Als je geen helder beeld kan krijgen, zorg er dan voor dat de afstand tussen de projector en de snijmat zich binnen de door de fabrikant aanbevolen afstanden bevindt.",
+            "keystone": "Als je projector trapeziumcorrectie ('keystone correction') heeft, stel die dan zo in dat de projectie zo rechthoekig mogelijk is, en de scherpte aan de randen verbetert."
+        },
+        "calibration": {
+            "title": "Calibratie",
+            "start": "Klik (of druk) op 'Start kalibreren.'",
+            "input": "Geef de breedte en hoogte van je snijmat in.",
+            "fullscreen": "Ga naar 'Volledig scherm' modus door te klikken (of drukken) op  ",
+            "drag": "Sleep de hoeken van het raster tot ze overeenkomen met je snijmat. Stel de hoeken op je computer of tablet bij terwijl je naar de projectie kijkt.",
+            "project": "Als het geprojecteerde grid overeen komt met de snijmat, klik (of druk) dan op 'Projecteer'."
+        },
+        "project": {
+            "title": "Een patroon projecteren",
+            "open": "Klik (of druk) <pdficon></pdficon> om het PDF document te openen.",
+            "move": "Verplaats de PDF door erop te klikken en hem over het scherm te slepen.",
+            "cut": "Snij, knip of teken langs het geprojecteerde beeld.",
+            "tools": "In projectiemodus zijn er verschillende gereedschappen beschikbaar:",
+            "showGrid": {
+                "title": "Toon/verberg raster",
+                "description": "Toont of verbergt een licht raster tijdens het projecteren om te controleren dat je kalibratie correct is."
+            },
+            "invert": {
+                "title": "Draai kleuren om",
+                "description": "Tijdens het projecteren is het meestal makkelijker om witte lijnen op een zwarte achtergrond te zien."
+            },
+            "flip": {
+                "title": "Spiegel vertikaal/horizontaal",
+                "description": "Handig om patronen op de vouw te spiegelen."
+            },
+            "rotate": {
+                "title": "Draai",
+                "description": "Draai het patroon 90 graden."
+            },
+            "fullscreen": {
+                "title": "Volledig scherm",
+                "description": "Het is meestal makkelijker om de software in 'Volledig scherm' modus te gebruiken."
+            }
+        },
+        "faq": {
+            "title": "FAQ",
+            "gridSize": {
+                "question": "Lukt het niet om de hoeken van het raster naar de randen van je snijmat te slepen?",
+                "answer": "Je hoeft niet te kalibreren met je hele mat. Kies het grootste gebied op je mat waar het kalibratierooster in past en zorg ervoor dat je breedte- en hoogteinstellingen overeenkomen met het aantal vakjes van je raster."
+            },
+            "wrongSizePdf": {
+                "question": "Is je geprojecteerde PDF te klein of te groot?",
+                "answer": "Het Pattern Projector kalibratie gereedschap heeft geen 'zoom' functie omdat de schaal van de projectie uit de informatie in de PDF gehaald wordt. Patronen van ontwerpers hebben meestal de juiste schaal. Het zou kunnen dat er een foute schaal ingekomen is door het patroon te openen in Affinity Designer of Inkscape."
+            },
+            "saveAsApp": {
+                "question": "Wil je Pattern Projector als een app opslaan?",
+                "answer": "Pattern Projector is een 'Progressive Web App' (PWA), en kan dus als app opgeslagen worden. Op een computer kan je het installeren met <googleChromeLink>Chrome</googleChromeLink> of <microsoftEdgeLink>Edge</microsoftEdgeLink>. Op een tablet open je het 'Delen' menu en drukt op 'Voeg to aan startscherm'."
+            },
+            "layerSupport": {
+                "question": "Is het mogelijk om lagen te kiezen?",
+                "answer": "Nog niet, maar dit is gepland voor een toekomstige versie."
+            },
+            "annotationSupport": {
+                "question": "Ondersteunen jullie het toevoegen van notities?",
+                "answer": "Nog niet, maar dit is gepland voor een toekomstige versie."
+            },
+            "chromecastSupport": {
+                "question": "Ondersteunen jullie Chromecast?",
+                "answer": "Hoewel het mogelijk is om deze pagina te 'casten' in Chrome, kan de vertraging die hierdoor optreedt frustrerend zijn, vooral tijdens het kalibreren. Betere ondersteuning voor Chromecast is gepland voor een toekomstige versie."
+            },
+            "mobileSupport": {
+                "question": "Ondersteunen jullie mobiele telefoons en tablets?",
+                "answer": "Hoewel het mogelijk is om de webpagina te bezoeken en gebruiken met een smartphone, is het moeilijk te gebruiken door het kleine schermformaat. Betere ondersteuning voor kleine schermen is gepland voor een toekomstige versie."
+            }
+        },
+        "contribute": {
+            "title": "Draag bij aan dit project",
+            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te komen</donateLink>",
+            "develop": "Help verbeteringen toe te voegen en problemen op te lossen op <githubLink>GitHub</githubLink>.",
+            "translate": "Vertaal deze software in meer talen.",
+            "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom! Feedback and feature requests are welcome!"
+        },
+        "contact": "Contact"
     },
-    "requirements": {
-      "title": "Wat je nodig hebt",
-      "projector": "Projector: ten minste 720p aanbevolen",
-      "mat": "Snijmat: idealiter met rasterlijnen op regelmatige afstanden",
-      "mount": "Standaard, ophanging of bevestiging aan de muur, plafond of een tafel voor de projector",
-      "computer": "Computer of tablet om verbinding te maken met de projector",
-      "pattern": "Een PDF naaipatroon: je kan <pdfstitcher>PDFStitcher</pdfstitcher> gebruiken als je patroon lagen of meerdere paginas heeft"
+    "Header": {
+        "projecting": "Projekteren",
+        "calibrating": "Kalibreren",
+        "openPDF": "Open PDF",
+        "height": "H:",
+        "width": "W:",
+        "project": "Projecteer",
+        "calibrate": "Kalibreer",
+        "delete": "Reset kalibratie",
+        "gridOn": "Raster aan",
+        "gridOff": "Raster uit",
+        "invertColor": "Draai kleuren om",
+        "invertColorOff": "Invert colors off",
+        "flipVertical": "Spiegel vertikaal",
+        "flipVerticalOff": "Spiegel vertikaal uit",
+        "flipHorizontal": "Spiegel horizontaal",
+        "flipHorizontalOff": "Spiegel horizontaal uit",
+        "rotate90": "Draai 90 graden met de klok mee",
+        "arrowBack": "1 pagina terug",
+        "arrowForward": "1 pagina vooruit",
+        "info": "Informatie pagina"
     },
-    "setup": {
-      "title": "Installatie",
-      "place": "Zet de projector boven de snijmat, en laat hem naar de mat toe schijnen. Probeer de projector direct boven de snijmat te zetten, en er recht naartoe te laten wijzen.",
-      "connect": "Maak met je computer of tablet verbinding met de projecten en zet het scherm in 'spiegel' ('mirror') of 'uitbreiden' ('extend') modus zodat het beeld van de computer ook op de projector weergegeven wordt.",
-      "focus": "Stel de focus van de projector zo in dat tekst scherp wordt weergegeven in het midden van het projectiebeeld. Als je geen helder beeld kan krijgen, zorg er dan voor dat de afstand tussen de projector en de snijmat zich binnen de door de fabrikant aanbevolen afstanden bevindt.",
-      "keystone": "Als je projector trapeziumcorrectie ('keystone correction') heeft, stel die dan zo in dat de projectie zo rechthoekig mogelijk is, en de scherpte aan de randen verbetert."
-    },
-    "calibration": {
-      "title": "Calibratie",
-      "start": "Klik (of druk) op 'Start kalibreren.'",
-      "input": "Geef de breedte en hoogte van je snijmat in.",
-      "fullscreen": "Ga naar 'Volledig scherm' modus door te klikken (of drukken) op  ",
-      "drag": "Sleep de hoeken van het raster tot ze overeenkomen met je snijmat. Stel de hoeken op je computer of tablet bij terwijl je naar de projectie kijkt.",
-      "project": "Als het geprojecteerde grid overeen komt met de snijmat, klik (of druk) dan op 'Projecteer'."
-    },
-    "project": {
-      "title": "Een patroon projecteren",
-      "open": "Klik (of druk) <pdficon></pdficon> om het PDF document te openen.",
-      "move": "Verplaats de PDF door erop te klikken en hem over het scherm te slepen.",
-      "cut": "Snij, knip of teken langs het geprojecteerde beeld.",
-      "tools": "In projectiemodus zijn er verschillende gereedschappen beschikbaar:",
-      "showGrid": {
-        "title": "Toon/verberg raster",
-        "description": "Toont of verbergt een licht raster tijdens het projecteren om te controleren dat je kalibratie correct is."
-      },
-      "invert": {
-        "title": "Draai kleuren om",
-        "description": "Tijdens het projecteren is het meestal makkelijker om witte lijnen op een zwarte achtergrond te zien."
-      },
-      "flip": {
-        "title": "Spiegel vertikaal/horizontaal",
-        "description": "Handig om patronen op de vouw te spiegelen."
-      },
-      "rotate": {
-        "title": "Draai",
-        "description": "Draai het patroon 90 graden."
-      },
-      "fullscreen": {
-        "title": "Volledig scherm",
-        "description": "Het is meestal makkelijker om de software in 'Volledig scherm' modus te gebruiken."
-      }
-    },
-    "faq": {
-      "title": "FAQ",
-      "gridSize": {
-        "question": "Lukt het niet om de hoeken van het raster naar de randen van je snijmat te slepen?",
-        "answer": "Je hoeft niet te kalibreren met je hele mat. Kies het grootste gebied op je mat waar het kalibratierooster in past en zorg ervoor dat je breedte- en hoogteinstellingen overeenkomen met het aantal vakjes van je raster."
-      },
-      "wrongSizePdf": {
-        "question": "Is je geprojecteerde PDF te klein of te groot?",
-        "answer": "Het Pattern Projector kalibratie gereedschap heeft geen 'zoom' functie omdat de schaal van de projectie uit de informatie in de PDF gehaald wordt. Patronen van ontwerpers hebben meestal de juiste schaal. Het zou kunnen dat er een foute schaal ingekomen is door het patroon te openen in Affinity Designer of Inkscape."
-      },
-      "saveAsApp": {
-        "question": "Wil je Pattern Projector als een app opslaan?",
-        "answer": "Pattern Projector is een 'Progressive Web App' (PWA), en kan dus als app opgeslagen worden. Op een computer kan je het installeren met <googleChromeLink>Chrome</googleChromeLink> of <microsoftEdgeLink>Edge</microsoftEdgeLink>. Op een tablet open je het 'Delen' menu en drukt op 'Voeg to aan startscherm'."
-      },
-      "layerSupport": {
-        "question": "Is het mogelijk om lagen te kiezen?",
-        "answer": "Nog niet, maar dit is gepland voor een toekomstige versie."
-      },
-      "annotationSupport": {
-        "question": "Ondersteunen jullie het toevoegen van notities?",
-        "answer": "Nog niet, maar dit is gepland voor een toekomstige versie."
-      },
-      "chromecastSupport": {
-        "question": "Ondersteunen jullie Chromecast?",
-        "answer": "Hoewel het mogelijk is om deze pagina te 'casten' in Chrome, kan de vertraging die hierdoor optreedt frustrerend zijn, vooral tijdens het kalibreren. Betere ondersteuning voor Chromecast is gepland voor een toekomstige versie."
-      },
-      "mobileSupport": {
-        "question": "Ondersteunen jullie mobiele telefoons en tablets?",
-        "answer": "Hoewel het mogelijk is om de webpagina te bezoeken en gebruiken met een smartphone, is het moeilijk te gebruiken door het kleine schermformaat. Betere ondersteuning voor kleine schermen is gepland voor een toekomstige versie."
-      }
-    },
-    "contribute": {
-      "title": "Draag bij aan dit project",
-      "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te komen</donateLink>",
-      "develop": "Help verbeteringen toe te voegen en problemen op te lossen op <githubLink>GitHub</githubLink>.",
-      "translate": "Vertaal deze software in meer talen.",
-      "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom! Feedback and feature requests are welcome!"
-    },
-    "contact": "Contact"
-  },
-  "Header": {
-    "projecting": "Projekteren",
-    "calibrating": "Kalibreren",
-    "openPDF": "Open PDF",
-    "height": "H:",
-    "width": "W:",
-    "project": "Projecteer",
-    "calibrate": "Kalibreer",
-    "delete": "Reset kalibratie",
-    "gridOn": "Raster aan",
-    "gridOff": "Raster uit",
-    "invertColor": "Draai kleuren om",
-    "invertColorOff": "Invert colors off",
-    "flipVertical": "Spiegel vertikaal",
-    "flipVerticalOff": "Spiegel vertikaal uit",
-    "flipHorizontal": "Spiegel horizontaal",
-    "flipHorizontalOff": "Spiegel horizontaal uit",
-    "rotate90": "Draai 90 graden met de klok mee",
-    "arrowBack": "1 pagina terug",
-    "arrowForward": "1 pagina vooruit",
-    "info": "Informatie pagina"
-  },
-  "FullscreenButton": {
-    "fullscreen": "Start 'volledig scherm'",
-    "fullscreenExit": "Verlaat 'volledig scherm'"
-  }
+    "FullscreenButton": {
+        "fullscreen": "Start 'volledig scherm'",
+        "fullscreenExit": "Verlaat 'volledig scherm'"
+    }
 }
