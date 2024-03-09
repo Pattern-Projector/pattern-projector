@@ -338,7 +338,6 @@ export default function Page() {
                 setPageHeight={setPageHeight}
                 setLocalTransform={setLocalTransform}
                 calibrationTransform={calibrationTransform}
-                setGridOn={setGridOn}
               />
             </div>
           </div>
