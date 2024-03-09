@@ -87,6 +87,15 @@
         "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use. Better mobile support is planned in an upcoming release."
       }
     },
+    "resources": {
+      "title": "Additional Resources",
+      "links": {
+        "projectorsForSewing": {
+          "title": "Projectors for Sewing Facebook Group",
+          "link": "https://www.facebook.com/groups/481078582801085"
+        }
+      }
+    },
     "contribute": {
       "title": "Contribute to the project",
       "donation": "If you would like to support the development of this tool, please consider <donateLink>buying me a coffee</donateLink>",

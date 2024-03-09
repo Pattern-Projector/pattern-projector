@@ -87,6 +87,15 @@
         "answer": "Es ist möglich die Webseite auf dem Handy zu öffnen und zu benutzen, allerdings wird die begrenzte Bildschirmgröße die Benutzung erschweren. Besserer Support dafür ist geplant und wird in kommenden Updates umgesetzt."
       }
     },
+    "resources": {
+      "title": "Additional Resources",
+      "links": {
+        "projectorsForSewing": {
+          "title": "Projectors for Sewing Facebook Group",
+          "link": "https://www.facebook.com/groups/481078582801085"
+        }
+      }
+    },
     "contribute": {
       "title": "Unterstütze dieses Projekt",
       "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>buying me a coffee</donateLink> unterstützen",
