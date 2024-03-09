@@ -38,6 +38,15 @@ export default function Home() {
       <article className="prose lg:prose-xl m-auto">
         <h1>{t("welcome.title")}</h1>
         <p>{t("welcome.description")}</p>
+        <div className="aspect-w-16 aspect-h-9">
+          <iframe
+            src={t("youTubeSrc")}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          ></iframe>
+        </div>
         <h2>{t("requirements.title")}</h2>
         <ul>
           <li>{t("requirements.projector")}</li>
@@ -149,7 +158,7 @@ export default function Home() {
 
         <h2>{t("faq.title")}</h2>
         <ul>
-        <li>
+          <li>
             <div>{t("faq.wrongSizePdf.question")}</div>
             {t.rich("faq.wrongSizePdf.answer", {
               inchGridLink: (chunks) => (
