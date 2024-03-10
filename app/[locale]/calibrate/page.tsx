@@ -306,9 +306,6 @@ export default function Page() {
           pageWidth={pageWidth}
           pageHeight={pageHeight}
           calibrationTransform={calibrationTransform}
-          setColumnCount={setColumnCount}
-          setEdgeInsets={setEdgeInsets}
-          setPageRange={setPageRange}
           setShowStitchMenu={setShowStitchMenu}
           showStitchMenu={showStitchMenu}
         />

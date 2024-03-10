@@ -11,8 +11,6 @@ import { FullScreenHandle } from "react-full-screen";
 import FileInput from "@/_components/file-input";
 import InlineInput from "@/_components/inline-input";
 import InlineSelect from "@/_components/inline-select";
-import ArrowBackIcon from "@/_icons/arrow-back-icon";
-import ArrowForwardIcon from "@/_icons/arrow-forward-icon";
 import DeleteIcon from "@/_icons/delete-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
@@ -39,7 +37,6 @@ import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
-import { EdgeInsets } from "@/_lib/edge-insets";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
 export default function Header({
@@ -69,9 +66,6 @@ export default function Header({
   setLocalTransform,
   pageWidth,
   pageHeight,
-  setColumnCount,
-  setEdgeInsets,
-  setPageRange,
   setShowStitchMenu,
   showStitchMenu,
 }: {
@@ -101,9 +95,6 @@ export default function Header({
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   pageWidth: number;
   pageHeight: number;
-  setColumnCount: Dispatch<SetStateAction<string>>;
-  setEdgeInsets: Dispatch<SetStateAction<EdgeInsets>>;
-  setPageRange: Dispatch<SetStateAction<string>>;
   setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
   showStitchMenu: boolean;
 }) {
@@ -111,18 +102,6 @@ export default function Header({
 
   const [invertOpen, setInvertOpen] = useState<boolean>(false);
   const [showNav, setShowNav] = useState<boolean>(true);
-
-  function changePage(offset: number) {
-    setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
-  }
-
-  function handlePreviousPage() {
-    changePage(-1);
-  }
-
-  function handleNextPage() {
-    changePage(1);
-  }
 
   function handleRecenter() {
     if (localTransform !== null) {
@@ -368,21 +347,6 @@ export default function Header({
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
-            <div className={`flex items-center ${visible(pageCount > 1)}`}>
-              <IconButton
-                disabled={pageNumber <= 1}
-                onClick={handlePreviousPage}
-              >
-                <ArrowBackIcon ariaLabel={t("arrowBack")} />
-              </IconButton>
-              <span className="mx-1">{pageNumber}</span>
-              <IconButton
-                disabled={pageNumber >= pageCount}
-                onClick={handleNextPage}
-              >
-                <ArrowForwardIcon ariaLabel={t("arrowForward")} />
-              </IconButton>
-            </div>
           </div>
           <div className="flex items-center gap-2">
             <label
