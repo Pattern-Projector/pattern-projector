@@ -64,12 +64,11 @@ export default function Page() {
     Matrix.identity(3, 3),
   );
   const [pageCount, setPageCount] = useState<number>(1);
-  const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
   const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
-  const [pageWidth, setPageWidth] = useState<number>(0);
-  const [pageHeight, setPageHeight] = useState<number>(0);
+  const [layoutWidth, setLayoutWidth] = useState<number>(0);
+  const [layoutHeight, setLayoutHeight] = useState<number>(0);
 
   const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
   const [pageRange, setPageRange] = useState<string>("");
@@ -293,8 +292,6 @@ export default function Page() {
               });
             }
           }}
-          pageNumber={pageNumber}
-          setPageNumber={setPageNumber}
           pageCount={pageCount}
           gridOn={gridOn}
           setGridOn={setGridOn}
@@ -303,8 +300,8 @@ export default function Page() {
           setShowLayerMenu={setShowLayerMenu}
           localTransform={localTransform}
           setLocalTransform={setLocalTransform}
-          pageWidth={pageWidth}
-          pageHeight={pageHeight}
+          layoutWidth={layoutWidth}
+          layoutHeight={layoutHeight}
           calibrationTransform={calibrationTransform}
           setShowStitchMenu={setShowStitchMenu}
           showStitchMenu={showStitchMenu}
@@ -379,20 +376,16 @@ export default function Page() {
               <PDFViewer
                 file={file}
                 setPageCount={setPageCount}
-                setPageNumber={setPageNumber}
                 pageCount={pageCount}
-                pageNumber={pageNumber}
                 setLayers={setLayers}
                 layers={layers}
-                setPageWidth={setPageWidth}
-                setPageHeight={setPageHeight}
+                setLayoutWidth={setLayoutWidth}
+                setLayoutHeight={setLayoutHeight}
                 setLocalTransform={setLocalTransform}
                 calibrationTransform={calibrationTransform}
                 columnCount={columnCount}
                 edgeInsets={edgeInsets}
                 pageRange={pageRange}
-                pageHeight={pageHeight}
-                pageWidth={pageWidth}
               />
             </div>
           </div>

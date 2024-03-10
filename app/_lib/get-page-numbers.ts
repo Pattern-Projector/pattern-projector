@@ -19,7 +19,6 @@ export function getPageNumbers(pageRange: string, pageCount: number): number[] {
   if (pages.length === 0) {
     pages = [...Array(pageCount).keys()].map(x => ++x);
   }
-  console.log(`${pageRange} ${pageCount} -> ${pages}`);
   return pages;
 }
 
