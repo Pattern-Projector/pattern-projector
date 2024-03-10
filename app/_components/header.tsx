@@ -138,12 +138,6 @@ export default function Header({
   }
 
   useEffect(() => {
-    if (isCalibrating) {
-      setShowLayerMenu(false);
-    }
-  }, [isCalibrating, setShowLayerMenu]);
-
-  useEffect(() => {
     if (fullScreenHandle.active) {
       setShowNav(false);
     } else {
@@ -248,6 +242,20 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
+            <Tooltip
+              description={
+                showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+              }
+              className={`${visible(pageCount > 1)}`}
+            >
+              <IconButton onClick={() => setShowStitchMenu(!showStitchMenu)}>
+                <FlexWrapIcon
+                  ariaLabel={
+                    showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+                  }
+                />
+              </IconButton>
+            </Tooltip>
             <Tooltip
               description={showLayerMenu ? t("layersOff") : t("layersOn")}
             >
@@ -378,20 +386,6 @@ export default function Header({
                 <ArrowForwardIcon ariaLabel={t("arrowForward")} />
               </IconButton>
             </div>
-            <Tooltip
-              description={
-                showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
-              }
-              className={`${visible(pageCount > 1)}`}
-            >
-              <IconButton onClick={() => setShowStitchMenu(!showStitchMenu)}>
-                <FlexWrapIcon
-                  ariaLabel={
-                    showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
-                  }
-                />
-              </IconButton>
-            </Tooltip>
           </div>
           <div className="flex items-center gap-2">
             <label

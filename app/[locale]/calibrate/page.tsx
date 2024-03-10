@@ -70,8 +70,8 @@ export default function Page() {
   const [pageRange, setPageRange] = useState<string>("");
   const [columnCount, setColumnCount] = useState<string>("");
   const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
-    horizontal: "0",
-    vertical: "0",
+    horizontal: "",
+    vertical: "",
   });
 
   function getDefaultPoints() {
@@ -299,25 +299,24 @@ export default function Page() {
           showStitchMenu={showStitchMenu}
         />
 
-        <LayerMenu
-          className={
-            "absolute transition-all duration-700  " +
-            (showLayerMenu ? "left-0" : "-left-60")
-          }
-          layers={layers}
-          setLayers={setLayers}
-        />
-        {/* TODO: collapse stitch menu state to one object */}
-        <StitchMenu
-          className={`${visible(!isCalibrating && showStitchMenu)} absolute right-0 top-16 z-30 w-36 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
-          setColumnCount={setColumnCount}
-          setEdgeInsets={setEdgeInsets}
-          setPageRange={setPageRange}
-          columnCount={columnCount}
-          edgeInsets={edgeInsets}
-          pageRange={pageRange}
-          pageCount={pageCount}
-        />
+        <div className="flex flex-col absolute top-16 z-30">
+          <StitchMenu
+            className={`w-48 transition-all duration-700 ${!isCalibrating && showStitchMenu ? "left-0" : "-left-60"}`}
+            setColumnCount={setColumnCount}
+            setEdgeInsets={setEdgeInsets}
+            setPageRange={setPageRange}
+            columnCount={columnCount}
+            edgeInsets={edgeInsets}
+            pageRange={pageRange}
+            pageCount={pageCount}
+          />
+
+          <LayerMenu
+            className={`transition-all duration-700 ${!isCalibrating && showLayerMenu ? "left-0" : "-left-60"} ${showStitchMenu ? "top-48" : "top-0"}`}
+            layers={layers}
+            setLayers={setLayers}
+          />
+        </div>
 
         <CalibrationCanvas
           className={`absolute z-10 ${visible(isCalibrating || gridOn)}`}

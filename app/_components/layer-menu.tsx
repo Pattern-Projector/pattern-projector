@@ -17,10 +17,7 @@ export default function LayerMenu({
 
   return (
     <menu
-      className={
-        "w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg absolute top-16 z-30 " +
-        className
-      }
+      className={`${className} absolute w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg`}
     >
       {[...layers.entries()].map((e) => (
         <li key={e[0]} className="w-full border-b border-gray-200 rounded-t-lg">
