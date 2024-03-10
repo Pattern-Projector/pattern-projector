@@ -40,6 +40,8 @@ import { IconButton } from "@/_components/buttons/icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
+import ExpandLessIcon from "@/_icons/expand-less-icon";
+import ExpandMoreIcon from "@/_icons/expand-more-icon";
 
 export default function Header({
   isCalibrating,
@@ -99,6 +101,7 @@ export default function Header({
   const t = useTranslations("Header");
 
   const [invertOpen, setInvertOpen] = useState<boolean>(false);
+  const [showNav, setShowNav] = useState<boolean>(true);
 
   function changePage(offset: number) {
     setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
@@ -128,250 +131,279 @@ export default function Header({
     }
   }, [isCalibrating, setShowLayerMenu]);
 
-  return (
-    <header className="bg-white absolute top-0 left-0 w-full z-30 border-b-2">
-      <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8"
-        aria-label="Global"
-      >
-        <div className="flex items-center gap-2">
-          <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
-          <Tooltip
-            description={
-              fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
-            }
-          >
-            <IconButton
-              onClick={
-                fullScreenHandle.active
-                  ? fullScreenHandle.exit
-                  : fullScreenHandle.enter
-              }
-            >
-              {fullScreenHandle.active ? (
-                <FullscreenExitIcon ariaLabel={t("fullscreen")} />
-              ) : (
-                <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
-              )}
-            </IconButton>
-          </Tooltip>
-        </div>
-        <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
-          <Tooltip
-            description={
-              transformSettings.isFourCorners
-                ? t("fourCornersOff")
-                : t("fourCornersOn")
-            }
-          >
-            <IconButton
-              onClick={() =>
-                setTransformSettings({
-                  ...transformSettings,
-                  isFourCorners: !transformSettings.isFourCorners,
-                })
-              }
-            >
-              {transformSettings.isFourCorners ? (
-                <FourCorners ariaLabel={t("fourCornersOn")} />
-              ) : (
-                <FourCornersOff ariaLabel={t("fourCornersOff")} />
-              )}
-            </IconButton>
-          </Tooltip>
+  useEffect(() => {
+    if (fullScreenHandle.active) {
+      setShowNav(false);
+    } else {
+      setShowNav(true);
+    }
+  }, [fullScreenHandle.active]);
 
-          <div className="flex gap-1">
-            <InlineInput
-              handleChange={handleHeightChange}
-              id="height"
-              label={t("height")}
-              labelRight={unitOfMeasure === CM ? "cm" : "in"}
-              name="height"
-              value={height}
-            />
-            <InlineInput
-              handleChange={handleWidthChange}
-              id="height"
-              label={t("width")}
-              labelRight={unitOfMeasure === CM ? "cm" : "in"}
-              name="width"
-              value={width}
-            />
-            <InlineSelect
-              handleChange={(e) => setUnitOfMeasure(e.target.value)}
-              id="unit_of_measure"
-              name="unit_of_measure"
-              value={unitOfMeasure}
-              options={[
-                { value: IN, label: "in" },
-                { value: CM, label: "cm" },
-              ]}
-            />
-          </div>
-          <Tooltip description={t("delete")}>
-            <IconButton
-              className={`${visible(isCalibrating)}`}
-              onClick={handleResetCalibration}
+  return (
+    <>
+      <header
+        className={`bg-white absolute left-0 w-full z-30 border-b-2 transition-all duration-700 h-16 flex items-center ${showNav ? "top-0" : "-top-20"}`}
+      >
+        <nav
+          className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
+          aria-label="Global"
+        >
+          <div className="flex items-center gap-2">
+            <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
+            <Tooltip
+              description={
+                fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
+              }
             >
-              <DeleteIcon ariaLabel={t("delete")} />
-            </IconButton>
-          </Tooltip>
-        </div>
-        <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
-          <Tooltip description={showLayerMenu ? t("layersOff") : t("layersOn")}>
-            <IconButton
-              disabled={!layers || layers.size === 0}
-              onClick={() => setShowLayerMenu(!showLayerMenu)}
-            >
-              {showLayerMenu ? (
-                <LayersIcon ariaLabel={t("layersOn")} />
-              ) : (
-                <LayersOffIcon ariaLabel={t("layersOff")} />
-              )}
-            </IconButton>
-          </Tooltip>
-          <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
-            <IconButton onClick={() => setGridOn(!gridOn)}>
-              {gridOn ? (
-                <GridOnIcon ariaLabel={t("gridOn")} />
-              ) : (
-                <GridOffIcon ariaLabel={t("gridOff")} />
-              )}
-            </IconButton>
-          </Tooltip>
-          <div className="relative inline-block text-left">
-            <Tooltip description={t("invertColor")}>
               <IconButton
-                onClick={(e) => {
-                  let newInverted;
-                  let newIsGreenInverted;
-                  if (!transformSettings.inverted) {
-                    newInverted = true;
-                    newIsGreenInverted = false;
-                  } else if (!transformSettings.isInvertedGreen) {
-                    newInverted = true;
-                    newIsGreenInverted = true;
-                  } else {
-                    newInverted = false;
-                    newIsGreenInverted = false;
-                  }
-                  setTransformSettings({
-                    ...transformSettings,
-                    inverted: newInverted,
-                    isInvertedGreen: newIsGreenInverted,
-                  });
-                  setInvertOpen(!transformSettings.inverted);
-                }}
+                onClick={
+                  fullScreenHandle.active
+                    ? fullScreenHandle.exit
+                    : fullScreenHandle.enter
+                }
               >
-                {transformSettings.inverted ? (
-                  <InvertColorIcon
-                    fill={
-                      transformSettings.isInvertedGreen ? "#32CD32" : "#000"
-                    }
-                    ariaLabel={t("invertColor")}
-                  />
+                {fullScreenHandle.active ? (
+                  <FullscreenExitIcon ariaLabel={t("fullscreen")} />
                 ) : (
-                  <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
+                  <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
                 )}
               </IconButton>
             </Tooltip>
           </div>
-          <Tooltip description={t("flipHorizontal")}>
-            <IconButton
-              onClick={() =>
-                setTransformSettings({
-                  ...transformSettings,
-                  scale: {
-                    x: transformSettings.scale.x * -1,
-                    y: transformSettings.scale.y,
-                  },
-                })
+          <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
+            <Tooltip
+              description={
+                transformSettings.isFourCorners
+                  ? t("fourCornersOff")
+                  : t("fourCornersOn")
               }
             >
-              {transformSettings.scale.x === -1 ? (
-                <FlipVerticalOffIcon ariaLabel={t("flipHorizontal")} />
-              ) : (
-                <FlipVerticalIcon ariaLabel={t("flipHorizontalOff")} />
-              )}
-            </IconButton>
-          </Tooltip>
-          <Tooltip description={t("flipVertical")}>
-            <IconButton
-              onClick={() =>
-                setTransformSettings({
-                  ...transformSettings,
-                  scale: {
-                    x: transformSettings.scale.x,
-                    y: transformSettings.scale.y * -1,
-                  },
-                })
-              }
-            >
-              {transformSettings.scale.y === -1 ? (
-                <FlipHorizontalOffIcon ariaLabel={t("flipVertical")} />
-              ) : (
-                <FlipHorizontalIcon ariaLabel={t("flipVerticalOff")} />
-              )}
-            </IconButton>
-          </Tooltip>
-          <Tooltip description={t("rotate90")}>
-            <IconButton
-              onClick={() =>
-                setTransformSettings({
-                  ...transformSettings,
-                  degrees: (transformSettings.degrees + 90) % 360,
-                })
-              }
-            >
-              <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip description={t("recenter")}>
-            <IconButton onClick={handleRecenter}>
-              <RecenterIcon ariaLabel={t("recenter")} />
-            </IconButton>
-          </Tooltip>
-          <div className={`flex items-center ${visible(pageCount > 1)}`}>
-            <IconButton disabled={pageNumber <= 1} onClick={handlePreviousPage}>
-              <ArrowBackIcon ariaLabel={t("arrowBack")} />
-            </IconButton>
-            <span className="mx-1">{pageNumber}</span>
-            <IconButton
-              disabled={pageNumber >= pageCount}
-              onClick={handleNextPage}
-            >
-              <ArrowForwardIcon ariaLabel={t("arrowForward")} />
-            </IconButton>
+              <IconButton
+                onClick={() =>
+                  setTransformSettings({
+                    ...transformSettings,
+                    isFourCorners: !transformSettings.isFourCorners,
+                  })
+                }
+              >
+                {transformSettings.isFourCorners ? (
+                  <FourCorners ariaLabel={t("fourCornersOn")} />
+                ) : (
+                  <FourCornersOff ariaLabel={t("fourCornersOff")} />
+                )}
+              </IconButton>
+            </Tooltip>
+
+            <div className="flex gap-1">
+              <InlineInput
+                handleChange={handleHeightChange}
+                id="height"
+                label={t("height")}
+                labelRight={unitOfMeasure === CM ? "cm" : "in"}
+                name="height"
+                value={height}
+              />
+              <InlineInput
+                handleChange={handleWidthChange}
+                id="height"
+                label={t("width")}
+                labelRight={unitOfMeasure === CM ? "cm" : "in"}
+                name="width"
+                value={width}
+              />
+              <InlineSelect
+                handleChange={(e) => setUnitOfMeasure(e.target.value)}
+                id="unit_of_measure"
+                name="unit_of_measure"
+                value={unitOfMeasure}
+                options={[
+                  { value: IN, label: "in" },
+                  { value: CM, label: "cm" },
+                ]}
+              />
+            </div>
+            <Tooltip description={t("delete")}>
+              <IconButton
+                className={`${visible(isCalibrating)}`}
+                onClick={handleResetCalibration}
+              >
+                <DeleteIcon ariaLabel={t("delete")} />
+              </IconButton>
+            </Tooltip>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <label
-            className={`${visible(
-              !isCalibrating,
-            )} outline outline-purple-700 flex gap-2 items-center text-purple-800 focus:ring-2 focus:outline-none focus:ring-blue-300 hover:bg-purple-100 font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
+          <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
+            <Tooltip
+              description={showLayerMenu ? t("layersOff") : t("layersOn")}
+            >
+              <IconButton
+                disabled={!layers || layers.size === 0}
+                onClick={() => setShowLayerMenu(!showLayerMenu)}
+              >
+                {showLayerMenu ? (
+                  <LayersIcon ariaLabel={t("layersOn")} />
+                ) : (
+                  <LayersOffIcon ariaLabel={t("layersOff")} />
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
+              <IconButton onClick={() => setGridOn(!gridOn)}>
+                {gridOn ? (
+                  <GridOnIcon ariaLabel={t("gridOn")} />
+                ) : (
+                  <GridOffIcon ariaLabel={t("gridOff")} />
+                )}
+              </IconButton>
+            </Tooltip>
+            <div className="relative inline-block text-left">
+              <Tooltip description={t("invertColor")}>
+                <IconButton
+                  onClick={(e) => {
+                    let newInverted;
+                    let newIsGreenInverted;
+                    if (!transformSettings.inverted) {
+                      newInverted = true;
+                      newIsGreenInverted = false;
+                    } else if (!transformSettings.isInvertedGreen) {
+                      newInverted = true;
+                      newIsGreenInverted = true;
+                    } else {
+                      newInverted = false;
+                      newIsGreenInverted = false;
+                    }
+                    setTransformSettings({
+                      ...transformSettings,
+                      inverted: newInverted,
+                      isInvertedGreen: newIsGreenInverted,
+                    });
+                    setInvertOpen(!transformSettings.inverted);
+                  }}
+                >
+                  {transformSettings.inverted ? (
+                    <InvertColorIcon
+                      fill={
+                        transformSettings.isInvertedGreen ? "#32CD32" : "#000"
+                      }
+                      ariaLabel={t("invertColor")}
+                    />
+                  ) : (
+                    <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
+                  )}
+                </IconButton>
+              </Tooltip>
+            </div>
+            <Tooltip description={t("flipHorizontal")}>
+              <IconButton
+                onClick={() =>
+                  setTransformSettings({
+                    ...transformSettings,
+                    scale: {
+                      x: transformSettings.scale.x * -1,
+                      y: transformSettings.scale.y,
+                    },
+                  })
+                }
+              >
+                {transformSettings.scale.x === -1 ? (
+                  <FlipVerticalOffIcon ariaLabel={t("flipHorizontal")} />
+                ) : (
+                  <FlipVerticalIcon ariaLabel={t("flipHorizontalOff")} />
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={t("flipVertical")}>
+              <IconButton
+                onClick={() =>
+                  setTransformSettings({
+                    ...transformSettings,
+                    scale: {
+                      x: transformSettings.scale.x,
+                      y: transformSettings.scale.y * -1,
+                    },
+                  })
+                }
+              >
+                {transformSettings.scale.y === -1 ? (
+                  <FlipHorizontalOffIcon ariaLabel={t("flipVertical")} />
+                ) : (
+                  <FlipHorizontalIcon ariaLabel={t("flipVerticalOff")} />
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={t("rotate90")}>
+              <IconButton
+                onClick={() =>
+                  setTransformSettings({
+                    ...transformSettings,
+                    degrees: (transformSettings.degrees + 90) % 360,
+                  })
+                }
+              >
+                <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={t("recenter")}>
+              <IconButton onClick={handleRecenter}>
+                <RecenterIcon ariaLabel={t("recenter")} />
+              </IconButton>
+            </Tooltip>
+            <div className={`flex items-center ${visible(pageCount > 1)}`}>
+              <IconButton
+                disabled={pageNumber <= 1}
+                onClick={handlePreviousPage}
+              >
+                <ArrowBackIcon ariaLabel={t("arrowBack")} />
+              </IconButton>
+              <span className="mx-1">{pageNumber}</span>
+              <IconButton
+                disabled={pageNumber >= pageCount}
+                onClick={handleNextPage}
+              >
+                <ArrowForwardIcon ariaLabel={t("arrowForward")} />
+              </IconButton>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <label
+              className={`${visible(
+                !isCalibrating,
+              )} outline outline-purple-700 flex gap-2 items-center text-purple-800 focus:ring-2 focus:outline-none focus:ring-blue-300 hover:bg-purple-100 font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
+            >
+              <FileInput
+                accept="application/pdf"
+                className="hidden"
+                handleChange={handleFileChange}
+                id="pdfFile"
+              ></FileInput>
+              <PdfIcon ariaLabel={t("openPDF")} fill="#7e22ce" />
+              {t("openPDF")}
+            </label>
+            <button
+              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              onClick={() => setIsCalibrating(!isCalibrating)}
+            >
+              {isCalibrating ? t("project") : t("calibrate")}
+            </button>
+            <Tooltip description={t("info")}>
+              <IconButton href="/">
+                <InfoIcon ariaLabel={t("info")} />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </nav>
+        {fullScreenHandle.active ? (
+          <IconButton
+            className={`mt-1 px-1 py-1 border-2 border-slate-400 absolute ${showNav ? "top-14" : "top-20"} z-40 left-0 right-0 m-auto w-9 transition-all duration-700 focus:ring-0`}
+            onClick={() => setShowNav(!showNav)}
           >
-            <FileInput
-              accept="application/pdf"
-              className="hidden"
-              handleChange={handleFileChange}
-              id="pdfFile"
-            ></FileInput>
-            <PdfIcon ariaLabel={t("openPDF")} fill="#7e22ce" />
-            {t("openPDF")}
-          </label>
-          <button
-            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-            onClick={() => setIsCalibrating(!isCalibrating)}
-          >
-            {isCalibrating ? t("project") : t("calibrate")}
-          </button>
-          <Tooltip description={t("info")}>
-            <IconButton href="/">
-              <InfoIcon ariaLabel={t("info")} />
-            </IconButton>
-          </Tooltip>
-        </div>
-      </nav>
-    </header>
+            {showNav ? (
+              <ExpandLessIcon ariaLabel={t("menuHide")} />
+            ) : (
+              <ExpandMoreIcon ariaLabel={t("menuShow")} />
+            )}
+          </IconButton>
+        ) : null}
+      </header>
+    </>
   );
 }

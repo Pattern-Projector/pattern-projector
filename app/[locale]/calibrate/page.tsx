@@ -8,13 +8,9 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import {
-  getPerspectiveTransform,
-  toMatrix3d,
-  translate,
-} from "@/_lib/geometry";
+import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
-import { applyOffset, Point } from "@/_lib/point";
+import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   getDefaultTransforms,
