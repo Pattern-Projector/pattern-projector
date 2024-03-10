@@ -141,9 +141,7 @@
   "StitchMenu": {
     "columnCount": "Columns",
     "pageRange": "Pages",
-    "top": "Top",
-    "right": "Right",
-    "bottom": "Bottom",
-    "left": "Left"
+    "horizontal": "Horizontal",
+    "vertical": "Vertical"
   }
 }
