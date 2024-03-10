@@ -149,7 +149,6 @@ function drawLine(
   lineWidth: number = 1,
 ): void {
   ctx.beginPath();
-  console.log(lineWidth);
   ctx.lineWidth = lineWidth;
   ctx.moveTo(p1.x, p1.y);
   ctx.lineTo(p2.x, p2.y);

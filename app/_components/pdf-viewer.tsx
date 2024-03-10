@@ -11,7 +11,7 @@ import Matrix from "ml-matrix";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
-  import.meta.url
+  import.meta.url,
 ).toString();
 
 /**
@@ -55,16 +55,40 @@ export default function PdfViewer({
     setPageHeight(pdfProxy.view[3]);
   }
 
-  const customRenderer = useCallback(() => CustomRenderer(setLayers, layers), [setLayers, layers]);
+  const customRenderer = useCallback(
+    () => CustomRenderer(setLayers, layers),
+    [setLayers, layers],
+  );
+
+  const customTextRenderer = useCallback(
+    ({
+      str,
+      itemIndex,
+      transform,
+    }: {
+      str: string;
+      itemIndex: number;
+      transform: Array<any>;
+    }) => {
+      return `<span class="opacity-0 hover:opacity-100" style="background-color: #FFF; color: #000; font-size: 60px; letter-spacing: 5px">${str}</span>`;
+    },
+    [],
+  );
+
+  const CSS = 96.0;
+  const PDF = 72.0;
+  const PDF_TO_CSS_UNITS = CSS / PDF;
 
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
       <Page
+        scale={PDF_TO_CSS_UNITS}
         pageNumber={pageNumber}
         renderMode="custom"
         customRenderer={customRenderer}
+        customTextRenderer={customTextRenderer}
         renderAnnotationLayer={false}
-        renderTextLayer={false}
+        renderTextLayer={true}
         onLoadSuccess={onPageLoadSuccess}
       />
     </Document>
