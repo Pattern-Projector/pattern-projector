@@ -38,7 +38,7 @@ export default function LayerMenu({
   return (
     <menu
       className={
-        "w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 border-top-0 absolute top-16 z-45 " +
+        "w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 border-top-0 absolute top-16 z-50 " +
         `${visible ? "left-0" : "-left-60"} absolute transition-all duration-700` +
         className
       }
