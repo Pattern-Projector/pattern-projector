@@ -21,6 +21,10 @@ import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
 import { visible } from "@/_components/theme/css-functions";
+import { IconButton } from "@/_components/buttons/icon-button";
+import LayersIcon from "@/_icons/layers-icon";
+import Tooltip from "@/_components/tooltip/tooltip";
+import { useTranslations } from "next-intl";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -119,6 +123,7 @@ export default function Page() {
   }
 
   // EFFECTS
+  const t = useTranslations("Header");
 
   const requestWakeLock = useCallback(async () => {
     if ("wakeLock" in navigator) {
@@ -288,13 +293,21 @@ export default function Page() {
         />
 
         <LayerMenu
-          className={
-            "absolute transition-all duration-700  " +
-            (showLayerMenu ? "left-0" : "-left-60")
-          }
+          visible={showLayerMenu}
+          setVisible={(visible) => setShowLayerMenu(visible)}
           layers={layers}
           setLayers={setLayers}
         />
+        {layers.size && !showLayerMenu ? (
+          <Tooltip description={showLayerMenu ? t("layersOff") : t("layersOn")}>
+            <IconButton
+              className="absolute left-2 top-20 z-30 px-1.5 py-1.5 border-2 border-slate-400"
+              onClick={() => setShowLayerMenu(true)}
+            >
+              <LayersIcon ariaLabel="layers" />
+            </IconButton>
+          </Tooltip>
+        ) : null}
 
         <CalibrationCanvas
           className={`absolute z-10 ${visible(isCalibrating || gridOn)}`}
