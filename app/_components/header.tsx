@@ -100,7 +100,6 @@ export default function Header({
   const [showNav, setShowNav] = useState<boolean>(true);
 
   function handleRecenter() {
-    console.log(`layoutWidth: ${layoutWidth}, layoutHeight: ${layoutHeight}`);
     if (localTransform !== null) {
       const pdfPixels = 72;
       const tx = (+width * pdfPixels) / 2 - layoutWidth / 2;
