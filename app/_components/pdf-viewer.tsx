@@ -88,18 +88,9 @@ export default function PdfViewer({
           ) : (
             <div
               style={{
-                width:
-                  String(
-                    pageWidth -
-                      Number(edgeInsets.left) -
-                      Number(edgeInsets.right),
-                  ) + "pt",
-                height:
-                  String(
-                    pageHeight -
-                      Number(edgeInsets.top) -
-                      Number(edgeInsets.bottom),
-                  ) + "pt",
+                width: `${pageWidth - Number(edgeInsets.horizontal)}pt`,
+                height: `${pageHeight - Number(edgeInsets.vertical)}pt`,
+                mixBlendMode: "multiply",
               }}
             >
               <Page

@@ -43,25 +43,15 @@ export default function StitchMenu({
   function handleEdgeInsetChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     const n = value == "" ? "" : allowInteger(value);
-    if (name.localeCompare("top") === 0) {
+    if (name.localeCompare("horizontal") === 0) {
       setEdgeInsets({
         ...edgeInsets,
-        top: n,
+        horizontal: n,
       });
-    } else if (name.localeCompare("right") === 0) {
+    } else if (name.localeCompare("vertical") === 0) {
       setEdgeInsets({
         ...edgeInsets,
-        right: n,
-      });
-    } else if (name.localeCompare("bottom") === 0) {
-      setEdgeInsets({
-        ...edgeInsets,
-        bottom: n,
-      });
-    } else if (name.localeCompare("left") === 0) {
-      setEdgeInsets({
-        ...edgeInsets,
-        left: n,
+        vertical: n,
       });
     }
   }
@@ -88,33 +78,17 @@ export default function StitchMenu({
         className="flex relative justify-end"
         inputClassName="w-12"
         handleChange={handleEdgeInsetChange}
-        label={t("top")}
-        name="top"
-        value={String(edgeInsets.top)}
+        label={t("horizontal")}
+        name="horizontal"
+        value={String(edgeInsets.horizontal)}
       />
       <InlineInput
         className="flex relative justify-end"
         inputClassName="w-12"
         handleChange={handleEdgeInsetChange}
-        label={t("right")}
-        name="right"
-        value={String(edgeInsets.right)}
-      />
-      <InlineInput
-        className="flex relative justify-end"
-        inputClassName="w-12"
-        handleChange={handleEdgeInsetChange}
-        label={t("bottom")}
-        name="bottom"
-        value={String(edgeInsets.bottom)}
-      />
-      <InlineInput
-        className="flex relative justify-end"
-        inputClassName="w-12"
-        handleChange={handleEdgeInsetChange}
-        label={t("left")}
-        name="left"
-        value={String(edgeInsets.left)}
+        label={t("vertical")}
+        name="horizontal"
+        value={String(edgeInsets.vertical)}
       />
     </menu>
   );

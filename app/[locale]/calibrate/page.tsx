@@ -70,10 +70,8 @@ export default function Page() {
   const [pageRange, setPageRange] = useState<string>("");
   const [columnCount, setColumnCount] = useState<string>("");
   const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
-    top: "",
-    right: "",
-    bottom: "",
-    left: "",
+    horizontal: "0",
+    vertical: "0",
   });
 
   function getDefaultPoints() {
@@ -311,7 +309,7 @@ export default function Page() {
         />
         {/* TODO: collapse stitch menu state to one object */}
         <StitchMenu
-          className={`${visible(!isCalibrating)} absolute right-0 top-16 z-30 w-36 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
+          className={`${visible(!isCalibrating && showStitchMenu)} absolute right-0 top-16 z-30 w-36 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
           setColumnCount={setColumnCount}
           setEdgeInsets={setEdgeInsets}
           setPageRange={setPageRange}
