@@ -75,8 +75,8 @@ export default function Page() {
   const [pageRange, setPageRange] = useState<string>("");
   const [columnCount, setColumnCount] = useState<string>("");
   const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
-    horizontal: "0",
-    vertical: "0",
+    horizontal: "",
+    vertical: "",
   });
 
   function getDefaultPoints() {

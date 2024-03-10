@@ -58,7 +58,7 @@ export default function StitchMenu({
 
   return (
     <menu
-      className={`flex flex-col gap-2 ${className} bg-white border border-gray-200 rounded-lg absolute top-16 z-30 "`}
+      className={`flex flex-col gap-2 ${className} bg-white border border-gray-200 rounded-lg absolute`}
     >
       <InlineInput
         className="flex relative justify-end"
@@ -87,7 +87,7 @@ export default function StitchMenu({
         inputClassName="w-12"
         handleChange={handleEdgeInsetChange}
         label={t("vertical")}
-        name="horizontal"
+        name="vertical"
         value={String(edgeInsets.vertical)}
       />
     </menu>
