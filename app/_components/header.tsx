@@ -55,8 +55,6 @@ export default function Header({
   setUnitOfMeasure,
   transformSettings,
   setTransformSettings,
-  pageNumber,
-  setPageNumber,
   pageCount,
   gridOn,
   setGridOn,
@@ -66,8 +64,8 @@ export default function Header({
   localTransform,
   calibrationTransform,
   setLocalTransform,
-  pageWidth,
-  pageHeight,
+  layoutWidth,
+  layoutHeight,
   setShowStitchMenu,
   showStitchMenu,
 }: {
@@ -84,8 +82,6 @@ export default function Header({
   setUnitOfMeasure: (newUnit: string) => void;
   transformSettings: TransformSettings;
   setTransformSettings: (newTransformSettings: TransformSettings) => void;
-  pageNumber: number;
-  setPageNumber: Dispatch<SetStateAction<number>>;
   pageCount: number;
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
@@ -95,8 +91,8 @@ export default function Header({
   localTransform: Matrix;
   calibrationTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
-  pageWidth: number;
-  pageHeight: number;
+  layoutWidth: number;
+  layoutHeight: number;
   setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
   showStitchMenu: boolean;
 }) {
@@ -106,10 +102,11 @@ export default function Header({
   const [showNav, setShowNav] = useState<boolean>(true);
 
   function handleRecenter() {
+    console.log(`layoutWidth: ${layoutWidth}, layoutHeight: ${layoutHeight}`);
     if (localTransform !== null) {
       const pdfPixels = 72;
-      const tx = (+width * pdfPixels) / 2 - pageWidth / 2;
-      const ty = (+height * pdfPixels) / 2 - pageHeight / 2;
+      const tx = (+width * pdfPixels) / 2 - layoutWidth / 2;
+      const ty = (+height * pdfPixels) / 2 - layoutHeight / 2;
       const m = translate({ x: tx, y: ty });
       setLocalTransform(calibrationTransform.mmul(m));
     }
