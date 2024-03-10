@@ -58,7 +58,7 @@ export default function StitchMenu({
 
   return (
     <menu
-      className={`flex flex-col gap-2 ${className} bg-white border border-gray-200 rounded-lg absolute`}
+      className={`flex flex-col gap-2 ${className} bg-white border border-gray-200 rounded-lg absolute p-2`}
     >
       <InlineInput
         className="flex relative justify-end"

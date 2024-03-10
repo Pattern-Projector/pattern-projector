@@ -124,6 +124,7 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
+      console.log("file", files[0]);
     }
   }
 
@@ -293,7 +294,7 @@ export default function Page() {
           showStitchMenu={showStitchMenu}
         />
 
-        <div className="flex flex-col absolute top-16 z-30">
+        <div className="flex flex-col absolute top-20 z-30">
           <StitchMenu
             className={`w-48 transition-all duration-700 ${!isCalibrating && showStitchMenu ? "left-0" : "-left-60"}`}
             setColumnCount={setColumnCount}
@@ -306,7 +307,7 @@ export default function Page() {
           />
 
           <LayerMenu
-            className={`transition-all duration-700 ${!isCalibrating && showLayerMenu ? "left-0" : "-left-60"} ${showStitchMenu ? "top-48" : "top-0"}`}
+            className={`transition-all duration-700 ${!isCalibrating && showLayerMenu ? "left-0" : "-left-60"} ${showStitchMenu ? "top-56" : "top-0"}`}
             layers={layers}
             setLayers={setLayers}
           />
