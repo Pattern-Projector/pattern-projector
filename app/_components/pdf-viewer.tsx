@@ -70,7 +70,7 @@ export default function PdfViewer({
       itemIndex: number;
       transform: Array<any>;
     }) => {
-      return `<span class="opacity-0 hover:opacity-100" style="background-color: #FFF; color: #000; font-size: 60px; letter-spacing: 5px">${str}</span>`;
+      return `<span class="opacity-0 hover:opacity-100 hover:text-6xl" style="background-color: #FFF; color: #000; font-size: 60px; letter-spacing: 5px">${str}</span>`;
     },
     [],
   );
