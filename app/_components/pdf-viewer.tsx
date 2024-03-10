@@ -60,20 +60,9 @@ export default function PdfViewer({
     [setLayers, layers],
   );
 
-  const customTextRenderer = useCallback(
-    ({
-      str,
-      itemIndex,
-      transform,
-    }: {
-      str: string;
-      itemIndex: number;
-      transform: Array<any>;
-    }) => {
-      return `<span class="opacity-0 hover:opacity-100 hover:text-6xl" style="background-color: #FFF; color: #000; font-size: 60px; letter-spacing: 5px">${str}</span>`;
-    },
-    [],
-  );
+  const customTextRenderer = useCallback(({ str }: { str: string }) => {
+    return `<span class="opacity-0 hover:opacity-100 hover:text-6xl" style="background-color: #FFF; color: #000;">${str}</span>`;
+  }, []);
 
   const CSS = 96.0;
   const PDF = 72.0;
