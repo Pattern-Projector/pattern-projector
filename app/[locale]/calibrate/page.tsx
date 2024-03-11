@@ -178,6 +178,14 @@ export default function Page() {
     }
   }, []);
 
+  useEffect(() => {
+    if (file) {
+      setGridOn(false);
+    } else {
+      setGridOn(true);
+    }
+  }, [file]);
+
   const pdfTranslation = useProgArrowKeyToMatrix(!isCalibrating);
 
   useEffect(() => {
