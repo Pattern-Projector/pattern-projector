@@ -43,8 +43,8 @@ function draw(
   isCalibrating: boolean,
   pointToModify: number | null,
   ptDensity: number,
+  isPrecisionMovement: boolean,
   displayAllCorners?: boolean,
-  isPrecisionMovement: boolean
 ): void {
   ctx.translate(offset.x, offset.y);
 
@@ -229,8 +229,6 @@ export default function CalibrationCanvas({
   const [dragStartPoint, setDragStartPoint] = useState<Point | null>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
-
-
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
       const canvas = canvasRef.current;
@@ -248,8 +246,8 @@ export default function CalibrationCanvas({
           isCalibrating,
           pointToModify,
           ptDensity,
-          transformSettings.isFourCorners,
           isPrecisionMovement,
+          transformSettings.isFourCorners,
         );
       }
     }
@@ -297,7 +295,7 @@ export default function CalibrationCanvas({
     }
   }
 
-function handleMove(p: Point, filter: number) {
+  function handleMove(p: Point, filter: number) {
     if (pointToModify !== null) {
       //Check if we should active precision movement
       if (
@@ -327,10 +325,17 @@ function handleMove(p: Point, filter: number) {
 
 
       const newPoints = [...points];
-      const destination = {
-        x: dragStartPoint.x + ((p.x - dragStartPoint.x) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1)),
-        y: dragStartPoint.y + ((p.y - dragStartPoint.y) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1)),
-      }	
+      let destination = {
+        x: p.x,
+        y: p.y
+      }
+      if (dragStartPoint !== null)
+      {
+        destination = {
+          x: dragStartPoint.x + ((p.x - dragStartPoint.x) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1)),
+          y: dragStartPoint.y + ((p.y - dragStartPoint.y) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1))
+        }
+      }
       const offset = {
         x: (destination.x - newPoints[pointToModify].x),
         y: (destination.y - newPoints[pointToModify].y),
@@ -371,8 +376,6 @@ function handleMove(p: Point, filter: number) {
       setTimeoutId(null);
     }
   }
-
-
 
   function handleTouchUp() {
     localStorage.setItem("points", JSON.stringify(points));
