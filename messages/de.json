@@ -2,6 +2,7 @@
     "HomePage": {
         "beta": "beta",
         "pdfstitcherHref": "https://www.pdfstitcher.org/",
+        "youTubeSrc": "https://www.youtube.com/embed/m9RTLznEfRM?si=ELCJUrF4bx0OKJMf",
         "github": "Github icon",
         "calibrate": "Starte Kalibrierung",
         "welcome": {
