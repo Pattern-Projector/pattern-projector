@@ -19,6 +19,7 @@ export default function InlineInput({
   labelRight,
   name,
   value,
+  type,
 }: {
   className?: string | undefined;
   inputClassName?: string | undefined;
@@ -29,6 +30,7 @@ export default function InlineInput({
   labelRight?: string | null;
   name?: string;
   value: string;
+  type?: string;
 }) {
   return (
     <div className={className}>
@@ -39,6 +41,7 @@ export default function InlineInput({
         {label}
       </label>
       <input
+        type={type ? type : "text"}
         className={`${inputClassName} p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right`}
         id={id}
         data-test-id={inputTestId}

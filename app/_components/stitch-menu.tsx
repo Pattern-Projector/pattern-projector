@@ -6,6 +6,7 @@ import { allowInteger } from "@/_lib/remove-non-digits";
 import { validPageRange } from "@/_lib/get-page-numbers";
 
 export default function StitchMenu({
+  setShowStitchMenu,
   setColumnCount,
   setEdgeInsets,
   setPageRange,
@@ -15,6 +16,7 @@ export default function StitchMenu({
   pageCount,
   className,
 }: {
+  setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
   setColumnCount: Dispatch<SetStateAction<string>>;
   setEdgeInsets: Dispatch<SetStateAction<EdgeInsets>>;
   setPageRange: Dispatch<SetStateAction<string>>;
@@ -61,30 +63,33 @@ export default function StitchMenu({
       className={`flex flex-col gap-2 ${className} bg-white border border-gray-200 rounded-lg absolute p-2`}
     >
       <InlineInput
+        type="number"
         className="flex relative justify-end"
-        inputClassName="w-12"
+        inputClassName="w-12 !text-left"
         handleChange={handleColumnCountChange}
         label={t("columnCount")}
         value={columnCount}
       />
       <InlineInput
         className="flex relative justify-end"
-        inputClassName="w-20"
+        inputClassName="!w-20 !text-left"
         handleChange={handlePageRangeChange}
         label={t("pageRange")}
         value={pageRange}
       />
       <InlineInput
+        type="number"
         className="flex relative justify-end"
-        inputClassName="w-12"
+        inputClassName="w-12 !text-left"
         handleChange={handleEdgeInsetChange}
         label={t("horizontal")}
         name="horizontal"
         value={String(edgeInsets.horizontal)}
       />
       <InlineInput
+        type="number"
         className="flex relative justify-end"
-        inputClassName="w-12"
+        inputClassName="w-12 !text-left"
         handleChange={handleEdgeInsetChange}
         label={t("vertical")}
         name="vertical"

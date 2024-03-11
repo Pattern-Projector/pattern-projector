@@ -228,20 +228,6 @@ export default function Header({
                 />
               </IconButton>
             </Tooltip>
-            <Tooltip
-              description={showLayerMenu ? t("layersOff") : t("layersOn")}
-            >
-              <IconButton
-                disabled={!layers || layers.size === 0}
-                onClick={() => setShowLayerMenu(!showLayerMenu)}
-              >
-                {showLayerMenu ? (
-                  <LayersIcon ariaLabel={t("layersOn")} />
-                ) : (
-                  <LayersOffIcon ariaLabel={t("layersOff")} />
-                )}
-              </IconButton>
-            </Tooltip>
             <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
               <IconButton onClick={() => setGridOn(!gridOn)}>
                 {gridOn ? (

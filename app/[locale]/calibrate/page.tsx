@@ -27,6 +27,7 @@ import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
+import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -309,24 +310,25 @@ export default function Page() {
         />
 
         <LayerMenu
-          visible={showLayerMenu}
+          visible={!isCalibrating && showLayerMenu}
           setVisible={(visible) => setShowLayerMenu(visible)}
           layers={layers}
           setLayers={setLayers}
+          className={showStitchMenu ? "top-72" : "top-20"}
         />
         {layers.size && !showLayerMenu ? (
           <Tooltip description={showLayerMenu ? t("layersOff") : t("layersOn")}>
             <IconButton
-              className="absolute left-2 top-20 z-30 px-1.5 py-1.5 border-2 border-slate-400"
+              className={`${showStitchMenu ? "top-72" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
               onClick={() => setShowLayerMenu(true)}
             >
               <LayersIcon ariaLabel="layers" />
             </IconButton>
           </Tooltip>
         ) : null}
-        {/* TODO: collapse stitch menu state to one object */}
         <StitchMenu
-          className={`${visible(!isCalibrating && showStitchMenu)} absolute right-0 top-16 z-30 w-36 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
+          setShowStitchMenu={setShowStitchMenu}
+          className={`${visible(!isCalibrating && showStitchMenu)} absolute left-0 top-16 z-30 w-48 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
           setColumnCount={setColumnCount}
           setEdgeInsets={setEdgeInsets}
           setPageRange={setPageRange}
