@@ -20,7 +20,7 @@ import { CornerColorHex } from "@/_components/theme/colors";
 import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
 
 const maxPoints = 4; // One point per vertex in rectangle
-const PRECISION_MOVEMENT_THRESHOLD = 4;
+const PRECISION_MOVEMENT_THRESHOLD = 15;
 const PRECISION_MOVEMENT_RATIO = 5;
 const PRECISION_MOVEMENT_DELAY = 500;
 
@@ -160,7 +160,6 @@ function drawLine(
   lineWidth: number = 1,
 ): void {
   ctx.beginPath();
-  console.log(lineWidth);
   ctx.lineWidth = lineWidth;
   ctx.moveTo(p1.x, p1.y);
   ctx.lineTo(p2.x, p2.y);
@@ -226,8 +225,15 @@ export default function CalibrationCanvas({
   const [cursorMode, setCursorMode] = useState<string | null>(null);
   const [isPrecisionMovement, setIsPrecisionMovement] = useState(false);
   const [dragStartTime, setDragStartTime] = useState<number | null>(null);
+  const [dragStartMousePoint, setDragStartMousePoint] = useState<Point | null>(null);
   const [dragStartPoint, setDragStartPoint] = useState<Point | null>(null);
+  const [precisionActivationPoint, setPrecisionActivationPoint] = useState<Point | null>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (isPrecisionMovement && pointToModify !== null && points.length > pointToModify)
+	  setPrecisionActivationPoint(prevPoint => points[pointToModify]);
+  }, [isPrecisionMovement, pointToModify]);
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
@@ -276,13 +282,16 @@ export default function CalibrationCanvas({
     } else {
       const shortestDist: number = getShortestDistance(newPoint);
       if (shortestDist < CORNER_MARGIN) {
-        setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
+        const newPointToModify = minIndex(points.map((a) => sqrdist(a, newPoint)))
+        setPointToModify(newPointToModify);
         setDragStartTime(Date.now());
-        setDragStartPoint(newPoint);
+        setDragStartMousePoint(newPoint);
+        setDragStartPoint(points[newPointToModify]);
 
       // Set a timeout to activate precision movement after the delay
       const timeoutId = setTimeout(() => {
-        setIsPrecisionMovement(true);
+        if (!isPrecisionMovement)
+			setIsPrecisionMovement(true);
       }, PRECISION_MOVEMENT_DELAY);
 
       // Store the timeout ID to clear it if needed
@@ -301,19 +310,21 @@ export default function CalibrationCanvas({
       if (
         !isPrecisionMovement &&
         dragStartTime !== null &&
-        dragStartPoint !== null &&
+        dragStartMousePoint !== null &&
         Date.now() - dragStartTime > PRECISION_MOVEMENT_DELAY &&
-		Math.sqrt(sqrdist(dragStartPoint, p)) < PRECISION_MOVEMENT_THRESHOLD &&
+		Math.sqrt(sqrdist(dragStartMousePoint, p)) < PRECISION_MOVEMENT_THRESHOLD &&
         timeoutId != null 
       ) {
-			setIsPrecisionMovement(true);
+        setIsPrecisionMovement(true);
+        if (pointToModify !== null)
+			setPrecisionActivationPoint(points[pointToModify]);
       }
 
       if (
         !isPrecisionMovement &&
         dragStartTime !== null &&
-        dragStartPoint !== null &&
-		Math.sqrt(sqrdist(dragStartPoint, p)) > PRECISION_MOVEMENT_THRESHOLD &&
+        dragStartMousePoint !== null &&
+		Math.sqrt(sqrdist(dragStartMousePoint, p)) > PRECISION_MOVEMENT_THRESHOLD &&
         timeoutId != null 
       ) {
         // Clear the timeout when the mouse is released
@@ -329,13 +340,23 @@ export default function CalibrationCanvas({
         x: p.x,
         y: p.y
       }
-      if (dragStartPoint !== null)
+      if (dragStartMousePoint !== null && dragStartPoint !== null) 
       {
         destination = {
-          x: dragStartPoint.x + ((p.x - dragStartPoint.x) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1)),
-          y: dragStartPoint.y + ((p.y - dragStartPoint.y) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1))
+          x: dragStartMousePoint.x + ((p.x - dragStartMousePoint.x) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1)),
+          y: dragStartMousePoint.y + ((p.y - dragStartMousePoint.y) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1))
         }
+        /* The following 2 lines help to prevent the calibration point from "jumping" */
+        destination.x -= (dragStartMousePoint.x - dragStartPoint.x)
+        destination.y -= (dragStartMousePoint.y - dragStartPoint.y)
       }
+      if (precisionActivationPoint && dragStartPoint)
+      {
+        /* The following 2 lines help to prevent the calibration point from "jumping" */
+        destination.x += (precisionActivationPoint.x - dragStartPoint.x)
+        destination.y += (precisionActivationPoint.y - dragStartPoint.y)
+      }
+
       const offset = {
         x: (destination.x - newPoints[pointToModify].x),
         y: (destination.y - newPoints[pointToModify].y),
@@ -368,7 +389,9 @@ export default function CalibrationCanvas({
     }
     setIsPrecisionMovement(false);
     setDragStartTime(null);
+    setDragStartMousePoint(null);
     setDragStartPoint(null);
+    setPrecisionActivationPoint(null);
 
     // Clear the timeout when the mouse is released
     if (timeoutId !== null) {
@@ -383,7 +406,9 @@ export default function CalibrationCanvas({
     setPanStart(null);
     setIsPrecisionMovement(false);
     setDragStartTime(null);
+    setDragStartMousePoint(null);
     setDragStartPoint(null);
+    setPrecisionActivationPoint(null);
 
     // Clear the timeout when the touch is released
     if (timeoutId !== null) {
