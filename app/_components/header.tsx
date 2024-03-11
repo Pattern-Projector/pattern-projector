@@ -1,5 +1,4 @@
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import {
   ChangeEvent,
   Dispatch,
@@ -28,8 +27,6 @@ import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
-import LayersIcon from "@/_icons/layers-icon";
-import LayersOffIcon from "@/_icons/layers-off-icon";
 import RecenterIcon from "@/_icons/recenter-icon";
 import Matrix from "ml-matrix";
 import { translate } from "@/_lib/geometry";
@@ -232,20 +229,20 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
-            <Tooltip
-              description={showLayerMenu ? t("layersOff") : t("layersOn")}
-            >
-              <IconButton
-                disabled={!layers || layers.size === 0}
-                onClick={() => setShowLayerMenu(!showLayerMenu)}
-              >
-                {showLayerMenu ? (
-                  <LayersIcon ariaLabel={t("layersOn")} />
-                ) : (
-                  <LayersOffIcon ariaLabel={t("layersOff")} />
-                )}
-              </IconButton>
-            </Tooltip>
+            {/*<Tooltip*/}
+            {/*  description={showLayerMenu ? t("layersOff") : t("layersOn")}*/}
+            {/*>*/}
+            {/*  <IconButton*/}
+            {/*    disabled={!layers || layers.size === 0}*/}
+            {/*    onClick={() => setShowLayerMenu(!showLayerMenu)}*/}
+            {/*  >*/}
+            {/*    {showLayerMenu ? (*/}
+            {/*      <LayersIcon ariaLabel={t("layersOn")} />*/}
+            {/*    ) : (*/}
+            {/*      <LayersOffIcon ariaLabel={t("layersOff")} />*/}
+            {/*    )}*/}
+            {/*  </IconButton>*/}
+            {/*</Tooltip>*/}
             <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
               <IconButton onClick={() => setGridOn(!gridOn)}>
                 {gridOn ? (
