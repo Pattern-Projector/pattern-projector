@@ -86,6 +86,15 @@
                 "answer": "Hoewel het mogelijk is om de webpagina te bezoeken en gebruiken met een smartphone, is het moeilijk te gebruiken door het kleine schermformaat. Betere ondersteuning voor kleine schermen is gepland voor een toekomstige versie."
             }
         },
+        "resources": {
+          "title": "Additional Resources",
+          "links": {
+            "projectorsForSewing": {
+              "title": "Naaien met een projector/beamer",
+              "link": "https://www.facebook.com/groups/492119878090767"
+            }
+          }
+        },
         "contribute": {
             "title": "Help dit project",
             "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink>.",

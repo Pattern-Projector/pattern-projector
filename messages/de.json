@@ -86,6 +86,15 @@
                 "answer": "Es ist möglich die Webseite auf dem Handy zu öffnen und zu benutzen, allerdings wird die begrenzte Bildschirmgröße die Benutzung erschweren. Besserer Support dafür ist geplant und wird in kommenden Updates umgesetzt."
             }
         },
+        "resources": {
+          "title": "Zusätzliche Informationen",
+          "links": {
+            "projectorsForSewing": {
+              "title": "Nähen mit beamer",
+              "link": "https://www.facebook.com/groups/naehenmitbeamer/"
+            }
+          }
+        },
         "contribute": {
             "title": "Unterstütze dieses Projekt",
             "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>buying me a coffee</donateLink> unterstützen",

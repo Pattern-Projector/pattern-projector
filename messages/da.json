@@ -86,6 +86,15 @@
                 "answer": "Det er muligt at bruge hjemmesiden på en smartphone, men den begrænsede skærmstørrelse gør det svært at bruge. Der er planer om bedre funktionalitet på mobile enheder i en senere udgave."
             }
         },
+        "resources": {
+          "title": "Additional Resources",
+          "links": {
+            "projectorsForSewing": {
+              "title": "Projektorsyning - sy med projektor",
+              "link": "https://www.facebook.com/groups/syprojektor"
+            }
+          }
+        },
         "contribute": {
             "title": "Bidrag til projektet",
             "donation": "Hvis du har lyst til at støtte udviklingen af dette værktøj, så overvej at købe mig <donateLink>en kop kaffe</donateLink>. ",
