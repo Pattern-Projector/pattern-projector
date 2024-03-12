@@ -308,7 +308,7 @@ export default function Page() {
           setVisible={(visible) => setShowLayerMenu(visible)}
           layers={layers}
           setLayers={setLayers}
-          className={`${showStitchMenu ? "top-72" : "top-20"} overflow-scroll h-56`}
+          className={`${showStitchMenu ? "top-72" : "top-20"} overflow-scroll`}
         />
         {layers.size && !showLayerMenu ? (
           <Tooltip description={showLayerMenu ? t("layersOff") : t("layersOn")}>
