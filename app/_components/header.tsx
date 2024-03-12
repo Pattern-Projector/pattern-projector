@@ -149,7 +149,7 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <IconButton
-              className={`p-1 border-2 border-black`}
+              className={`!p-1 border-2 border-black`}
               onClick={() => setShowNav(false)}
             >
               <ExpandLessIcon ariaLabel={t("menuHide")} />
@@ -368,7 +368,7 @@ export default function Header({
       </header>
       {!showNav ? (
         <IconButton
-          className={`p-1 border-2 border-black absolute top-2 z-40 left-1/4 focus:ring-0`}
+          className={`!p-1 border-2 border-black absolute top-2 z-40 left-1/4 focus:ring-0`}
           onClick={() => setShowNav(true)}
         >
           <ExpandMoreIcon ariaLabel={t("menuShow")} />
