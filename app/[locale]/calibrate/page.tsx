@@ -257,7 +257,14 @@ export default function Page() {
   }
 
   return (
-    <main>
+    <main
+      style={{
+        overflow: "hidden",
+        width: "100vw",
+        height: "100vh",
+        position: "absolute",
+      }}
+    >
       <FullScreen handle={handle} className="bg-white">
         <div
           className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
