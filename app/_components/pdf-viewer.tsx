@@ -112,6 +112,7 @@ export default function PdfViewer({
             <div key={index}></div>
           ) : (
             <div
+              key={`page_${index}_${value}`}
               style={{
                 width: `${pageWidth - Number(edgeInsets.horizontal)}pt`,
                 height: `${pageHeight - Number(edgeInsets.vertical)}pt`,
@@ -120,7 +121,6 @@ export default function PdfViewer({
             >
               <Page
                 scale={PDF_TO_CSS_UNITS}
-                key={`page_${value}`}
                 pageNumber={value}
                 renderMode="custom"
                 customRenderer={customRenderer}

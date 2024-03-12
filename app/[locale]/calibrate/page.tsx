@@ -247,6 +247,15 @@ export default function Page() {
     }
   }, [layers]);
 
+  const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
+    if (element === null) {
+      return;
+    }
+    element.addEventListener("wheel", (e) => e.ctrlKey && e.preventDefault(), {
+      passive: false,
+    });
+  }, []);
+
   function getInversionFilters(inverted: boolean, isGreen: boolean): string {
     if (!inverted) {
       return "invert(0)";
@@ -257,7 +266,7 @@ export default function Page() {
   }
 
   return (
-    <main>
+    <main ref={noZoomRefCallback}>
       <FullScreen handle={handle} className="bg-white">
         <div
           className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
@@ -347,12 +356,14 @@ export default function Page() {
           setTransformSettings={setTransformSettings}
         />
         <Draggable
+          ref={noZoomRefCallback}
           className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
           localTransform={localTransform}
           setLocalTransform={setLocalTransform}
           perspective={perspective}
         >
           <div
+            ref={noZoomRefCallback}
             className={"absolute z-0"}
             style={{
               transform: `${matrix3d}`,
