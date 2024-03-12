@@ -128,6 +128,7 @@ export default function Header({
         >
           <div className="flex items-center gap-2">
             <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
+
             <Tooltip
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
@@ -147,6 +148,12 @@ export default function Header({
                 )}
               </IconButton>
             </Tooltip>
+            <IconButton
+              className={`p-1 border-2 border-black`}
+              onClick={() => setShowNav(false)}
+            >
+              <ExpandLessIcon ariaLabel={t("menuHide")} />
+            </IconButton>
           </div>
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
             <Tooltip
@@ -358,19 +365,15 @@ export default function Header({
             </Tooltip>
           </div>
         </nav>
-        {fullScreenHandle.active ? (
-          <IconButton
-            className={`mt-1 px-1 py-1 border-2 border-slate-400 absolute ${showNav ? "top-14" : "top-20"} z-40 left-0 right-0 m-auto w-9 transition-all duration-700 focus:ring-0`}
-            onClick={() => setShowNav(!showNav)}
-          >
-            {showNav ? (
-              <ExpandLessIcon ariaLabel={t("menuHide")} />
-            ) : (
-              <ExpandMoreIcon ariaLabel={t("menuShow")} />
-            )}
-          </IconButton>
-        ) : null}
       </header>
+      {!showNav ? (
+        <IconButton
+          className={`p-1 border-2 border-black absolute top-2 z-40 left-1/4 focus:ring-0`}
+          onClick={() => setShowNav(true)}
+        >
+          <ExpandMoreIcon ariaLabel={t("menuShow")} />
+        </IconButton>
+      ) : null}
     </>
   );
 }
