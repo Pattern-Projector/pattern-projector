@@ -56,7 +56,10 @@ export default function LocaleLayout({
   const messages = useMessages();
   return (
     <html lang={locale}>
-      <body className={inter.className} style={{ overscrollBehavior: "none" }}>
+      <body
+        className={inter.className}
+        style={{ overscrollBehavior: "none", overflow: "hidden" }}
+      >
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

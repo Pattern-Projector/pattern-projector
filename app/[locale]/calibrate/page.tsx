@@ -257,13 +257,7 @@ export default function Page() {
   }
 
   return (
-    <main
-      style={{
-        height: "100vh",
-        width: "100vw",
-        overflow: "hidden",
-      }}
-    >
+    <main>
       <FullScreen handle={handle} className="bg-white">
         <div
           className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
@@ -314,7 +308,7 @@ export default function Page() {
           setVisible={(visible) => setShowLayerMenu(visible)}
           layers={layers}
           setLayers={setLayers}
-          className={showStitchMenu ? "top-72" : "top-20"}
+          className={`${showStitchMenu ? "top-72" : "top-20"} overflow-scroll h-56`}
         />
         {layers.size && !showLayerMenu ? (
           <Tooltip description={showLayerMenu ? t("layersOff") : t("layersOn")}>
