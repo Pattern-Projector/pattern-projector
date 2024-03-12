@@ -68,6 +68,7 @@ export default function Page() {
   const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
+  const [lineThickness, setLineThickness] = useState<number>(0);
 
   function getDefaultPoints() {
     const o = 150;
@@ -291,6 +292,8 @@ export default function Page() {
           pageWidth={pageWidth}
           pageHeight={pageHeight}
           calibrationTransform={calibrationTransform}
+          lineThickness={lineThickness}
+          setLineThickness={setLineThickness}
         />
 
         <LayerMenu
@@ -359,6 +362,7 @@ export default function Page() {
                 setPageHeight={setPageHeight}
                 setLocalTransform={setLocalTransform}
                 calibrationTransform={calibrationTransform}
+                lineThickness={lineThickness}
               />
             </div>
           </div>

@@ -39,6 +39,7 @@ import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
+import LineWeightIcon from "@/_icons/line-weight-icon";
 
 export default function Header({
   isCalibrating,
@@ -67,6 +68,8 @@ export default function Header({
   setLocalTransform,
   pageWidth,
   pageHeight,
+  lineThickness,
+  setLineThickness,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -94,6 +97,8 @@ export default function Header({
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   pageWidth: number;
   pageHeight: number;
+  lineThickness: number;
+  setLineThickness: Dispatch<SetStateAction<number>>;
 }) {
   const t = useTranslations("Header");
 
@@ -229,20 +234,19 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
-            {/*<Tooltip*/}
-            {/*  description={showLayerMenu ? t("layersOff") : t("layersOn")}*/}
-            {/*>*/}
-            {/*  <IconButton*/}
-            {/*    disabled={!layers || layers.size === 0}*/}
-            {/*    onClick={() => setShowLayerMenu(!showLayerMenu)}*/}
-            {/*  >*/}
-            {/*    {showLayerMenu ? (*/}
-            {/*      <LayersIcon ariaLabel={t("layersOn")} />*/}
-            {/*    ) : (*/}
-            {/*      <LayersOffIcon ariaLabel={t("layersOff")} />*/}
-            {/*    )}*/}
-            {/*  </IconButton>*/}
-            {/*</Tooltip>*/}
+            <Tooltip description={t("lineWeight")}>
+              <div className="flex">
+                <InlineInput
+                  inputClassName="!px-2"
+                  label={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                  className="align-right"
+                  min="0"
+                  type="number"
+                  handleChange={(e) => setLineThickness(e.target.valueAsNumber)}
+                  value={String(lineThickness)}
+                />
+              </div>
+            </Tooltip>
             <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
               <IconButton onClick={() => setGridOn(!gridOn)}>
                 {gridOn ? (

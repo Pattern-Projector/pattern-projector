@@ -134,6 +134,7 @@
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen",
     "menuShow": "Show menu",
-    "menuHide": "Hide menu"
+    "menuHide": "Hide menu",
+    "lineWeight": "Line weight"
   }
 }

@@ -30,6 +30,7 @@ export default function PdfViewer({
   layers,
   setLocalTransform,
   calibrationTransform,
+  lineThickness,
 }: {
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
@@ -41,6 +42,7 @@ export default function PdfViewer({
   layers: Map<string, Layer>;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   calibrationTransform: Matrix;
+  lineThickness: number;
 }) {
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
@@ -56,8 +58,8 @@ export default function PdfViewer({
   }
 
   const customRenderer = useCallback(
-    () => CustomRenderer(setLayers, layers),
-    [setLayers, layers],
+    () => CustomRenderer(setLayers, layers, lineThickness),
+    [setLayers, layers, lineThickness],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {

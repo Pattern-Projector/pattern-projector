@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, ReactElement } from "react";
 
 /**
  * Controlled labelled text input
@@ -11,6 +11,7 @@ import { ChangeEvent } from "react";
  */
 export default function InlineInput({
   className,
+  inputClassName,
   handleChange,
   id,
   inputTestId,
@@ -18,15 +19,20 @@ export default function InlineInput({
   labelRight,
   name,
   value,
+  type,
+  min,
 }: {
   className?: string | undefined;
+  inputClassName?: string | undefined;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  id: string;
+  id?: string;
   inputTestId?: string;
-  label: string;
-  labelRight: string | null;
-  name: string;
+  label?: string | ReactElement;
+  labelRight?: string | null;
+  name?: string;
   value: string;
+  type?: string;
+  min?: string;
 }) {
   return (
     <div
@@ -41,7 +47,9 @@ export default function InlineInput({
         {label}
       </label>
       <input
-        className="py-2.5 pl-6 pr-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right"
+        min={min}
+        type={type ? type : "text"}
+        className={`${inputClassName} py-2.5 pl-6 pr-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right`}
         id={id}
         data-test-id={inputTestId}
         name={name}

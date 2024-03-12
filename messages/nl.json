@@ -132,6 +132,7 @@
         "layersOff": "Verberg lagen menu",
         "recenter": "Centreer PDF opnieuw",
         "fullscreen": "Start 'volledig scherm'",
-        "fullscreenExit": "Verlaat 'volledig scherm'"
+        "fullscreenExit": "Verlaat 'volledig scherm'",
+        "lineWeight": "Line weight"
     }
 }
