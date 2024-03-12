@@ -11,6 +11,7 @@ import { ChangeEvent } from "react";
  */
 export default function InlineInput({
   className,
+  inputClassName,
   handleChange,
   id,
   inputTestId,
@@ -18,22 +19,21 @@ export default function InlineInput({
   labelRight,
   name,
   value,
+  type,
 }: {
   className?: string | undefined;
+  inputClassName?: string | undefined;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  id: string;
+  id?: string;
   inputTestId?: string;
   label: string;
-  labelRight: string | null;
-  name: string;
+  labelRight?: string | null;
+  name?: string;
   value: string;
+  type?: string;
 }) {
   return (
-    <div
-      className={
-        className + " relative flex flex-col justify-center items-center"
-      }
-    >
+    <div className={className}>
       <label
         className="text-sm font-medium text-gray-500 mb-2 absolute left-2 top-0 h-full flex items-center"
         htmlFor={id}
@@ -41,7 +41,8 @@ export default function InlineInput({
         {label}
       </label>
       <input
-        className="py-2.5 pl-6 pr-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right"
+        type={type ? type : "text"}
+        className={`${inputClassName} p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right`}
         id={id}
         data-test-id={inputTestId}
         name={name}

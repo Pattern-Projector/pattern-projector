@@ -11,8 +11,6 @@ import { FullScreenHandle } from "react-full-screen";
 import FileInput from "@/_components/file-input";
 import InlineInput from "@/_components/inline-input";
 import InlineSelect from "@/_components/inline-select";
-import ArrowBackIcon from "@/_icons/arrow-back-icon";
-import ArrowForwardIcon from "@/_icons/arrow-forward-icon";
 import DeleteIcon from "@/_icons/delete-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
@@ -39,6 +37,7 @@ import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
+import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
 export default function Header({
   isCalibrating,
@@ -54,8 +53,6 @@ export default function Header({
   setUnitOfMeasure,
   transformSettings,
   setTransformSettings,
-  pageNumber,
-  setPageNumber,
   pageCount,
   gridOn,
   setGridOn,
@@ -65,8 +62,10 @@ export default function Header({
   localTransform,
   calibrationTransform,
   setLocalTransform,
-  pageWidth,
-  pageHeight,
+  layoutWidth,
+  layoutHeight,
+  setShowStitchMenu,
+  showStitchMenu,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -81,8 +80,6 @@ export default function Header({
   setUnitOfMeasure: (newUnit: string) => void;
   transformSettings: TransformSettings;
   setTransformSettings: (newTransformSettings: TransformSettings) => void;
-  pageNumber: number;
-  setPageNumber: Dispatch<SetStateAction<number>>;
   pageCount: number;
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
@@ -92,41 +89,25 @@ export default function Header({
   localTransform: Matrix;
   calibrationTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
-  pageWidth: number;
-  pageHeight: number;
+  layoutWidth: number;
+  layoutHeight: number;
+  setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
+  showStitchMenu: boolean;
 }) {
   const t = useTranslations("Header");
 
   const [invertOpen, setInvertOpen] = useState<boolean>(false);
   const [showNav, setShowNav] = useState<boolean>(true);
 
-  function changePage(offset: number) {
-    setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
-  }
-
-  function handlePreviousPage() {
-    changePage(-1);
-  }
-
-  function handleNextPage() {
-    changePage(1);
-  }
-
   function handleRecenter() {
     if (localTransform !== null) {
       const pdfPixels = 72;
-      const tx = (+width * pdfPixels) / 2 - pageWidth / 2;
-      const ty = (+height * pdfPixels) / 2 - pageHeight / 2;
+      const tx = (+width * pdfPixels) / 2 - layoutWidth / 2;
+      const ty = (+height * pdfPixels) / 2 - layoutHeight / 2;
       const m = translate({ x: tx, y: ty });
       setLocalTransform(calibrationTransform.mmul(m));
     }
   }
-
-  useEffect(() => {
-    if (isCalibrating) {
-      setShowLayerMenu(false);
-    }
-  }, [isCalibrating, setShowLayerMenu]);
 
   useEffect(() => {
     if (fullScreenHandle.active) {
@@ -193,6 +174,8 @@ export default function Header({
 
             <div className="flex gap-1">
               <InlineInput
+                className="relative flex flex-col"
+                inputClassName="pl-6 pr-7"
                 handleChange={handleHeightChange}
                 id="height"
                 label={t("height")}
@@ -201,6 +184,8 @@ export default function Header({
                 value={height}
               />
               <InlineInput
+                className="relative flex flex-col"
+                inputClassName="pl-6 pr-7"
                 handleChange={handleWidthChange}
                 id="height"
                 label={t("width")}
@@ -229,20 +214,20 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
-            {/*<Tooltip*/}
-            {/*  description={showLayerMenu ? t("layersOff") : t("layersOn")}*/}
-            {/*>*/}
-            {/*  <IconButton*/}
-            {/*    disabled={!layers || layers.size === 0}*/}
-            {/*    onClick={() => setShowLayerMenu(!showLayerMenu)}*/}
-            {/*  >*/}
-            {/*    {showLayerMenu ? (*/}
-            {/*      <LayersIcon ariaLabel={t("layersOn")} />*/}
-            {/*    ) : (*/}
-            {/*      <LayersOffIcon ariaLabel={t("layersOff")} />*/}
-            {/*    )}*/}
-            {/*  </IconButton>*/}
-            {/*</Tooltip>*/}
+            <Tooltip
+              description={
+                showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+              }
+              className={`${visible(pageCount > 1)}`}
+            >
+              <IconButton onClick={() => setShowStitchMenu(!showStitchMenu)}>
+                <FlexWrapIcon
+                  ariaLabel={
+                    showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+                  }
+                />
+              </IconButton>
+            </Tooltip>
             <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
               <IconButton onClick={() => setGridOn(!gridOn)}>
                 {gridOn ? (
@@ -344,21 +329,6 @@ export default function Header({
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
-            <div className={`flex items-center ${visible(pageCount > 1)}`}>
-              <IconButton
-                disabled={pageNumber <= 1}
-                onClick={handlePreviousPage}
-              >
-                <ArrowBackIcon ariaLabel={t("arrowBack")} />
-              </IconButton>
-              <span className="mx-1">{pageNumber}</span>
-              <IconButton
-                disabled={pageNumber >= pageCount}
-                onClick={handleNextPage}
-              >
-                <ArrowForwardIcon ariaLabel={t("arrowForward")} />
-              </IconButton>
-            </div>
           </div>
           <div className="flex items-center gap-2">
             <label

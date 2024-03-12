@@ -1,13 +1,22 @@
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import { Dispatch, SetStateAction, useCallback } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
 import { Layer } from "@/_lib/layer";
 import Matrix from "ml-matrix";
+import { EdgeInsets } from "@/_lib/edge-insets";
+import { getPageNumbers } from "@/_lib/get-page-numbers";
+import { use } from "chai";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -23,28 +32,34 @@ export default function PdfViewer({
   file,
   setLayers,
   setPageCount,
-  setPageNumber,
-  setPageWidth,
-  setPageHeight,
-  pageNumber,
+  setLayoutWidth,
+  setLayoutHeight,
+  pageCount,
   layers,
   setLocalTransform,
   calibrationTransform,
+  columnCount,
+  edgeInsets,
+  pageRange,
 }: {
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
   setPageCount: Dispatch<SetStateAction<number>>;
-  setPageNumber: Dispatch<SetStateAction<number>>;
-  setPageWidth: Dispatch<SetStateAction<number>>;
-  setPageHeight: Dispatch<SetStateAction<number>>;
-  pageNumber: number;
+  setLayoutWidth: Dispatch<SetStateAction<number>>;
+  setLayoutHeight: Dispatch<SetStateAction<number>>;
+  pageCount: number;
   layers: Map<string, Layer>;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   calibrationTransform: Matrix;
+  columnCount: string;
+  edgeInsets: EdgeInsets;
+  pageRange: string;
 }) {
+  const [pageWidth, setPageWidth] = useState<number>(0);
+  const [pageHeight, setPageHeight] = useState<number>(0);
+
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
-    setPageNumber(1);
     setLayers(new Map());
     // reset local transform
     setLocalTransform(calibrationTransform);
@@ -68,18 +83,56 @@ export default function PdfViewer({
   const PDF = 72.0;
   const PDF_TO_CSS_UNITS = CSS / PDF;
 
+  useEffect(() => {
+    const itemCount = getPageNumbers(pageRange, pageCount).length;
+    setLayoutWidth(pageWidth * Number(columnCount));
+    setLayoutHeight(
+      pageHeight * Math.ceil(itemCount / (Number(columnCount) || 1)),
+    );
+  }, [
+    pageWidth,
+    pageHeight,
+    pageRange,
+    columnCount,
+    pageCount,
+    setLayoutWidth,
+    setLayoutHeight,
+  ]);
+
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-      <Page
-        scale={PDF_TO_CSS_UNITS}
-        pageNumber={pageNumber}
-        renderMode="custom"
-        customRenderer={customRenderer}
-        customTextRenderer={customTextRenderer}
-        renderAnnotationLayer={false}
-        renderTextLayer={true}
-        onLoadSuccess={onPageLoadSuccess}
-      />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${columnCount}, max-content)`,
+        }}
+      >
+        {getPageNumbers(pageRange, pageCount).map((value, index, array) => {
+          return value == 0 ? (
+            <div key={index}></div>
+          ) : (
+            <div
+              style={{
+                width: `${pageWidth - Number(edgeInsets.horizontal)}pt`,
+                height: `${pageHeight - Number(edgeInsets.vertical)}pt`,
+                mixBlendMode: "multiply",
+              }}
+            >
+              <Page
+                scale={PDF_TO_CSS_UNITS}
+                key={`page_${value}`}
+                pageNumber={value}
+                renderMode="custom"
+                customRenderer={customRenderer}
+                customTextRenderer={customTextRenderer}
+                renderAnnotationLayer={false}
+                renderTextLayer={true}
+                onLoadSuccess={onPageLoadSuccess}
+              />
+            </div>
+          );
+        })}
+      </div>
     </Document>
   );
 }

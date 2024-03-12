@@ -25,6 +25,9 @@ import { IconButton } from "@/_components/buttons/icon-button";
 import LayersIcon from "@/_icons/layers-icon";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
+import { EdgeInsets } from "@/_lib/edge-insets";
+import StitchMenu from "@/_components/stitch-menu";
+import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
 const defaultPoints = [
   // Points that fit on an iPhone SE
@@ -62,12 +65,19 @@ export default function Page() {
     Matrix.identity(3, 3),
   );
   const [pageCount, setPageCount] = useState<number>(1);
-  const [pageNumber, setPageNumber] = useState(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
   const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
-  const [pageWidth, setPageWidth] = useState<number>(0);
-  const [pageHeight, setPageHeight] = useState<number>(0);
+  const [layoutWidth, setLayoutWidth] = useState<number>(0);
+  const [layoutHeight, setLayoutHeight] = useState<number>(0);
+
+  const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
+  const [pageRange, setPageRange] = useState<string>("");
+  const [columnCount, setColumnCount] = useState<string>("");
+  const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
+    horizontal: "",
+    vertical: "",
+  });
 
   function getDefaultPoints() {
     const o = 150;
@@ -120,6 +130,7 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
+      console.log("file", files[0]);
     }
   }
 
@@ -149,6 +160,11 @@ export default function Page() {
       clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    setColumnCount(String(pageCount));
+    setPageRange(`1-${pageCount}`);
+  }, [pageCount]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -241,13 +257,7 @@ export default function Page() {
   }
 
   return (
-    <main
-      style={{
-        height: "100vh",
-        width: "100vw",
-        overflow: "hidden",
-      }}
-    >
+    <main>
       <FullScreen handle={handle} className="bg-white">
         <div
           className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
@@ -278,8 +288,6 @@ export default function Page() {
               });
             }
           }}
-          pageNumber={pageNumber}
-          setPageNumber={setPageNumber}
           pageCount={pageCount}
           gridOn={gridOn}
           setGridOn={setGridOn}
@@ -288,27 +296,41 @@ export default function Page() {
           setShowLayerMenu={setShowLayerMenu}
           localTransform={localTransform}
           setLocalTransform={setLocalTransform}
-          pageWidth={pageWidth}
-          pageHeight={pageHeight}
+          layoutWidth={layoutWidth}
+          layoutHeight={layoutHeight}
           calibrationTransform={calibrationTransform}
+          setShowStitchMenu={setShowStitchMenu}
+          showStitchMenu={showStitchMenu}
         />
 
         <LayerMenu
-          visible={showLayerMenu}
+          visible={!isCalibrating && showLayerMenu}
           setVisible={(visible) => setShowLayerMenu(visible)}
           layers={layers}
           setLayers={setLayers}
+          className={`${showStitchMenu ? "top-72" : "top-20"} overflow-scroll h-56`}
         />
         {layers.size && !showLayerMenu ? (
           <Tooltip description={showLayerMenu ? t("layersOff") : t("layersOn")}>
             <IconButton
-              className="absolute left-2 top-20 z-30 px-1.5 py-1.5 border-2 border-slate-400"
+              className={`${showStitchMenu ? "top-72" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
               onClick={() => setShowLayerMenu(true)}
             >
               <LayersIcon ariaLabel="layers" />
             </IconButton>
           </Tooltip>
         ) : null}
+        <StitchMenu
+          setShowStitchMenu={setShowStitchMenu}
+          className={`${visible(!isCalibrating && showStitchMenu)} absolute left-0 top-16 z-30 w-48 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
+          setColumnCount={setColumnCount}
+          setEdgeInsets={setEdgeInsets}
+          setPageRange={setPageRange}
+          columnCount={columnCount}
+          edgeInsets={edgeInsets}
+          pageRange={pageRange}
+          pageCount={pageCount}
+        />
 
         <CalibrationCanvas
           className={`absolute z-10 ${visible(isCalibrating || gridOn)}`}
@@ -351,14 +373,16 @@ export default function Page() {
               <PDFViewer
                 file={file}
                 setPageCount={setPageCount}
-                setPageNumber={setPageNumber}
-                pageNumber={pageNumber}
+                pageCount={pageCount}
                 setLayers={setLayers}
                 layers={layers}
-                setPageWidth={setPageWidth}
-                setPageHeight={setPageHeight}
+                setLayoutWidth={setLayoutWidth}
+                setLayoutHeight={setLayoutHeight}
                 setLocalTransform={setLocalTransform}
                 calibrationTransform={calibrationTransform}
+                columnCount={columnCount}
+                edgeInsets={edgeInsets}
+                pageRange={pageRange}
               />
             </div>
           </div>
