@@ -247,6 +247,15 @@ export default function Page() {
     }
   }, [layers]);
 
+  const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
+    if (element === null) {
+      return;
+    }
+    element.addEventListener("wheel", (e) => e.ctrlKey && e.preventDefault(), {
+      passive: false,
+    });
+  }, []);
+
   function getInversionFilters(inverted: boolean, isGreen: boolean): string {
     if (!inverted) {
       return "invert(0)";
@@ -257,14 +266,7 @@ export default function Page() {
   }
 
   return (
-    <main
-      style={{
-        overflow: "hidden",
-        width: "100vw",
-        height: "100vh",
-        position: "absolute",
-      }}
-    >
+    <main ref={noZoomRefCallback} className="w-full h-full absolute hidden">
       <FullScreen handle={handle} className="bg-white">
         <div
           className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}

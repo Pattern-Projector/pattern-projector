@@ -1,6 +1,7 @@
 import { Matrix } from "ml-matrix";
 import {
   Dispatch,
+  LegacyRef,
   MouseEvent,
   ReactNode,
   SetStateAction,
