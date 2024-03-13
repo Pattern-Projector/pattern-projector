@@ -26,6 +26,7 @@ export default function Draggable({
   perspective: Matrix;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
+  const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
   const [isAxisLocked, setIsAxisLocked] = useState<Boolean>(false);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
@@ -59,6 +60,43 @@ export default function Draggable({
   useEffect(() => {
     setIsAxisLocked(pressedKeys.has(AXIS_LOCK_KEYBIND));
   }, [pressedKeys]); 
+
+  /* This effect allows for the mouse to move the element
+     even if it is no longer hovering on it */
+  useEffect(() => {
+    if (dragStart !== null ) {
+      // Attach global event listeners when dragging starts
+      window.addEventListener('mousemove', handleOnMouseMove);
+      window.addEventListener('mouseup', handleOnEnd);
+    }
+
+    // Cleanup global event listeners on component unmount
+    return () => {
+      window.removeEventListener('mousemove', handleOnMouseMove);
+      window.removeEventListener('mouseup', handleOnEnd);
+    };
+  }, [dragStart, isAxisLocked]); // Re-run effect if isDragging changes or isAxisLocked changes
+
+  /* Update the currentMousePos every time the mouse moves */
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const newMousePos = mouseToCanvasPoint(e);
+      setCurrentMousePos(newMousePos);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []); // Empty dependency array means this only runs once on mount
+
+  /* This effect causes the position of the div to update instantly if
+     isAxisLocked changes, rather than needing the mouse to move first */
+  useEffect(() => {
+    if (dragStart !==null && isAxisLocked && currentMousePos !== null) {
+      handleMove(currentMousePos);
+    }
+  }, [dragStart, isAxisLocked, currentMousePos]);
 
   function handleOnEnd(): void {
     setDragStart(null);
@@ -109,7 +147,7 @@ export default function Draggable({
   return (
     <div
       className={className}
-      onMouseMove={handleOnMouseMove}
+      onMouseDown={(e) => handleOnStart(mouseToCanvasPoint(e))}
       onTouchMove={(e) => handleMove(touchToCanvasPoint(e))}
       onTouchStart={(e) => handleOnStart(touchToCanvasPoint(e))}
       onTouchEnd={handleOnEnd}
