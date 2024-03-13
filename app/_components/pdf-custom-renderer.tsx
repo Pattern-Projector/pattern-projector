@@ -46,7 +46,7 @@ function erodeAtIndex(
 ): number {
   const { data } = imageData;
   let c = data[index];
-  if (c == 0) {
+  if (c !== 255) {
     return 0;
   }
   if (x > 0) {
