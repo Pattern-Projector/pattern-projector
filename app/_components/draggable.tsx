@@ -6,6 +6,7 @@ import {
   ReactNode,
   SetStateAction,
   useState,
+  useEffect,
 } from "react";
 
 import { transformPoint, translate } from "@/_lib/geometry";
@@ -26,6 +27,38 @@ export default function Draggable({
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
+  const [isAxisLocked, setIsAxisLocked] = useState<Boolean>(false);
+  const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
+
+  const AXIS_LOCK_KEYBIND = 'Control';
+
+  /* Keep track of which keys are being pressed */
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      setPressedKeys(prev => new Set(prev.add(event.key)));
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      setPressedKeys(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(event.key);
+        return newSet;
+      });
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  /* Update isAxisLocked based on its keybind */
+  useEffect(() => {
+    setIsAxisLocked(pressedKeys.has(AXIS_LOCK_KEYBIND));
+  }, [pressedKeys]); 
 
   function handleOnEnd(): void {
     setDragStart(null);
@@ -45,12 +78,24 @@ export default function Draggable({
     handleMove(mouseToCanvasPoint(e));
   }
 
+  function toSingleAxisVector(vec: Point): Point{
+    if (Math.abs(vec.x) > Math.abs(vec.y)){
+      return {x: vec.x, y:0} 
+    } else {
+      return {x: 0, y:vec.y} 
+    }
+  }
+
   function handleMove(p: Point) {
     if (transformStart !== null && dragStart !== null) {
-      var dest = transformPoint(p, perspective);
-      var tx = dest.x - dragStart.x;
-      var ty = dest.y - dragStart.y;
-      let m = translate({ x: tx, y: ty });
+      const dest = transformPoint(p, perspective);
+      const tx = dest.x - dragStart.x;
+      const ty = dest.y - dragStart.y;
+      var vec = {x: tx, y:ty};
+      if (isAxisLocked){
+        vec = toSingleAxisVector(vec);
+      }
+      let m = translate(vec);
       setLocalTransform(transformStart.mmul(m));
     }
   }
