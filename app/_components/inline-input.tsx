@@ -45,7 +45,7 @@ export default function InlineInput({
       <input
         min={min}
         type={type ? type : "text"}
-        className={`${inputClassName} py-2.5 pl-6 pr-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right`}
+        className={`${inputClassName} p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right`}
         id={id}
         data-test-id={inputTestId}
         name={name}

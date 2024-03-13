@@ -226,19 +226,6 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
-            <Tooltip description={t("lineWeight")}>
-              <div className="flex">
-                <InlineInput
-                  inputClassName="!px-2"
-                  label={<LineWeightIcon ariaLabel={t("lineWeight")} />}
-                  className="align-right"
-                  min="0"
-                  type="number"
-                  handleChange={(e) => setLineThickness(e.target.valueAsNumber)}
-                  value={String(lineThickness)}
-                />
-              </div>
-            </Tooltip>
             <Tooltip
               description={
                 showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
@@ -252,6 +239,19 @@ export default function Header({
                   }
                 />
               </IconButton>
+            </Tooltip>
+            <Tooltip description={t("lineWeight")}>
+              <div className="flex">
+                <InlineInput
+                  inputClassName="!px-2"
+                  label={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                  className="align-right"
+                  min="0"
+                  type="number"
+                  handleChange={(e) => setLineThickness(e.target.valueAsNumber)}
+                  value={String(lineThickness)}
+                />
+              </div>
             </Tooltip>
             <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
               <IconButton onClick={() => setGridOn(!gridOn)}>
