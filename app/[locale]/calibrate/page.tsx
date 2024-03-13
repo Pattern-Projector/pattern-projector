@@ -266,7 +266,7 @@ export default function Page() {
   }
 
   return (
-    <main ref={noZoomRefCallback}>
+    <main ref={noZoomRefCallback} className="w-full h-full absolute">
       <FullScreen handle={handle} className="bg-white">
         <div
           className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
@@ -356,14 +356,12 @@ export default function Page() {
           setTransformSettings={setTransformSettings}
         />
         <Draggable
-          ref={noZoomRefCallback}
           className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
           localTransform={localTransform}
           setLocalTransform={setLocalTransform}
           perspective={perspective}
         >
           <div
-            ref={noZoomRefCallback}
             className={"absolute z-0"}
             style={{
               transform: `${matrix3d}`,

@@ -17,14 +17,12 @@ export default function Draggable({
   localTransform,
   setLocalTransform,
   perspective,
-  ref,
 }: {
   children: ReactNode;
   className: string | undefined;
   localTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   perspective: Matrix;
-  ref: LegacyRef<HTMLDivElement> | undefined;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
@@ -65,7 +63,6 @@ export default function Draggable({
 
   return (
     <div
-      ref={ref}
       className={className}
       onMouseMove={handleOnMouseMove}
       onTouchMove={(e) => handleMove(touchToCanvasPoint(e))}
