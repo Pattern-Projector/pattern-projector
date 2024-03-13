@@ -266,7 +266,10 @@ export default function Page() {
   }
 
   return (
-    <main ref={noZoomRefCallback} className="w-full h-full absolute hidden">
+    <main
+      ref={noZoomRefCallback}
+      className="w-full h-full absolute overflow-hidden touch-none"
+    >
       <FullScreen handle={handle} className="bg-white">
         <div
           className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
