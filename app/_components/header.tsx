@@ -37,6 +37,7 @@ import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
+import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
 export default function Header({
@@ -66,6 +67,8 @@ export default function Header({
   layoutHeight,
   setShowStitchMenu,
   showStitchMenu,
+  lineThickness,
+  setLineThickness,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -91,6 +94,8 @@ export default function Header({
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   layoutWidth: number;
   layoutHeight: number;
+  lineThickness: number;
+  setLineThickness: Dispatch<SetStateAction<number>>;
   setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
   showStitchMenu: boolean;
 }) {
@@ -221,6 +226,19 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
+            <Tooltip description={t("lineWeight")}>
+              <div className="flex">
+                <InlineInput
+                  inputClassName="!px-2"
+                  label={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                  className="align-right"
+                  min="0"
+                  type="number"
+                  handleChange={(e) => setLineThickness(e.target.valueAsNumber)}
+                  value={String(lineThickness)}
+                />
+              </div>
+            </Tooltip>
             <Tooltip
               description={
                 showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")

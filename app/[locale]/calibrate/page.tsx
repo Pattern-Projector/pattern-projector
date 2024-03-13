@@ -70,6 +70,7 @@ export default function Page() {
   const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
+  const [lineThickness, setLineThickness] = useState<number>(0);
 
   const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
   const [pageRange, setPageRange] = useState<string>("");
@@ -311,6 +312,8 @@ export default function Page() {
           layoutWidth={layoutWidth}
           layoutHeight={layoutHeight}
           calibrationTransform={calibrationTransform}
+          lineThickness={lineThickness}
+          setLineThickness={setLineThickness}
           setShowStitchMenu={setShowStitchMenu}
           showStitchMenu={showStitchMenu}
         />
@@ -392,6 +395,7 @@ export default function Page() {
                 setLayoutHeight={setLayoutHeight}
                 setLocalTransform={setLocalTransform}
                 calibrationTransform={calibrationTransform}
+                lineThickness={lineThickness}
                 columnCount={columnCount}
                 edgeInsets={edgeInsets}
                 pageRange={pageRange}

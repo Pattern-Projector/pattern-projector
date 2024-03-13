@@ -38,6 +38,7 @@ export default function PdfViewer({
   layers,
   setLocalTransform,
   calibrationTransform,
+  lineThickness,
   columnCount,
   edgeInsets,
   pageRange,
@@ -51,6 +52,7 @@ export default function PdfViewer({
   layers: Map<string, Layer>;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   calibrationTransform: Matrix;
+  lineThickness: number;
   columnCount: string;
   edgeInsets: EdgeInsets;
   pageRange: string;
@@ -71,8 +73,8 @@ export default function PdfViewer({
   }
 
   const customRenderer = useCallback(
-    () => CustomRenderer(setLayers, layers),
-    [setLayers, layers],
+    () => CustomRenderer(setLayers, layers, lineThickness),
+    [setLayers, layers, lineThickness],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
