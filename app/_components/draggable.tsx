@@ -91,11 +91,11 @@ export default function Draggable({
       const dest = transformPoint(p, perspective);
       const tx = dest.x - dragStart.x;
       const ty = dest.y - dragStart.y;
-      var vec = {x: tx, y:ty};
+      let vec = {x: tx, y:ty};
       if (isAxisLocked){
         vec = toSingleAxisVector(vec);
       }
-      let m = translate(vec);
+      const m = translate(vec);
       setLocalTransform(transformStart.mmul(m));
     }
   }
