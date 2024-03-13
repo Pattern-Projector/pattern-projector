@@ -12,7 +12,6 @@ import { ChangeEvent, ReactElement } from "react";
 export default function InlineInput({
   className,
   inputClassName,
-  inputClassName,
   handleChange,
   id,
   inputTestId,
@@ -20,7 +19,6 @@ export default function InlineInput({
   labelRight,
   name,
   value,
-  type,
   min,
   type,
 }: {
