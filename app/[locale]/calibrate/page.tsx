@@ -362,7 +362,8 @@ export default function Page() {
           setTransformSettings={setTransformSettings}
         />
         <Draggable
-          className={`cursor-grabbing select-none ${visible(!isCalibrating)}`}
+          viewportClassName={`select-none ${visible(!isCalibrating)}`}
+          className={`select-none ${visible(!isCalibrating)}`}
           localTransform={localTransform}
           setLocalTransform={setLocalTransform}
           perspective={perspective}

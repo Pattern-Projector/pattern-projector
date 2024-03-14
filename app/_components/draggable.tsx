@@ -2,11 +2,12 @@ import { Matrix } from "ml-matrix";
 import {
   Dispatch,
   LegacyRef,
-  MouseEvent as ReactMouseEvent,
   ReactNode,
   SetStateAction,
+  MouseEvent,
   useState,
   useEffect,
+  useCallback
 } from "react";
 
 import { transformPoint, translate } from "@/_lib/geometry";
@@ -15,12 +16,14 @@ import { mouseToCanvasPoint, Point, touchToCanvasPoint, nativeMouseToCanvasPoint
 export default function Draggable({
   children,
   className,
+  viewportClassName,
   localTransform,
   setLocalTransform,
   perspective,
 }: {
   children: ReactNode;
   className: string | undefined;
+  viewportClassName: string | undefined;
   localTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   perspective: Matrix;
@@ -29,72 +32,35 @@ export default function Draggable({
   const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
   const [isAxisLocked, setIsAxisLocked] = useState<Boolean>(false);
-  const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
 
-  const AXIS_LOCK_KEYBIND = 'Control';
+  const AXIS_LOCK_KEYBIND = 'Shift';
 
-  /* Keep track of which keys are being pressed */
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      setPressedKeys(prev => new Set(prev.add(event.key)));
-    };
+  const handleKeyDown = useCallback(
+    function (e: React.KeyboardEvent) {
+      if (e.key === AXIS_LOCK_KEYBIND) {
+        e.preventDefault();
+        setIsAxisLocked(true);
+      } 
+    },
+    [
+      setIsAxisLocked,
+    ],
+  );
 
-    const handleKeyUp = (event: KeyboardEvent) => {
-      setPressedKeys(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(event.key);
-        return newSet;
-      });
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
-
-  /* Update isAxisLocked based on its keybind */
-  useEffect(() => {
-    setIsAxisLocked(pressedKeys.has(AXIS_LOCK_KEYBIND));
-  }, [pressedKeys]); 
-
-  /* This effect allows for the mouse to move the element
-     even if it is no longer hovering on it */
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      handleMove(nativeMouseToCanvasPoint(e));
-    };
-    if (dragStart !== null ) {
-      // Attach global event listeners when dragging starts
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleOnEnd);
-    }
-
-    // Cleanup global event listeners on component unmount
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleOnEnd);
-    };
-  }, [dragStart, isAxisLocked]); // Re-run effect if isDragging changes or isAxisLocked changes
-
-  /* Update the currentMousePos every time the mouse moves */
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const newMousePos = nativeMouseToCanvasPoint(e);
-      setCurrentMousePos(newMousePos);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []); // Empty dependency array means this only runs once on mount
+  const handleKeyUp = useCallback(
+    function (e: React.KeyboardEvent) {
+      if (e.key === AXIS_LOCK_KEYBIND) {
+        e.preventDefault();
+        setIsAxisLocked(false);
+      } 
+    },
+    [
+      setIsAxisLocked,
+    ],
+  );
 
   /* This effect causes the position of the div to update instantly if
-     isAxisLocked changes, rather than needing the mouse to move first */
+   isAxisLocked changes, rather than needing the mouse to move first */
   useEffect(() => {
     if (dragStart !==null && isAxisLocked && currentMousePos !== null) {
       handleMove(currentMousePos);
@@ -104,6 +70,22 @@ export default function Draggable({
   function handleOnEnd(): void {
     setDragStart(null);
     setTransformStart(null);
+  }
+
+  function handleOnMouseMove(e: MouseEvent<HTMLDivElement>): void {
+    /* If we aren't currently dragging, ignore the mouse move event */
+    if (dragStart === null) {
+      return;
+    }
+
+    const newMousePos = mouseToCanvasPoint(e)
+    setCurrentMousePos(newMousePos)
+
+    if ((e.buttons & 1) === 0 && dragStart !== null) {
+      handleOnEnd();
+      return;
+    }
+    handleMove(newMousePos);
   }
 
   function toSingleAxisVector(vec: Point): Point{
@@ -134,16 +116,37 @@ export default function Draggable({
     setTransformStart(localTransform.clone());
   }
 
+  //TODO: the react-pdf class endOfContent is overwriting this cursor style.
+  //      we need to prevent this from happening somehow. 
+  const cursorMode = `${dragStart !== null ? 'grabbing' : 'grab'}`;
+  const viewportCursorMode = `${dragStart !== null ? 'grabbing': 'default'}`;
+
   return (
     <div
-      className={className}
-      onMouseDown={(e) => handleOnStart(mouseToCanvasPoint(e))}
-      onTouchMove={(e) => handleMove(touchToCanvasPoint(e))}
-      onTouchStart={(e) => handleOnStart(touchToCanvasPoint(e))}
-      onTouchEnd={handleOnEnd}
-      // TODO: consider theses style={{ mixBlendMode: "hard-light" }}
+      tabIndex={0}
+      className={viewportClassName + " w-screen h-screen "}
+      onMouseMove={handleOnMouseMove}
+      onMouseUp={handleOnEnd}
+      onKeyUp={handleKeyUp}
+      onKeyDown={handleKeyDown}
+      style={{
+        cursor:viewportCursorMode
+      }}
     >
-      {children}
+      <div
+        className={className}
+        onMouseDown={(e) => {handleOnStart(mouseToCanvasPoint(e))}}
+        onTouchMove={(e) => handleMove(touchToCanvasPoint(e))}
+        onTouchStart={(e) => handleOnStart(touchToCanvasPoint(e))}
+        onTouchEnd={handleOnEnd}
+        onMouseUp={handleOnEnd}
+        style={{
+          cursor:cursorMode
+        }}
+        // TODO: consider theses style={{ mixBlendMode: "hard-light" }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
