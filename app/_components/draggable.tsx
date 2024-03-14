@@ -2,7 +2,7 @@ import { Matrix } from "ml-matrix";
 import {
   Dispatch,
   LegacyRef,
-  MouseEvent,
+  MouseEvent as ReactMouseEvent,
   ReactNode,
   SetStateAction,
   useState,
@@ -10,7 +10,7 @@ import {
 } from "react";
 
 import { transformPoint, translate } from "@/_lib/geometry";
-import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
+import { mouseToCanvasPoint, Point, touchToCanvasPoint, nativeMouseToCanvasPoint} from "@/_lib/point";
 
 export default function Draggable({
   children,
@@ -64,15 +64,18 @@ export default function Draggable({
   /* This effect allows for the mouse to move the element
      even if it is no longer hovering on it */
   useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      handleMove(nativeMouseToCanvasPoint(e));
+    };
     if (dragStart !== null ) {
       // Attach global event listeners when dragging starts
-      window.addEventListener('mousemove', handleOnMouseMove);
+      window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleOnEnd);
     }
 
     // Cleanup global event listeners on component unmount
     return () => {
-      window.removeEventListener('mousemove', handleOnMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleOnEnd);
     };
   }, [dragStart, isAxisLocked]); // Re-run effect if isDragging changes or isAxisLocked changes
@@ -80,7 +83,7 @@ export default function Draggable({
   /* Update the currentMousePos every time the mouse moves */
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      const newMousePos = mouseToCanvasPoint(e);
+      const newMousePos = nativeMouseToCanvasPoint(e);
       setCurrentMousePos(newMousePos);
     };
 
@@ -101,19 +104,6 @@ export default function Draggable({
   function handleOnEnd(): void {
     setDragStart(null);
     setTransformStart(null);
-  }
-
-  function handleOnMouseMove(e: MouseEvent<HTMLDivElement>): void {
-    if (e.buttons & 1 && dragStart === null) {
-      handleOnStart(mouseToCanvasPoint(e));
-      return;
-    }
-
-    if ((e.buttons & 1) === 0 && dragStart !== null) {
-      handleOnEnd();
-      return;
-    }
-    handleMove(mouseToCanvasPoint(e));
   }
 
   function toSingleAxisVector(vec: Point): Point{
