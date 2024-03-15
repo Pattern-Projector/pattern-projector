@@ -14,6 +14,7 @@ import type {
   PDFDocumentProxy,
 } from "pdfjs-dist/types/src/display/api.js";
 import { Layer } from "@/_lib/layer";
+import { PDFPageProxy } from "pdfjs-dist";
 
 function erodeImageData(imageData: ImageData, output: ImageData) {
   const { width, height, data } = imageData;
@@ -93,6 +94,8 @@ export default function CustomRenderer(
   const page = pageContext.page;
   const pdf = docContext.pdf;
   const canvasElement = useRef<HTMLCanvasElement>(null);
+  const userUnit = (page as PDFPageProxy).userUnit || 1;
+
   const CSS = 96.0;
   const PDF = 72.0;
   const PDF_TO_CSS_UNITS = CSS / PDF;
@@ -126,18 +129,27 @@ export default function CustomRenderer(
       if (groups) {
         if (layers.size === 0) {
           const l = new Map<string, Layer>();
-          Object.keys(groups).forEach((key, i) => {
-            l.set(key, {
-              name: String(groups[key].name) ?? key,
-              visible: true,
-            });
+          Object.keys(groups).forEach((key) => {
+            const name = String(groups[key].name) ?? key;
+            const existing = l.get(name);
+            if (existing) {
+              existing.ids.push(key);
+              l.set(name, existing);
+            } else {
+              l.set(name, {
+                name,
+                ids: [key],
+                visible: true,
+              });
+            }
             setLayers(l);
           });
         } else {
           for (let entry of layers) {
-            const key = entry[0];
             const layer = entry[1];
-            optionalContentConfig.setVisibility(key, layer.visible);
+            for (let i = 0; i < layer.ids.length; i += 1) {
+              optionalContentConfig.setVisibility(layer.ids[i], layer.visible);
+            }
           }
         }
       }
@@ -191,7 +203,6 @@ export default function CustomRenderer(
   useEffect(drawPageOnCanvas, [
     canvasElement,
     page,
-    viewport,
     renderViewport,
     layers,
     pdf,
@@ -206,8 +217,9 @@ export default function CustomRenderer(
       width={Math.floor(renderViewport.width)}
       height={Math.floor(renderViewport.height)}
       style={{
-        width: Math.floor(viewport.width * PDF_TO_CSS_UNITS) + "px",
-        height: Math.floor(viewport.height * PDF_TO_CSS_UNITS) + "px",
+        width: Math.floor(viewport.width * PDF_TO_CSS_UNITS * userUnit) + "px",
+        height:
+          Math.floor(viewport.height * PDF_TO_CSS_UNITS * userUnit) + "px",
       }}
     />
   );
