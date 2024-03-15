@@ -68,8 +68,8 @@ export default function PdfViewer({
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
-    setPageWidth(pdfProxy.view[2]);
-    setPageHeight(pdfProxy.view[3]);
+    setPageWidth(pdfProxy.view[2] * (pdfProxy.userUnit || 1));
+    setPageHeight(pdfProxy.view[3] * (pdfProxy.userUnit || 1));
   }
 
   const customRenderer = useCallback(
