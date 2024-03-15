@@ -14,6 +14,7 @@ import type {
   PDFDocumentProxy,
 } from "pdfjs-dist/types/src/display/api.js";
 import { Layer } from "@/_lib/layer";
+import { PDFPageProxy } from "pdfjs-dist";
 
 function erodeImageData(imageData: ImageData, output: ImageData) {
   const { width, height, data } = imageData;
@@ -93,6 +94,8 @@ export default function CustomRenderer(
   const page = pageContext.page;
   const pdf = docContext.pdf;
   const canvasElement = useRef<HTMLCanvasElement>(null);
+  const userUnit = (page as PDFPageProxy).userUnit || 1;
+
   const CSS = 96.0;
   const PDF = 72.0;
   const PDF_TO_CSS_UNITS = CSS / PDF;
@@ -191,7 +194,6 @@ export default function CustomRenderer(
   useEffect(drawPageOnCanvas, [
     canvasElement,
     page,
-    viewport,
     renderViewport,
     layers,
     pdf,
@@ -206,8 +208,9 @@ export default function CustomRenderer(
       width={Math.floor(renderViewport.width)}
       height={Math.floor(renderViewport.height)}
       style={{
-        width: Math.floor(viewport.width * PDF_TO_CSS_UNITS) + "px",
-        height: Math.floor(viewport.height * PDF_TO_CSS_UNITS) + "px",
+        width: Math.floor(viewport.width * PDF_TO_CSS_UNITS * userUnit) + "px",
+        height:
+          Math.floor(viewport.height * PDF_TO_CSS_UNITS * userUnit) + "px",
       }}
     />
   );
