@@ -131,7 +131,6 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
-      console.log("file", files[0]);
     }
   }
 
