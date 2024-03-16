@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 
+import { getPerspectiveTransform } from "@/_lib/geometry";
 import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
 import {
   applyOffset,
@@ -229,10 +230,43 @@ export default function CalibrationCanvas({
   const [dragStartPoint, setDragStartPoint] = useState<Point | null>(null);
   const [precisionActivationPoint, setPrecisionActivationPoint] = useState<Point | null>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [localPoints, setLocalPoints] = useState<Point[]>(points);
+  const [localPerspective, setLocalPerspective] = useState<Matrix>(perspective);
 
   useEffect(() => {
-    if (isPrecisionMovement && pointToModify !== null && points.length > pointToModify)
-	  setPrecisionActivationPoint(prevPoint => points[pointToModify]);
+    setLocalPoints(points)
+  }, [points, setLocalPoints])
+
+  useEffect(() => {
+    setLocalPerspective(perspective)
+  }, [perspective])
+
+  useEffect(() => {
+    if (localPoints && localPoints.length === maxPoints) {
+      let n = getPerspectiveTransform(getDstVertices(), localPoints);
+      setLocalPerspective(n);
+    }
+
+    function getDstVertices(): Point[] {
+      const ox = 0;
+      const oy = 0;
+      const mx = +width * ptDensity + ox;
+      const my = +height * ptDensity + oy;
+
+      const dstVertices = [
+        { x: ox, y: oy },
+        { x: mx, y: oy },
+        { x: mx, y: my },
+        { x: ox, y: my },
+      ];
+
+      return dstVertices;
+    }
+  }, [localPoints, width, height, ptDensity, setLocalPerspective]);
+
+  useEffect(() => {
+    if (isPrecisionMovement && pointToModify !== null && localPoints.length > pointToModify)
+	  setPrecisionActivationPoint(prevPoint => localPoints[pointToModify]);
   }, [isPrecisionMovement, pointToModify]);
 
   useEffect(() => {
@@ -245,10 +279,10 @@ export default function CalibrationCanvas({
         draw(
           ctx,
           dragOffset,
-          points,
+          localPoints,
           width,
           height,
-          perspective,
+          localPerspective,
           isCalibrating,
           pointToModify,
           ptDensity,
@@ -259,8 +293,8 @@ export default function CalibrationCanvas({
     }
   }, [
     dragOffset,
-    points,
-    perspective,
+    localPoints,
+    localPerspective,
     width,
     height,
     isCalibrating,
@@ -271,22 +305,22 @@ export default function CalibrationCanvas({
   ]);
 
   function getShortestDistance(p: Point): number {
-    return points
+    return localPoints
       .map((a) => Math.sqrt(sqrdist(a, p)))
       .reduce((final, a) => (!final || a < final ? a : final));
   }
 
   function handleDown(newPoint: Point) {
-    if (points.length < maxPoints) {
-      setPoints([...points, newPoint]);
+    if (localPoints.length < maxPoints) {
+      setLocalPoints([...localPoints, newPoint]);
     } else {
       const shortestDist: number = getShortestDistance(newPoint);
       if (shortestDist < CORNER_MARGIN) {
-        const newPointToModify = minIndex(points.map((a) => sqrdist(a, newPoint)))
+        const newPointToModify = minIndex(localPoints.map((a) => sqrdist(a, newPoint)))
         setPointToModify(newPointToModify);
         setDragStartTime(Date.now());
         setDragStartMousePoint(newPoint);
-        setDragStartPoint(points[newPointToModify]);
+        setDragStartPoint(localPoints[newPointToModify]);
 
       // Set a timeout to activate precision movement after the delay
       const timeoutId = setTimeout(() => {
@@ -317,7 +351,7 @@ export default function CalibrationCanvas({
       ) {
         setIsPrecisionMovement(true);
         if (pointToModify !== null)
-			setPrecisionActivationPoint(points[pointToModify]);
+			setPrecisionActivationPoint(localPoints[pointToModify]);
       }
 
       if (
@@ -335,7 +369,7 @@ export default function CalibrationCanvas({
       }
 
 
-      const newPoints = [...points];
+      const newPoints = [...localPoints];
       let destination = {
         x: p.x,
         y: p.y
@@ -365,7 +399,7 @@ export default function CalibrationCanvas({
         x: newPoints[pointToModify].x + offset.x,
         y: newPoints[pointToModify].y + offset.y,
       };
-      setPoints(newPoints);
+      setLocalPoints(newPoints);
     } else if (panStart !== null) {
       setDragOffset({ x: p.x - panStart.x, y: p.y - panStart.y });
     }
@@ -381,9 +415,9 @@ export default function CalibrationCanvas({
   }
 
   function handleMouseUp() {
-    localStorage.setItem("points", JSON.stringify(points));
+    localStorage.setItem("points", JSON.stringify(localPoints));
     if (panStart) {
-      setPoints(points.map((p) => applyOffset(p, dragOffset)));
+      setPoints(localPoints.map((p) => applyOffset(p, dragOffset)));
       setDragOffset({ x: 0, y: 0 });
       setPanStart(null);
     }
@@ -401,7 +435,7 @@ export default function CalibrationCanvas({
   }
 
   function handleTouchUp() {
-    localStorage.setItem("points", JSON.stringify(points));
+    localStorage.setItem("points", JSON.stringify(localPoints));
     setPointToModify(null);
     setPanStart(null);
     setIsPrecisionMovement(false);
@@ -428,7 +462,7 @@ export default function CalibrationCanvas({
           });
         } else {
           const newPointToModify =
-            (pointToModify === null ? 0 : pointToModify + 1) % points.length;
+            (pointToModify === null ? 0 : pointToModify + 1) % localPoints.length;
           setPointToModify(newPointToModify);
         }
       } else if (e.code === "Escape") {
@@ -444,7 +478,7 @@ export default function CalibrationCanvas({
       pointToModify,
       transformSettings,
       setPointToModify,
-      points.length,
+      localPoints.length,
       setTransformSettings,
     ],
   );
