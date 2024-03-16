@@ -420,6 +420,8 @@ export default function CalibrationCanvas({
       setPoints(localPoints.map((p) => applyOffset(p, dragOffset)));
       setDragOffset({ x: 0, y: 0 });
       setPanStart(null);
+    } else {
+        setPoints(localPoints);
     }
     setIsPrecisionMovement(false);
     setDragStartTime(null);
@@ -436,6 +438,7 @@ export default function CalibrationCanvas({
 
   function handleTouchUp() {
     localStorage.setItem("points", JSON.stringify(localPoints));
+    setPoints(localPoints);
     setPointToModify(null);
     setPanStart(null);
     setIsPrecisionMovement(false);
