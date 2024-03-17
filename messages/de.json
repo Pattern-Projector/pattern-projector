@@ -133,6 +133,14 @@
         "recenter": "PDF zentrieren",
         "fullscreen": "Vollbild",
         "fullscreenExit": "Vollbild",
-        "lineWeight": "Line weight"
+        "lineWeight": "Line weight",
+        "stitchMenuShow": "Show stitch menu",
+        "stitchMenuHide": "Hide stitch menu"
+    },
+    "StitchMenu": {
+      "columnCount": "Columns",
+      "pageRange": "Pages",
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
     }
 }
