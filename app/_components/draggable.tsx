@@ -2,30 +2,70 @@ import { Matrix } from "ml-matrix";
 import {
   Dispatch,
   LegacyRef,
-  MouseEvent,
   ReactNode,
   SetStateAction,
+  MouseEvent,
   useState,
+  useEffect,
+  useCallback
 } from "react";
 
 import { transformPoint, translate } from "@/_lib/geometry";
-import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
+import { mouseToCanvasPoint, Point, touchToCanvasPoint, nativeMouseToCanvasPoint} from "@/_lib/point";
 
 export default function Draggable({
   children,
   className,
+  viewportClassName,
   localTransform,
   setLocalTransform,
   perspective,
 }: {
   children: ReactNode;
   className: string | undefined;
+  viewportClassName: string | undefined;
   localTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   perspective: Matrix;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
+  const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
+  const [isAxisLocked, setIsAxisLocked] = useState<Boolean>(false);
+
+  const AXIS_LOCK_KEYBIND = 'Shift';
+
+  const handleKeyDown = useCallback(
+    function (e: React.KeyboardEvent) {
+      if (e.key === AXIS_LOCK_KEYBIND) {
+        e.preventDefault();
+        setIsAxisLocked(true);
+      } 
+    },
+    [
+      setIsAxisLocked,
+    ],
+  );
+
+  const handleKeyUp = useCallback(
+    function (e: React.KeyboardEvent) {
+      if (e.key === AXIS_LOCK_KEYBIND) {
+        e.preventDefault();
+        setIsAxisLocked(false);
+      } 
+    },
+    [
+      setIsAxisLocked,
+    ],
+  );
+
+  /* This effect causes the position of the div to update instantly if
+   isAxisLocked changes, rather than needing the mouse to move first */
+  useEffect(() => {
+    if (dragStart !==null && isAxisLocked && currentMousePos !== null) {
+      handleMove(currentMousePos);
+    }
+  }, [dragStart, isAxisLocked, currentMousePos]);
 
   function handleOnEnd(): void {
     setDragStart(null);
@@ -33,24 +73,39 @@ export default function Draggable({
   }
 
   function handleOnMouseMove(e: MouseEvent<HTMLDivElement>): void {
-    if (e.buttons & 1 && dragStart === null) {
-      handleOnStart(mouseToCanvasPoint(e));
+    /* If we aren't currently dragging, ignore the mouse move event */
+    if (dragStart === null) {
       return;
     }
+
+    const newMousePos = mouseToCanvasPoint(e)
+    setCurrentMousePos(newMousePos)
 
     if ((e.buttons & 1) === 0 && dragStart !== null) {
       handleOnEnd();
       return;
     }
-    handleMove(mouseToCanvasPoint(e));
+    handleMove(newMousePos);
+  }
+
+  function toSingleAxisVector(vec: Point): Point{
+    if (Math.abs(vec.x) > Math.abs(vec.y)){
+      return {x: vec.x, y:0} 
+    } else {
+      return {x: 0, y:vec.y} 
+    }
   }
 
   function handleMove(p: Point) {
     if (transformStart !== null && dragStart !== null) {
-      var dest = transformPoint(p, perspective);
-      var tx = dest.x - dragStart.x;
-      var ty = dest.y - dragStart.y;
-      let m = translate({ x: tx, y: ty });
+      const dest = transformPoint(p, perspective);
+      const tx = dest.x - dragStart.x;
+      const ty = dest.y - dragStart.y;
+      let vec = {x: tx, y:ty};
+      if (isAxisLocked){
+        vec = toSingleAxisVector(vec);
+      }
+      const m = translate(vec);
       setLocalTransform(transformStart.mmul(m));
     }
   }
@@ -61,16 +116,37 @@ export default function Draggable({
     setTransformStart(localTransform.clone());
   }
 
+  //TODO: the react-pdf class endOfContent is overwriting this cursor style.
+  //      we need to prevent this from happening somehow. 
+  const cursorMode = `${dragStart !== null ? 'grabbing' : 'grab'}`;
+  const viewportCursorMode = `${dragStart !== null ? 'grabbing': 'default'}`;
+
   return (
     <div
-      className={className}
+      tabIndex={0}
+      className={viewportClassName + " w-screen h-screen "}
       onMouseMove={handleOnMouseMove}
-      onTouchMove={(e) => handleMove(touchToCanvasPoint(e))}
-      onTouchStart={(e) => handleOnStart(touchToCanvasPoint(e))}
-      onTouchEnd={handleOnEnd}
-      // TODO: consider theses style={{ mixBlendMode: "hard-light" }}
+      onMouseUp={handleOnEnd}
+      onKeyUp={handleKeyUp}
+      onKeyDown={handleKeyDown}
+      style={{
+        cursor:viewportCursorMode
+      }}
     >
-      {children}
+      <div
+        className={className}
+        onMouseDown={(e) => {handleOnStart(mouseToCanvasPoint(e))}}
+        onTouchMove={(e) => handleMove(touchToCanvasPoint(e))}
+        onTouchStart={(e) => handleOnStart(touchToCanvasPoint(e))}
+        onTouchEnd={handleOnEnd}
+        onMouseUp={handleOnEnd}
+        style={{
+          cursor:cursorMode
+        }}
+        // TODO: consider theses style={{ mixBlendMode: "hard-light" }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

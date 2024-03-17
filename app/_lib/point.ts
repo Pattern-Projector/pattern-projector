@@ -17,6 +17,10 @@ export function mouseToCanvasPoint(e: React.MouseEvent<Element>): Point {
   return { x: e.clientX, y: e.clientY };
 }
 
+export function nativeMouseToCanvasPoint(e: MouseEvent): Point {
+  return { x: e.pageX, y: e.pageY };
+}
+
 export function touchToCanvasPoint(e: React.TouchEvent<Element>): Point {
   return { x: e.touches[0].clientX, y: e.touches[0].clientY };
 }

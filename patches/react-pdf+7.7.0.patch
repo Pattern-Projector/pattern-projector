@@ -18,6 +18,18 @@ index b5e8e11..5fb6371 100644
          canvas.style.visibility = 'hidden';
          const renderContext = {
              annotationMode: renderForms ? ANNOTATION_MODE.ENABLE_FORMS : ANNOTATION_MODE.ENABLE,
+diff --git a/node_modules/react-pdf/dist/cjs/Page/TextLayer.css b/node_modules/react-pdf/dist/cjs/Page/TextLayer.css
+index 592ec1c..fc3b617 100644
+--- a/node_modules/react-pdf/dist/cjs/Page/TextLayer.css
++++ b/node_modules/react-pdf/dist/cjs/Page/TextLayer.css
+@@ -101,7 +101,6 @@
+   position: absolute;
+   inset: 100% 0 0;
+   z-index: -1;
+-  cursor: default;
+   user-select: none;
+ }
+ 
 diff --git a/node_modules/react-pdf/dist/esm/Page/PageCanvas.js b/node_modules/react-pdf/dist/esm/Page/PageCanvas.js
 index 1b72392..0df7d1a 100644
 --- a/node_modules/react-pdf/dist/esm/Page/PageCanvas.js
@@ -38,3 +50,27 @@ index 1b72392..0df7d1a 100644
          canvas.style.visibility = 'hidden';
          const renderContext = {
              annotationMode: renderForms ? ANNOTATION_MODE.ENABLE_FORMS : ANNOTATION_MODE.ENABLE,
+diff --git a/node_modules/react-pdf/dist/esm/Page/TextLayer.css b/node_modules/react-pdf/dist/esm/Page/TextLayer.css
+index 592ec1c..fc3b617 100644
+--- a/node_modules/react-pdf/dist/esm/Page/TextLayer.css
++++ b/node_modules/react-pdf/dist/esm/Page/TextLayer.css
+@@ -101,7 +101,6 @@
+   position: absolute;
+   inset: 100% 0 0;
+   z-index: -1;
+-  cursor: default;
+   user-select: none;
+ }
+ 
+diff --git a/node_modules/react-pdf/src/Page/TextLayer.css b/node_modules/react-pdf/src/Page/TextLayer.css
+index 592ec1c..fc3b617 100644
+--- a/node_modules/react-pdf/src/Page/TextLayer.css
++++ b/node_modules/react-pdf/src/Page/TextLayer.css
+@@ -101,7 +101,6 @@
+   position: absolute;
+   inset: 100% 0 0;
+   z-index: -1;
+-  cursor: default;
+   user-select: none;
+ }
+ 
