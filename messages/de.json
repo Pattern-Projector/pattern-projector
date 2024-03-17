@@ -134,5 +134,11 @@
         "fullscreen": "Vollbild",
         "fullscreenExit": "Vollbild",
         "lineWeight": "Line weight"
+    },
+    "StitchMenu": {
+      "columnCount": "Columns",
+      "pageRange": "Pages",
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
     }
 }
