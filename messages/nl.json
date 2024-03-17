@@ -133,7 +133,9 @@
         "recenter": "Centreer PDF opnieuw",
         "fullscreen": "Start 'volledig scherm'",
         "fullscreenExit": "Verlaat 'volledig scherm'",
-        "lineWeight": "Line weight"
+        "lineWeight": "Line weight",
+        "stitchMenuShow": "Show stitch menu",
+        "stitchMenuHide": "Hide stitch menu"
     },
     "StitchMenu": {
       "columnCount": "Columns",

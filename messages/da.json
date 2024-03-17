@@ -133,12 +133,14 @@
         "recenter": "Til midten af PDF'en",
         "fullscreen": "Fuld skærm",
         "fullscreenExit": "Fuld skærm",
-        "lineWeight": "Line weight"
+        "lineWeight": "Linjetykkelse",
+        "stitchMenuShow": "Vis samlemenu",
+        "stitchMenuHide": "Samlemenu"
     },
     "StitchMenu": {
-      "columnCount": "Columns",
-      "pageRange": "Pages",
-      "horizontal": "Horizontal",
-      "vertical": "Vertical"
+      "columnCount": "Kolonner",
+      "pageRange": "Sider",
+      "horizontal": "Vandret",
+      "vertical": "Lodret"
     }
 }
