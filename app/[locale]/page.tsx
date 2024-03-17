@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
 
 import FullscreenIcon from "@/_icons/fullscreen-icon";
@@ -18,6 +18,9 @@ import { IconButton } from "@/_components/buttons/icon-button";
 
 export default function Home() {
   const t = useTranslations("HomePage");
+  const messages = useMessages() as IntlMessages;
+  const keys = Object.keys(messages.HomePage.resources.links);
+
   return (
     <main className="m-4">
       <nav className="flex items-center gap-2">
@@ -38,6 +41,15 @@ export default function Home() {
       <article className="prose lg:prose-xl m-auto">
         <h1>{t("welcome.title")}</h1>
         <p>{t("welcome.description")}</p>
+        <div className="aspect-w-16 aspect-h-9">
+          <iframe
+            src={t("youTubeSrc")}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          ></iframe>
+        </div>
         <h2>{t("requirements.title")}</h2>
         <ul>
           <li>{t("requirements.projector")}</li>
@@ -149,7 +161,7 @@ export default function Home() {
 
         <h2>{t("faq.title")}</h2>
         <ul>
-        <li>
+          <li>
             <div>{t("faq.wrongSizePdf.question")}</div>
             {t.rich("faq.wrongSizePdf.answer", {
               inchGridLink: (chunks) => (
@@ -191,6 +203,16 @@ export default function Home() {
             <div>{t("faq.mobileSupport.question")}</div>
             {t("faq.mobileSupport.answer")}
           </li>
+        </ul>
+        <h2>{t("resources.title")}</h2>
+        <ul>
+          {keys.map((key) => (
+            <li key={key}>
+              <a href={t(`resources.links.${key}.link` as any)}>
+                {t(`resources.links.${key}.title` as any)}
+              </a>
+            </li>
+          ))}
         </ul>
         <h2>{t("contribute.title")}</h2>
         <p>

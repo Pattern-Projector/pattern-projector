@@ -1,127 +1,138 @@
 {
-  "HomePage": {
-    "beta": "beta",
-    "pdfstitcherHref": "https://www.pdfstitcher.org/",
-    "github": "Github icon",
-    "calibrate": "Begynd kalibrering",
-    "welcome": {
-      "title": "Velkommen til Pattern Projector",
-      "description": "Pattern Projector er en gratis og open source webapp, der hjælper brugere med hurtigt at kalibrere projektorer til brug med symønstre. Dette projekt er lige nu i beta, så forvent store ændringer og tilføjelse af nye funktioner med tiden. "
+    "HomePage": {
+        "beta": "beta",
+        "pdfstitcherHref": "https://www.pdfstitcher.org/",
+        "youTubeSrc": "https://www.youtube.com/embed/_PXD0wJowqg?si=b9n1hRLqAEDfK5_v",
+        "github": "Github icon",
+        "calibrate": "Begynd kalibrering",
+        "welcome": {
+            "title": "Velkommen til Pattern Projector",
+            "description": "Pattern Projector er en gratis og open source webapp, der hjælper brugere med hurtigt at kalibrere projektorer til brug med symønstre. Dette projekt er lige nu i beta, så forvent store ændringer og tilføjelse af nye funktioner med tiden. "
+        },
+        "requirements": {
+            "title": "Hvad du skal bruge",
+            "projector": "Projektor, mindst 720p anbefalet",
+            "mat": "Skæremåtte, gerne med gitter og tern for hver tomme / centimeter",
+            "mount": "Tripod eller beslag/holder på væg, hylde eller bord til projektor",
+            "computer": "Computer eller tablet til at forbinde til projektoren",
+            "pattern": "Et PDF-mønster, overvej at bruge <pdfstitcher>PDFStitcher</pdfstitcher> hvis dit mønster har lag eller mange sider"
+        },
+        "setup": {
+            "title": "Montering",
+            "place": "Placér projektoren direkte over skæremåtten, så den lyser ned på måtten. Prøv at placere projektoren direkte over skæremåtten, så den peger lige ned. ",
+            "connect": "Forbind din computer eller tablet til projektoren. Spejl eller udvid skærm.",
+            "focus": "Justér fokus på projektoren indtil teksten står skarpt i midten af projektorbilledet. Hvis du ikke kan få et tydeligt billede, skal du kontrollere, om afstanden mellem projektoren og skæremåtten er inden for producentens anbefalinger. ",
+            "keystone": "Hvis din projektor har mulighed for at justere keystone, så justér den indtil projektorbilledet er tæt på regtangulær og fokus ude i kanten forbedres. "
+        },
+        "calibration": {
+            "title": "Kalibrering",
+            "start": "Start kalibrering",
+            "input": "Indtast bredde og højde på din skæremåtte.",
+            "fullscreen": "Gå til fuld skærm ved at klikke eller tappe ",
+            "drag": "Træk i hjørnerne af gitteret, så ternene kommer til at passe med ternene på din skæremåtte. Justér hjørnerne på din tablet eller computer, mens du kigger på skæremåtten. Justér hjørnernes placering indtil gitteret i projektorbilledet passer med skæremåttens gitter. ",
+            "size": "Du behøver ikke at bruge hele din skæremåtte, når du kalibrerer. Brug i stedet så stort et område som muligt, hvor du kan få kalibreringsgitteret til at passe i. Vær sikker på at målene (bredde og højde) på måtten passer med de indtastede mål. ",
+            "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap"
+        },
+        "project": {
+            "title": "Vis et mønster",
+            "open": "Klik eller tap <pdficon></pdficon> for at åbne PDF-dokumentet.",
+            "move": "Flyt PDF’en ved at klikke og trække det rundt på skærmen. ",
+            "cut": "Skær ud efter mønsteret",
+            "tools": "Under Visning er der flere værktøjer tilgængelige",
+            "showGrid": {
+                "title": "Vis/skjul gitter",
+                "description": "Når mønsteret vises, vil man kunne vælge at se et svagt gitter for kunne kontrollere, at kalibreringen er korrekt. "
+            },
+            "invert": {
+                "title": "Omvendte farver",
+                "description": "Når mønsteret vises, er det som regel nemmere at se hvide linjer på sort. "
+            },
+            "flip": {
+                "title": "Vend lodret/vandret",
+                "description": "Nyttigt til at spejle halve mønsterdele"
+            },
+            "rotate": {
+                "title": "Rotér",
+                "description": "Ændre mønsterets retning med 90 grader"
+            },
+            "recenter": {
+                "title": "Til midten af PDF'en",
+                "description": ""
+            },
+            "fullscreen": {
+                "title": "Fuld skærm",
+                "description": "Det er som regel nemmere at bruge softwaren i fuld skærm. "
+            }
+        },
+        "faq": {
+            "title": "FAQ / OSS",
+            "wrongSizePdf": {
+                "question": "Vises PDF’en for stort eller for småt? ",
+                "answer": "Pattern Projector kalibreringsværktæj har ingen zoom, fordi skaleringen bestemmes af størrelsesinfomationen i PDF’en. Vær sikker på, at skaleringen er rigtigt. En god måde at tjekke skaleringen er korrekt eller ej er at vise en tomme eller en centimeter på projektoren og se, om den matcher din skæremåtte. "
+            },
+            "saveAsApp": {
+                "question": "Vil du gemme Pattern Projector som en app? ",
+                "answer": "Pattern Projector er en Progressive Web App (PWA) og kan gemmes som en app. På en computer kan du installere den med  <googleChromeLink>Chrome</googleChromeLink> eller <microsoftEdgeLink>Edge</microsoftEdgeLink>. På en tablet skal du åbne Del-menu og trykke på Tilføj til hjemmeskærm”."
+            },
+            "annotationSupport": {
+                "question": "Er der mulighed for at lave anmærkninger? ",
+                "answer": "Ikke endnu, men det kommer i en senere udgave. "
+            },
+            "chromecastSupport": {
+                "question": "Er der mulighed for at bruge Chromecast? ",
+                "answer": "Det er muligt at bruge Chromecast til at vise denne webside, men der er lag (forsinkelse), som kan være frustrerende. Der er planer om bedre understøttelse af Chromecast i en senere udgave. "
+            },
+            "mobileSupport": {
+                "question": "Er der mulighed for at bruge en mobiltelefon eller tablet?",
+                "answer": "Det er muligt at bruge hjemmesiden på en smartphone, men den begrænsede skærmstørrelse gør det svært at bruge. Der er planer om bedre funktionalitet på mobile enheder i en senere udgave."
+            }
+        },
+        "resources": {
+          "title": "Additional Resources",
+          "links": {
+            "projectorsForSewing": {
+              "title": "Projektorsyning - sy med projektor",
+              "link": "https://www.facebook.com/groups/syprojektor"
+            }
+          }
+        },
+        "contribute": {
+            "title": "Bidrag til projektet",
+            "donation": "Hvis du har lyst til at støtte udviklingen af dette værktøj, så overvej at købe mig <donateLink>en kop kaffe</donateLink>. ",
+            "develop": "Hjælp med at implementere funktioner og fixe problemer på  <githubLink>GitHub</githubLink>.",
+            "translate": "Oversæt projektet til flere sprog",
+            "feedback": "Feedback og forslag til funktioner er velkomne! "
+        },
+        "contact": "Kontakt"
     },
-    "requirements": {
-      "title": "Hvad du skal bruge",
-      "projector": "Projektor, mindst 720p anbefalet",
-      "mat": "Skæremåtte, gerne med gitter og tern for hver tomme / centimeter",
-      "mount": "Tripod eller beslag/holder på væg, hylde eller bord til projektor",
-      "computer": "Computer eller tablet til at forbinde til projektoren",
-      "pattern": "Et PDF-mønster, overvej at bruge <pdfstitcher>PDFStitcher</pdfstitcher> hvis dit mønster har lag eller mange sider"
-    },
-    "setup": {
-      "title": "Montering",
-      "place": "Placér projektoren direkte over skæremåtten, så den lyser ned på måtten. Prøv at placere projektoren direkte over skæremåtten, så den peger lige ned. ",
-      "connect": "Forbind din computer eller tablet til projektoren. Spejl eller udvid skærm.",
-      "focus": "Justér fokus på projektoren indtil teksten står skarpt i midten af projektorbilledet. Hvis du ikke kan få et tydeligt billede, skal du kontrollere, om afstanden mellem projektoren og skæremåtten er inden for producentens anbefalinger. ",
-      "keystone": "Hvis din projektor har mulighed for at justere keystone, så justér den indtil projektorbilledet er tæt på regtangulær og fokus ude i kanten forbedres. "
-    },
-    "calibration": {
-      "title": "Kalibrering",
-      "start": "Start kalibrering",
-      "input": "Indtast bredde og højde på din skæremåtte.",
-      "fullscreen": "Gå til fuld skærm ved at klikke eller tappe ",
-      "drag": "Træk i hjørnerne af gitteret, så ternene kommer til at passe med ternene på din skæremåtte. Justér hjørnerne på din tablet eller computer, mens du kigger på skæremåtten. Justér hjørnernes placering indtil gitteret i projektorbilledet passer med skæremåttens gitter. ",
-      "size": "Du behøver ikke at bruge hele din skæremåtte, når du kalibrerer. Brug i stedet så stort et område som muligt, hvor du kan få kalibreringsgitteret til at passe i. Vær sikker på at målene (bredde og højde) på måtten passer med de indtastede mål. ",
-      "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap"
-    },
-    "project": {
-      "title": "Vis et mønster",
-      "open": "Klik eller tap <pdficon></pdficon> for at åbne PDF-dokumentet.",
-      "move": "Flyt PDF’en ved at klikke og trække det rundt på skærmen. ",
-      "cut": "Skær ud efter mønsteret",
-      "tools": "Under Visning er der flere værktøjer tilgængelige",
-      "showGrid": {
-        "title": "Vis/skjul gitter",
-        "description": "Når mønsteret vises, vil man kunne vælge at se et svagt gitter for kunne kontrollere, at kalibreringen er korrekt. "
-      },
-      "invert": {
-        "title": "Omvendte farver",
-        "description": "Når mønsteret vises, er det som regel nemmere at se hvide linjer på sort. "
-      },
-      "flip": {
-        "title": "Vend lodret/vandret",
-        "description": "Nyttigt til at spejle halve mønsterdele"
-      },
-      "rotate": {
-        "title": "Rotér",
-        "description": "Ændre mønsterets retning med 90 grader"
-      },
-      "recenter": {
-        "title": "Til midten af PDF'en",
-        "description": ""
-      },
-      "fullscreen": {
-        "title": "Fuld skærm",
-        "description": "Det er som regel nemmere at bruge softwaren i fuld skærm. "
-      }
-    },
-    "faq": {
-      "title": "FAQ / OSS",
-      "wrongSizePdf": {
-        "question": "Vises PDF’en for stort eller for småt? ",
-        "answer": "Pattern Projector kalibreringsværktæj har ingen zoom, fordi skaleringen bestemmes af størrelsesinfomationen i PDF’en. Vær sikker på, at skaleringen er rigtigt. En god måde at tjekke skaleringen er korrekt eller ej er at vise en tomme eller en centimeter på projektoren og se, om den matcher din skæremåtte. "
-      },
-      "saveAsApp": {
-        "question": "Vil du gemme Pattern Projector som en app? ",
-        "answer": "Pattern Projector er en Progressive Web App (PWA) og kan gemmes som en app. På en computer kan du installere den med  <googleChromeLink>Chrome</googleChromeLink> eller <microsoftEdgeLink>Edge</microsoftEdgeLink>. På en tablet skal du åbne Del-menu og trykke på Tilføj til hjemmeskærm”."
-      },
-      "annotationSupport": {
-        "question": "Er der mulighed for at lave anmærkninger? ",
-        "answer": "Ikke endnu, men det kommer i en senere udgave. "
-      },
-      "chromecastSupport": {
-        "question": "Er der mulighed for at bruge Chromecast? ",
-        "answer": "Det er muligt at bruge Chromecast til at vise denne webside, men der er lag (forsinkelse), som kan være frustrerende. Der er planer om bedre understøttelse af Chromecast i en senere udgave. "
-      },
-      "mobileSupport": {
-        "question": "Er der mulighed for at bruge en mobiltelefon eller tablet?",
-        "answer": "Det er muligt at bruge hjemmesiden på en smartphone, men den begrænsede skærmstørrelse gør det svært at bruge. Der er planer om bedre funktionalitet på mobile enheder i en senere udgave."
-      }
-    },
-    "contribute": {
-      "title": "Bidrag til projektet",
-      "donation": "Hvis du har lyst til at støtte udviklingen af dette værktøj, så overvej at købe mig <donateLink>en kop kaffe</donateLink>. ",
-      "develop": "Hjælp med at implementere funktioner og fixe problemer på  <githubLink>GitHub</githubLink>.",
-      "translate": "Oversæt projektet til flere sprog",
-      "feedback": "Feedback og forslag til funktioner er velkomne! "
-    },
-    "contact": "Kontakt"
-  },
-  "Header": {
-    "projecting": "Visning",
-    "calibrating": "Kaliberering",
-    "openPDF": "Åbn PDF",
-    "height": "H:",
-    "width": "B:",
-    "project": "Vis",
-    "calibrate": "Kalibrér",
-    "delete": "Reset calibration",
-    "gridOn": "Vis gitter",
-    "gridOff": "Skjul gitter",
-    "invertColor": "Vis farver omvendt",
-    "invertColorOff": "Vis farver normalt",
-    "flipVertical": "Vend lodret",
-    "flipVerticalOff": "Vend lodret til normal",
-    "flipHorizontal": "Vend vandret",
-    "flipHorizontalOff": "Vend vandret til normal",
-    "fourCornersOn": "Corner Highlights On",
-    "fourCornersOff": "Corner Highlights Off",
-    "rotate90": "Rotér 90 grader med uret",
-    "arrowBack": "Gå en side tilbage",
-    "arrowForward": "Gå en side frem",
-    "info": "Infoside",
-    "layersOn": "Vis lag-menu",
-    "layersOff": "Skjul lag-menu",
-    "recenter": "Til midten af PDF'en",
-    "fullscreen": "Fuld skærm",
-    "fullscreenExit": "Fuld skærm"
-  }
+    "Header": {
+        "projecting": "Visning",
+        "calibrating": "Kaliberering",
+        "openPDF": "Åbn PDF",
+        "height": "H:",
+        "width": "B:",
+        "project": "Vis",
+        "calibrate": "Kalibrér",
+        "delete": "Reset calibration",
+        "gridOn": "Vis gitter",
+        "gridOff": "Skjul gitter",
+        "invertColor": "Vis farver omvendt",
+        "invertColorOff": "Vis farver normalt",
+        "flipVertical": "Vend lodret",
+        "flipVerticalOff": "Vend lodret til normal",
+        "flipHorizontal": "Vend vandret",
+        "flipHorizontalOff": "Vend vandret til normal",
+        "fourCornersOn": "Corner Highlights On",
+        "fourCornersOff": "Corner Highlights Off",
+        "rotate90": "Rotér 90 grader med uret",
+        "arrowBack": "Gå en side tilbage",
+        "arrowForward": "Gå en side frem",
+        "info": "Infoside",
+        "layersOn": "Vis lag-menu",
+        "layersOff": "Skjul lag-menu",
+        "recenter": "Til midten af PDF'en",
+        "fullscreen": "Fuld skærm",
+        "fullscreenExit": "Fuld skærm",
+        "lineWeight": "Line weight"
+    }
 }

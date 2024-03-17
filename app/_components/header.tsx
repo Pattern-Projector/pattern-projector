@@ -1,5 +1,4 @@
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import {
   ChangeEvent,
   Dispatch,
@@ -12,8 +11,6 @@ import { FullScreenHandle } from "react-full-screen";
 import FileInput from "@/_components/file-input";
 import InlineInput from "@/_components/inline-input";
 import InlineSelect from "@/_components/inline-select";
-import ArrowBackIcon from "@/_icons/arrow-back-icon";
-import ArrowForwardIcon from "@/_icons/arrow-forward-icon";
 import DeleteIcon from "@/_icons/delete-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
@@ -28,8 +25,6 @@ import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
-import LayersIcon from "@/_icons/layers-icon";
-import LayersOffIcon from "@/_icons/layers-off-icon";
 import RecenterIcon from "@/_icons/recenter-icon";
 import Matrix from "ml-matrix";
 import { translate } from "@/_lib/geometry";
@@ -42,6 +37,8 @@ import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
+import LineWeightIcon from "@/_icons/line-weight-icon";
+import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
 export default function Header({
   isCalibrating,
@@ -57,8 +54,6 @@ export default function Header({
   setUnitOfMeasure,
   transformSettings,
   setTransformSettings,
-  pageNumber,
-  setPageNumber,
   pageCount,
   gridOn,
   setGridOn,
@@ -68,8 +63,12 @@ export default function Header({
   localTransform,
   calibrationTransform,
   setLocalTransform,
-  pageWidth,
-  pageHeight,
+  layoutWidth,
+  layoutHeight,
+  setShowStitchMenu,
+  showStitchMenu,
+  lineThickness,
+  setLineThickness,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -84,8 +83,6 @@ export default function Header({
   setUnitOfMeasure: (newUnit: string) => void;
   transformSettings: TransformSettings;
   setTransformSettings: (newTransformSettings: TransformSettings) => void;
-  pageNumber: number;
-  setPageNumber: Dispatch<SetStateAction<number>>;
   pageCount: number;
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
@@ -95,41 +92,27 @@ export default function Header({
   localTransform: Matrix;
   calibrationTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
-  pageWidth: number;
-  pageHeight: number;
+  layoutWidth: number;
+  layoutHeight: number;
+  lineThickness: number;
+  setLineThickness: Dispatch<SetStateAction<number>>;
+  setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
+  showStitchMenu: boolean;
 }) {
   const t = useTranslations("Header");
 
   const [invertOpen, setInvertOpen] = useState<boolean>(false);
   const [showNav, setShowNav] = useState<boolean>(true);
 
-  function changePage(offset: number) {
-    setPageNumber((prevPageNumber: number) => prevPageNumber + offset);
-  }
-
-  function handlePreviousPage() {
-    changePage(-1);
-  }
-
-  function handleNextPage() {
-    changePage(1);
-  }
-
   function handleRecenter() {
     if (localTransform !== null) {
       const pdfPixels = 72;
-      const tx = (+width * pdfPixels) / 2 - pageWidth / 2;
-      const ty = (+height * pdfPixels) / 2 - pageHeight / 2;
+      const tx = (+width * pdfPixels) / 2 - layoutWidth / 2;
+      const ty = (+height * pdfPixels) / 2 - layoutHeight / 2;
       const m = translate({ x: tx, y: ty });
       setLocalTransform(calibrationTransform.mmul(m));
     }
   }
-
-  useEffect(() => {
-    if (isCalibrating) {
-      setShowLayerMenu(false);
-    }
-  }, [isCalibrating, setShowLayerMenu]);
 
   useEffect(() => {
     if (fullScreenHandle.active) {
@@ -150,6 +133,7 @@ export default function Header({
         >
           <div className="flex items-center gap-2">
             <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
+
             <Tooltip
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
@@ -169,6 +153,12 @@ export default function Header({
                 )}
               </IconButton>
             </Tooltip>
+            <IconButton
+              className={`!p-1 border-2 border-black`}
+              onClick={() => setShowNav(false)}
+            >
+              <ExpandLessIcon ariaLabel={t("menuHide")} />
+            </IconButton>
           </div>
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
             <Tooltip
@@ -196,6 +186,8 @@ export default function Header({
 
             <div className="flex gap-1">
               <InlineInput
+                className="relative flex flex-col"
+                inputClassName="pl-6 pr-7"
                 handleChange={handleHeightChange}
                 id="height"
                 label={t("height")}
@@ -204,6 +196,8 @@ export default function Header({
                 value={height}
               />
               <InlineInput
+                className="relative flex flex-col"
+                inputClassName="pl-6 pr-7"
                 handleChange={handleWidthChange}
                 id="height"
                 label={t("width")}
@@ -233,18 +227,31 @@ export default function Header({
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
             <Tooltip
-              description={showLayerMenu ? t("layersOff") : t("layersOn")}
+              description={
+                showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+              }
+              className={`${visible(pageCount > 1)}`}
             >
-              <IconButton
-                disabled={!layers || layers.size === 0}
-                onClick={() => setShowLayerMenu(!showLayerMenu)}
-              >
-                {showLayerMenu ? (
-                  <LayersIcon ariaLabel={t("layersOn")} />
-                ) : (
-                  <LayersOffIcon ariaLabel={t("layersOff")} />
-                )}
+              <IconButton onClick={() => setShowStitchMenu(!showStitchMenu)}>
+                <FlexWrapIcon
+                  ariaLabel={
+                    showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+                  }
+                />
               </IconButton>
+            </Tooltip>
+            <Tooltip description={t("lineWeight")}>
+              <div className="flex">
+                <InlineInput
+                  inputClassName="!px-2"
+                  label={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                  className="align-right"
+                  min="0"
+                  type="number"
+                  handleChange={(e) => setLineThickness(e.target.valueAsNumber)}
+                  value={String(lineThickness)}
+                />
+              </div>
             </Tooltip>
             <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
               <IconButton onClick={() => setGridOn(!gridOn)}>
@@ -347,21 +354,6 @@ export default function Header({
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
-            <div className={`flex items-center ${visible(pageCount > 1)}`}>
-              <IconButton
-                disabled={pageNumber <= 1}
-                onClick={handlePreviousPage}
-              >
-                <ArrowBackIcon ariaLabel={t("arrowBack")} />
-              </IconButton>
-              <span className="mx-1">{pageNumber}</span>
-              <IconButton
-                disabled={pageNumber >= pageCount}
-                onClick={handleNextPage}
-              >
-                <ArrowForwardIcon ariaLabel={t("arrowForward")} />
-              </IconButton>
-            </div>
           </div>
           <div className="flex items-center gap-2">
             <label
@@ -391,19 +383,15 @@ export default function Header({
             </Tooltip>
           </div>
         </nav>
-        {fullScreenHandle.active ? (
-          <IconButton
-            className={`mt-1 px-1 py-1 border-2 border-slate-400 absolute ${showNav ? "top-14" : "top-20"} z-40 left-0 right-0 m-auto w-9 transition-all duration-700 focus:ring-0`}
-            onClick={() => setShowNav(!showNav)}
-          >
-            {showNav ? (
-              <ExpandLessIcon ariaLabel={t("menuHide")} />
-            ) : (
-              <ExpandMoreIcon ariaLabel={t("menuShow")} />
-            )}
-          </IconButton>
-        ) : null}
       </header>
+      {!showNav ? (
+        <IconButton
+          className={`!p-1 border-2 border-black absolute top-2 z-40 left-1/4 focus:ring-0`}
+          onClick={() => setShowNav(true)}
+        >
+          <ExpandMoreIcon ariaLabel={t("menuShow")} />
+        </IconButton>
+      ) : null}
     </>
   );
 }

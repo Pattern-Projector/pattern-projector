@@ -2,6 +2,7 @@
   "HomePage": {
     "beta": "beta",
     "pdfstitcherHref": "https://www.pdfstitcher.org/",
+    "youTubeSrc": "https://www.youtube.com/embed/_PXD0wJowqg?si=b9n1hRLqAEDfK5_v",
     "github": "See source code",
     "calibrate": "Start Calibrating",
     "welcome": {
@@ -86,6 +87,15 @@
         "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use. Better mobile support is planned in an upcoming release."
       }
     },
+    "resources": {
+      "title": "Additional Resources",
+      "links": {
+        "projectorsForSewing": {
+          "title": "Projectors for Sewing Facebook Group",
+          "link": "https://www.facebook.com/groups/481078582801085"
+        }
+      }
+    },
     "contribute": {
       "title": "Contribute to the project",
       "donation": "If you would like to support the development of this tool, please consider <donateLink>buying me a coffee</donateLink>",
@@ -124,6 +134,15 @@
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen",
     "menuShow": "Show menu",
-    "menuHide": "Hide menu"
+    "menuHide": "Hide menu",
+    "lineWeight": "Line weight",
+    "stitchMenuShow": "Show stitch menu",
+    "stitchMenuHide": "Hide stitch menu"
+  },
+  "StitchMenu": {
+    "columnCount": "Columns",
+    "pageRange": "Pages",
+    "horizontal": "Horizontal",
+    "vertical": "Vertical"
   }
 }

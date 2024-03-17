@@ -47,6 +47,8 @@ function draw(
   isPrecisionMovement: boolean,
   displayAllCorners?: boolean,
 ): void {
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.translate(offset.x, offset.y);
 
   ctx.fillStyle = "#000";
@@ -152,6 +154,39 @@ function drawGrid(
     );
     drawLine(ctx, line[0], line[1], lineWidth);
   }
+  drawDimensionLabels(ctx, width, height, perspective, ptDensity);
+}
+
+function drawDimensionLabels(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  perspective: Matrix,
+  ptDensity: number,
+) {
+  const fontSize = 72;
+  const inset = 20;
+  ctx.globalCompositeOperation = "difference";
+  ctx.font = `${fontSize}px monospace`;
+  ctx.fillStyle = "white";
+  const widthText = `${width}`;
+  const heightText = `${height}`;
+  const line = transformPoints(
+    [
+      {
+        x: width * ptDensity * 0.5,
+        y: height * ptDensity,
+      },
+      {
+        x: 0,
+        y: height * 0.5 * ptDensity,
+      },
+    ],
+    perspective,
+  );
+  const widthLabelWidth = ctx.measureText(widthText).width;
+  ctx.fillText(widthText, line[0].x - widthLabelWidth * 0.5, line[0].y - inset);
+  ctx.fillText(heightText, line[1].x + inset, line[1].y + fontSize * 0.5);
 }
 
 function drawLine(
