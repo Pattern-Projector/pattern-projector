@@ -8,8 +8,9 @@ import React, {
   useState,
 } from "react";
 
+import { createCheckerboardPattern } from "@/_lib/drawing";
 import { getPerspectiveTransform } from "@/_lib/geometry";
-import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
+import { interp, minIndex, sqrdist, transformPoints, checkIsConcave } from "@/_lib/geometry";
 import {
   applyOffset,
   mouseToCanvasPoint,
@@ -24,49 +25,6 @@ const maxPoints = 4; // One point per vertex in rectangle
 const PRECISION_MOVEMENT_THRESHOLD = 15;
 const PRECISION_MOVEMENT_RATIO = 5;
 const PRECISION_MOVEMENT_DELAY = 500;
-
-function createCheckerboardPattern(
-  ctx: CanvasRenderingContext2D,
-  size: number = 3,
-  color1: string = "black",
-  color2: string = "#CCC"
-  ): CanvasPattern {
-  /* We first create a new canvas on which to draw the pattern */
-  const patternCanvas = document.createElement('canvas');
-  try {
-    const patternCtx = patternCanvas.getContext('2d');
-
-    if (!patternCtx) {
-      throw new Error('Failed to get 2D context from pattern canvas');
-    }
-  
-    /* Integer which defines the size of a checkboard square (in pixels) */
-    size = Math.round(size)
-
-    patternCanvas.width = size*2;
-    patternCanvas.height = size*2;
-
-    /* Draw the checkerboard pattern */
-    patternCtx.fillStyle = color1;
-    patternCtx.fillRect(0, 0, size, size);
-    patternCtx.fillRect(size, size, size, size);
-    patternCtx.fillStyle = color2;
-    patternCtx.fillRect(size, 0, size, size);
-    patternCtx.fillRect(0, size, size, size);
-
-    /* Create the pattern from the canvas */
-    const pattern = ctx.createPattern(patternCanvas, 'repeat');
-
-    if (!pattern) {
-      throw new Error('Failed to create pattern from canvas');
-    }
-
-    return pattern;
-  } finally {
-    /* Clean up the dynamically created canvas element */
-    patternCanvas.remove();
-  }
-}
 
 function getStrokeStyle(pointToModify: number) {
   return [
@@ -282,43 +240,6 @@ function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
   ctx.moveTo(last.x, last.y);
   for (let p of points) {
     ctx.lineTo(p.x, p.y);
-  }
-}
-
-/* Returns true if the list of points define a concave polygon, false otherwise */
-function checkIsConcave(points: Point[]): boolean {
-  const n = points.length;
-  if (n < 4) {
-    return false; // A polygon with less than 4 points is always convex
-  }
-
-  let prevOrientation = 0;
-  for (let i = 0; i < n; i++) {
-    const p1 = points[i];
-    const p2 = points[(i + 1) % n];
-    const p3 = points[(i + 2) % n];
-
-    const orientation = getOrientation(p1, p2, p3);
-    if (orientation !== 0) {
-      if (prevOrientation === 0) {
-        prevOrientation = orientation;
-      } else if (orientation !== prevOrientation) {
-        return true; // The polygon is concave
-      }
-    }
-  }
-
-  return false; // The polygon is convex
-}
-
-function getOrientation(p1: Point, p2: Point, p3: Point): number {
-  const crossProduct = (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
-  if (crossProduct < 0) {
-    return -1; // Clockwise orientation
-  } else if (crossProduct > 0) {
-    return 1; // Counterclockwise orientation
-  } else {
-    return 0; // Collinear points
   }
 }
 
