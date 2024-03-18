@@ -500,6 +500,11 @@ export default function CalibrationCanvas({
   }
 
   function handleTouchUp() {
+    /* Nothing to do. This short circuit is required to prevent setting
+     * the localStorage of the points to invalid values */
+    if (panStart === null && dragStartPoint === null)
+      return;
+
     localStorage.setItem("points", JSON.stringify(localPoints));
     setPoints(localPoints);
     setPointToModify(null);
