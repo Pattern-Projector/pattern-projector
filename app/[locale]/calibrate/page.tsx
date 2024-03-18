@@ -29,14 +29,6 @@ import { EdgeInsets } from "@/_lib/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
-const defaultPoints = [
-  // Points that fit on an iPhone SE
-  { x: 100, y: 300 },
-  { x: 300, y: 300 },
-  { x: 300, y: 600 },
-  { x: 100, y: 600 },
-];
-
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
   const defaultWidthDimensionValue = "24";
@@ -45,7 +37,7 @@ export default function Page() {
 
   const handle = useFullScreenHandle();
 
-  const [points, setPoints] = useState<Point[]>(defaultPoints);
+  const [points, setPoints] = useState<Point[]>([]);
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
     getDefaultTransforms(),
   );
