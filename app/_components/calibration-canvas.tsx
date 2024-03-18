@@ -25,6 +25,43 @@ const PRECISION_MOVEMENT_THRESHOLD = 15;
 const PRECISION_MOVEMENT_RATIO = 5;
 const PRECISION_MOVEMENT_DELAY = 500;
 
+function createCheckerboardPattern(
+  ctx: CanvasRenderingContext2D,
+  size: int = 3,
+  color1: string = "black",
+  color2: string = "#CCC"
+  ): CanvasPattern {
+  /* We first create a new canvas on which to draw the pattern */
+  const patternCanvas = document.createElement('canvas');
+  const patternCtx = patternCanvas.getContext('2d');
+
+  if (!patternCtx) {
+    throw new Error('Failed to get 2D context from pattern canvas');
+  }
+
+  /* Integer which defines the size of the checkboard 'pixel' */
+
+  patternCanvas.width = size*2;
+  patternCanvas.height = size*2;
+
+  /* Draw the checkerboard pattern */
+  patternCtx.fillStyle = color1;
+  patternCtx.fillRect(0, 0, size, size);
+  patternCtx.fillRect(size, size, size, size);
+  patternCtx.fillStyle = color2;
+  patternCtx.fillRect(size, 0, size, size);
+  patternCtx.fillRect(0, size, size, size);
+
+  /* Create the pattern from the canvas */
+  const pattern = ctx.createPattern(patternCanvas, 'repeat');
+
+  if (!pattern) {
+    throw new Error('Failed to create pattern from canvas');
+  }
+
+  return pattern;
+}
+
 function getStrokeStyle(pointToModify: number) {
   return [
     CornerColorHex.TOPLEFT,
@@ -45,8 +82,11 @@ function draw(
   pointToModify: number | null,
   ptDensity: number,
   isPrecisionMovement: boolean,
+  errorFillPattern: CanvasPattern,
   displayAllCorners?: boolean,
 ): void {
+  let isConcave = checkIsConcave(points);
+
   if (isCalibrating) {
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -54,9 +94,13 @@ function draw(
 
   ctx.translate(offset.x, offset.y);
 
-  ctx.fillStyle = "#000";
-
+  if (isConcave) {
+    ctx.fillStyle = errorFillPattern;
+  } else {
+    ctx.fillStyle = "#000";
+  }
   drawPolygon(ctx, points);
+
   if (isCalibrating) {
     ctx.fill();
   } else {
@@ -64,10 +108,15 @@ function draw(
   }
 
   ctx.strokeStyle = "#000";
+  ctx.globalCompositeOperation = "difference";
   ctx.beginPath();
+
   if (isCalibrating) {
     ctx.strokeStyle = "#fff";
-    drawGrid(ctx, width, height, perspective, 0, ptDensity, isCalibrating);
+    
+    /* Only draw the grid if the polygon is convex */
+    if (!isConcave) 
+      drawGrid(ctx, width, height, perspective, 0, ptDensity, isCalibrating);
 
     if (displayAllCorners) {
       points.forEach((point, index) => {
@@ -100,7 +149,8 @@ function draw(
       ctx.lineWidth = 4;
       ctx.stroke();
     }
-  } else {
+  } else if (!isConcave) {
+    /* Only draw the grid if the polygon is convex */
     ctx.setLineDash([1]);
     drawGrid(ctx, width, height, perspective, 8, ptDensity, isCalibrating);
   }
@@ -126,6 +176,7 @@ function drawGrid(
   ptDensity: number,
   isCalibrating: boolean,
 ): void {
+  ctx.globalCompositeOperation = "source-over";
   const majorLine = 5;
 
   for (let i = 0; i <= width; i++) {
@@ -228,6 +279,43 @@ function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
   }
 }
 
+/* Returns true if the list of points define a concave polygon, false otherwise */
+function checkIsConcave(points: Point[]): boolean {
+  const n = points.length;
+  if (n < 4) {
+    return false; // A polygon with less than 4 points is always convex
+  }
+
+  let prevOrientation = 0;
+  for (let i = 0; i < n; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % n];
+    const p3 = points[(i + 2) % n];
+
+    const orientation = getOrientation(p1, p2, p3);
+    if (orientation !== 0) {
+      if (prevOrientation === 0) {
+        prevOrientation = orientation;
+      } else if (orientation !== prevOrientation) {
+        return true; // The polygon is concave
+      }
+    }
+  }
+
+  return false; // The polygon is convex
+}
+
+function getOrientation(p1: Point, p2: Point, p3: Point): number {
+  const crossProduct = (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+  if (crossProduct < 0) {
+    return -1; // Clockwise orientation
+  } else if (crossProduct > 0) {
+    return 1; // Counterclockwise orientation
+  } else {
+    return 0; // Collinear points
+  }
+}
+
 const CORNER_MARGIN = 150;
 
 /**
@@ -260,6 +348,7 @@ export default function CalibrationCanvas({
   setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const patternRef = useRef<CanvasPattern | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
   const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
   const [cursorMode, setCursorMode] = useState<string | null>(null);
@@ -280,8 +369,21 @@ export default function CalibrationCanvas({
 	  setPrecisionActivationPoint(prevPoint => localPoints[pointToModify]);
   }, [isPrecisionMovement, pointToModify]);
 
+  /* Used to create the fill pattern */
   useEffect(() => {
-    if (canvasRef !== null && canvasRef.current !== null && localPoints && localPoints.length === maxPoints) {
+    if (!canvasRef === null || canvasRef.current === null)
+      return;
+    const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        patternRef.current = createCheckerboardPattern(ctx);
+      }
+  }, []);
+
+  useEffect(() => {
+    if (canvasRef !== null && canvasRef.current !== null
+        && patternRef !== null && patternRef.current !== null
+        && localPoints && localPoints.length === maxPoints) {
       let perspective_mtx = getPerspectiveTransform(getDstVertices(), localPoints);
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
@@ -300,6 +402,7 @@ export default function CalibrationCanvas({
           pointToModify,
           ptDensity,
           isPrecisionMovement,
+          patternRef.current,
           transformSettings.isFourCorners,
         );
       }
