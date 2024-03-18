@@ -546,6 +546,11 @@ export default function CalibrationCanvas({
   }
 
   function handleMouseUp() {
+    /* Nothing to do. This short circuit is required to prevent setting
+     * the localStorage of the points to invalid values */
+    if (panStart === null && dragStartPoint === null)
+      return;
+
     localStorage.setItem("points", JSON.stringify(localPoints));
     if (panStart) {
       setPoints(localPoints.map((p) => applyOffset(p, dragOffset)));
