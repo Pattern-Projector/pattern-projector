@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-const PIXEL_LIST = [1, 10, 25, 50];
+const PIXEL_LIST = [2, 20, 50, 100];
 export default function useProgArrowKeyHandler(
   handler: (key: string, px: number) => void,
   active: boolean,
