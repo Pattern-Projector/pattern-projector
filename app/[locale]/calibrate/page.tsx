@@ -352,7 +352,6 @@ export default function Page() {
           setPoints={setPoints}
           pointToModify={pointToModify}
           setPointToModify={setPointToModify}
-          perspective={calibrationTransform}
           width={+width}
           height={+height}
           isCalibrating={isCalibrating}

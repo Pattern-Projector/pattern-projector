@@ -240,7 +240,6 @@ export default function CalibrationCanvas({
   setPoints,
   pointToModify,
   setPointToModify,
-  perspective,
   width,
   height,
   isCalibrating,
@@ -253,7 +252,6 @@ export default function CalibrationCanvas({
   setPoints: Dispatch<SetStateAction<Point[]>>;
   pointToModify: number | null;
   setPointToModify: Dispatch<SetStateAction<number | null>>;
-  perspective: Matrix;
   width: number;
   height: number;
   isCalibrating: boolean;
@@ -272,20 +270,39 @@ export default function CalibrationCanvas({
   const [precisionActivationPoint, setPrecisionActivationPoint] = useState<Point | null>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const [localPoints, setLocalPoints] = useState<Point[]>(points);
-  const [localPerspective, setLocalPerspective] = useState<Matrix>(perspective);
 
   useEffect(() => {
     setLocalPoints(points)
   }, [points, setLocalPoints])
 
   useEffect(() => {
-    setLocalPerspective(perspective)
-  }, [perspective])
+    if (isPrecisionMovement && pointToModify !== null && localPoints.length > pointToModify)
+	  setPrecisionActivationPoint(prevPoint => localPoints[pointToModify]);
+  }, [isPrecisionMovement, pointToModify]);
 
   useEffect(() => {
-    if (localPoints && localPoints.length === maxPoints) {
-      let n = getPerspectiveTransform(getDstVertices(), localPoints);
-      setLocalPerspective(n);
+    if (canvasRef !== null && canvasRef.current !== null && localPoints && localPoints.length === maxPoints) {
+      let perspective_mtx = getPerspectiveTransform(getDstVertices(), localPoints);
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+
+      if (ctx !== null) {
+        ctx.canvas.width = window.innerWidth;
+        ctx.canvas.height = window.innerHeight;
+        draw(
+          ctx,
+          dragOffset,
+          localPoints,
+          width,
+          height,
+          perspective_mtx,
+          isCalibrating,
+          pointToModify,
+          ptDensity,
+          isPrecisionMovement,
+          transformSettings.isFourCorners,
+        );
+      }
     }
 
     function getDstVertices(): Point[] {
@@ -303,39 +320,9 @@ export default function CalibrationCanvas({
 
       return dstVertices;
     }
-  }, [localPoints, width, height, ptDensity, setLocalPerspective]);
-
-  useEffect(() => {
-    if (isPrecisionMovement && pointToModify !== null && localPoints.length > pointToModify)
-	  setPrecisionActivationPoint(prevPoint => localPoints[pointToModify]);
-  }, [isPrecisionMovement, pointToModify]);
-
-  useEffect(() => {
-    if (canvasRef !== null && canvasRef.current !== null) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      if (ctx !== null) {
-        ctx.canvas.width = window.innerWidth;
-        ctx.canvas.height = window.innerHeight;
-        draw(
-          ctx,
-          dragOffset,
-          localPoints,
-          width,
-          height,
-          localPerspective,
-          isCalibrating,
-          pointToModify,
-          ptDensity,
-          isPrecisionMovement,
-          transformSettings.isFourCorners,
-        );
-      }
-    }
   }, [
     dragOffset,
     localPoints,
-    localPerspective,
     width,
     height,
     isCalibrating,
