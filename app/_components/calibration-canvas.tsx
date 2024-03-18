@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 
+import { getPerspectiveTransform } from "@/_lib/geometry";
 import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
 import {
   applyOffset,
@@ -20,6 +21,9 @@ import { CornerColorHex } from "@/_components/theme/colors";
 import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
 
 const maxPoints = 4; // One point per vertex in rectangle
+const PRECISION_MOVEMENT_THRESHOLD = 15;
+const PRECISION_MOVEMENT_RATIO = 5;
+const PRECISION_MOVEMENT_DELAY = 500;
 
 function getStrokeStyle(pointToModify: number) {
   return [
@@ -40,8 +44,14 @@ function draw(
   isCalibrating: boolean,
   pointToModify: number | null,
   ptDensity: number,
+  isPrecisionMovement: boolean,
   displayAllCorners?: boolean,
 ): void {
+  if (isCalibrating) {
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
   ctx.translate(offset.x, offset.y);
 
   ctx.fillStyle = "#000";
@@ -57,7 +67,7 @@ function draw(
   ctx.beginPath();
   if (isCalibrating) {
     ctx.strokeStyle = "#fff";
-    drawGrid(ctx, width, height, perspective, 0, ptDensity);
+    drawGrid(ctx, width, height, perspective, 0, ptDensity, isCalibrating);
 
     if (displayAllCorners) {
       points.forEach((point, index) => {
@@ -65,10 +75,16 @@ function draw(
         ctx.strokeStyle = getStrokeStyle(index);
         if (index !== pointToModify) {
           ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
+          ctx.lineWidth = 4;
         } else {
-          ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
+          if (isPrecisionMovement) {
+            drawCrosshair(ctx, point, 20);
+            ctx.lineWidth = 2;
+          } else {
+            ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
+            ctx.lineWidth = 4;
+          }
         }
-        ctx.lineWidth = 4;
         ctx.stroke();
       });
     } else if (pointToModify !== null) {
@@ -86,9 +102,10 @@ function draw(
     }
   } else {
     ctx.setLineDash([1]);
-    drawGrid(ctx, width, height, perspective, 8, ptDensity);
+    drawGrid(ctx, width, height, perspective, 8, ptDensity, isCalibrating);
   }
 }
+
 function drawBorder(ctx: CanvasRenderingContext2D) {
   ctx.strokeStyle = "#000";
   ctx.lineWidth = 5;
@@ -107,6 +124,7 @@ function drawGrid(
   perspective: Matrix,
   outset: number,
   ptDensity: number,
+  isCalibrating: boolean,
 ): void {
   const majorLine = 5;
 
@@ -140,6 +158,41 @@ function drawGrid(
     );
     drawLine(ctx, line[0], line[1], lineWidth);
   }
+  if (isCalibrating) {
+    drawDimensionLabels(ctx, width, height, perspective, ptDensity);
+  }
+}
+
+function drawDimensionLabels(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  perspective: Matrix,
+  ptDensity: number,
+) {
+  const fontSize = 72;
+  const inset = 20;
+  ctx.globalCompositeOperation = "difference";
+  ctx.font = `${fontSize}px monospace`;
+  ctx.fillStyle = "white";
+  const widthText = `${width}`;
+  const heightText = `${height}`;
+  const line = transformPoints(
+    [
+      {
+        x: width * ptDensity * 0.5,
+        y: height * ptDensity,
+      },
+      {
+        x: 0,
+        y: height * 0.5 * ptDensity,
+      },
+    ],
+    perspective,
+  );
+  const widthLabelWidth = ctx.measureText(widthText).width;
+  ctx.fillText(widthText, line[0].x - widthLabelWidth * 0.5, line[0].y - inset);
+  ctx.fillText(heightText, line[1].x + inset, line[1].y + fontSize * 0.5);
 }
 
 function drawLine(
@@ -153,6 +206,15 @@ function drawLine(
   ctx.moveTo(p1.x, p1.y);
   ctx.lineTo(p2.x, p2.y);
   ctx.stroke();
+}
+
+function drawCrosshair(ctx: CanvasRenderingContext2D, point: Point, size: number) {
+  const halfSize = size / 2;
+  ctx.beginPath();
+  ctx.moveTo(point.x - halfSize, point.y);
+  ctx.lineTo(point.x + halfSize, point.y);
+  ctx.moveTo(point.x, point.y - halfSize);
+  ctx.lineTo(point.x, point.y + halfSize);
 }
 
 function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
@@ -203,6 +265,50 @@ export default function CalibrationCanvas({
   const [panStart, setPanStart] = useState<Point | null>(null);
   const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
   const [cursorMode, setCursorMode] = useState<string | null>(null);
+  const [isPrecisionMovement, setIsPrecisionMovement] = useState(false);
+  const [dragStartTime, setDragStartTime] = useState<number | null>(null);
+  const [dragStartMousePoint, setDragStartMousePoint] = useState<Point | null>(null);
+  const [dragStartPoint, setDragStartPoint] = useState<Point | null>(null);
+  const [precisionActivationPoint, setPrecisionActivationPoint] = useState<Point | null>(null);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [localPoints, setLocalPoints] = useState<Point[]>(points);
+  const [localPerspective, setLocalPerspective] = useState<Matrix>(perspective);
+
+  useEffect(() => {
+    setLocalPoints(points)
+  }, [points, setLocalPoints])
+
+  useEffect(() => {
+    setLocalPerspective(perspective)
+  }, [perspective])
+
+  useEffect(() => {
+    if (localPoints && localPoints.length === maxPoints) {
+      let n = getPerspectiveTransform(getDstVertices(), localPoints);
+      setLocalPerspective(n);
+    }
+
+    function getDstVertices(): Point[] {
+      const ox = 0;
+      const oy = 0;
+      const mx = +width * ptDensity + ox;
+      const my = +height * ptDensity + oy;
+
+      const dstVertices = [
+        { x: ox, y: oy },
+        { x: mx, y: oy },
+        { x: mx, y: my },
+        { x: ox, y: my },
+      ];
+
+      return dstVertices;
+    }
+  }, [localPoints, width, height, ptDensity, setLocalPerspective]);
+
+  useEffect(() => {
+    if (isPrecisionMovement && pointToModify !== null && localPoints.length > pointToModify)
+	  setPrecisionActivationPoint(prevPoint => localPoints[pointToModify]);
+  }, [isPrecisionMovement, pointToModify]);
 
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
@@ -214,42 +320,58 @@ export default function CalibrationCanvas({
         draw(
           ctx,
           dragOffset,
-          points,
+          localPoints,
           width,
           height,
-          perspective,
+          localPerspective,
           isCalibrating,
           pointToModify,
           ptDensity,
+          isPrecisionMovement,
           transformSettings.isFourCorners,
         );
       }
     }
   }, [
     dragOffset,
-    points,
-    perspective,
+    localPoints,
+    localPerspective,
     width,
     height,
     isCalibrating,
     pointToModify,
     ptDensity,
     transformSettings.isFourCorners,
+    isPrecisionMovement
   ]);
 
   function getShortestDistance(p: Point): number {
-    return points
+    return localPoints
       .map((a) => Math.sqrt(sqrdist(a, p)))
       .reduce((final, a) => (!final || a < final ? a : final));
   }
 
   function handleDown(newPoint: Point) {
-    if (points.length < maxPoints) {
-      setPoints([...points, newPoint]);
+    if (localPoints.length < maxPoints) {
+      setLocalPoints([...localPoints, newPoint]);
     } else {
       const shortestDist: number = getShortestDistance(newPoint);
       if (shortestDist < CORNER_MARGIN) {
-        setPointToModify(minIndex(points.map((a) => sqrdist(a, newPoint))));
+        const newPointToModify = minIndex(localPoints.map((a) => sqrdist(a, newPoint)))
+        setPointToModify(newPointToModify);
+        setDragStartTime(Date.now());
+        setDragStartMousePoint(newPoint);
+        setDragStartPoint(localPoints[newPointToModify]);
+
+      // Set a timeout to activate precision movement after the delay
+      const timeoutId = setTimeout(() => {
+        if (!isPrecisionMovement)
+			setIsPrecisionMovement(true);
+      }, PRECISION_MOVEMENT_DELAY);
+
+      // Store the timeout ID to clear it if needed
+      setTimeoutId(timeoutId);
+
       } else {
         setPointToModify(null);
         setPanStart(newPoint);
@@ -259,9 +381,66 @@ export default function CalibrationCanvas({
 
   function handleMove(p: Point, filter: number) {
     if (pointToModify !== null) {
-      const newPoints = [...points];
-      newPoints[pointToModify] = interp(newPoints[pointToModify], p, filter);
-      setPoints(newPoints);
+      //Check if we should active precision movement
+      if (
+        !isPrecisionMovement &&
+        dragStartTime !== null &&
+        dragStartMousePoint !== null &&
+        Date.now() - dragStartTime > PRECISION_MOVEMENT_DELAY &&
+		Math.sqrt(sqrdist(dragStartMousePoint, p)) < PRECISION_MOVEMENT_THRESHOLD &&
+        timeoutId != null 
+      ) {
+        setIsPrecisionMovement(true);
+        if (pointToModify !== null)
+			setPrecisionActivationPoint(localPoints[pointToModify]);
+      }
+
+      if (
+        !isPrecisionMovement &&
+        dragStartTime !== null &&
+        dragStartMousePoint !== null &&
+		Math.sqrt(sqrdist(dragStartMousePoint, p)) > PRECISION_MOVEMENT_THRESHOLD &&
+        timeoutId != null 
+      ) {
+        // Clear the timeout when the mouse is released
+        // Setting timeoutId to null deactivates precision drag for the rest
+        // of this drag sequence
+        clearTimeout(timeoutId);
+        setTimeoutId(null);
+      }
+
+
+      const newPoints = [...localPoints];
+      let destination = {
+        x: p.x,
+        y: p.y
+      }
+      if (dragStartMousePoint !== null && dragStartPoint !== null) 
+      {
+        destination = {
+          x: dragStartMousePoint.x + ((p.x - dragStartMousePoint.x) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1)),
+          y: dragStartMousePoint.y + ((p.y - dragStartMousePoint.y) / (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1))
+        }
+        /* The following 2 lines help to prevent the calibration point from "jumping" */
+        destination.x -= (dragStartMousePoint.x - dragStartPoint.x)
+        destination.y -= (dragStartMousePoint.y - dragStartPoint.y)
+      }
+      if (precisionActivationPoint && dragStartPoint)
+      {
+        /* The following 2 lines help to prevent the calibration point from "jumping" */
+        destination.x += (precisionActivationPoint.x - dragStartPoint.x)
+        destination.y += (precisionActivationPoint.y - dragStartPoint.y)
+      }
+
+      const offset = {
+        x: (destination.x - newPoints[pointToModify].x),
+        y: (destination.y - newPoints[pointToModify].y),
+      };
+      newPoints[pointToModify] = {
+        x: newPoints[pointToModify].x + offset.x,
+        y: newPoints[pointToModify].y + offset.y,
+      };
+      setLocalPoints(newPoints);
     } else if (panStart !== null) {
       setDragOffset({ x: p.x - panStart.x, y: p.y - panStart.y });
     }
@@ -277,18 +456,43 @@ export default function CalibrationCanvas({
   }
 
   function handleMouseUp() {
-    localStorage.setItem("points", JSON.stringify(points));
+    localStorage.setItem("points", JSON.stringify(localPoints));
     if (panStart) {
-      setPoints(points.map((p) => applyOffset(p, dragOffset)));
+      setPoints(localPoints.map((p) => applyOffset(p, dragOffset)));
       setDragOffset({ x: 0, y: 0 });
       setPanStart(null);
+    } else {
+        setPoints(localPoints);
+    }
+    setIsPrecisionMovement(false);
+    setDragStartTime(null);
+    setDragStartMousePoint(null);
+    setDragStartPoint(null);
+    setPrecisionActivationPoint(null);
+
+    // Clear the timeout when the mouse is released
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
     }
   }
 
   function handleTouchUp() {
-    localStorage.setItem("points", JSON.stringify(points));
+    localStorage.setItem("points", JSON.stringify(localPoints));
+    setPoints(localPoints);
     setPointToModify(null);
     setPanStart(null);
+    setIsPrecisionMovement(false);
+    setDragStartTime(null);
+    setDragStartMousePoint(null);
+    setDragStartPoint(null);
+    setPrecisionActivationPoint(null);
+
+    // Clear the timeout when the touch is released
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
+    }
   }
 
   const handleKeyDown = useCallback(
@@ -302,7 +506,7 @@ export default function CalibrationCanvas({
           });
         } else {
           const newPointToModify =
-            (pointToModify === null ? 0 : pointToModify + 1) % points.length;
+            (pointToModify === null ? 0 : pointToModify + 1) % localPoints.length;
           setPointToModify(newPointToModify);
         }
       } else if (e.code === "Escape") {
@@ -318,7 +522,7 @@ export default function CalibrationCanvas({
       pointToModify,
       transformSettings,
       setPointToModify,
-      points.length,
+      localPoints.length,
       setTransformSettings,
     ],
   );

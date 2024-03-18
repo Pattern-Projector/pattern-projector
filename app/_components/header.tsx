@@ -270,10 +270,10 @@ export default function Header({
                     let newIsGreenInverted;
                     if (!transformSettings.inverted) {
                       newInverted = true;
-                      newIsGreenInverted = false;
-                    } else if (!transformSettings.isInvertedGreen) {
-                      newInverted = true;
                       newIsGreenInverted = true;
+                    } else if (transformSettings.isInvertedGreen) {
+                      newInverted = true;
+                      newIsGreenInverted = false;
                     } else {
                       newInverted = false;
                       newIsGreenInverted = false;
