@@ -296,14 +296,14 @@ export default function CalibrationCanvas({
 	  setPrecisionActivationPoint(prevPoint => localPoints[pointToModify]);
   }, [isPrecisionMovement, pointToModify]);
 
-  /* Used to create the fill pattern */
+  /* Used to create the error fill pattern */
   useEffect(() => {
     if (!canvasRef === null || canvasRef.current === null)
       return;
     const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        patternRef.current = createCheckerboardPattern(ctx);
+        patternRef.current = createCheckerboardPattern(ctx, 3, "#555", "#CCC");
       }
   }, []);
 
