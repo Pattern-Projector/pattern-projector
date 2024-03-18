@@ -67,7 +67,7 @@ function draw(
   ctx.beginPath();
   if (isCalibrating) {
     ctx.strokeStyle = "#fff";
-    drawGrid(ctx, width, height, perspective, 0, ptDensity);
+    drawGrid(ctx, width, height, perspective, 0, ptDensity, isCalibrating);
 
     if (displayAllCorners) {
       points.forEach((point, index) => {
@@ -102,7 +102,7 @@ function draw(
     }
   } else {
     ctx.setLineDash([1]);
-    drawGrid(ctx, width, height, perspective, 8, ptDensity);
+    drawGrid(ctx, width, height, perspective, 8, ptDensity, isCalibrating);
   }
 }
 
@@ -124,6 +124,7 @@ function drawGrid(
   perspective: Matrix,
   outset: number,
   ptDensity: number,
+  isCalibrating: boolean,
 ): void {
   const majorLine = 5;
 
@@ -157,7 +158,9 @@ function drawGrid(
     );
     drawLine(ctx, line[0], line[1], lineWidth);
   }
-  drawDimensionLabels(ctx, width, height, perspective, ptDensity);
+  if (isCalibrating) {
+    drawDimensionLabels(ctx, width, height, perspective, ptDensity);
+  }
 }
 
 function drawDimensionLabels(
