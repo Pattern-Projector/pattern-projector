@@ -47,8 +47,11 @@ function draw(
   isPrecisionMovement: boolean,
   displayAllCorners?: boolean,
 ): void {
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  if (isCalibrating) {
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
   ctx.translate(offset.x, offset.y);
 
   ctx.fillStyle = "#000";
@@ -78,7 +81,7 @@ function draw(
             drawCrosshair(ctx, point, 20);
             ctx.lineWidth = 2;
           } else {
-			ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
+            ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
             ctx.lineWidth = 4;
           }
         }
