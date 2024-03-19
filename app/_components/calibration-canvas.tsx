@@ -277,7 +277,7 @@ export default function CalibrationCanvas({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const patternRef = useRef<CanvasPattern | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
-  const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
+  const [panStartPoints, setPanStartPoints] = useState<Point[] | null>(null);
   const [cursorMode, setCursorMode] = useState<string | null>(null);
   const [isPrecisionMovement, setIsPrecisionMovement] = useState(false);
   const [dragStartTime, setDragStartTime] = useState<number | null>(null);
@@ -320,7 +320,7 @@ export default function CalibrationCanvas({
         ctx.canvas.height = window.innerHeight;
         draw(
           ctx,
-          dragOffset,
+          { x:0, y:0 },
           localPoints,
           width,
           height,
@@ -351,7 +351,6 @@ export default function CalibrationCanvas({
       return dstVertices;
     }
   }, [
-    dragOffset,
     localPoints,
     width,
     height,
@@ -392,6 +391,7 @@ export default function CalibrationCanvas({
       } else {
         setPointToModify(null);
         setPanStart(newPoint);
+        setPanStartPoints(localPoints);
       }
     }
   }
@@ -404,12 +404,12 @@ export default function CalibrationCanvas({
         dragStartTime !== null &&
         dragStartMousePoint !== null &&
         Date.now() - dragStartTime > PRECISION_MOVEMENT_DELAY &&
-		Math.sqrt(sqrdist(dragStartMousePoint, p)) < PRECISION_MOVEMENT_THRESHOLD &&
+        Math.sqrt(sqrdist(dragStartMousePoint, p)) < PRECISION_MOVEMENT_THRESHOLD &&
         timeoutId != null 
       ) {
         setIsPrecisionMovement(true);
         if (pointToModify !== null)
-			setPrecisionActivationPoint(localPoints[pointToModify]);
+          setPrecisionActivationPoint(localPoints[pointToModify]);
       }
 
       if (
@@ -425,7 +425,6 @@ export default function CalibrationCanvas({
         clearTimeout(timeoutId);
         setTimeoutId(null);
       }
-
 
       const newPoints = [...localPoints];
       let destination = {
@@ -458,8 +457,14 @@ export default function CalibrationCanvas({
         y: newPoints[pointToModify].y + offset.y,
       };
       setLocalPoints(newPoints);
-    } else if (panStart !== null) {
-      setDragOffset({ x: p.x - panStart.x, y: p.y - panStart.y });
+    } else if (panStart !== null
+        && panStartPoints !== null
+        && panStartPoints.length === maxPoints) {
+      /* Panning. Apply the offset to the panStartPoints */
+      const dragOffset = { x: p.x - panStart.x, y: p.y - panStart.y }
+      setPoints(panStartPoints.map((p) => {
+        return {x: p.x + dragOffset.x, y: p.y + dragOffset.y}
+      }))
     }
   }
 
@@ -480,9 +485,8 @@ export default function CalibrationCanvas({
 
     localStorage.setItem("points", JSON.stringify(localPoints));
     if (panStart) {
-      setPoints(localPoints.map((p) => applyOffset(p, dragOffset)));
-      setDragOffset({ x: 0, y: 0 });
       setPanStart(null);
+      setPanStartPoints(null);
     } else {
         setPoints(localPoints);
     }
@@ -509,6 +513,7 @@ export default function CalibrationCanvas({
     setPoints(localPoints);
     setPointToModify(null);
     setPanStart(null);
+    setPanStartPoints(null);
     setIsPrecisionMovement(false);
     setDragStartTime(null);
     setDragStartMousePoint(null);
