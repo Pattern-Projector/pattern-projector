@@ -125,7 +125,7 @@ export default function Header({
   return (
     <>
       <header
-        className={`bg-white absolute left-0 w-full z-30 border-b-2 transition-all duration-700 h-16 flex items-center ${showNav ? "top-0" : "-top-20"}`}
+        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b-2 dark:border-gray-700 transition-all duration-700 h-16 flex items-center ${showNav ? "top-0" : "-top-20"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
@@ -154,11 +154,50 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <IconButton
-              className={`!p-1 border-2 border-black`}
+              className={`!p-1 border-2 border-black dark:border-white`}
               onClick={() => setShowNav(false)}
             >
               <ExpandLessIcon ariaLabel={t("menuHide")} />
             </IconButton>
+            <div className="relative inline-block text-left">
+              <Tooltip description={t("invertColor")}>
+                <IconButton
+                  onClick={(e) => {
+                    let newInverted;
+                    let newIsGreenInverted;
+                    if (!transformSettings.inverted) {
+                      newInverted = true;
+                      newIsGreenInverted = true;
+                    } else if (transformSettings.isInvertedGreen) {
+                      newInverted = true;
+                      newIsGreenInverted = false;
+                    } else {
+                      newInverted = false;
+                      newIsGreenInverted = false;
+                    }
+                    setTransformSettings({
+                      ...transformSettings,
+                      inverted: newInverted,
+                      isInvertedGreen: newIsGreenInverted,
+                    });
+                    setInvertOpen(!transformSettings.inverted);
+                  }}
+                >
+                  {transformSettings.inverted ? (
+                    <InvertColorIcon
+                      fill={
+                        transformSettings.isInvertedGreen
+                          ? "#32CD32"
+                          : "currentColor"
+                      }
+                      ariaLabel={t("invertColor")}
+                    />
+                  ) : (
+                    <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
+                  )}
+                </IconButton>
+              </Tooltip>
+            </div>
           </div>
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
             <Tooltip
@@ -262,43 +301,7 @@ export default function Header({
                 )}
               </IconButton>
             </Tooltip>
-            <div className="relative inline-block text-left">
-              <Tooltip description={t("invertColor")}>
-                <IconButton
-                  onClick={(e) => {
-                    let newInverted;
-                    let newIsGreenInverted;
-                    if (!transformSettings.inverted) {
-                      newInverted = true;
-                      newIsGreenInverted = true;
-                    } else if (transformSettings.isInvertedGreen) {
-                      newInverted = true;
-                      newIsGreenInverted = false;
-                    } else {
-                      newInverted = false;
-                      newIsGreenInverted = false;
-                    }
-                    setTransformSettings({
-                      ...transformSettings,
-                      inverted: newInverted,
-                      isInvertedGreen: newIsGreenInverted,
-                    });
-                    setInvertOpen(!transformSettings.inverted);
-                  }}
-                >
-                  {transformSettings.inverted ? (
-                    <InvertColorIcon
-                      fill={
-                        transformSettings.isInvertedGreen ? "#32CD32" : "#000"
-                      }
-                      ariaLabel={t("invertColor")}
-                    />
-                  ) : (
-                    <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
-                  )}
-                </IconButton>
-              </Tooltip>
-            </div>
+
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
                 onClick={() =>
@@ -359,7 +362,7 @@ export default function Header({
             <label
               className={`${visible(
                 !isCalibrating,
-              )} outline outline-purple-700 flex gap-2 items-center text-purple-800 focus:ring-2 focus:outline-none focus:ring-blue-300 hover:bg-purple-100 font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
+              )} flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
             >
               <FileInput
                 accept="application/pdf"
@@ -367,11 +370,11 @@ export default function Header({
                 handleChange={handleFileChange}
                 id="pdfFile"
               ></FileInput>
-              <PdfIcon ariaLabel={t("openPDF")} fill="#7e22ce" />
+              <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />
               {t("openPDF")}
             </label>
             <button
-              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               onClick={() => setIsCalibrating(!isCalibrating)}
             >
               {isCalibrating ? t("project") : t("calibrate")}
@@ -386,7 +389,7 @@ export default function Header({
       </header>
       {!showNav ? (
         <IconButton
-          className={`!p-1 border-2 border-black absolute top-2 z-40 left-1/4 focus:ring-0`}
+          className={`!p-1 border-2 border-black dark:border-white absolute top-2 z-40 left-1/4 focus:ring-0`}
           onClick={() => setShowNav(true)}
         >
           <ExpandMoreIcon ariaLabel={t("menuShow")} />

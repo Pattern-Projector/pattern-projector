@@ -27,7 +27,6 @@ import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
-import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -260,141 +259,144 @@ export default function Page() {
   return (
     <main
       ref={noZoomRefCallback}
-      className="w-full h-full absolute overflow-hidden touch-none"
+      className={`${(transformSettings.inverted || transformSettings.isInvertedGreen) && "dark"} w-full h-full absolute overflow-hidden touch-none`}
     >
-      <FullScreen handle={handle} className="bg-white">
-        <div
-          className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
-        />
-        <Header
-          isCalibrating={isCalibrating}
-          setIsCalibrating={setIsCalibrating}
-          height={height}
-          width={width}
-          handleHeightChange={handleHeightChange}
-          handleWidthChange={handleWidthChange}
-          handleResetCalibration={() => setPoints(getDefaultPoints())}
-          handleFileChange={handleFileChange}
-          fullScreenHandle={handle}
-          unitOfMeasure={unitOfMeasure}
-          setUnitOfMeasure={(newUnit) => {
-            setUnitOfMeasure(newUnit);
-            updateLocalSettings({ unitOfMeasure: newUnit });
-          }}
-          transformSettings={transformSettings}
-          setTransformSettings={(newSettings) => {
-            setTransformSettings(newSettings);
-            if (newSettings) {
-              updateLocalSettings({
-                inverted: newSettings.inverted,
-                isInvertedGreen: newSettings.isInvertedGreen,
-                isFourCorners: newSettings.isFourCorners,
-              });
-            }
-          }}
-          pageCount={pageCount}
-          gridOn={gridOn}
-          setGridOn={setGridOn}
-          layers={layers}
-          showLayerMenu={showLayerMenu}
-          setShowLayerMenu={setShowLayerMenu}
-          localTransform={localTransform}
-          setLocalTransform={setLocalTransform}
-          layoutWidth={layoutWidth}
-          layoutHeight={layoutHeight}
-          calibrationTransform={calibrationTransform}
-          lineThickness={lineThickness}
-          setLineThickness={setLineThickness}
-          setShowStitchMenu={setShowStitchMenu}
-          showStitchMenu={showStitchMenu}
-        />
-
-        <LayerMenu
-          visible={!isCalibrating && showLayerMenu}
-          setVisible={(visible) => setShowLayerMenu(visible)}
-          layers={layers}
-          setLayers={setLayers}
-          className={`${showStitchMenu ? "top-72" : "top-20"} overflow-scroll`}
-        />
-        {layers.size && !showLayerMenu ? (
-          <Tooltip description={showLayerMenu ? t("layersOff") : t("layersOn")}>
-            <IconButton
-              className={`${showStitchMenu ? "top-72" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
-              onClick={() => setShowLayerMenu(true)}
-            >
-              <LayersIcon ariaLabel="layers" />
-            </IconButton>
-          </Tooltip>
-        ) : null}
-        <StitchMenu
-          setShowStitchMenu={setShowStitchMenu}
-          className={`${visible(!isCalibrating && showStitchMenu)} absolute left-0 top-16 z-30 w-48 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
-          setColumnCount={setColumnCount}
-          setEdgeInsets={setEdgeInsets}
-          setPageRange={setPageRange}
-          columnCount={columnCount}
-          edgeInsets={edgeInsets}
-          pageRange={pageRange}
-          pageCount={pageCount}
-        />
-
-        <CalibrationCanvas
-          className={`absolute z-10 ${visible(isCalibrating || gridOn)}`}
-          points={points}
-          setPoints={setPoints}
-          pointToModify={pointToModify}
-          setPointToModify={setPointToModify}
-          width={+width}
-          height={+height}
-          isCalibrating={isCalibrating}
-          ptDensity={ptDensity}
-          transformSettings={transformSettings}
-          setTransformSettings={setTransformSettings}
-        />
-        <Draggable
-          viewportClassName={`select-none ${visible(!isCalibrating)}`}
-          className={`select-none ${visible(!isCalibrating)}`}
-          localTransform={localTransform}
-          setLocalTransform={setLocalTransform}
-          perspective={perspective}
-        >
+      <div className="bg-white dark:bg-black dark:text-white">
+        <FullScreen handle={handle}>
           <div
-            className={"absolute z-0"}
-            style={{
-              transform: `${matrix3d}`,
-              transformOrigin: "0 0",
-              filter: getInversionFilters(
-                transformSettings.inverted,
-                transformSettings.isInvertedGreen,
-              ),
+            className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
+          />
+          <Header
+            isCalibrating={isCalibrating}
+            setIsCalibrating={setIsCalibrating}
+            height={height}
+            width={width}
+            handleHeightChange={handleHeightChange}
+            handleWidthChange={handleWidthChange}
+            handleResetCalibration={() => setPoints(getDefaultPoints())}
+            handleFileChange={handleFileChange}
+            fullScreenHandle={handle}
+            unitOfMeasure={unitOfMeasure}
+            setUnitOfMeasure={(newUnit) => {
+              setUnitOfMeasure(newUnit);
+              updateLocalSettings({ unitOfMeasure: newUnit });
             }}
+            transformSettings={transformSettings}
+            setTransformSettings={(newSettings) => {
+              setTransformSettings(newSettings);
+              if (newSettings) {
+                updateLocalSettings({
+                  inverted: newSettings.inverted,
+                  isInvertedGreen: newSettings.isInvertedGreen,
+                  isFourCorners: newSettings.isFourCorners,
+                });
+              }
+            }}
+            pageCount={pageCount}
+            gridOn={gridOn}
+            setGridOn={setGridOn}
+            layers={layers}
+            showLayerMenu={showLayerMenu}
+            setShowLayerMenu={setShowLayerMenu}
+            localTransform={localTransform}
+            setLocalTransform={setLocalTransform}
+            layoutWidth={layoutWidth}
+            layoutHeight={layoutHeight}
+            calibrationTransform={calibrationTransform}
+            lineThickness={lineThickness}
+            setLineThickness={setLineThickness}
+            setShowStitchMenu={setShowStitchMenu}
+            showStitchMenu={showStitchMenu}
+          />
+
+          <LayerMenu
+            visible={!isCalibrating && showLayerMenu}
+            setVisible={(visible) => setShowLayerMenu(visible)}
+            layers={layers}
+            setLayers={setLayers}
+            className={`${showStitchMenu ? "top-72" : "top-20"} overflow-scroll`}
+          />
+          {layers.size && !showLayerMenu ? (
+            <Tooltip
+              description={showLayerMenu ? t("layersOff") : t("layersOn")}
+            >
+              <IconButton
+                className={`${showStitchMenu ? "top-72" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
+                onClick={() => setShowLayerMenu(true)}
+              >
+                <LayersIcon ariaLabel="layers" />
+              </IconButton>
+            </Tooltip>
+          ) : null}
+          <StitchMenu
+            className={`${visible(!isCalibrating && showStitchMenu)} absolute left-0 top-16 z-30 w-48 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
+            setColumnCount={setColumnCount}
+            setEdgeInsets={setEdgeInsets}
+            setPageRange={setPageRange}
+            columnCount={columnCount}
+            edgeInsets={edgeInsets}
+            pageRange={pageRange}
+            pageCount={pageCount}
+          />
+
+          <CalibrationCanvas
+            className={`absolute z-10 ${visible(isCalibrating || gridOn)}`}
+            points={points}
+            setPoints={setPoints}
+            pointToModify={pointToModify}
+            setPointToModify={setPointToModify}
+            width={+width}
+            height={+height}
+            isCalibrating={isCalibrating}
+            ptDensity={ptDensity}
+            transformSettings={transformSettings}
+            setTransformSettings={setTransformSettings}
+          />
+          <Draggable
+            viewportClassName={`select-none ${visible(!isCalibrating)}`}
+            className={`select-none ${visible(!isCalibrating)}`}
+            localTransform={localTransform}
+            setLocalTransform={setLocalTransform}
+            perspective={perspective}
           >
             <div
-              className={"border-8 border-purple-700"}
+              className={"absolute z-0"}
               style={{
-                transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
-                transformOrigin: "center",
+                transform: `${matrix3d}`,
+                transformOrigin: "0 0",
+                filter: getInversionFilters(
+                  transformSettings.inverted,
+                  transformSettings.isInvertedGreen,
+                ),
               }}
             >
-              <PDFViewer
-                file={file}
-                setPageCount={setPageCount}
-                pageCount={pageCount}
-                setLayers={setLayers}
-                layers={layers}
-                setLayoutWidth={setLayoutWidth}
-                setLayoutHeight={setLayoutHeight}
-                setLocalTransform={setLocalTransform}
-                calibrationTransform={calibrationTransform}
-                lineThickness={lineThickness}
-                columnCount={columnCount}
-                edgeInsets={edgeInsets}
-                pageRange={pageRange}
-              />
+              <div
+                className={"border-8 border-purple-700"}
+                style={{
+                  transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
+                  transformOrigin: "center",
+                }}
+              >
+                <PDFViewer
+                  file={file}
+                  setPageCount={setPageCount}
+                  pageCount={pageCount}
+                  setLayers={setLayers}
+                  layers={layers}
+                  setLayoutWidth={setLayoutWidth}
+                  setLayoutHeight={setLayoutHeight}
+                  setLocalTransform={setLocalTransform}
+                  calibrationTransform={calibrationTransform}
+                  lineThickness={lineThickness}
+                  columnCount={columnCount}
+                  edgeInsets={edgeInsets}
+                  pageRange={pageRange}
+                />
+              </div>
             </div>
-          </div>
-        </Draggable>
-      </FullScreen>
+          </Draggable>
+        </FullScreen>
+      </div>
     </main>
   );
 }

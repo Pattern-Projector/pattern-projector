@@ -6,7 +6,7 @@ export default function FourCornersOff({ ariaLabel }: { ariaLabel: string }) {
       width="24"
       id="svg1"
       aria-label={ariaLabel}
-      fill="#333"
+      fill="currentColor"
     >
       <path
         id="path1"
