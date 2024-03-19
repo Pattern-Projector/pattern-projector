@@ -8,7 +8,10 @@ import React, {
   useState,
 } from "react";
 
-import { createCheckerboardPattern } from "@/_lib/drawing";
+import {
+  createCheckerboardPattern,
+  interpolateColorRing
+} from "@/_lib/drawing";
 import { getPerspectiveTransform } from "@/_lib/geometry";
 import {
   minIndex,
@@ -25,6 +28,7 @@ const maxPoints = 4; // One point per vertex in rectangle
 const PRECISION_MOVEMENT_THRESHOLD = 15;
 const PRECISION_MOVEMENT_RATIO = 5;
 const PRECISION_MOVEMENT_DELAY = 500;
+const TRANSITION_DURATION = 700;
 
 function getStrokeStyle(pointToModify: number) {
   return [
@@ -47,12 +51,29 @@ function draw(
   ptDensity: number,
   isPrecisionMovement: boolean,
   errorFillPattern: CanvasPattern,
+  transitionProgress: number,
   transformSettings: TransformSettings,
 ): void {
   let isConcave = checkIsConcave(points);
 
+  const lightColor = "#fff";
+  const darkColor = "#000";
+  const greenColor = "#32CD32" 
+  /* Light color (in light mode) */
+  const color_a = interpolateColorRing(
+    [lightColor, darkColor, darkColor],
+    transitionProgress);
+  /* Dark color (in light mode) */
+  const color_b = interpolateColorRing(
+    [darkColor, lightColor, lightColor],
+    transitionProgress);
+  /* Grid line color */
+  const color_c = interpolateColorRing(
+    [lightColor, greenColor, lightColor],
+    transitionProgress);
+
   if (isCalibrating) {
-    ctx.fillStyle = transformSettings.inverted ? "#000" : "#fff";
+    ctx.fillStyle = color_a;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
 
@@ -61,7 +82,7 @@ function draw(
   if (isConcave) {
     ctx.fillStyle = errorFillPattern;
   } else {
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = "#000"; 
   }
   drawPolygon(ctx, points);
 
@@ -71,12 +92,12 @@ function draw(
     drawBorder(ctx);
   }
 
-  ctx.strokeStyle = "#000";
   ctx.globalCompositeOperation = "difference";
+  ctx.strokeStyle = "#000";
   ctx.beginPath();
 
   if (isCalibrating) {
-    ctx.strokeStyle = transformSettings.isInvertedGreen ? "#32CD32" : "#fff";
+    ctx.strokeStyle = color_c
 
     /* Only draw the grid if the polygon is convex */
     if (!isConcave)
@@ -115,11 +136,7 @@ function draw(
     }
   } else if (!isConcave) {
     /* Only draw the grid if the polygon is convex */
-    if (transformSettings.inverted) {
-      ctx.strokeStyle = "#fff";
-    } else if (transformSettings.isInvertedGreen) {
-      ctx.strokeStyle = "#00ff00";
-    }
+    ctx.strokeStyle = color_c
     ctx.setLineDash([1]);
     drawGrid(ctx, width, height, perspective, 8, ptDensity, isCalibrating);
   }
@@ -298,6 +315,81 @@ export default function CalibrationCanvas({
     useState<Point | null>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const [localPoints, setLocalPoints] = useState<Point[]>(points);
+  /* transitionProgress ranges from 0 to number of colorMode states + 1 */
+  const [transitionProgress, setTransitionProgress] = useState<number>(0);
+  const [colorMode, setColorMode] = useState<number | null>(null);
+  const prevColorModeRef = useRef<number | null>(null);
+
+  const minColorMode = 0;
+  const maxColorMode = 2;
+
+  useEffect(() => {
+    var _colorMode;
+    /* The order is important here. The colorModes should monotonically 
+     * increase each time it changes */
+    if (transformSettings.inverted && transformSettings.isInvertedGreen) {
+      _colorMode = 1;
+    } else if (transformSettings.inverted) {
+      _colorMode = 2;
+    } else {
+      _colorMode = 0;
+    }
+
+    setColorMode(_colorMode);
+    /* Initialize prevColorModeRef if needed */
+    if (prevColorModeRef.current == null)
+      prevColorModeRef.current = _colorMode;
+  },[transformSettings])
+
+useEffect(() => {
+    /* No colorMode set yet, nothing to do */
+    if (colorMode == null) return;
+
+    const prevColorMode = prevColorModeRef.current;
+    prevColorModeRef.current = colorMode;
+
+    /* No previous color mode, nothing to do */
+    if (prevColorMode == null) return;
+    
+    /* No transition necessary (probably just initialized) */
+    if (colorMode == prevColorMode) {
+      setTransitionProgress(colorMode);
+      return;
+    } 
+
+    let frameId: number;
+    const startTime = Date.now();
+    const duration = TRANSITION_DURATION;
+    /* Start from our current progress (avoids jumping on double-click) */
+    const startTransitionProgress = transitionProgress;
+    let endTransitionProgress = colorMode;
+    /* Only allow forward progression */
+    if (colorMode == minColorMode){
+      endTransitionProgress = maxColorMode + 1;
+    }
+    const transitionDistance = endTransitionProgress - startTransitionProgress;
+
+    const animate = () => {
+      const elapsedTime = Date.now() - startTime;
+      /* progress is a number between 0 and 1 */
+      const progress = Math.min(elapsedTime / duration, 1);
+      let newTransitionProgress = startTransitionProgress + progress * transitionDistance; 
+      /* Keep transitionProgress in the range 
+       * 0 (inclusive) to maxColorMode + 1 (exclusive) */
+      newTransitionProgress %= maxColorMode+1; 
+      setTransitionProgress(newTransitionProgress);
+
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate);
+      }
+    };
+
+    frameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
+  }, [colorMode]);
 
   useEffect(() => {
     setLocalPoints(points);
@@ -353,6 +445,7 @@ export default function CalibrationCanvas({
           ptDensity,
           isPrecisionMovement,
           patternRef.current,
+          transitionProgress,
           transformSettings,
         );
       }
@@ -380,6 +473,7 @@ export default function CalibrationCanvas({
     isCalibrating,
     pointToModify,
     ptDensity,
+    transitionProgress,
     transformSettings,
     isPrecisionMovement,
   ]);
