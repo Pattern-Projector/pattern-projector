@@ -76,7 +76,7 @@ function draw(
   ctx.beginPath();
 
   if (isCalibrating) {
-    ctx.strokeStyle = "#fff";
+    ctx.strokeStyle = transformSettings.isInvertedGreen ? "#32CD32" : "#fff";
 
     /* Only draw the grid if the polygon is convex */
     if (!isConcave)
