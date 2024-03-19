@@ -3,11 +3,11 @@
         "beta": "beta",
         "pdfstitcherHref": "https://www.pdfstitcher.org/",
         "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
-        "github": "Github icoon",
+        "github": "Bekijk de broncode",
         "calibrate": "Start kalibreren",
         "welcome": {
             "title": "Welkom bij Pattern Projector!",
-            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projektors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan dus grote veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
+            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projektors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan regelmatig veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
         },
         "requirements": {
             "title": "Wat je nodig hebt",
@@ -15,7 +15,7 @@
             "mat": "Snijmat: idealiter met rasterlijnen op regelmatige afstanden",
             "mount": "Een standaard, ophanging of bevestiging aan de muur, plafond of aan een tafel",
             "computer": "Computer of tablet om verbinding te maken met de projector",
-            "pattern": "Een PDF naaipatroon. Je kan <pdfstitcher>PDFStitcher</pdfstitcher> gebruiken als je patroon lagen of meerdere paginas heeft die je tot 1 bestand wil samenvoegen, of om de lijnen op je patroon dikker te maken."
+            "pattern": "Een naaipatroon in PDF formaat"
         },
         "setup": {
             "title": "Installatie",
@@ -28,10 +28,10 @@
             "title": "Calibratie",
             "start": "Klik (of druk) op 'Start kalibreren.'",
             "input": "Geef de breedte en hoogte van je snijmat in.",
-            "fullscreen": "Ga naar 'Volledig scherm' modus door te klikken (of drukken) op  ",
+            "fullscreen": "Ga naar 'Volledig scherm' modus door te klikken (of drukken) op ",
             "drag": "Sleep de hoeken van het raster tot ze overeenkomen met je snijmat. Stel de hoeken op je computer of tablet bij terwijl je naar de projectie kijkt.",
             "size": "Je hoeft niet te kalibreren met je hele mat. Kies het grootste gebied op je mat waar het kalibratierooster in past en zorg ervoor dat je breedte- en hoogteinstellingen overeenkomen met het aantal vakjes van je raster.",
-            "project": "Als het geprojecteerde grid overeen komt met de snijmat, klik (of druk) dan op 'Projecteer'."
+            "project": "Als het geprojecteerde grid overeen komt met de snijmat, klik (of druk) dan op 'Projecteer'"
         },
         "project": {
             "title": "Een patroon projecteren",
@@ -57,7 +57,7 @@
             },
             "recenter": {
                 "title": "Centreer PDF opnieuw",
-                "description": ""
+                "description": "Plaatst het patroon in het midden van de snijmat."
             },
             "fullscreen": {
                 "title": "Volledig scherm",
@@ -88,20 +88,20 @@
             }
         },
         "resources": {
-          "title": "Additional Resources",
-          "links": {
-            "projectorsForSewing": {
-              "title": "Naaien met een projector/beamer",
-              "link": "https://www.facebook.com/groups/492119878090767"
+            "title": "Verdere informatie",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Naaien met een projector/beamer",
+                    "link": "https://www.facebook.com/groups/492119878090767"
+                }
             }
-          }
         },
         "contribute": {
             "title": "Help dit project",
-            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink>.",
+            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink>",
             "develop": "Help verbeteringen toe te voegen en problemen op te lossen op <githubLink>GitHub</githubLink>.",
             "translate": "Vertaal deze software in meer talen.",
-            "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom (in het Engels)! Zie mijn contactgegevens bij 'contact' hier onderaan."
+            "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom (in het Engels)!"
         },
         "contact": "Contact"
     },
@@ -117,7 +117,7 @@
         "gridOn": "Raster aan",
         "gridOff": "Raster uit",
         "invertColor": "Draai kleuren om",
-        "invertColorOff": "Invert colors off",
+        "invertColorOff": "Kleuren omdraaien uit",
         "flipVertical": "Spiegel vertikaal",
         "flipVerticalOff": "Spiegel vertikaal uit",
         "flipHorizontal": "Spiegel horizontaal",
@@ -133,14 +133,16 @@
         "recenter": "Centreer PDF opnieuw",
         "fullscreen": "Start 'volledig scherm'",
         "fullscreenExit": "Verlaat 'volledig scherm'",
-        "lineWeight": "Line weight",
-        "stitchMenuShow": "Show stitch menu",
-        "stitchMenuHide": "Hide stitch menu"
+        "lineWeight": "Lijndikte",
+        "stitchMenuShow": "Toon het samenvoegen menu",
+        "stitchMenuHide": "Verberg het samenvoegen menu",
+        "menuShow": "Toon menu",
+        "menuHide": "Verberg menu"
     },
     "StitchMenu": {
-      "columnCount": "Columns",
-      "pageRange": "Pages",
-      "horizontal": "Horizontal",
-      "vertical": "Vertical"
+        "columnCount": "Kolommen",
+        "pageRange": "Pages",
+        "horizontal": "Horizontal",
+        "vertical": "Vertical"
     }
 }

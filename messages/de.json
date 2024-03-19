@@ -88,13 +88,13 @@
             }
         },
         "resources": {
-          "title": "Zusätzliche Informationen",
-          "links": {
-            "projectorsForSewing": {
-              "title": "Nähen mit beamer",
-              "link": "https://www.facebook.com/groups/naehenmitbeamer/"
+            "title": "Zusätzliche Informationen",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Nähen mit beamer",
+                    "link": "https://www.facebook.com/groups/naehenmitbeamer/"
+                }
             }
-          }
         },
         "contribute": {
             "title": "Unterstütze dieses Projekt",
@@ -138,9 +138,9 @@
         "stitchMenuHide": "Hide stitch menu"
     },
     "StitchMenu": {
-      "columnCount": "Columns",
-      "pageRange": "Pages",
-      "horizontal": "Horizontal",
-      "vertical": "Vertical"
+        "columnCount": "Columns",
+        "pageRange": "Pages",
+        "horizontal": "Horizontal",
+        "vertical": "Vertical"
     }
 }
