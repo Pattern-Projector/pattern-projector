@@ -6,7 +6,6 @@ import { allowInteger } from "@/_lib/remove-non-digits";
 import { validPageRange } from "@/_lib/get-page-numbers";
 
 export default function StitchMenu({
-  setShowStitchMenu,
   setColumnCount,
   setEdgeInsets,
   setPageRange,
@@ -16,7 +15,6 @@ export default function StitchMenu({
   pageCount,
   className,
 }: {
-  setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
   setColumnCount: Dispatch<SetStateAction<string>>;
   setEdgeInsets: Dispatch<SetStateAction<EdgeInsets>>;
   setPageRange: Dispatch<SetStateAction<string>>;
@@ -60,7 +58,7 @@ export default function StitchMenu({
 
   return (
     <menu
-      className={`flex flex-col gap-2 ${className} bg-white border border-gray-200 rounded-lg absolute p-2`}
+      className={`flex flex-col gap-2 ${className} bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg absolute p-2`}
     >
       <InlineInput
         type="number"

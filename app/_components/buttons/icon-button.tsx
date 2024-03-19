@@ -24,7 +24,7 @@ export function IconButton({
   // Placeholder for multiple color options in the future
   // Add other options to IconButtonColor in theme/styles.ts and
   // implement logic here
-  let colorClasses = `hover:bg-gray-300 focus:ring-blue-300 ${IconButtonStateClass.DEFAULT}`;
+  let colorClasses = `hover:bg-gray-300 focus:ring-blue-300 dark:hover:bg-gray-700 dark:focus:ring-blue-800 ${IconButtonStateClass.DEFAULT}`;
   if (disabled) {
     colorClasses = IconButtonStateClass.DISABLED;
   } else if (active) {
@@ -32,7 +32,7 @@ export function IconButton({
   }
 
   const defaultClasses =
-    "bg-white cursor-pointer focus:ring-4 focus:outline-none rounded-full p-2.5";
+    "bg-white dark:bg-black cursor-pointer focus:ring-4 focus:outline-none rounded-full p-2.5";
 
   return href ? (
     <a
