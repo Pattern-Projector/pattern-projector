@@ -6,6 +6,7 @@ import {
   SetStateAction,
   MouseEvent,
   useState,
+  useRef,
   useEffect,
   useCallback
 } from "react";
@@ -32,8 +33,11 @@ export default function Draggable({
   const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
   const [isAxisLocked, setIsAxisLocked] = useState<Boolean>(false);
+  const [isIdle, setIsIdle] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const AXIS_LOCK_KEYBIND = 'Shift';
+  const IDLE_TIMEOUT = 1500;
 
   const handleKeyDown = useCallback(
     function (e: React.KeyboardEvent) {
@@ -67,12 +71,21 @@ export default function Draggable({
     }
   }, [dragStart, isAxisLocked, currentMousePos]);
 
+  function resetIdle() {
+    setIsIdle(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(()=>{setIsIdle(true)}, IDLE_TIMEOUT);
+  }
+
   function handleOnEnd(): void {
     setDragStart(null);
     setTransformStart(null);
   }
 
   function handleOnMouseMove(e: MouseEvent<HTMLDivElement>): void {
+    resetIdle();
     /* If we aren't currently dragging, ignore the mouse move event */
     if (dragStart === null) {
       return;
@@ -116,16 +129,22 @@ export default function Draggable({
     setTransformStart(localTransform.clone());
   }
 
-  //TODO: the react-pdf class endOfContent is overwriting this cursor style.
-  //      we need to prevent this from happening somehow. 
-  const cursorMode = `${dragStart !== null ? 'grabbing' : 'grab'}`;
-  const viewportCursorMode = `${dragStart !== null ? 'grabbing': 'default'}`;
+  let cursorMode = `${dragStart !== null ? 'grabbing' : 'grab'}`;
+  let viewportCursorMode = `${dragStart !== null ? 'grabbing': 'default'}`;
+
+  /* If we aren't dragging and the idle timer has set isIdle
+   * to true, hide the cursor */
+  if (dragStart === null && isIdle) {
+    cursorMode = 'none';
+    viewportCursorMode = 'none';
+  }
 
   return (
     <div
       tabIndex={0}
       className={viewportClassName + " w-screen h-screen "}
       onMouseMove={handleOnMouseMove}
+      onMouseEnter={resetIdle}
       onMouseUp={handleOnEnd}
       onKeyUp={handleKeyUp}
       onKeyDown={handleKeyDown}
