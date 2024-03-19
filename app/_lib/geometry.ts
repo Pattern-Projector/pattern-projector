@@ -184,3 +184,40 @@ export function interp(from: Point, to: Point, portion: number): Point {
   const rest = 1.0 - portion;
   return { x: to.x * portion + from.x * rest, y: to.y * portion + from.y * rest };
 }
+
+/* Returns true if the list of points define a concave polygon, false otherwise */
+export function checkIsConcave(points: Point[]): boolean {
+  const n = points.length;
+  if (n < 4) {
+    return false; // A polygon with less than 4 points is always convex
+  }
+
+  let prevOrientation = 0;
+  for (let i = 0; i < n; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % n];
+    const p3 = points[(i + 2) % n];
+
+    const orientation = getOrientation(p1, p2, p3);
+    if (orientation !== 0) {
+      if (prevOrientation === 0) {
+        prevOrientation = orientation;
+      } else if (orientation !== prevOrientation) {
+        return true; // The polygon is concave
+      }
+    }
+  }
+
+  return false; // The polygon is convex
+}
+
+function getOrientation(p1: Point, p2: Point, p3: Point): number {
+  const crossProduct = (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+  if (crossProduct < 0) {
+    return -1; // Clockwise orientation
+  } else if (crossProduct > 0) {
+    return 1; // Counterclockwise orientation
+  } else {
+    return 0; // Collinear points
+  }
+}

@@ -8,8 +8,9 @@ import React, {
   useState,
 } from "react";
 
+import { createCheckerboardPattern } from "@/_lib/drawing";
 import { getPerspectiveTransform } from "@/_lib/geometry";
-import { interp, minIndex, sqrdist, transformPoints } from "@/_lib/geometry";
+import { interp, minIndex, sqrdist, transformPoints, checkIsConcave } from "@/_lib/geometry";
 import {
   applyOffset,
   mouseToCanvasPoint,
@@ -45,8 +46,11 @@ function draw(
   pointToModify: number | null,
   ptDensity: number,
   isPrecisionMovement: boolean,
+  errorFillPattern: CanvasPattern,
   displayAllCorners?: boolean,
 ): void {
+  let isConcave = checkIsConcave(points);
+
   if (isCalibrating) {
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -54,9 +58,13 @@ function draw(
 
   ctx.translate(offset.x, offset.y);
 
-  ctx.fillStyle = "#000";
-
+  if (isConcave) {
+    ctx.fillStyle = errorFillPattern;
+  } else {
+    ctx.fillStyle = "#000";
+  }
   drawPolygon(ctx, points);
+
   if (isCalibrating) {
     ctx.fill();
   } else {
@@ -64,10 +72,15 @@ function draw(
   }
 
   ctx.strokeStyle = "#000";
+  ctx.globalCompositeOperation = "difference";
   ctx.beginPath();
+
   if (isCalibrating) {
     ctx.strokeStyle = "#fff";
-    drawGrid(ctx, width, height, perspective, 0, ptDensity, isCalibrating);
+    
+    /* Only draw the grid if the polygon is convex */
+    if (!isConcave) 
+      drawGrid(ctx, width, height, perspective, 0, ptDensity, isCalibrating);
 
     if (displayAllCorners) {
       points.forEach((point, index) => {
@@ -100,7 +113,8 @@ function draw(
       ctx.lineWidth = 4;
       ctx.stroke();
     }
-  } else {
+  } else if (!isConcave) {
+    /* Only draw the grid if the polygon is convex */
     ctx.setLineDash([1]);
     drawGrid(ctx, width, height, perspective, 8, ptDensity, isCalibrating);
   }
@@ -126,6 +140,7 @@ function drawGrid(
   ptDensity: number,
   isCalibrating: boolean,
 ): void {
+  ctx.globalCompositeOperation = "source-over";
   const majorLine = 5;
 
   for (let i = 0; i <= width; i++) {
@@ -260,8 +275,9 @@ export default function CalibrationCanvas({
   setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const patternRef = useRef<CanvasPattern | null>(null);
   const [panStart, setPanStart] = useState<Point | null>(null);
-  const [dragOffset, setDragOffset] = useState<Point>({ x: 0, y: 0 });
+  const [panStartPoints, setPanStartPoints] = useState<Point[] | null>(null);
   const [cursorMode, setCursorMode] = useState<string | null>(null);
   const [isPrecisionMovement, setIsPrecisionMovement] = useState(false);
   const [dragStartTime, setDragStartTime] = useState<number | null>(null);
@@ -280,8 +296,21 @@ export default function CalibrationCanvas({
 	  setPrecisionActivationPoint(prevPoint => localPoints[pointToModify]);
   }, [isPrecisionMovement, pointToModify]);
 
+  /* Used to create the error fill pattern */
   useEffect(() => {
-    if (canvasRef !== null && canvasRef.current !== null && localPoints && localPoints.length === maxPoints) {
+    if (!canvasRef === null || canvasRef.current === null)
+      return;
+    const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        patternRef.current = createCheckerboardPattern(ctx, 3, "#555", "#CCC");
+      }
+  }, []);
+
+  useEffect(() => {
+    if (canvasRef !== null && canvasRef.current !== null
+        && patternRef !== null && patternRef.current !== null
+        && localPoints && localPoints.length === maxPoints) {
       let perspective_mtx = getPerspectiveTransform(getDstVertices(), localPoints);
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
@@ -291,7 +320,7 @@ export default function CalibrationCanvas({
         ctx.canvas.height = window.innerHeight;
         draw(
           ctx,
-          dragOffset,
+          { x:0, y:0 },
           localPoints,
           width,
           height,
@@ -300,6 +329,7 @@ export default function CalibrationCanvas({
           pointToModify,
           ptDensity,
           isPrecisionMovement,
+          patternRef.current,
           transformSettings.isFourCorners,
         );
       }
@@ -321,7 +351,6 @@ export default function CalibrationCanvas({
       return dstVertices;
     }
   }, [
-    dragOffset,
     localPoints,
     width,
     height,
@@ -362,6 +391,7 @@ export default function CalibrationCanvas({
       } else {
         setPointToModify(null);
         setPanStart(newPoint);
+        setPanStartPoints(localPoints);
       }
     }
   }
@@ -374,12 +404,12 @@ export default function CalibrationCanvas({
         dragStartTime !== null &&
         dragStartMousePoint !== null &&
         Date.now() - dragStartTime > PRECISION_MOVEMENT_DELAY &&
-		Math.sqrt(sqrdist(dragStartMousePoint, p)) < PRECISION_MOVEMENT_THRESHOLD &&
+        Math.sqrt(sqrdist(dragStartMousePoint, p)) < PRECISION_MOVEMENT_THRESHOLD &&
         timeoutId != null 
       ) {
         setIsPrecisionMovement(true);
         if (pointToModify !== null)
-			setPrecisionActivationPoint(localPoints[pointToModify]);
+          setPrecisionActivationPoint(localPoints[pointToModify]);
       }
 
       if (
@@ -395,7 +425,6 @@ export default function CalibrationCanvas({
         clearTimeout(timeoutId);
         setTimeoutId(null);
       }
-
 
       const newPoints = [...localPoints];
       let destination = {
@@ -428,8 +457,14 @@ export default function CalibrationCanvas({
         y: newPoints[pointToModify].y + offset.y,
       };
       setLocalPoints(newPoints);
-    } else if (panStart !== null) {
-      setDragOffset({ x: p.x - panStart.x, y: p.y - panStart.y });
+    } else if (panStart !== null
+        && panStartPoints !== null
+        && panStartPoints.length === maxPoints) {
+      /* Panning. Apply the offset to the panStartPoints */
+      const dragOffset = { x: p.x - panStart.x, y: p.y - panStart.y }
+      setPoints(panStartPoints.map((p) => {
+        return {x: p.x + dragOffset.x, y: p.y + dragOffset.y}
+      }))
     }
   }
 
@@ -443,11 +478,15 @@ export default function CalibrationCanvas({
   }
 
   function handleMouseUp() {
+    /* Nothing to do. This short circuit is required to prevent setting
+     * the localStorage of the points to invalid values */
+    if (panStart === null && dragStartPoint === null)
+      return;
+
     localStorage.setItem("points", JSON.stringify(localPoints));
     if (panStart) {
-      setPoints(localPoints.map((p) => applyOffset(p, dragOffset)));
-      setDragOffset({ x: 0, y: 0 });
       setPanStart(null);
+      setPanStartPoints(null);
     } else {
         setPoints(localPoints);
     }
@@ -465,10 +504,16 @@ export default function CalibrationCanvas({
   }
 
   function handleTouchUp() {
+    /* Nothing to do. This short circuit is required to prevent setting
+     * the localStorage of the points to invalid values */
+    if (panStart === null && dragStartPoint === null)
+      return;
+
     localStorage.setItem("points", JSON.stringify(localPoints));
     setPoints(localPoints);
     setPointToModify(null);
     setPanStart(null);
+    setPanStartPoints(null);
     setIsPrecisionMovement(false);
     setDragStartTime(null);
     setDragStartMousePoint(null);
