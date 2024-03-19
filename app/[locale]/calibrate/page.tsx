@@ -353,7 +353,7 @@ export default function Page() {
             setTransformSettings={setTransformSettings}
           />
           <Draggable
-            viewportClassName={`select-none ${visible(!isCalibrating)}`}
+            viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-700 `}
             className={`select-none ${visible(!isCalibrating)}`}
             localTransform={localTransform}
             setLocalTransform={setLocalTransform}
