@@ -71,6 +71,10 @@ function draw(
   const color_c = interpolateColorRing(
     [lightColor, greenColor, lightColor],
     transitionProgress);
+  /* Grid line color for projection mode */
+  const color_d = interpolateColorRing(
+    [darkColor, greenColor, lightColor],
+    transitionProgress);
 
   if (isCalibrating) {
     ctx.fillStyle = color_a;
@@ -136,7 +140,7 @@ function draw(
     }
   } else if (!isConcave) {
     /* Only draw the grid if the polygon is convex */
-    ctx.strokeStyle = color_c
+    ctx.strokeStyle = color_d
     ctx.setLineDash([1]);
     drawGrid(ctx, width, height, perspective, 8, ptDensity, isCalibrating);
   }
