@@ -8,7 +8,10 @@ import React, {
   useState,
 } from "react";
 
-import { createCheckerboardPattern } from "@/_lib/drawing";
+import {
+  createCheckerboardPattern,
+  interpolateColorRing
+} from "@/_lib/drawing";
 import { getPerspectiveTransform } from "@/_lib/geometry";
 import {
   minIndex,
@@ -25,59 +28,7 @@ const maxPoints = 4; // One point per vertex in rectangle
 const PRECISION_MOVEMENT_THRESHOLD = 15;
 const PRECISION_MOVEMENT_RATIO = 5;
 const PRECISION_MOVEMENT_DELAY = 500;
-
-function interpolateColor(color1: string, color2: string, portion: number): string {
-  // Helper function to parse color components from a string
-  const parseColor = (color: string): number[] => {
-    if (color.startsWith('#')) {
-      const hex = color.slice(1);
-      if (hex.length === 3) {
-        return hex.split('').map(c => parseInt(c.repeat(2), 16) / 255);
-      } else if (hex.length === 6) {
-        return [
-          parseInt(hex.slice(0, 2), 16) / 255,
-          parseInt(hex.slice(2, 4), 16) / 255,
-          parseInt(hex.slice(4, 6), 16) / 255
-        ];
-      }
-    } else if (color.startsWith('rgb')) {
-      const components = color.match(/[\d.]+/g)?.map(parseFloat) || [];
-      if (components.length === 3 || components.length === 4) {
-        return components.slice(0, 3);
-      }
-    }
-    throw new Error('Invalid color format');
-  };
-
-  // Helper function to convert RGB components to a hex string
-  const rgbToHex = (r: number, g: number, b: number): string => {
-    const toHex = (value: number) => {
-      const hex = Math.round(value * 255).toString(16);
-      return hex.length === 1 ? '0' + hex : hex;
-    };
-    return '#' + toHex(r) + toHex(g) + toHex(b);
-  };
-
-  const [r1, g1, b1] = parseColor(color1);
-  const [r2, g2, b2] = parseColor(color2);
-
-  const r = r1 + (r2 - r1) * portion;
-  const g = g1 + (g2 - g1) * portion;
-  const b = b1 + (b2 - b1) * portion;
-
-  if (color1.startsWith('#') && color1.length === 4) {
-    return rgbToHex(r, g, b);
-  } else if (color1.startsWith('#')) {
-    return '#' + [r, g, b].map(c => Math.round(c * 255).toString(16).padStart(2, '0')).join('');
-  } else if (color1.startsWith('rgba')) {
-    const a1 = parseFloat(color1.match(/[\d.]+/g)?.[3] || '1');
-    const a2 = parseFloat(color2.match(/[\d.]+/g)?.[3] || '1');
-    const a = a1 + (a2 - a1) * portion;
-    return `rgba(${r},${g},${b},${a})`;
-  } else {
-    return `rgb(${r},${g},${b})`;
-  }
-}
+const TRANSITION_DURATION = 700;
 
 function getStrokeStyle(pointToModify: number) {
   return [
@@ -107,12 +58,20 @@ function draw(
 
   const lightColor = "#fff";
   const darkColor = "#000";
-  const color_a = interpolateColor(lightColor, darkColor, transitionProgress);
-  const color_b = interpolateColor(lightColor, darkColor, 1-transitionProgress);
-  console.log(transitionProgress)
-  console.log(color_a)
+  const greenColor = "#32CD32" 
+  /* Light color (in light mode) */
+  const color_a = interpolateColorRing(
+    [lightColor, darkColor, darkColor],
+    transitionProgress);
+  /* Dark color (in light mode) */
+  const color_b = interpolateColorRing(
+    [darkColor, lightColor, lightColor],
+    transitionProgress);
+  /* Grid line color */
+  const color_c = interpolateColorRing(
+    [lightColor, greenColor, lightColor],
+    transitionProgress);
 
-  ctx.globalCompositeOperation = "difference";
   if (isCalibrating) {
     ctx.fillStyle = color_a;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -123,7 +82,7 @@ function draw(
   if (isConcave) {
     ctx.fillStyle = errorFillPattern;
   } else {
-    ctx.fillStyle = color_b; 
+    ctx.fillStyle = "#000"; 
   }
   drawPolygon(ctx, points);
 
@@ -133,11 +92,12 @@ function draw(
     drawBorder(ctx);
   }
 
+  ctx.globalCompositeOperation = "difference";
   ctx.strokeStyle = "#000";
   ctx.beginPath();
 
   if (isCalibrating) {
-    ctx.strokeStyle = transformSettings.isInvertedGreen ? "#32CD32" : "#fff";
+    ctx.strokeStyle = color_c
 
     /* Only draw the grid if the polygon is convex */
     if (!isConcave)
@@ -176,13 +136,7 @@ function draw(
     }
   } else if (!isConcave) {
     /* Only draw the grid if the polygon is convex */
-    if (transformSettings.inverted) {
-      ctx.strokeStyle = interpolateColor("#000", "#fff", transitionProgress);
-    } else if (transformSettings.isInvertedGreen) {
-      ctx.strokeStyle = interpolateColor("#000", "#00ff00", transitionProgress);
-    } else {
-      ctx.strokeStyle = interpolateColor("#000", "#fff", transitionProgress);
-    }
+    ctx.strokeStyle = color_c
     ctx.setLineDash([1]);
     drawGrid(ctx, width, height, perspective, 8, ptDensity, isCalibrating);
   }
@@ -361,16 +315,22 @@ export default function CalibrationCanvas({
     useState<Point | null>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const [localPoints, setLocalPoints] = useState<Point[]>(points);
+  /* transitionProgress ranges from 0 to number of colorMode states + 1 */
   const [transitionProgress, setTransitionProgress] = useState<number>(0);
   const [colorMode, setColorMode] = useState<number | null>(null);
   const prevColorModeRef = useRef<number | null>(null);
 
+  const minColorMode = 0;
+  const maxColorMode = 2;
+
   useEffect(() => {
     var _colorMode;
+    /* The order is important here. The colorModes should monotonically 
+     * increase each time it changes */
     if (transformSettings.inverted && transformSettings.isInvertedGreen) {
-      _colorMode = 2;
-    } else if (transformSettings.inverted) {
       _colorMode = 1;
+    } else if (transformSettings.inverted) {
+      _colorMode = 2;
     } else {
       _colorMode = 0;
     }
@@ -382,41 +342,42 @@ export default function CalibrationCanvas({
   },[transformSettings])
 
 useEffect(() => {
+    /* No colorMode set yet, nothing to do */
     if (colorMode == null) return;
 
     const prevColorMode = prevColorModeRef.current;
     prevColorModeRef.current = colorMode;
 
+    /* No previous color mode, nothing to do */
     if (prevColorMode == null) return;
     
-    /* No transition necessary (probably just initialized */
+    /* No transition necessary (probably just initialized) */
     if (colorMode == prevColorMode) {
-      if (colorMode == 0) {
-        setTransitionProgress(0.0);
-      } else {
-        setTransitionProgress(1.0);
-      }
+      setTransitionProgress(colorMode);
       return;
     } 
 
-    /* Don't cange the animation if it's between two dark colors */
-    if ((colorMode == 2 && prevColorMode == 1)
-     || (colorMode == 1 && prevColorMode == 2))
-      return;
-
     let frameId: number;
     const startTime = Date.now();
-    const duration = 400; // Transition duration in milliseconds
+    const duration = TRANSITION_DURATION;
+    /* Start from our current progress (avoids jumping on double-click) */
+    const startTransitionProgress = transitionProgress;
+    let endTransitionProgress = colorMode;
+    /* Only allow forward progression */
+    if (colorMode == minColorMode){
+      endTransitionProgress = maxColorMode + 1;
+    }
+    const transitionDistance = endTransitionProgress - startTransitionProgress;
 
     const animate = () => {
       const elapsedTime = Date.now() - startTime;
+      /* progress is a number between 0 and 1 */
       const progress = Math.min(elapsedTime / duration, 1);
-      console.log(colorMode, prevColorMode, progress)
-      if (colorMode == 0) {
-        setTransitionProgress(1 - progress);
-      } else {
-        setTransitionProgress(progress);
-      }
+      let newTransitionProgress = startTransitionProgress + progress * transitionDistance; 
+      /* Keep transitionProgress in the range 
+       * 0 (inclusive) to maxColorMode + 1 (exclusive) */
+      newTransitionProgress %= maxColorMode+1; 
+      setTransitionProgress(newTransitionProgress);
 
       if (progress < 1) {
         frameId = requestAnimationFrame(animate);
