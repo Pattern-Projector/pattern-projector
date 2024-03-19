@@ -27,6 +27,7 @@ import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
+import MeasureCanvas from "@/_components/measure-canvas";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -62,6 +63,7 @@ export default function Page() {
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
+  const [measuring, setMeasuring] = useState<boolean>(false);
 
   const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
   const [pageRange, setPageRange] = useState<string>("");
@@ -295,9 +297,6 @@ export default function Page() {
             pageCount={pageCount}
             gridOn={gridOn}
             setGridOn={setGridOn}
-            layers={layers}
-            showLayerMenu={showLayerMenu}
-            setShowLayerMenu={setShowLayerMenu}
             localTransform={localTransform}
             setLocalTransform={setLocalTransform}
             layoutWidth={layoutWidth}
@@ -307,6 +306,8 @@ export default function Page() {
             setLineThickness={setLineThickness}
             setShowStitchMenu={setShowStitchMenu}
             showStitchMenu={showStitchMenu}
+            measuring={measuring}
+            setMeasuring={setMeasuring}
           />
 
           <LayerMenu
@@ -352,6 +353,12 @@ export default function Page() {
             transformSettings={transformSettings}
             setTransformSettings={setTransformSettings}
           />
+          {measuring && (
+            <MeasureCanvas
+              perspective={perspective}
+              unitOfMeasure={unitOfMeasure}
+            />
+          )}
           <Draggable
             viewportClassName={`select-none ${visible(!isCalibrating)}`}
             className={`select-none ${visible(!isCalibrating)}`}

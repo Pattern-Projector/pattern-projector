@@ -15,6 +15,7 @@ import type {
 } from "pdfjs-dist/types/src/display/api.js";
 import { Layer } from "@/_lib/layer";
 import { PDFPageProxy } from "pdfjs-dist";
+import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 
 function erodeImageData(imageData: ImageData, output: ImageData) {
   const { width, height, data } = imageData;
@@ -96,9 +97,6 @@ export default function CustomRenderer(
   const canvasElement = useRef<HTMLCanvasElement>(null);
   const userUnit = (page as PDFPageProxy).userUnit || 1;
 
-  const CSS = 96.0;
-  const PDF = 72.0;
-  const PDF_TO_CSS_UNITS = CSS / PDF;
   invariant(page, "Unable to find page.");
   invariant(pdf, "Unable to find pdf.");
 

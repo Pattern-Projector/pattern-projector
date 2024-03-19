@@ -39,6 +39,7 @@ import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
+import SquareFootIcon from "@/_icons/square-foot";
 
 export default function Header({
   isCalibrating,
@@ -57,9 +58,6 @@ export default function Header({
   pageCount,
   gridOn,
   setGridOn,
-  layers,
-  showLayerMenu,
-  setShowLayerMenu,
   localTransform,
   calibrationTransform,
   setLocalTransform,
@@ -69,6 +67,8 @@ export default function Header({
   showStitchMenu,
   lineThickness,
   setLineThickness,
+  measuring,
+  setMeasuring,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -86,9 +86,6 @@ export default function Header({
   pageCount: number;
   gridOn: boolean;
   setGridOn: Dispatch<SetStateAction<boolean>>;
-  layers: Map<string, Layer>;
-  showLayerMenu: boolean;
-  setShowLayerMenu: Dispatch<SetStateAction<boolean>>;
   localTransform: Matrix;
   calibrationTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
@@ -98,6 +95,8 @@ export default function Header({
   setLineThickness: Dispatch<SetStateAction<number>>;
   setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
   showStitchMenu: boolean;
+  measuring: boolean;
+  setMeasuring: Dispatch<SetStateAction<boolean>>;
 }) {
   const t = useTranslations("Header");
 
@@ -355,6 +354,13 @@ export default function Header({
             <Tooltip description={t("recenter")}>
               <IconButton onClick={handleRecenter}>
                 <RecenterIcon ariaLabel={t("recenter")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={measuring ? t("measureOff") : t("measureOn")}>
+              <IconButton onClick={() => setMeasuring(!measuring)}>
+                <SquareFootIcon
+                  ariaLabel={measuring ? t("measureOff") : t("measureOn")}
+                />
               </IconButton>
             </Tooltip>
           </div>
