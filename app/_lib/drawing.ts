@@ -1,3 +1,45 @@
+import Matrix from "ml-matrix";
+import { Point } from "@/_lib/point";
+import { TransformSettings } from "@/_lib/transform-settings";
+import {
+  checkIsConcave
+} from "@/_lib/geometry";
+
+export class CanvasState {
+  isConcave: boolean = false;
+
+  bgColor: string = "#fff";
+  fillColor: string = "#000";
+  gridLineColor: string = "#fff";
+  projectionGridLineColor: string = "#fff";
+  majorLineWidth: number = 2;
+  minorLineWidth: number = 1;
+
+  constructor(
+    public ctx: CanvasRenderingContext2D,
+    public offset: Point = { x: 0, y: 0 },
+    public points: Point[],
+    public width: number,
+    public height: number,
+    public perspective: Matrix,
+    public isCalibrating: boolean,
+    public pointToModify: number | null,
+    public ptDensity: number,
+    public isPrecisionMovement: boolean,
+    public errorFillPattern: CanvasPattern,
+    public transitionProgress: number,
+    public transformSettings: TransformSettings,
+    public overlayMode: OverlayMode
+  ) {
+    this.isConcave = checkIsConcave(this.points);
+  }
+}
+
+export enum OverlayMode {
+  GRID,
+  BORDER,
+  NONE,
+}
 
 /* Creates a checkerboard pattern for the canvas context */
 export function createCheckerboardPattern(
