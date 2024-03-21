@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslations } from "next-intl";
+import InlineSelect from "@/_components/inline-select";
 
 interface LanguageSwitcherProps {
   ariaLabel?: string;
@@ -28,12 +29,18 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, classNam
 
   return (
     <div className={className}>
-      <select onChange={handleLanguageChange} value={locale} aria-label={ariaLabel}>
-        <option value="de">{flags.de} {t("german")}</option>
-        <option value="da">{flags.dk} {t("danish")}</option>
-        <option value="nl">{flags.nl} {t("dutch")}</option>
-        <option value="en">{flags.us} {t("english")}</option>
-      </select>
+      <InlineSelect
+        handleChange={(e) => handleLanguageChange(e)}
+        id="change_language"
+        name="change_language"
+        value={locale}
+        options={[
+          { value: "de", label: t("german") },
+          { value: "da", label: t("danish") },
+          { value: "nl", label: t("dutch") },
+          { value: "en", label: t("english") },
+        ]}
+      />
     </div>
   );
 };
