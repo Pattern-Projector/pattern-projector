@@ -2,13 +2,17 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 
-const LanguageSwitcher: React.FC = () => {
+interface LanguageSwitcherProps {
+  ariaLabel?: string;
+}
+
+const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel }) => {
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname.substr(1, 2)
   console.log(locale)
 
-  const handleLanguageChange = e => {
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     router.push(e.target.value)
     //console.log(e.target.value)
   };
@@ -22,7 +26,7 @@ const LanguageSwitcher: React.FC = () => {
   };
 
   return (
-    <select onChange={handleLanguageChange} value={locale}>
+    <select onChange={handleLanguageChange} value={locale} aria-label={ariaLabel}>
       <option value="de">{flags.de} Deutsch</option>
       <option value="da">{flags.dk} Danish</option>
       <option value="nl">{flags.nl} Nederlands</option>

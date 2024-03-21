@@ -5,6 +5,7 @@
     "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
     "github": "See source code",
     "calibrate": "Start Calibrating",
+    "choose-language": "Language",
     "welcome": {
       "title": "Welcome to Pattern Projector!",
       "description": "Pattern projector is a free and open source web app that helps users quickly calibrate projectors for sewing patterns. This project is currently in beta, so expect large changes and new features to be added as we iterate."
