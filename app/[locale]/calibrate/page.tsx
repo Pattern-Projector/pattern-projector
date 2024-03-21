@@ -9,6 +9,7 @@ import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
 import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
+import { OverlayMode } from "@/_lib/drawing";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
@@ -16,7 +17,7 @@ import {
   getDefaultTransforms,
   TransformSettings,
 } from "@/_lib/transform-settings";
-import { CM, IN } from "@/_lib/unit";
+import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
@@ -40,7 +41,7 @@ export default function Page() {
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
     getDefaultTransforms(),
   );
-  const [gridOn, setGridOn] = useState<boolean>(true);
+  const [overlayMode, setOverlayMode] = useState<OverlayMode>(OverlayMode.GRID);
   const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
@@ -87,7 +88,7 @@ export default function Page() {
     return p;
   }
 
-  const ptDensity = unitOfMeasure === CM ? 96 / 2.54 : 96;
+  const ptDensity = getPtDensity(unitOfMeasure);
 
   function updateLocalSettings(newSettings: {}) {
     const settingString = localStorage.getItem("canvasSettings");
@@ -190,14 +191,6 @@ export default function Page() {
     }
   }, []);
 
-  useEffect(() => {
-    if (file) {
-      setGridOn(false);
-    } else {
-      setGridOn(true);
-    }
-  }, [file]);
-
   const pdfTranslation = useProgArrowKeyToMatrix(!isCalibrating);
 
   useEffect(() => {
@@ -293,8 +286,8 @@ export default function Page() {
               }
             }}
             pageCount={pageCount}
-            gridOn={gridOn}
-            setGridOn={setGridOn}
+            overlayMode={overlayMode}
+            setOverlayMode={setOverlayMode}
             layers={layers}
             showLayerMenu={showLayerMenu}
             setShowLayerMenu={setShowLayerMenu}
@@ -340,7 +333,7 @@ export default function Page() {
           />
 
           <CalibrationCanvas
-            className={`absolute z-10 ${visible(isCalibrating || gridOn)}`}
+            className={`absolute z-10`}
             points={points}
             setPoints={setPoints}
             pointToModify={pointToModify}
@@ -348,9 +341,10 @@ export default function Page() {
             width={+width}
             height={+height}
             isCalibrating={isCalibrating}
-            ptDensity={ptDensity}
+            unitOfMeasure={unitOfMeasure}
             transformSettings={transformSettings}
             setTransformSettings={setTransformSettings}
+            overlayMode={overlayMode}
           />
           <Draggable
             viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-700 `}

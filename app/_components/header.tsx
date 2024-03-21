@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { OverlayMode } from "@/_lib/drawing";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -18,6 +19,8 @@ import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import GridOffIcon from "@/_icons/grid-off-icon";
 import GridOnIcon from "@/_icons/grid-on-icon";
+import OverlayBorderIcon from "@/_icons/overlay-border-icon";
+import OverlayPaperIcon from "@/_icons/overlay-paper-icon";
 import InfoIcon from "@/_icons/info-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
@@ -32,6 +35,7 @@ import FourCorners from "@/_icons/four-corners";
 import FourCornersOff from "@/_icons/four-corners-off";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
+import { DropdownIconButton } from "@/_components/buttons/dropdown-icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
@@ -55,8 +59,8 @@ export default function Header({
   transformSettings,
   setTransformSettings,
   pageCount,
-  gridOn,
-  setGridOn,
+  overlayMode,
+  setOverlayMode,
   layers,
   showLayerMenu,
   setShowLayerMenu,
@@ -84,8 +88,8 @@ export default function Header({
   transformSettings: TransformSettings;
   setTransformSettings: (newTransformSettings: TransformSettings) => void;
   pageCount: number;
-  gridOn: boolean;
-  setGridOn: Dispatch<SetStateAction<boolean>>;
+  overlayMode: OverlayMode;
+  setOverlayMode: Dispatch<SetStateAction<OverlayMode>>;
   layers: Map<string, Layer>;
   showLayerMenu: boolean;
   setShowLayerMenu: Dispatch<SetStateAction<boolean>>;
@@ -121,6 +125,27 @@ export default function Header({
       setShowNav(true);
     }
   }, [fullScreenHandle.active]);
+
+  const overlayOptions = [
+    {
+      icon: <GridOffIcon ariaLabel={t("overlayModeOff")} />,
+      text: t("overlayModeOff"),
+      value: OverlayMode.NONE
+    },{
+      icon: <GridOnIcon ariaLabel={t("overlayModeGrid")} />,
+      text: t("overlayModeGrid"),
+      value: OverlayMode.GRID
+    },{
+      icon: <OverlayBorderIcon ariaLabel={t("overlayModeBorder")} />,
+      text: t("overlayModeBorder"),
+      value: OverlayMode.BORDER
+    },{
+      icon: <OverlayPaperIcon ariaLabel={t("overlayModePaper")} />,
+      text: t("overlayModePaper"),
+      value: OverlayMode.PAPER
+    },
+
+  ];
 
   return (
     <>
@@ -292,15 +317,12 @@ export default function Header({
                 />
               </div>
             </Tooltip>
-            <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
-              <IconButton onClick={() => setGridOn(!gridOn)}>
-                {gridOn ? (
-                  <GridOnIcon ariaLabel={t("gridOn")} />
-                ) : (
-                  <GridOffIcon ariaLabel={t("gridOff")} />
-                )}
-              </IconButton>
-            </Tooltip>
+            <DropdownIconButton
+              selection={overlayMode}
+              setSelection={setOverlayMode}
+              description={t("overlayMode")}
+              options={overlayOptions}
+            />
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
