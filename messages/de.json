@@ -6,6 +6,10 @@
         "github": "Github icon",
         "calibrate": "Starte Kalibrierung",
         "choose-language": "Language",
+        "german": "Deutsch",
+        "danish": "Danish",
+        "dutch": "Nederlands",
+        "english": "English",
         "welcome": {
             "title": "Willkommen bei Pattern Projector!",
             "description": "Pattern projector ist eine kostenlose und quelloffene Web-Applikation, die Benutzern hilft, Beamer für Schnittmuster schnell zu kalibrieren. Dieses Projekt befindet sich derzeit in der Beta-Phase. Es wird noch große Änderungen und neue Funktionen geben, die wir im Laufe der Zeit hinzufügen werden."

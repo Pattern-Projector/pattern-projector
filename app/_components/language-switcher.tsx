@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from 'next/navigation';
+import { useTranslations } from "next-intl";
 
 interface LanguageSwitcherProps {
   ariaLabel?: string;
@@ -10,11 +11,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel }) => {
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname.substr(1, 2)
-  console.log(locale)
+  const t = useTranslations("HomePage");
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     router.push(e.target.value)
-    //console.log(e.target.value)
   };
 
   // Unicode escape sequences for flag emojis
@@ -27,10 +27,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel }) => {
 
   return (
     <select onChange={handleLanguageChange} value={locale} aria-label={ariaLabel}>
-      <option value="de">{flags.de} Deutsch</option>
-      <option value="da">{flags.dk} Danish</option>
-      <option value="nl">{flags.nl} Nederlands</option>
-      <option value="en">{flags.us} English</option>
+      <option value="de">{flags.de} {t("german")}</option>
+      <option value="da">{flags.dk} {t("danish")}</option>
+      <option value="nl">{flags.nl} {t("dutch")}</option>
+      <option value="en">{flags.us} {t("english")}</option>
     </select>
   );
 };
