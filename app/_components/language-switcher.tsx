@@ -21,10 +21,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, classNam
 
   // Unicode escape sequences for flag emojis
   const flags = {
-    de: '\uD83C\uDDE9\uD83C\uDDEA', // DE flag for German
-    dk: '\uD83C\uDDE9\uD83C\uDDF0', // DK flag for Danish
+    de: '\uD83C\uDDE9\uD83C\uDDEA',  // DE flag for German
+    dk: '\uD83C\uDDE9\uD83C\uDDF0',  // DK flag for Danish
     nl: '\uD83C\uDDF3\uD83C\uDDF1',  // NL flag for Dutch
-    us: '\uD83C\uDDFA\uD83C\uDDF8'  // US flag for English
+    us: '\uD83C\uDDFA\uD83C\uDDF8'   // US flag for English
   };
 
   return (
@@ -35,10 +35,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, classNam
         name="change_language"
         value={locale}
         options={[
-          { value: "de", label: t("german") },
-          { value: "da", label: t("danish") },
-          { value: "nl", label: t("dutch") },
-          { value: "en", label: t("english") },
+          { value: "de", label: flags.de + " " + t("german") },
+          { value: "da", label: flags.dk + " " + t("danish") },
+          { value: "nl", label: flags.nl + " " + t("dutch") },
+          { value: "en", label: flags.us + " " + t("english") },
         ]}
       />
     </div>
