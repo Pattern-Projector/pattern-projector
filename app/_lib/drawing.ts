@@ -1,3 +1,4 @@
+import { getPtDensity } from "@/_lib/unit";
 import Matrix from "ml-matrix";
 import { Point } from "@/_lib/point";
 import { TransformSettings } from "@/_lib/transform-settings";
@@ -8,12 +9,16 @@ import {
 export class CanvasState {
   isConcave: boolean = false;
 
+  lightColor: string = "#fff";
+  darkColor: string = "#000";
+  greenColor: string = "#32CD32" 
   bgColor: string = "#fff";
   fillColor: string = "#000";
   gridLineColor: string = "#fff";
   projectionGridLineColor: string = "#fff";
   majorLineWidth: number = 2;
   minorLineWidth: number = 1;
+  ptDensity: number = 96;
 
   constructor(
     public ctx: CanvasRenderingContext2D,
@@ -24,7 +29,7 @@ export class CanvasState {
     public perspective: Matrix,
     public isCalibrating: boolean,
     public pointToModify: number | null,
-    public ptDensity: number,
+    public unitOfMeasure: string,
     public isPrecisionMovement: boolean,
     public errorFillPattern: CanvasPattern,
     public transitionProgress: number,
@@ -32,12 +37,14 @@ export class CanvasState {
     public overlayMode: OverlayMode
   ) {
     this.isConcave = checkIsConcave(this.points);
+    this.ptDensity = getPtDensity(unitOfMeasure);
   }
 }
 
 export enum OverlayMode {
   GRID,
   BORDER,
+  PAPER,
   NONE,
 }
 

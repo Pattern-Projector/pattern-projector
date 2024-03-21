@@ -14,11 +14,13 @@ import {
   OverlayMode,
   CanvasState
 } from "@/_lib/drawing";
+import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { getPerspectiveTransform } from "@/_lib/geometry";
 import {
   minIndex,
   sqrdist,
   transformPoints,
+  transformPoint,
 } from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
 import { TransformSettings } from "@/_lib/transform-settings";
@@ -94,24 +96,24 @@ function draw(cs: CanvasState): void {
   const ctx = cs.ctx
 
   /* Calculate canvas state colors */
-  const lightColor = "#fff";
-  const darkColor = "#000";
-  const greenColor = "#32CD32" 
+  cs.lightColor = "#fff";
+  cs.darkColor = "#000";
+  cs.greenColor = "#32CD32" 
   /* Light color (in light mode) */
   cs.bgColor = interpolateColorRing(
-    [lightColor, darkColor, darkColor],
+    [cs.lightColor, cs.darkColor, cs.darkColor],
     cs.transitionProgress);
   /* Dark color (in light mode) */
   cs.fillColor = interpolateColorRing(
-    [darkColor, lightColor, lightColor],
+    [cs.darkColor, cs.lightColor, cs.lightColor],
     cs.transitionProgress);
   /* Grid line color */
   cs.gridLineColor = interpolateColorRing(
-    [lightColor, greenColor, lightColor],
+    [cs.lightColor, cs.greenColor, cs.lightColor],
     cs.transitionProgress);
   /* Grid line color for projection mode */
   cs.projectionGridLineColor = interpolateColorRing(
-    [darkColor, greenColor, lightColor],
+    [cs.darkColor, cs.greenColor, cs.lightColor],
     cs.transitionProgress);
 
   /* Draw background only in calibration mode */
@@ -131,14 +133,114 @@ function draw(cs: CanvasState): void {
   } else {
     switch(cs.overlayMode) {
       case OverlayMode.BORDER:
-        drawBorder(cs, darkColor, cs.gridLineColor);
+        drawBorder(cs, cs.darkColor, cs.gridLineColor);
       break;
       case OverlayMode.GRID:
         ctx.strokeStyle = cs.projectionGridLineColor
         drawGrid(cs, 8, [1]) 
-        drawBorder(cs, darkColor, cs.gridLineColor);
+        drawBorder(cs, cs.darkColor, cs.gridLineColor);
+      break;
+      case OverlayMode.PAPER:
+        drawBorder(cs, cs.darkColor, cs.gridLineColor);
+        drawPaperSheet(cs);
     }
   }
+}
+
+function drawPaperSheet(cs: CanvasState) {
+  const ctx = cs.ctx;
+  ctx.save();
+  const fontSize = 32;
+  ctx.globalCompositeOperation = "difference";
+  ctx.font = `${fontSize}px monospace`;
+  ctx.fillStyle = "white";
+  /* Portrait text, Landscape text */
+  let textPL: [string,string];
+  let text: string;
+  let paperWidth: number;
+  let paperHeight: number;
+  switch(cs.unitOfMeasure){
+    case CM:
+      textPL = ["A4","A4"];
+      paperWidth = 21;
+      paperHeight = 29.7;
+    break;
+    case IN:
+      textPL = ["8.5x11","11x8.5"];
+      paperWidth = 8.5;
+      paperHeight = 11;
+    break;
+  }
+  
+  const portrait = false;
+  if (portrait) {
+    text = textPL[0];
+  }else {
+    text = textPL[1];
+    /* Swap the width/height when in landscape mode */
+    const tmp = paperWidth;
+    paperWidth = paperHeight;
+    paperHeight = tmp;
+  } 
+
+  paperWidth *= cs.ptDensity;
+  paperHeight *= cs.ptDensity;
+
+  const center = {
+    x: cs.width * cs.ptDensity * 0.5,
+    y: cs.height * cs.ptDensity * 0.5,
+  }
+
+  /* Center Projected */
+  const centerP = transformPoint(
+    center,
+    cs.perspective,
+  );
+
+  const corners = [
+    {
+      x: 0.0,
+      y: 0.0,
+    },{
+      x: 0.0,
+      y: paperHeight,
+    },{
+      x: paperWidth,
+      y: paperHeight,
+    },{
+      x: paperWidth,
+      y: 0.0,
+    }
+  ]
+
+  const centerOffset = {
+    x: ((cs.width * cs.ptDensity) - paperWidth)* 0.5,
+    y: ((cs.height * cs.ptDensity) - paperHeight)* 0.5,
+  }
+
+  /* Center the page */
+  const cornersCentered = corners.map((p) => {
+    return { x: p.x + centerOffset.x, y: p.y + centerOffset.y };
+  });
+
+  /* Projected corners (centered) */
+  const cornersP = transformPoints(
+    cornersCentered,
+    cs.perspective,
+  );
+
+  drawPolygon(ctx, cornersP);
+  ctx.setLineDash([5,1]);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = cs.projectionGridLineColor; 
+  ctx.stroke();
+
+  const labelWidth = ctx.measureText(text).width;
+  const labelHeight = ctx.measureText(text).height;
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = cs.projectionGridLineColor; 
+  ctx.fillText(text, centerP.x - labelWidth * 0.5, centerP.y);
+  ctx.restore();
 }
 
 function drawBorder(cs: CanvasState, lineColor: string, dashColor: string) {
@@ -300,7 +402,7 @@ export default function CalibrationCanvas({
   width,
   height,
   isCalibrating,
-  ptDensity,
+  unitOfMeasure,
   transformSettings,
   setTransformSettings,
   overlayMode,
@@ -313,7 +415,7 @@ export default function CalibrationCanvas({
   width: number;
   height: number;
   isCalibrating: boolean;
-  ptDensity: number;
+  unitOfMeasure: string;
   transformSettings: TransformSettings;
   setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
   overlayMode: OverlayMode;
@@ -460,7 +562,7 @@ useEffect(() => {
           perspective_mtx,
           isCalibrating,
           pointToModify,
-          ptDensity,
+          unitOfMeasure,
           isPrecisionMovement,
           patternRef.current,
           transitionProgress,
@@ -471,9 +573,11 @@ useEffect(() => {
       }
     }
 
+
     function getDstVertices(): Point[] {
       const ox = 0;
       const oy = 0;
+      const ptDensity = getPtDensity(unitOfMeasure);
       const mx = +width * ptDensity + ox;
       const my = +height * ptDensity + oy;
 
@@ -492,7 +596,7 @@ useEffect(() => {
     height,
     isCalibrating,
     pointToModify,
-    ptDensity,
+    unitOfMeasure,
     transitionProgress,
     transformSettings,
     isPrecisionMovement,

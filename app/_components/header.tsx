@@ -20,6 +20,7 @@ import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import GridOffIcon from "@/_icons/grid-off-icon";
 import GridOnIcon from "@/_icons/grid-on-icon";
 import OverlayBorderIcon from "@/_icons/overlay-border-icon";
+import OverlayPaperIcon from "@/_icons/overlay-paper-icon";
 import InfoIcon from "@/_icons/info-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
@@ -138,7 +139,12 @@ export default function Header({
       icon: <OverlayBorderIcon ariaLabel={t("overlayModeBorder")} />,
       text: t("overlayModeBorder"),
       value: OverlayMode.BORDER
+    },{
+      icon: <OverlayPaperIcon ariaLabel={t("overlayModePaper")} />,
+      text: t("overlayModePaper"),
+      value: OverlayMode.PAPER
     },
+
   ];
 
   return (

@@ -17,7 +17,7 @@ import {
   getDefaultTransforms,
   TransformSettings,
 } from "@/_lib/transform-settings";
-import { CM, IN } from "@/_lib/unit";
+import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
@@ -88,7 +88,7 @@ export default function Page() {
     return p;
   }
 
-  const ptDensity = unitOfMeasure === CM ? 96 / 2.54 : 96;
+  const ptDensity = getPtDensity(unitOfMeasure);
 
   function updateLocalSettings(newSettings: {}) {
     const settingString = localStorage.getItem("canvasSettings");
@@ -341,7 +341,7 @@ export default function Page() {
             width={+width}
             height={+height}
             isCalibrating={isCalibrating}
-            ptDensity={ptDensity}
+            unitOfMeasure={unitOfMeasure}
             transformSettings={transformSettings}
             setTransformSettings={setTransformSettings}
             overlayMode={overlayMode}
