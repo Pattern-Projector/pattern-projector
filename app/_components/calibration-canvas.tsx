@@ -166,6 +166,7 @@ function drawPaperSheet(cs: CanvasState) {
       paperHeight = 29.7;
     break;
     case IN:
+    default:
       textPL = ["8.5x11","11x8.5"];
       paperWidth = 8.5;
       paperHeight = 11;
@@ -236,7 +237,6 @@ function drawPaperSheet(cs: CanvasState) {
   ctx.stroke();
 
   const labelWidth = ctx.measureText(text).width;
-  const labelHeight = ctx.measureText(text).height;
   ctx.textBaseline = 'middle';
   ctx.fillStyle = cs.projectionGridLineColor; 
   ctx.fillText(text, centerP.x - labelWidth * 0.5, centerP.y);
