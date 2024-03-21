@@ -5,9 +5,10 @@ import { useTranslations } from "next-intl";
 
 interface LanguageSwitcherProps {
   ariaLabel?: string;
+  className?: string; 
 }
 
-const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel }) => {
+const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, className }) => {
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname.substr(1, 2)
@@ -26,12 +27,14 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel }) => {
   };
 
   return (
-    <select onChange={handleLanguageChange} value={locale} aria-label={ariaLabel}>
-      <option value="de">{flags.de} {t("german")}</option>
-      <option value="da">{flags.dk} {t("danish")}</option>
-      <option value="nl">{flags.nl} {t("dutch")}</option>
-      <option value="en">{flags.us} {t("english")}</option>
-    </select>
+    <div className={className}>
+      <select onChange={handleLanguageChange} value={locale} aria-label={ariaLabel}>
+        <option value="de">{flags.de} {t("german")}</option>
+        <option value="da">{flags.dk} {t("danish")}</option>
+        <option value="nl">{flags.nl} {t("dutch")}</option>
+        <option value="en">{flags.us} {t("english")}</option>
+      </select>
+    </div>
   );
 };
 

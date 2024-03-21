@@ -27,8 +27,8 @@ export default function Home() {
       <nav className="flex items-center gap-2">
         <PatternProjectorIcon ariaLabel="" />
         <span className="font-bold">{t("beta")}</span>
-        <LanguageSwitcher ariaLabel={t("choose-language")} />
-        <Tooltip description={t("github")} className="ml-auto">
+        <LanguageSwitcher ariaLabel={t("choose-language")} className="ml-auto"/>
+        <Tooltip description={t("github")}>
           <IconButton href="https://github.com/Pattern-Projector/pattern-projector">
             <GithubIcon ariaLabel={t("github")} />
           </IconButton>
