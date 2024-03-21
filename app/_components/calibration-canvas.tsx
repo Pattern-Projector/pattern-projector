@@ -214,6 +214,12 @@ function drawDimensionLabels(
   ctx.fillStyle = "white";
   const widthText = `${width}`;
   const heightText = `${height}`;
+
+  // Get the actual font height, numbers are all above the baseline on the font used; would need adjustment to work with
+  // fancier fonts where e.g. the 9 descends.
+  const metrics = ctx.measureText(heightText);
+  const height_offset = (metrics.actualBoundingBoxAscent / 2);
+
   const line = transformPoints(
     [
       {
@@ -222,7 +228,7 @@ function drawDimensionLabels(
       },
       {
         x: 0,
-        y: height * 0.5 * ptDensity,
+        y: (height * 0.5 * ptDensity) - height_offset,
       },
     ],
     perspective,
