@@ -6,10 +6,6 @@
         "github": "Github icon",
         "calibrate": "Begynd kalibrering",
         "choose-language": "Language",
-        "german": "Deutsch",
-        "danish": "Danish",
-        "dutch": "Nederlands",
-        "english": "English",
         "welcome": {
             "title": "Velkommen til Pattern Projector",
             "description": "Pattern Projector er en gratis og open source webapp, der hjælper brugere med hurtigt at kalibrere projektorer til brug med symønstre. Dette projekt er lige nu i beta, så forvent store ændringer og tilføjelse af nye funktioner med tiden. "

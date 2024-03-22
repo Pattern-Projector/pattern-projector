@@ -6,10 +6,6 @@
         "github": "Bekijk de broncode",
         "calibrate": "Start kalibreren",
         "choose-language": "Taal",
-        "german": "Deutsch",
-        "danish": "Danish",
-        "dutch": "Nederlands",
-        "english": "English",
         "welcome": {
             "title": "Welkom bij Pattern Projector!",
             "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projektors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan regelmatig veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."

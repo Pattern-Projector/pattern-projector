@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter, usePathname } from 'next/navigation';
-import { useTranslations } from "next-intl";
 import InlineSelect from "@/_components/inline-select";
 
 interface LanguageSwitcherProps {
@@ -13,18 +12,18 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, classNam
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname.substr(1, 2)
-  const t = useTranslations("HomePage");
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     router.push(e.target.value)
   };
 
   // Unicode escape sequences for flag emojis
-  const flags = {
-    de: '\uD83C\uDDE9\uD83C\uDDEA',  // DE flag for German
-    dk: '\uD83C\uDDE9\uD83C\uDDF0',  // DK flag for Danish
-    nl: '\uD83C\uDDF3\uD83C\uDDF1',  // NL flag for Dutch
-    us: '\uD83C\uDDFA\uD83C\uDDF8'   // US flag for English
+  // Language names are not translated because we want them to be the same always, regardless of the current language.
+  const locale_data = {
+    'de': { 'flag': '\uD83C\uDDE9\uD83C\uDDEA', 'name': "Deutsch" },  // DE flag for German
+    'da': { 'flag': '\uD83C\uDDE9\uD83C\uDDF0', 'name': "Danish" },  // DK flag for Danish
+    'nl': { 'flag': '\uD83C\uDDF3\uD83C\uDDF1', 'name': "Nederlands" },  // NL flag for Dutch
+    'en': { 'flag': '\uD83C\uDDFA\uD83C\uDDF8', 'name': "English" }  // US flag for English
   };
 
   return (
@@ -34,12 +33,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, classNam
         id="change_language"
         name="change_language"
         value={locale}
-        options={[
-          { value: "de", label: flags.de + " " + t("german") },
-          { value: "da", label: flags.dk + " " + t("danish") },
-          { value: "nl", label: flags.nl + " " + t("dutch") },
-          { value: "en", label: flags.us + " " + t("english") },
-        ]}
+        options={Object.entries(locale_data).map(([key, {flag, name}]) => ({
+            value: key,
+            label: flag + " " + name
+        }))}
       />
     </div>
   );
