@@ -188,16 +188,24 @@ export default function Page() {
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
+
       const newDisplaySettings: {
+        overlayMode?: OverlayMode;
         inverted?: boolean;
         isInvertedGreen?: boolean;
         isFourCorners?: boolean;
       } = {};
+      
+      const defaultDS = getDefaultDisplaySettings();
 
-      newDisplaySettings.inverted = localSettings.inverted || false;
-      newDisplaySettings.isInvertedGreen =
-        localSettings.isInvertedGreen || false;
-      newDisplaySettings.isFourCorners = localSettings.isFourCorners || false;
+      newDisplaySettings.overlayMode = localSettings.overlayMode !== undefined 
+        ? localSettings.overlayMode : defaultDS.overlayMode;
+      newDisplaySettings.inverted = localSettings.inverted !== undefined
+        ? localSettings.inverted : defaultDS.inverted;
+      newDisplaySettings.isInvertedGreen = localSettings.isInvertedGreen !== undefined
+        ? localSettings.isInvertedGreen : defaultDS.isInvertedGreen;
+      newDisplaySettings.isFourCorners = localSettings.isFourCorners !== undefined
+        ? localSettings.isFourCorners : defaultDS.isFourCorners;
       setDisplaySettings({ ...displaySettings, ...newDisplaySettings });
     }
   }, []);
@@ -289,6 +297,7 @@ export default function Page() {
               setDisplaySettings(newSettings);
               if (newSettings) {
                 updateLocalSettings({
+                  overlayMode: newSettings.overlayMode,
                   inverted: newSettings.inverted,
                   isInvertedGreen: newSettings.isInvertedGreen,
                   isFourCorners: newSettings.isFourCorners,
