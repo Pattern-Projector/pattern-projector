@@ -120,17 +120,12 @@ export default function Header({
 
   function handleRecenter() {
     if (transformSettings.matrix !== null) {
-      const ptDensity = getPtDensity(unitOfMeasure);
-      const pdfPixels = 72;
-      const layoutPtDensity = 96;
-      let tx = ((+width * ptDensity) / 2)
-        - ((layoutWidth * layoutPtDensity / pdfPixels) / 2);
-      let ty = ((+height * ptDensity) / 2)
-        - ((layoutHeight * layoutPtDensity / pdfPixels) / 2);
+      let tx = +width / 2;
+      let ty = +height / 2;
       
-      const m = translate({ x: tx/ptDensity, y: ty/ptDensity});
+      const m = translate({ x: tx, y: ty});
       const newTransformMatrix = overrideTranslationFromMatrix(
-        transformSettings.matrix, m)
+        transformSettings.matrix, m);
       setTransformSettings({
        ...transformSettings,
         matrix: newTransformMatrix,
@@ -378,7 +373,7 @@ export default function Header({
                 onClick={() =>
                   setTransformSettings({
                     ...transformSettings,
-                    matrix: rotateMatrixDeg(transformSettings.matrix, -90),
+                    matrix: rotateMatrixDeg(transformSettings.matrix, 90),
                   })
                 }
               >

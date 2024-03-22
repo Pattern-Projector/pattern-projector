@@ -1,7 +1,7 @@
 "use client";
 
 import { Matrix, inverse } from "ml-matrix";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState, useRef} from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
@@ -12,7 +12,8 @@ import {
   getPerspectiveTransformFromPoints,
   toMatrix3d,
   decomposeTransformMatrix,
-  extractTranslationMatrix
+  scaleMatrixTranslation,
+  translate,
 } from "@/_lib/geometry";
 import { OverlayMode } from "@/_lib/drawing";
 import isValidPDF from "@/_lib/is-valid-pdf";
@@ -82,6 +83,9 @@ export default function Page() {
     horizontal: "",
     vertical: "",
   });
+
+  const pdfRef = useRef<HTMLDivElement | null>(null);
+  const [pdfDimensions, setPdfDimensions] = useState({ width: 0, height: 0 });
 
   function getDefaultPoints() {
     const o = 150;
@@ -210,18 +214,52 @@ export default function Page() {
     }
   }, []);
 
-  const pdfTranslation = useProgArrowKeyToMatrix(!isCalibrating);
+  /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in/cm */
+  useProgArrowKeyToMatrix(!isCalibrating, 1.0/16.0, (matrix) => {
+      const newTransformMatrix = matrix.mmul(transformSettings.matrix);
+      setTransformSettings({
+       ...transformSettings,
+        matrix: newTransformMatrix,
+      })
+  });
 
   useEffect(() => {
     /* Combine the translation portion of tranformSettings
      * with the localTransformMatrix. Note that the transformSettings
      * matrix must be scaled by ptDensity first */
-    const ptDensity = getPtDensity(unitOfMeasure);
-    const translationMatrix = extractTranslationMatrix(Matrix.mul(transformSettings.matrix, ptDensity));
-    const m = localTransform.mmul(translationMatrix);
-    setMatrix3d(toMatrix3d(m.mmul(pdfTranslation)));
 
-  }, [localTransform, pdfTranslation, transformSettings, unitOfMeasure]);
+    const pdfWidth = pdfDimensions.width;
+    const pdfHeight = pdfDimensions.height;
+    const translateToCenter = translate({x: -pdfWidth/2, y: -pdfHeight/2})
+
+    const ptDensity = getPtDensity(unitOfMeasure);
+    const scaledTranslation = scaleMatrixTranslation(transformSettings.matrix, ptDensity);
+
+    const m0 = localTransform.mmul(scaledTranslation)
+    const m1 = translateToCenter.mmul(m0);
+    setMatrix3d(toMatrix3d(m1));
+
+  }, [localTransform, transformSettings, unitOfMeasure, pdfDimensions]);
+
+  /* Update the pdfWidth and pdfHeight when it changes */
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        setPdfDimensions({ width, height });
+      }
+    });
+
+    if (pdfRef.current) {
+      observer.observe(pdfRef.current);
+    }
+
+    return () => {
+      if (pdfRef.current) {
+        observer.unobserve(pdfRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const ptDensity = getPtDensity(unitOfMeasure);
@@ -262,8 +300,6 @@ export default function Page() {
       isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""
     }`;
   }
-
-  const decomposedTransform = decomposeTransformMatrix(transformSettings.matrix)
 
   return (
     <main
@@ -371,10 +407,11 @@ export default function Page() {
             unitOfMeasure={unitOfMeasure}
           >
             <div
+              ref={pdfRef}
               className={"absolute z-0"}
               style={{
                 transform: `${matrix3d}`,
-                transformOrigin: "0 0",
+                transformOrigin: "center",
                 filter: getInversionFilters(
                   displaySettings.inverted,
                   displaySettings.isInvertedGreen,
@@ -384,7 +421,6 @@ export default function Page() {
               <div
                 className={"border-8 border-purple-700"}
                 style={{
-                  transform: `${decomposedTransform.formatCssNoTranslation()}`,
                   transformOrigin: "center",
                 }}
               >

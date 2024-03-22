@@ -320,6 +320,16 @@ export function extractTranslationMatrix(matrix: Matrix): Matrix {
   ]);
 }
 
+/* Scale only the translation portion of the transformation matrix */
+export function scaleMatrixTranslation(matrix: Matrix, scale: number): Matrix {
+  const tx = matrix.get(0, 2);
+  const ty = matrix.get(1, 2);
+  const newMatrix = matrix.clone();
+  newMatrix.set(0, 2, tx * scale);
+  newMatrix.set(1, 2, ty * scale);
+  return newMatrix;
+}
+
 /* Extracts only the rotation and scale portion of the transformation matrix */
 export function extractRotationScaleMatrix(matrix: Matrix): Matrix {
   const newMatrix = matrix.clone();
