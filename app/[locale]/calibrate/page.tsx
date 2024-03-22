@@ -200,10 +200,10 @@ export default function Page() {
 
   useEffect(() => {
     /* Combine the translation portion of tranformSettings
-     * with the localTransformMatrix */
+     * with the localTransformMatrix. Note that the transformSettings
+     * matrix must be scaled by ptDensity first */
     const ptDensity = getPtDensity(unitOfMeasure);
     const translationMatrix = extractTranslationMatrix(Matrix.mul(transformSettings.matrix, ptDensity));
-    console.log(JSON.stringify(translationMatrix))
     const m = localTransform.mmul(translationMatrix);
     setMatrix3d(toMatrix3d(m.mmul(pdfTranslation)));
 

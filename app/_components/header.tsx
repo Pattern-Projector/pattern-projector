@@ -121,10 +121,11 @@ export default function Header({
     if (transformSettings.matrix !== null) {
       const ptDensity = getPtDensity(unitOfMeasure);
       const pdfPixels = 72;
-      //const tx = (+width * pdfPixels) / 2 - layoutWidth / 2;
-      //const ty = (+height * pdfPixels) / 2 - layoutHeight / 2;
-      const tx = ((+width * ptDensity) / 2);// 
-      const ty = ((+height * ptDensity) / 2);// - (layoutHeight/2);
+      const layoutPtDensity = 96;
+      let tx = ((+width * ptDensity) / 2)
+        - ((layoutWidth * layoutPtDensity / pdfPixels) / 2);
+      let ty = ((+height * ptDensity) / 2)
+        - ((layoutHeight * layoutPtDensity / pdfPixels) / 2);
       
       const m = translate({ x: tx/ptDensity, y: ty/ptDensity});
       const newTransformMatrix = overrideTranslationFromMatrix(
