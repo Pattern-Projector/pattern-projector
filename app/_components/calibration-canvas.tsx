@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 
-import { createCheckerboardPattern } from "@/_lib/drawing";
+import { createCheckerboardPattern, drawLine } from "@/_lib/drawing";
 import { getPerspectiveTransform } from "@/_lib/geometry";
 import {
   minIndex,
@@ -213,19 +213,6 @@ function drawDimensionLabels(
   const widthLabelWidth = ctx.measureText(widthText).width;
   ctx.fillText(widthText, line[0].x - widthLabelWidth * 0.5, line[0].y - inset);
   ctx.fillText(heightText, line[1].x + inset, line[1].y + fontSize * 0.5);
-}
-
-function drawLine(
-  ctx: CanvasRenderingContext2D,
-  p1: Point,
-  p2: Point,
-  lineWidth: number = 1,
-): void {
-  ctx.beginPath();
-  ctx.lineWidth = lineWidth;
-  ctx.moveTo(p1.x, p1.y);
-  ctx.lineTo(p2.x, p2.y);
-  ctx.stroke();
 }
 
 function drawCrosshair(

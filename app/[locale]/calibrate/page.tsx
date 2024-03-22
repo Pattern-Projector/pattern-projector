@@ -356,6 +356,7 @@ export default function Page() {
           {measuring && (
             <MeasureCanvas
               perspective={perspective}
+              calibrationTransform={calibrationTransform}
               unitOfMeasure={unitOfMeasure}
             />
           )}

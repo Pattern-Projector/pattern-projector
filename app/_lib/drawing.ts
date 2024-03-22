@@ -1,3 +1,4 @@
+import { Point } from "./point";
 
 /* Creates a checkerboard pattern for the canvas context */
 export function createCheckerboardPattern(
@@ -41,4 +42,17 @@ export function createCheckerboardPattern(
     /* Clean up the dynamically created canvas element */
     patternCanvas.remove();
   }
+}
+
+export function drawLine(
+  ctx: CanvasRenderingContext2D,
+  p1: Point,
+  p2: Point,
+  lineWidth: number = 1,
+): void {
+  ctx.beginPath();
+  ctx.lineWidth = lineWidth;
+  ctx.moveTo(p1.x, p1.y);
+  ctx.lineTo(p2.x, p2.y);
+  ctx.stroke();
 }
