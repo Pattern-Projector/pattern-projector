@@ -420,9 +420,6 @@ export default function Page() {
             >
               <div
                 className={"border-8 border-purple-700"}
-                style={{
-                  transformOrigin: "center",
-                }}
               >
                 <PDFViewer
                   file={file}
