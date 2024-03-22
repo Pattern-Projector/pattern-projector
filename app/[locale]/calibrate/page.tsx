@@ -1,6 +1,6 @@
 "use client";
 
-import Matrix from "ml-matrix";
+import { Matrix, inverse } from "ml-matrix";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
@@ -8,7 +8,12 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
+import {
+  getPerspectiveTransformFromPoints,
+  toMatrix3d,
+  decomposeTransformMatrix,
+  extractTranslationMatrix
+} from "@/_lib/geometry";
 import { OverlayMode } from "@/_lib/drawing";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
@@ -194,33 +199,28 @@ export default function Page() {
   const pdfTranslation = useProgArrowKeyToMatrix(!isCalibrating);
 
   useEffect(() => {
-    setMatrix3d(toMatrix3d(localTransform.mmul(pdfTranslation)));
-  }, [localTransform, pdfTranslation]);
+    /* Combine the translation portion of tranformSettings
+     * with the localTransformMatrix */
+    const ptDensity = getPtDensity(unitOfMeasure);
+    const translationMatrix = extractTranslationMatrix(Matrix.mul(transformSettings.matrix, ptDensity));
+    console.log(JSON.stringify(translationMatrix))
+    const m = localTransform.mmul(translationMatrix);
+    setMatrix3d(toMatrix3d(m.mmul(pdfTranslation)));
+
+  }, [localTransform, pdfTranslation, transformSettings, unitOfMeasure]);
 
   useEffect(() => {
+    const ptDensity = getPtDensity(unitOfMeasure);
+    const w = Number(width);
+    const h = Number(height);
     if (points && points.length === maxPoints) {
-      let m = getPerspectiveTransform(points, getDstVertices());
-      let n = getPerspectiveTransform(getDstVertices(), points);
+      let m = getPerspectiveTransformFromPoints(points, w, h, ptDensity, true);
+      let n = getPerspectiveTransformFromPoints(points, w, h, ptDensity, false);
       setPerspective(m);
       setLocalTransform(n);
       setCalibrationTransform(n);
     }
 
-    function getDstVertices(): Point[] {
-      const ox = 0;
-      const oy = 0;
-      const mx = +width * ptDensity + ox;
-      const my = +height * ptDensity + oy;
-
-      const dstVertices = [
-        { x: ox, y: oy },
-        { x: mx, y: oy },
-        { x: mx, y: my },
-        { x: ox, y: my },
-      ];
-
-      return dstVertices;
-    }
   }, [points, width, height, unitOfMeasure]);
 
   useEffect(() => {
@@ -248,6 +248,8 @@ export default function Page() {
       isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""
     }`;
   }
+
+  const decomposedTransform = decomposeTransformMatrix(transformSettings.matrix)
 
   return (
     <main
@@ -349,9 +351,10 @@ export default function Page() {
           <Draggable
             viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-700 `}
             className={`select-none ${visible(!isCalibrating)}`}
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
+            transformSettings={transformSettings}
+            setTransformSettings={setTransformSettings}
             perspective={perspective}
+            unitOfMeasure={unitOfMeasure}
           >
             <div
               className={"absolute z-0"}
@@ -367,7 +370,7 @@ export default function Page() {
               <div
                 className={"border-8 border-purple-700"}
                 style={{
-                  transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
+                  transform: `${decomposedTransform.formatCssNoTranslation()}`,
                   transformOrigin: "center",
                 }}
               >

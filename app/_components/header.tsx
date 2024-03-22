@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { getPtDensity } from "@/_lib/unit";
 import {
   ChangeEvent,
   Dispatch,
@@ -30,7 +31,15 @@ import { TransformSettings } from "@/_lib/transform-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
 import Matrix from "ml-matrix";
-import { translate } from "@/_lib/geometry";
+import {
+  translate,
+  rotateMatrixDeg,
+  flipMatrixHorizontally,
+  flipMatrixVertically,
+  isMatrixFlippedVertically,
+  isMatrixFlippedHorizontally,
+  overrideTranslationFromMatrix,
+} from "@/_lib/geometry";
 import FourCorners from "@/_icons/four-corners";
 import FourCornersOff from "@/_icons/four-corners-off";
 import { visible } from "@/_components/theme/css-functions";
@@ -109,12 +118,21 @@ export default function Header({
   const [showNav, setShowNav] = useState<boolean>(true);
 
   function handleRecenter() {
-    if (localTransform !== null) {
+    if (transformSettings.matrix !== null) {
+      const ptDensity = getPtDensity(unitOfMeasure);
       const pdfPixels = 72;
-      const tx = (+width * pdfPixels) / 2 - layoutWidth / 2;
-      const ty = (+height * pdfPixels) / 2 - layoutHeight / 2;
-      const m = translate({ x: tx, y: ty });
-      setLocalTransform(calibrationTransform.mmul(m));
+      //const tx = (+width * pdfPixels) / 2 - layoutWidth / 2;
+      //const ty = (+height * pdfPixels) / 2 - layoutHeight / 2;
+      const tx = ((+width * ptDensity) / 2);// 
+      const ty = ((+height * ptDensity) / 2);// - (layoutHeight/2);
+      
+      const m = translate({ x: tx/ptDensity, y: ty/ptDensity});
+      const newTransformMatrix = overrideTranslationFromMatrix(
+        transformSettings.matrix, m)
+      setTransformSettings({
+       ...transformSettings,
+        matrix: newTransformMatrix,
+      })
     }
   }
 
@@ -329,18 +347,11 @@ export default function Header({
                 onClick={() =>
                   setTransformSettings({
                     ...transformSettings,
-                    scale: {
-                      x: transformSettings.scale.x * -1,
-                      y: transformSettings.scale.y,
-                    },
+                    matrix: flipMatrixHorizontally(transformSettings.matrix),
                   })
                 }
               >
-                {transformSettings.scale.x === -1 ? (
-                  <FlipVerticalOffIcon ariaLabel={t("flipHorizontal")} />
-                ) : (
-                  <FlipVerticalIcon ariaLabel={t("flipHorizontalOff")} />
-                )}
+                <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
@@ -348,18 +359,11 @@ export default function Header({
                 onClick={() =>
                   setTransformSettings({
                     ...transformSettings,
-                    scale: {
-                      x: transformSettings.scale.x,
-                      y: transformSettings.scale.y * -1,
-                    },
+                    matrix: flipMatrixVertically(transformSettings.matrix),
                   })
                 }
               >
-                {transformSettings.scale.y === -1 ? (
-                  <FlipHorizontalOffIcon ariaLabel={t("flipVertical")} />
-                ) : (
-                  <FlipHorizontalIcon ariaLabel={t("flipVerticalOff")} />
-                )}
+                <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>
@@ -367,7 +371,7 @@ export default function Header({
                 onClick={() =>
                   setTransformSettings({
                     ...transformSettings,
-                    degrees: (transformSettings.degrees + 90) % 360,
+                    matrix: rotateMatrixDeg(transformSettings.matrix, -90),
                   })
                 }
               >

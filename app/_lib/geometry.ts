@@ -41,9 +41,9 @@
 //
 //M*/
 
+import { Point } from "@/_lib/point";
 import { AbstractMatrix, Matrix, solve } from 'ml-matrix';
 
-import { Point } from './point';
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
@@ -125,6 +125,37 @@ export function getPerspectiveTransform(
   return s;
 }
 
+
+function getDstVertices(width: number, height: number, ptDensity: number): Point[] {
+  const ox = 0;
+  const oy = 0;
+  const mx = +width * ptDensity + ox;
+  const my = +height * ptDensity + oy;
+
+  const dstVertices = [
+    { x: ox, y: oy },
+    { x: mx, y: oy },
+    { x: mx, y: my },
+    { x: ox, y: my },
+  ];
+
+  return dstVertices;
+}
+
+export function getPerspectiveTransformFromPoints(
+  points: Point[],
+  width: number,
+  height: number,
+  ptDensity: number,
+  reverse?: boolean,
+): Matrix {
+  if (reverse){
+    return getPerspectiveTransform(points, getDstVertices(width, height, ptDensity));
+  }else{
+    return getPerspectiveTransform(getDstVertices(width, height, ptDensity), points);
+  }
+}
+
 export function transformPoints(points: Point[], m: Matrix): Point[] {
   return points.map((p) => transformPoint(p, m));
 }
@@ -145,6 +176,156 @@ export function translate(p: Point): Matrix {
 
 export function scale(s: number): Matrix {
   return Matrix.from1DArray(3, 3, [s, 0, 0, 0, s, 0, 0, 0, 1]);
+}
+
+export function rotateMatrixDeg(matrix: Matrix, angle: number): Matrix {
+  // Convert the angle from degrees to radians
+  const radians = (angle * Math.PI) / 180;
+
+  // Compute the sine and cosine values of the angle
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+
+  // Create the rotation matrix
+  const rotationMatrix = new Matrix([
+    [cos, -sin, 0],
+    [sin, cos, 0],
+    [0, 0, 1]
+  ]);
+
+  // Multiply the input matrix by the rotation matrix
+  const rotatedMatrix = matrix.mmul(rotationMatrix);
+
+  return rotatedMatrix;
+}
+
+export class DecomposedTransform {
+  scale: Point = {x: 1, y: 1}
+  skew: Point = {x: 1, y: 1}
+  translation: Point = {x: 1, y: 1}
+  constructor(
+    public a: number,
+    public b: number,
+    public c: number,
+    public d: number,
+    public tx: number,
+    public ty: number,
+  ) {
+    this.scale = {x:a, y:d}
+    this.skew = {x:b, y:c}
+    this.translation = {x: tx, y: ty}
+  }
+
+  formatCss(): string {
+    return `matrix(${this.a}, ${this.b}, ${this.c}, ${this.d}, ${this.tx}, ${this.ty})`;
+  }
+  formatCssNoTranslation(): string {
+    return `matrix(${this.a}, ${this.b}, ${this.c}, ${this.d}, 0, 0)`;
+  }
+  
+}
+
+export function decomposeTransformMatrix(matrix: Matrix): DecomposedTransform {
+  // Extract the elements of the transformation matrix
+  const a = matrix.get(0, 0);
+  const b = matrix.get(0, 1);
+  const c = matrix.get(1, 0);
+  const d = matrix.get(1, 1);
+  const tx = matrix.get(0, 2);
+  const ty = matrix.get(1, 2);
+
+  // Return the decomposed values as an object
+  return new DecomposedTransform(
+    a,b,c,d,tx,ty
+  );
+}
+
+export function mirrorMatrix2Points(matrix: Matrix, point1: Point, point2: Point): Matrix {
+  // Calculate the slope and y-intercept of the line
+  const slope = (point2.y - point1.y) / (point2.x - point1.x);
+  const yIntercept = point1.y - slope * point1.x;
+
+  // Create the reflection matrix
+  const reflectionMatrix = new Matrix([
+    [1 - 2 * slope * slope, -2 * slope, 2 * slope * yIntercept],
+    [-2 * slope, -1 + 2 * slope * slope, 2 * yIntercept],
+    [0, 0, 1]
+  ]);
+
+  // Multiply the transformation matrix by the reflection matrix
+  const mirroredMatrix = matrix.mmul(reflectionMatrix);
+
+  return mirroredMatrix;
+}
+
+/* Applies an in-place vertical flip to the transformation matrix */
+export function flipMatrixVertically(matrix: Matrix): Matrix {
+
+  // Create a flip matrix to perform horizontal flipping
+  const flipMatrix = new Matrix([
+    [1, 0, 0],
+    [0, -1, 0],
+    [0, 0, 1]
+  ]);
+
+  const flippedMatrix = matrix.mmul(flipMatrix);
+
+  return flippedMatrix;
+}
+
+/* Applies an in-place horizontal flip to the transformation matrix */
+export function flipMatrixHorizontally(matrix: Matrix): Matrix {
+  // Create a flip matrix to perform horizontal flipping
+  const flipMatrix = new Matrix([
+    [-1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1]
+  ]);
+
+  // Multiply the matrices to perform the flipping operation while preserving rotation
+  const flippedMatrix = matrix.mmul(flipMatrix);
+  return flippedMatrix;
+}
+
+export function isMatrixFlippedVertically(matrix: Matrix): boolean {
+  const decomposedMatrix = decomposeTransformMatrix(matrix)
+  return decomposedMatrix.scale.y < 0; 
+}
+
+export function isMatrixFlippedHorizontally(matrix: Matrix): boolean {
+  const decomposedMatrix = decomposeTransformMatrix(matrix)
+  return decomposedMatrix.scale.x < 0; 
+}
+
+/* Overrides the translation component of destMatrix with the srcMatrix's */
+export function overrideTranslationFromMatrix(destMatrix: Matrix, srcMatrix: Matrix): Matrix {
+  const tx = srcMatrix.get(0, 2);
+  const ty = srcMatrix.get(1, 2);
+
+  let newMatrix = destMatrix.clone()
+  newMatrix.set(0, 2, tx);
+  newMatrix.set(1, 2, ty);
+
+  return newMatrix;
+}
+
+/* Extracts only the translation portion of the transformation matrix */
+export function extractTranslationMatrix(matrix: Matrix): Matrix {
+  const tx = matrix.get(0, 2);
+  const ty = matrix.get(1, 2);
+  return new Matrix([
+    [1, 0, tx],
+    [0, 1, ty],
+    [0, 0, 1]
+  ]);
+}
+
+/* Extracts only the rotation and scale portion of the transformation matrix */
+export function extractRotationScaleMatrix(matrix: Matrix): Matrix {
+  const newMatrix = matrix.clone();
+  newMatrix.set(0,2,0);
+  newMatrix.set(1,2,0);
+  return newMatrix;
 }
 
 /**
