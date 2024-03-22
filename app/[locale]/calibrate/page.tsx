@@ -22,6 +22,10 @@ import {
   getDefaultTransforms,
   TransformSettings,
 } from "@/_lib/transform-settings";
+import {
+  getDefaultDisplaySettings,
+  DisplaySettings,
+} from "@/_lib/display-settings";
 import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
@@ -46,7 +50,9 @@ export default function Page() {
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
     getDefaultTransforms(),
   );
-  const [overlayMode, setOverlayMode] = useState<OverlayMode>(OverlayMode.GRID);
+  const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
+    getDefaultDisplaySettings(),
+  );
   const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
@@ -182,17 +188,17 @@ export default function Page() {
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
-      const newTransformSettings: {
+      const newDisplaySettings: {
         inverted?: boolean;
         isInvertedGreen?: boolean;
         isFourCorners?: boolean;
       } = {};
 
-      newTransformSettings.inverted = localSettings.inverted || false;
-      newTransformSettings.isInvertedGreen =
+      newDisplaySettings.inverted = localSettings.inverted || false;
+      newDisplaySettings.isInvertedGreen =
         localSettings.isInvertedGreen || false;
-      newTransformSettings.isFourCorners = localSettings.isFourCorners || false;
-      setTransformSettings({ ...transformSettings, ...newTransformSettings });
+      newDisplaySettings.isFourCorners = localSettings.isFourCorners || false;
+      setDisplaySettings({ ...displaySettings, ...newDisplaySettings });
     }
   }, []);
 
@@ -254,7 +260,7 @@ export default function Page() {
   return (
     <main
       ref={noZoomRefCallback}
-      className={`${(transformSettings.inverted || transformSettings.isInvertedGreen) && "dark"} w-full h-full absolute overflow-hidden touch-none`}
+      className={`${(displaySettings.inverted || displaySettings.isInvertedGreen) && "dark"} w-full h-full absolute overflow-hidden touch-none`}
     >
       <div className="bg-white dark:bg-black dark:text-white">
         <FullScreen handle={handle}>
@@ -277,8 +283,10 @@ export default function Page() {
               updateLocalSettings({ unitOfMeasure: newUnit });
             }}
             transformSettings={transformSettings}
-            setTransformSettings={(newSettings) => {
-              setTransformSettings(newSettings);
+            setTransformSettings={setTransformSettings}
+            displaySettings={displaySettings}
+            setDisplaySettings={(newSettings) => {
+              setDisplaySettings(newSettings);
               if (newSettings) {
                 updateLocalSettings({
                   inverted: newSettings.inverted,
@@ -288,8 +296,6 @@ export default function Page() {
               }
             }}
             pageCount={pageCount}
-            overlayMode={overlayMode}
-            setOverlayMode={setOverlayMode}
             layers={layers}
             showLayerMenu={showLayerMenu}
             setShowLayerMenu={setShowLayerMenu}
@@ -344,9 +350,8 @@ export default function Page() {
             height={+height}
             isCalibrating={isCalibrating}
             unitOfMeasure={unitOfMeasure}
-            transformSettings={transformSettings}
-            setTransformSettings={setTransformSettings}
-            overlayMode={overlayMode}
+            displaySettings={displaySettings}
+            setDisplaySettings={setDisplaySettings}
           />
           <Draggable
             viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-700 `}
@@ -362,8 +367,8 @@ export default function Page() {
                 transform: `${matrix3d}`,
                 transformOrigin: "0 0",
                 filter: getInversionFilters(
-                  transformSettings.inverted,
-                  transformSettings.isInvertedGreen,
+                  displaySettings.inverted,
+                  displaySettings.isInvertedGreen,
                 ),
               }}
             >

@@ -28,6 +28,7 @@ import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
+import { DisplaySettings } from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
 import Matrix from "ml-matrix";
@@ -67,9 +68,9 @@ export default function Header({
   setUnitOfMeasure,
   transformSettings,
   setTransformSettings,
+  displaySettings,
+  setDisplaySettings,
   pageCount,
-  overlayMode,
-  setOverlayMode,
   layers,
   showLayerMenu,
   setShowLayerMenu,
@@ -95,10 +96,10 @@ export default function Header({
   unitOfMeasure: string;
   setUnitOfMeasure: (newUnit: string) => void;
   transformSettings: TransformSettings;
-  setTransformSettings: (newTransformSettings: TransformSettings) => void;
+  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
+  displaySettings: DisplaySettings;
+  setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
   pageCount: number;
-  overlayMode: OverlayMode;
-  setOverlayMode: Dispatch<SetStateAction<OverlayMode>>;
   layers: Map<string, Layer>;
   showLayerMenu: boolean;
   setShowLayerMenu: Dispatch<SetStateAction<boolean>>;
@@ -209,28 +210,28 @@ export default function Header({
                   onClick={(e) => {
                     let newInverted;
                     let newIsGreenInverted;
-                    if (!transformSettings.inverted) {
+                    if (!displaySettings.inverted) {
                       newInverted = true;
                       newIsGreenInverted = true;
-                    } else if (transformSettings.isInvertedGreen) {
+                    } else if (displaySettings.isInvertedGreen) {
                       newInverted = true;
                       newIsGreenInverted = false;
                     } else {
                       newInverted = false;
                       newIsGreenInverted = false;
                     }
-                    setTransformSettings({
-                      ...transformSettings,
+                    setDisplaySettings({
+                      ...displaySettings,
                       inverted: newInverted,
                       isInvertedGreen: newIsGreenInverted,
                     });
-                    setInvertOpen(!transformSettings.inverted);
+                    setInvertOpen(!displaySettings.inverted);
                   }}
                 >
-                  {transformSettings.inverted ? (
+                  {displaySettings.inverted ? (
                     <InvertColorIcon
                       fill={
-                        transformSettings.isInvertedGreen
+                        displaySettings.isInvertedGreen
                           ? "#32CD32"
                           : "currentColor"
                       }
@@ -246,20 +247,20 @@ export default function Header({
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
             <Tooltip
               description={
-                transformSettings.isFourCorners
+                displaySettings.isFourCorners
                   ? t("fourCornersOff")
                   : t("fourCornersOn")
               }
             >
               <IconButton
                 onClick={() =>
-                  setTransformSettings({
-                    ...transformSettings,
-                    isFourCorners: !transformSettings.isFourCorners,
+                  setDisplaySettings({
+                    ...displaySettings,
+                    isFourCorners: !displaySettings.isFourCorners,
                   })
                 }
               >
-                {transformSettings.isFourCorners ? (
+                {displaySettings.isFourCorners ? (
                   <FourCorners ariaLabel={t("fourCornersOn")} />
                 ) : (
                   <FourCornersOff ariaLabel={t("fourCornersOff")} />
@@ -337,8 +338,13 @@ export default function Header({
               </div>
             </Tooltip>
             <DropdownIconButton
-              selection={overlayMode}
-              setSelection={setOverlayMode}
+              selection={displaySettings.overlayMode}
+              setSelection={(newOverlayMode)=>{
+                setDisplaySettings({
+                  ...displaySettings,
+                  overlayMode: newOverlayMode,
+                });
+              }}
               description={t("overlayMode")}
               options={overlayOptions}
             />
