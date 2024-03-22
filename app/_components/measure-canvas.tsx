@@ -5,6 +5,8 @@ import Matrix from "ml-matrix";
 import React, { useEffect, useRef, useState } from "react";
 import { CM } from "@/_lib/unit";
 import { drawLine } from "@/_lib/drawing";
+import { useKeyDown } from "@/_hooks/use-key-down";
+import { KeyCode } from "@/_lib/key-code";
 
 export default function MeasureCanvas({
   perspective,
@@ -20,20 +22,6 @@ export default function MeasureCanvas({
   const [endPoint, setEndPoint] = useState<Point | null>(null);
   const [axisConstrained, setAxisConstrained] = useState<boolean>(false);
   const [movingPoint, setMovingPoint] = useState<Point | null>(null);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLCanvasElement>) => {
-    if (e.code === "Escape") {
-      e.preventDefault();
-      setStartPoint(null);
-      setMovingPoint(null);
-      setEndPoint(null);
-    }
-    setAxisConstrained(e.shiftKey);
-  };
-
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLCanvasElement>) => {
-    setAxisConstrained(e.shiftKey);
-  };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const p = { x: e.clientX, y: e.clientY };
@@ -57,6 +45,12 @@ export default function MeasureCanvas({
       setMovingPoint({ x: e.clientX, y: e.clientY });
     }
   };
+
+  useKeyDown(() => {
+    setStartPoint(null);
+    setMovingPoint(null);
+    setEndPoint(null);
+  }, [KeyCode.Escape]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -117,8 +111,8 @@ export default function MeasureCanvas({
   return (
     <canvas
       ref={canvasRef}
-      onKeyDown={handleKeyDown}
-      onKeyUp={handleKeyUp}
+      onKeyDown={(e) => setAxisConstrained(e.shiftKey)}
+      onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       className="cursor-crosshair absolute inset-0 w-full h-full z-20"

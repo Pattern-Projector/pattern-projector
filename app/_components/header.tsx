@@ -33,13 +33,14 @@ import FourCornersOff from "@/_icons/four-corners-off";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
-import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import SquareFootIcon from "@/_icons/square-foot";
+import { useKeyDown } from "@/_hooks/use-key-down";
+import { KeyCode } from "@/_lib/key-code";
 
 export default function Header({
   isCalibrating,
@@ -120,6 +121,10 @@ export default function Header({
       setShowNav(true);
     }
   }, [fullScreenHandle.active]);
+
+  useKeyDown(() => {
+    setMeasuring(!measuring);
+  }, [KeyCode.KeyM]);
 
   return (
     <>
