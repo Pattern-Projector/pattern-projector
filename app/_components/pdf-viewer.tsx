@@ -36,7 +36,7 @@ export default function PdfViewer({
   setLayoutHeight,
   pageCount,
   layers,
-  setLocalTransform,
+  onDocumentLoad,
   calibrationTransform,
   lineThickness,
   columnCount,
@@ -50,7 +50,7 @@ export default function PdfViewer({
   setLayoutHeight: Dispatch<SetStateAction<number>>;
   pageCount: number;
   layers: Map<string, Layer>;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
+  onDocumentLoad: () => void;
   calibrationTransform: Matrix;
   lineThickness: number;
   columnCount: string;
@@ -59,12 +59,11 @@ export default function PdfViewer({
 }) {
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
-
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     setLayers(new Map());
-    // reset local transform
-    setLocalTransform(calibrationTransform);
+    /* Call document load callback */
+    onDocumentLoad();
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {

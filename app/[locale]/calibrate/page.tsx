@@ -13,6 +13,7 @@ import {
   toMatrix3d,
   decomposeTransformMatrix,
   scaleMatrixTranslation,
+  overrideTranslationFromMatrix,
   translate,
 } from "@/_lib/geometry";
 import { OverlayMode } from "@/_lib/drawing";
@@ -103,6 +104,23 @@ export default function Page() {
     return p;
   }
 
+
+  function resetTransformMatrix() {
+    /* Resets and recenters the PDF */
+    let newTransformMatrix = Matrix.identity(3,3);
+
+    let tx = +width / 2;
+    let ty = +height / 2;
+    const m = translate({ x: tx, y: ty});
+    const recenteredMatrix = overrideTranslationFromMatrix(
+      newTransformMatrix, m);
+
+    setTransformSettings({
+     ...transformSettings,
+      matrix: recenteredMatrix,
+    })
+  }
+
   const ptDensity = getPtDensity(unitOfMeasure);
 
   function updateLocalSettings(newSettings: {}) {
@@ -173,6 +191,11 @@ export default function Page() {
     setPageRange(`1-${pageCount}`);
   }, [pageCount]);
 
+  /* If the pdfDimensions change, reset and recenter tranformation matrix */
+  useEffect(() => {
+    resetTransformMatrix();
+  }, [pdfDimensions]);
+
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
@@ -233,9 +256,9 @@ export default function Page() {
     const translateToCenter = translate({x: -pdfWidth/2, y: -pdfHeight/2})
 
     const ptDensity = getPtDensity(unitOfMeasure);
-    const scaledTranslation = scaleMatrixTranslation(transformSettings.matrix, ptDensity);
+    const scaled = scaleMatrixTranslation(transformSettings.matrix, ptDensity);
 
-    const m0 = localTransform.mmul(scaledTranslation)
+    const m0 = localTransform.mmul(scaled)
     const m1 = translateToCenter.mmul(m0);
     setMatrix3d(toMatrix3d(m1));
 
@@ -429,7 +452,7 @@ export default function Page() {
                   layers={layers}
                   setLayoutWidth={setLayoutWidth}
                   setLayoutHeight={setLayoutHeight}
-                  setLocalTransform={setLocalTransform}
+                  onDocumentLoad={resetTransformMatrix}
                   calibrationTransform={calibrationTransform}
                   lineThickness={lineThickness}
                   columnCount={columnCount}
