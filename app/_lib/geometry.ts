@@ -178,23 +178,42 @@ export function scale(s: number): Matrix {
   return Matrix.from1DArray(3, 3, [s, 0, 0, 0, s, 0, 0, 0, 1]);
 }
 
-export function rotateMatrixDeg(matrix: Matrix, angle: number): Matrix {
-  // Convert the angle from degrees to radians
-  const radians = (angle * Math.PI) / 180;
+export function rotateMatrixDeg(matrix: Matrix, angleDegrees: number): Matrix {
+  // Extract scale/reflection components (top-left 2x2 submatrix)
+  const scaleReflection = matrix.subMatrix(0, 1, 0, 1);
 
-  // Compute the sine and cosine values of the angle
-  const cos = Math.cos(radians);
-  const sin = Math.sin(radians);
+  // Extract translation components
+  const translation = matrix.subMatrix(0, 1, 2, 2);
+
+  // Calculate the determinant of the 2x2 scale/reflection submatrix
+  const det = scaleReflection.get(0, 0) * scaleReflection.get(1, 1) - scaleReflection.get(0, 1) * scaleReflection.get(1, 0);
+
+  // Check if the object is reflected
+  const isReflected = det < 0;
 
   // Create the rotation matrix
-  const rotationMatrix = new Matrix([
-    [cos, -sin, 0],
-    [sin, cos, 0],
-    [0, 0, 1]
+  const angleRadians = (angleDegrees * Math.PI) / 180;
+  const cosAngle = Math.cos(angleRadians);
+  const sinAngle = Math.sin(angleRadians);
+  let rotationMatrix = new Matrix([
+    [cosAngle, -sinAngle],
+    [sinAngle, cosAngle],
   ]);
 
-  // Multiply the input matrix by the rotation matrix
-  const rotatedMatrix = matrix.mmul(rotationMatrix);
+  // Modify the rotation matrix if the object is reflected
+  if (isReflected) {
+    rotationMatrix = rotationMatrix.transpose();
+  }
+
+  // Apply the rotation to the scale/reflection components
+  const rotatedScaleReflection = scaleReflection.mmul(rotationMatrix);
+
+  // Reconstruct the final matrix
+  const rotatedMatrix = new Matrix([
+    [rotatedScaleReflection.get(0, 0), rotatedScaleReflection.get(0, 1), translation.get(0, 0)],
+    [rotatedScaleReflection.get(1, 0), rotatedScaleReflection.get(1, 1), translation.get(1, 0)],
+    [0, 0, 1],
+  ]);
 
   return rotatedMatrix;
 }
@@ -267,10 +286,21 @@ export function flipMatrixVertically(matrix: Matrix): Matrix {
     [0, -1, 0],
     [0, 0, 1]
   ]);
+    
+  const tx = matrix.get(0, 2);
+  const ty = matrix.get(1, 2);
 
-  const flippedMatrix = matrix.mmul(flipMatrix);
+  /* First translate it to origin */
+  const translation = new Matrix([
+    [1, 0, -tx],
+    [0, 1, -ty],
+    [0, 0, 1]
+  ]);
 
-  return flippedMatrix;
+  const m0 = matrix.mmul(translation);
+  const flipped = flipMatrix.mmul(m0);
+  /* Use the original translation component */
+  return overrideTranslationFromMatrix(flipped, matrix)
 }
 
 /* Applies an in-place horizontal flip to the transformation matrix */
@@ -282,9 +312,20 @@ export function flipMatrixHorizontally(matrix: Matrix): Matrix {
     [0, 0, 1]
   ]);
 
-  // Multiply the matrices to perform the flipping operation while preserving rotation
-  const flippedMatrix = matrix.mmul(flipMatrix);
-  return flippedMatrix;
+  const tx = matrix.get(0, 2);
+  const ty = matrix.get(1, 2);
+
+  /* First translate it to origin */
+  const translation = new Matrix([
+    [1, 0, -tx],
+    [0, 1, -ty],
+    [0, 0, 1]
+  ]);
+
+  const m0 = matrix.mmul(translation);
+  const flipped = flipMatrix.mmul(m0);
+  /* Use the original translation component */
+  return overrideTranslationFromMatrix(flipped, matrix)
 }
 
 export function isMatrixFlippedVertically(matrix: Matrix): boolean {
