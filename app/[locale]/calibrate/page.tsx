@@ -269,7 +269,13 @@ export default function Page() {
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const { width, height } = entry.contentRect;
-        setPdfDimensions({ width, height });
+        /* Only trigger if the dimension is non-zero
+         * and different that the current dimension */
+        if (width !== 0 && height !== 0 &&
+          (width != pdfDimensions.width 
+          || height != pdfDimensions.height)
+        )
+          setPdfDimensions({ width, height });
       }
     });
 
@@ -282,7 +288,7 @@ export default function Page() {
         observer.unobserve(pdfRef.current);
       }
     };
-  }, []);
+  }, [pdfDimensions]);
 
   useEffect(() => {
     const ptDensity = getPtDensity(unitOfMeasure);
