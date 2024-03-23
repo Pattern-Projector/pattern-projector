@@ -86,6 +86,7 @@ export default function MeasureCanvas({
       ctx.strokeStyle = "#fff";
       const o = 10;
       const d = distance(p1, p2);
+      ctx.lineWidth = 4;
       ctx.strokeText(d, p1.x + o, p1.y + o);
       ctx.fillText(d, p1.x + o, p1.y + o);
     }
