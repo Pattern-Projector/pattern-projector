@@ -352,7 +352,7 @@ export default function Header({
                   if (displaySettings.flipOnCenter){
                     setTransformSettings({
                       ...transformSettings,
-                      matrix: flipMatrixHorizontally(transformSettings.matrix, width/2),
+                      matrix: flipMatrixHorizontally(transformSettings.matrix, +width/2),
                     })
                   } else {
                     setTransformSettings({
@@ -371,7 +371,7 @@ export default function Header({
                   if (displaySettings.flipOnCenter){
                     setTransformSettings({
                       ...transformSettings,
-                      matrix: flipMatrixVertically(transformSettings.matrix, height/2),
+                      matrix: flipMatrixVertically(transformSettings.matrix, +height/2),
                     })
                   } else {
                     setTransformSettings({
@@ -386,7 +386,7 @@ export default function Header({
             </Tooltip>
             <Tooltip
               description={
-                displaySettings.flipCenterOn ? t("flipCenterOff") : t("flipCenterOn")
+                displaySettings.flipOnCenter ? t("flipCenterOff") : t("flipCenterOn")
               }
             >
               <IconButton
