@@ -143,7 +143,9 @@
     "menuHide": "Hide menu",
     "lineWeight": "Line weight",
     "stitchMenuShow": "Show stitch menu",
-    "stitchMenuHide": "Hide stitch menu"
+    "stitchMenuHide": "Hide stitch menu",
+    "measureOn": "Start measuring",
+    "measureOff": "Stop measuring"
   },
   "StitchMenu": {
     "columnCount": "Columns",

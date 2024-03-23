@@ -47,12 +47,14 @@ import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { DropdownIconButton } from "@/_components/buttons/dropdown-icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
-import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
+import SquareFootIcon from "@/_icons/square-foot";
+import { useKeyDown } from "@/_hooks/use-key-down";
+import { KeyCode } from "@/_lib/key-code";
 
 export default function Header({
   isCalibrating,
@@ -71,9 +73,6 @@ export default function Header({
   displaySettings,
   setDisplaySettings,
   pageCount,
-  layers,
-  showLayerMenu,
-  setShowLayerMenu,
   localTransform,
   calibrationTransform,
   setLocalTransform,
@@ -83,6 +82,8 @@ export default function Header({
   showStitchMenu,
   lineThickness,
   setLineThickness,
+  measuring,
+  setMeasuring,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -100,9 +101,6 @@ export default function Header({
   displaySettings: DisplaySettings;
   setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
   pageCount: number;
-  layers: Map<string, Layer>;
-  showLayerMenu: boolean;
-  setShowLayerMenu: Dispatch<SetStateAction<boolean>>;
   localTransform: Matrix;
   calibrationTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
@@ -112,6 +110,8 @@ export default function Header({
   setLineThickness: Dispatch<SetStateAction<number>>;
   setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
   showStitchMenu: boolean;
+  measuring: boolean;
+  setMeasuring: Dispatch<SetStateAction<boolean>>;
 }) {
   const t = useTranslations("Header");
 
@@ -122,14 +122,16 @@ export default function Header({
     if (transformSettings.matrix !== null) {
       let tx = +width / 2;
       let ty = +height / 2;
-      
-      const m = translate({ x: tx, y: ty});
+
+      const m = translate({ x: tx, y: ty });
       const newTransformMatrix = overrideTranslationFromMatrix(
-        transformSettings.matrix, m);
+        transformSettings.matrix,
+        m,
+      );
       setTransformSettings({
-       ...transformSettings,
+        ...transformSettings,
         matrix: newTransformMatrix,
-      })
+      });
     }
   }
 
@@ -145,22 +147,28 @@ export default function Header({
     {
       icon: <GridOffIcon ariaLabel={t("overlayModeOff")} />,
       text: t("overlayModeOff"),
-      value: OverlayMode.NONE
-    },{
+      value: OverlayMode.NONE,
+    },
+    {
       icon: <GridOnIcon ariaLabel={t("overlayModeGrid")} />,
       text: t("overlayModeGrid"),
-      value: OverlayMode.GRID
-    },{
+      value: OverlayMode.GRID,
+    },
+    {
       icon: <OverlayBorderIcon ariaLabel={t("overlayModeBorder")} />,
       text: t("overlayModeBorder"),
-      value: OverlayMode.BORDER
-    },{
+      value: OverlayMode.BORDER,
+    },
+    {
       icon: <OverlayPaperIcon ariaLabel={t("overlayModePaper")} />,
       text: t("overlayModePaper"),
-      value: OverlayMode.PAPER
+      value: OverlayMode.PAPER,
     },
-
   ];
+
+  useKeyDown(() => {
+    setMeasuring(!measuring);
+  }, [KeyCode.KeyM]);
 
   return (
     <>
@@ -334,7 +342,7 @@ export default function Header({
             </Tooltip>
             <DropdownIconButton
               selection={displaySettings.overlayMode}
-              setSelection={(newOverlayMode)=>{
+              setSelection={(newOverlayMode) => {
                 setDisplaySettings({
                   ...displaySettings,
                   overlayMode: newOverlayMode,
@@ -383,6 +391,16 @@ export default function Header({
             <Tooltip description={t("recenter")}>
               <IconButton onClick={handleRecenter}>
                 <RecenterIcon ariaLabel={t("recenter")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={measuring ? t("measureOff") : t("measureOn")}>
+              <IconButton
+                onClick={() => setMeasuring(!measuring)}
+                className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
+              >
+                <SquareFootIcon
+                  ariaLabel={measuring ? t("measureOff") : t("measureOn")}
+                />
               </IconButton>
             </Tooltip>
           </div>

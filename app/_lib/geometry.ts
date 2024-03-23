@@ -453,3 +453,29 @@ function getOrientation(p1: Point, p2: Point, p3: Point): number {
     return 0; // Collinear points
   }
 }
+
+export function constrainInSpace(p: Point, anchorPoint: Point, matrix: Matrix, inverse: Matrix): Point {
+  const p1 = transformPoint(p, matrix);
+  const p2 = transformPoint(anchorPoint, matrix);
+  const c = constrained(p1, p2);
+  return transformPoint(c, inverse);
+}
+
+export function constrained(p: Point, anchorPoint: Point) {
+  const dx = Math.abs(anchorPoint.x - p.x);
+  const dy = Math.abs(anchorPoint.y - p.y);
+  if (dx > 2 * dy) {
+    return { x: p.x, y: anchorPoint.y };
+  } else if (dy > 2 * dx) {
+    return { x: anchorPoint.x, y: p.y };
+  } else if (dx === 0 && dy === 0) {
+    return anchorPoint;
+  } else {
+    // snap to 45 degree angle
+    if (dx < dy) {
+      return { x: p.x, y: anchorPoint.y + ((p.y - anchorPoint.y) / dy) * dx };
+    } else {
+      return { x: anchorPoint.x + ((p.x - anchorPoint.x) / dx) * dy, y: p.y };
+    }
+  }
+}
