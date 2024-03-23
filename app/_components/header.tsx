@@ -198,45 +198,57 @@ export default function Header({
             >
               <ExpandLessIcon ariaLabel={t("menuHide")} />
             </IconButton>
-            <div className="relative inline-block text-left">
-              <Tooltip description={t("invertColor")}>
-                <IconButton
-                  onClick={(e) => {
-                    let newInverted;
-                    let newIsGreenInverted;
-                    if (!displaySettings.inverted) {
-                      newInverted = true;
-                      newIsGreenInverted = true;
-                    } else if (displaySettings.isInvertedGreen) {
-                      newInverted = true;
-                      newIsGreenInverted = false;
-                    } else {
-                      newInverted = false;
-                      newIsGreenInverted = false;
+            <Tooltip description={t("invertColor")}>
+              <IconButton
+                onClick={(e) => {
+                  let newInverted;
+                  let newIsGreenInverted;
+                  if (!displaySettings.inverted) {
+                    newInverted = true;
+                    newIsGreenInverted = true;
+                  } else if (displaySettings.isInvertedGreen) {
+                    newInverted = true;
+                    newIsGreenInverted = false;
+                  } else {
+                    newInverted = false;
+                    newIsGreenInverted = false;
+                  }
+                  setDisplaySettings({
+                    ...displaySettings,
+                    inverted: newInverted,
+                    isInvertedGreen: newIsGreenInverted,
+                  });
+                  setInvertOpen(!displaySettings.inverted);
+                }}
+              >
+                {displaySettings.inverted ? (
+                  <InvertColorIcon
+                    fill={
+                      displaySettings.isInvertedGreen
+                        ? "#32CD32"
+                        : "currentColor"
                     }
-                    setDisplaySettings({
-                      ...displaySettings,
-                      inverted: newInverted,
-                      isInvertedGreen: newIsGreenInverted,
-                    });
-                    setInvertOpen(!displaySettings.inverted);
-                  }}
-                >
-                  {displaySettings.inverted ? (
-                    <InvertColorIcon
-                      fill={
-                        displaySettings.isInvertedGreen
-                          ? "#32CD32"
-                          : "currentColor"
-                      }
-                      ariaLabel={t("invertColor")}
-                    />
-                  ) : (
-                    <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
-                  )}
-                </IconButton>
-              </Tooltip>
-            </div>
+                    ariaLabel={t("invertColor")}
+                  />
+                ) : (
+                  <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
+                )}
+              </IconButton>
+            </Tooltip>
+            {!isCalibrating ? (
+              <DropdownIconButton
+                className="-ml-2"
+                selection={displaySettings.overlayMode}
+                setSelection={(newOverlayMode) => {
+                  setDisplaySettings({
+                    ...displaySettings,
+                    overlayMode: newOverlayMode,
+                  });
+                }}
+                description={t("overlayMode")}
+                options={overlayOptions}
+              />
+            ) : null}
           </div>
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
             <div className="flex gap-1">
@@ -292,7 +304,7 @@ export default function Header({
                   setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
                 }
                 className={
-                  menuStates.stitch ? "!bg-gray-300 !dark:bg-gray-600" : ""
+                  menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""
                 }
               >
                 <FlexWrapIcon
@@ -317,17 +329,6 @@ export default function Header({
                 />
               </div>
             </Tooltip>
-            <DropdownIconButton
-              selection={displaySettings.overlayMode}
-              setSelection={(newOverlayMode) => {
-                setDisplaySettings({
-                  ...displaySettings,
-                  overlayMode: newOverlayMode,
-                });
-              }}
-              description={t("overlayMode")}
-              options={overlayOptions}
-            />
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
