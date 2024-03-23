@@ -45,14 +45,17 @@ export default function LayerMenu({
         className="w-full border-b border-gray-200 dark:border-gray-700 rounded-t-lg"
       >
         <div className="flex items-center justify-between ps-3">
-          <input
-            id="global"
-            type="checkbox"
-            className="w-4 h-4 accent-purple-600 bg-gray-100 border-gray-300 dark:border-gray-700 rounded focus:ring-blue-500 dark:focus:ring-blue-800"
-            checked={globalCheck}
-            style={{ width: 14 }}
-            onChange={(e) => handleGlobalChange(e.target.checked)}
-          />
+          <div className="flex items-center">
+            <input
+              id="global"
+              type="checkbox"
+              className="w-4 h-4 accent-purple-600 bg-gray-100 border-gray-300 dark:border-gray-700 rounded focus:ring-blue-500 dark:focus:ring-blue-800"
+              checked={globalCheck}
+              style={{ width: 14 }}
+              onChange={(e) => handleGlobalChange(e.target.checked)}
+            />
+            <h6 className="ml-2">Layers</h6>
+          </div>
           <IconButton onClick={() => setVisible(false)}>
             <CloseIcon ariaLabel="close" />
           </IconButton>
