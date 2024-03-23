@@ -362,7 +362,10 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <Tooltip description={measuring ? t("measureOff") : t("measureOn")}>
-              <IconButton onClick={() => setMeasuring(!measuring)}>
+              <IconButton
+                onClick={() => setMeasuring(!measuring)}
+                className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
+              >
                 <SquareFootIcon
                   ariaLabel={measuring ? t("measureOff") : t("measureOn")}
                 />
