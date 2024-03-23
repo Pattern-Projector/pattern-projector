@@ -292,7 +292,7 @@ export default function Header({
                   setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
                 }
                 className={
-                  menuStates.stitch ? "bg-gray-300 dark:bg-gray-600" : ""
+                  menuStates.stitch ? "!bg-gray-300 !dark:bg-gray-600" : ""
                 }
               >
                 <FlexWrapIcon
