@@ -1,4 +1,5 @@
-import { Matrix } from "ml-matrix";
+import { Matrix, inverse} from "ml-matrix";
+import { getPtDensity } from "@/_lib/unit";
 import {
   Dispatch,
   LegacyRef,
@@ -11,23 +12,29 @@ import {
   useCallback
 } from "react";
 
-import { transformPoint, translate } from "@/_lib/geometry";
+import {
+  transformPoint,
+  translate,
+} from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint, nativeMouseToCanvasPoint} from "@/_lib/point";
+import { TransformSettings } from "@/_lib/transform-settings";
 
 export default function Draggable({
   children,
   className,
   viewportClassName,
-  localTransform,
-  setLocalTransform,
+  transformSettings,
+  setTransformSettings,
   perspective,
+  unitOfMeasure,
 }: {
   children: ReactNode;
   className: string | undefined;
   viewportClassName: string | undefined;
-  localTransform: Matrix;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
+  transformSettings: TransformSettings;
+  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
   perspective: Matrix;
+  unitOfMeasure: string;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
@@ -111,22 +118,27 @@ export default function Draggable({
 
   function handleMove(p: Point) {
     if (transformStart !== null && dragStart !== null) {
+      const ptDensity = getPtDensity(unitOfMeasure);
       const dest = transformPoint(p, perspective);
       const tx = dest.x - dragStart.x;
       const ty = dest.y - dragStart.y;
-      let vec = {x: tx, y:ty};
+      let vec = {x: tx/ptDensity, y:ty/ptDensity};
       if (isAxisLocked){
         vec = toSingleAxisVector(vec);
       }
       const m = translate(vec);
-      setLocalTransform(transformStart.mmul(m));
+      const newTransformMatrix = m.mmul(transformStart);
+      setTransformSettings({
+       ...transformSettings,
+        matrix: newTransformMatrix,
+      })
     }
   }
 
   function handleOnStart(p: Point): void {
     var pt = transformPoint(p, perspective);
     setDragStart(pt);
-    setTransformStart(localTransform.clone());
+    setTransformStart(transformSettings.matrix.clone());
   }
 
   let cursorMode = `${dragStart !== null ? 'grabbing' : 'grab'}`;

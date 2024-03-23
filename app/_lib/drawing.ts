@@ -1,7 +1,7 @@
 import { getPtDensity } from "@/_lib/unit";
 import Matrix from "ml-matrix";
 import { Point } from "@/_lib/point";
-import { TransformSettings } from "@/_lib/transform-settings";
+import { DisplaySettings } from "@/_lib/display-settings";
 import {
   checkIsConcave
 } from "@/_lib/geometry";
@@ -33,8 +33,7 @@ export class CanvasState {
     public isPrecisionMovement: boolean,
     public errorFillPattern: CanvasPattern,
     public transitionProgress: number,
-    public transformSettings: TransformSettings,
-    public overlayMode: OverlayMode
+    public displaySettings: DisplaySettings,
   ) {
     this.isConcave = checkIsConcave(this.points);
     this.ptDensity = getPtDensity(unitOfMeasure);

@@ -23,7 +23,7 @@ import {
   transformPoint,
 } from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
-import { TransformSettings } from "@/_lib/transform-settings";
+import { DisplaySettings } from "@/_lib/display-settings";
 import { CornerColorHex } from "@/_components/theme/colors";
 import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
 
@@ -59,7 +59,7 @@ function drawCalibration(cs: CanvasState): void {
   }
 
   ctx.globalCompositeOperation = "difference";
-  if (cs.transformSettings.isFourCorners) {
+  if (cs.displaySettings.isFourCorners) {
     cs.points.forEach((point, index) => {
       ctx.beginPath();
       ctx.strokeStyle = getStrokeStyle(index);
@@ -131,7 +131,7 @@ function draw(cs: CanvasState): void {
      * fill pattern */
     drawPolygon(ctx, cs.points, cs.errorFillPattern);
   } else {
-    switch(cs.overlayMode) {
+    switch(cs.displaySettings.overlayMode) {
       case OverlayMode.BORDER:
         drawBorder(cs, cs.darkColor, cs.gridLineColor);
       break;
@@ -409,9 +409,8 @@ export default function CalibrationCanvas({
   height,
   isCalibrating,
   unitOfMeasure,
-  transformSettings,
-  setTransformSettings,
-  overlayMode,
+  displaySettings,
+  setDisplaySettings,
 }: {
   className: string | undefined;
   points: Point[];
@@ -422,9 +421,8 @@ export default function CalibrationCanvas({
   height: number;
   isCalibrating: boolean;
   unitOfMeasure: string;
-  transformSettings: TransformSettings;
-  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
-  overlayMode: OverlayMode;
+  displaySettings: DisplaySettings;
+  setDisplaySettings: Dispatch<SetStateAction<DisplaySettings>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const patternRef = useRef<CanvasPattern | null>(null);
@@ -453,9 +451,9 @@ export default function CalibrationCanvas({
     var _colorMode;
     /* The order is important here. The colorModes should monotonically 
      * increase each time it changes */
-    if (transformSettings.inverted && transformSettings.isInvertedGreen) {
+    if (displaySettings.inverted && displaySettings.isInvertedGreen) {
       _colorMode = 1;
-    } else if (transformSettings.inverted) {
+    } else if (displaySettings.inverted) {
       _colorMode = 2;
     } else {
       _colorMode = 0;
@@ -465,7 +463,7 @@ export default function CalibrationCanvas({
     /* Initialize prevColorModeRef if needed */
     if (prevColorModeRef.current == null)
       prevColorModeRef.current = _colorMode;
-  },[transformSettings])
+  },[displaySettings])
 
 useEffect(() => {
     /* No colorMode set yet, nothing to do */
@@ -572,8 +570,7 @@ useEffect(() => {
           isPrecisionMovement,
           patternRef.current,
           transitionProgress,
-          transformSettings,
-          overlayMode,
+          displaySettings,
         )
         draw(cs);
       }
@@ -604,9 +601,8 @@ useEffect(() => {
     pointToModify,
     unitOfMeasure,
     transitionProgress,
-    transformSettings,
+    displaySettings,
     isPrecisionMovement,
-    overlayMode
   ]);
 
   function getShortestDistance(p: Point): number {
@@ -788,9 +784,9 @@ useEffect(() => {
       if (e.code === "Tab") {
         e.preventDefault();
         if (e.shiftKey) {
-          setTransformSettings({
-            ...transformSettings,
-            isFourCorners: !transformSettings.isFourCorners,
+          setDisplaySettings({
+            ...displaySettings,
+            isFourCorners: !displaySettings.isFourCorners,
           });
         } else {
           const newPointToModify =
@@ -809,10 +805,10 @@ useEffect(() => {
     },
     [
       pointToModify,
-      transformSettings,
+      displaySettings,
       setPointToModify,
       localPoints.length,
-      setTransformSettings,
+      setDisplaySettings,
     ],
   );
 
