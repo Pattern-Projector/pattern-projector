@@ -1,19 +1,11 @@
-import { Point } from "@/_lib/point";
+import Matrix from "ml-matrix";
 
 export interface TransformSettings {
-  scale: Point;
-  degrees: number;
-  inverted: boolean;
-  isInvertedGreen: boolean;
-  isFourCorners: boolean;
+  matrix: Matrix;
 }
 
 export function getDefaultTransforms() {
   return {
-    degrees: 0,
-    scale: { x: 1, y: 1 },
-    inverted: false,
-    isInvertedGreen: false,
-    isFourCorners: true,
+    matrix: Matrix.identity(3, 3),
   };
 }

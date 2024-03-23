@@ -1,14 +1,22 @@
 "use client";
 
-import Matrix from "ml-matrix";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { Matrix, inverse } from "ml-matrix";
+import { ChangeEvent, useCallback, useEffect, useState, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import { getPerspectiveTransform, toMatrix3d } from "@/_lib/geometry";
+import {
+  getPerspectiveTransformFromPoints,
+  toMatrix3d,
+  decomposeTransformMatrix,
+  scaleMatrixTranslation,
+  overrideTranslationFromMatrix,
+  translate,
+} from "@/_lib/geometry";
+import { OverlayMode } from "@/_lib/drawing";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
@@ -16,7 +24,11 @@ import {
   getDefaultTransforms,
   TransformSettings,
 } from "@/_lib/transform-settings";
-import { CM, IN } from "@/_lib/unit";
+import {
+  getDefaultDisplaySettings,
+  DisplaySettings,
+} from "@/_lib/display-settings";
+import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
@@ -41,7 +53,9 @@ export default function Page() {
   const [transformSettings, setTransformSettings] = useState<TransformSettings>(
     getDefaultTransforms(),
   );
-  const [gridOn, setGridOn] = useState<boolean>(true);
+  const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
+    getDefaultDisplaySettings(),
+  );
   const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
@@ -73,6 +87,9 @@ export default function Page() {
     vertical: "",
   });
 
+  const pdfRef = useRef<HTMLDivElement | null>(null);
+  const [pdfDimensions, setPdfDimensions] = useState({ width: 0, height: 0 });
+
   function getDefaultPoints() {
     const o = 150;
     const minx = window.innerWidth * 0.2;
@@ -89,7 +106,25 @@ export default function Page() {
     return p;
   }
 
-  const ptDensity = unitOfMeasure === CM ? 96 / 2.54 : 96;
+  function resetTransformMatrix() {
+    /* Resets and recenters the PDF */
+    let newTransformMatrix = Matrix.identity(3, 3);
+
+    let tx = +width / 2;
+    let ty = +height / 2;
+    const m = translate({ x: tx, y: ty });
+    const recenteredMatrix = overrideTranslationFromMatrix(
+      newTransformMatrix,
+      m,
+    );
+
+    setTransformSettings({
+      ...transformSettings,
+      matrix: recenteredMatrix,
+    });
+  }
+
+  const ptDensity = getPtDensity(unitOfMeasure);
 
   function updateLocalSettings(newSettings: {}) {
     const settingString = localStorage.getItem("canvasSettings");
@@ -159,6 +194,11 @@ export default function Page() {
     setPageRange(`1-${pageCount}`);
   }, [pageCount]);
 
+  /* If the pdfDimensions change, reset and recenter tranformation matrix */
+  useEffect(() => {
+    resetTransformMatrix();
+  }, [pdfDimensions]);
+
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
@@ -178,57 +218,102 @@ export default function Page() {
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
-      const newTransformSettings: {
+
+      const newDisplaySettings: {
+        overlayMode?: OverlayMode;
         inverted?: boolean;
         isInvertedGreen?: boolean;
         isFourCorners?: boolean;
       } = {};
 
-      newTransformSettings.inverted = localSettings.inverted || false;
-      newTransformSettings.isInvertedGreen =
-        localSettings.isInvertedGreen || false;
-      newTransformSettings.isFourCorners = localSettings.isFourCorners || false;
-      setTransformSettings({ ...transformSettings, ...newTransformSettings });
+      const defaultDS = getDefaultDisplaySettings();
+
+      newDisplaySettings.overlayMode =
+        localSettings.overlayMode !== undefined
+          ? localSettings.overlayMode
+          : defaultDS.overlayMode;
+      newDisplaySettings.inverted =
+        localSettings.inverted !== undefined
+          ? localSettings.inverted
+          : defaultDS.inverted;
+      newDisplaySettings.isInvertedGreen =
+        localSettings.isInvertedGreen !== undefined
+          ? localSettings.isInvertedGreen
+          : defaultDS.isInvertedGreen;
+      newDisplaySettings.isFourCorners =
+        localSettings.isFourCorners !== undefined
+          ? localSettings.isFourCorners
+          : defaultDS.isFourCorners;
+      setDisplaySettings({ ...displaySettings, ...newDisplaySettings });
     }
   }, []);
 
+  /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in/cm */
+  useProgArrowKeyToMatrix(!isCalibrating, 1.0 / 16.0, (matrix) => {
+    const newTransformMatrix = matrix.mmul(transformSettings.matrix);
+    setTransformSettings({
+      ...transformSettings,
+      matrix: newTransformMatrix,
+    });
+  });
+
   useEffect(() => {
-    if (file) {
-      setGridOn(false);
-    } else {
-      setGridOn(true);
+    /* Combine the translation portion of tranformSettings
+     * with the localTransformMatrix. Note that the transformSettings
+     * matrix must be scaled by ptDensity first */
+
+    const pdfWidth = pdfDimensions.width;
+    const pdfHeight = pdfDimensions.height;
+    const translateToCenter = translate({
+      x: -pdfWidth / 2,
+      y: -pdfHeight / 2,
+    });
+
+    const ptDensity = getPtDensity(unitOfMeasure);
+    const scaled = scaleMatrixTranslation(transformSettings.matrix, ptDensity);
+
+    const m0 = localTransform.mmul(scaled);
+    const m1 = translateToCenter.mmul(m0);
+    setMatrix3d(toMatrix3d(m1));
+  }, [localTransform, transformSettings, unitOfMeasure, pdfDimensions]);
+
+  /* Update the pdfWidth and pdfHeight when it changes */
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        /* Only trigger if the dimension is non-zero
+         * and different that the current dimension */
+        if (
+          width !== 0 &&
+          height !== 0 &&
+          (width != pdfDimensions.width || height != pdfDimensions.height)
+        )
+          setPdfDimensions({ width, height });
+      }
+    });
+
+    if (pdfRef.current) {
+      observer.observe(pdfRef.current);
     }
-  }, [file]);
 
-  const pdfTranslation = useProgArrowKeyToMatrix(!isCalibrating);
+    return () => {
+      if (pdfRef.current) {
+        observer.unobserve(pdfRef.current);
+      }
+    };
+  }, [pdfDimensions]);
 
   useEffect(() => {
-    setMatrix3d(toMatrix3d(localTransform.mmul(pdfTranslation)));
-  }, [localTransform, pdfTranslation]);
-
-  useEffect(() => {
+    const ptDensity = getPtDensity(unitOfMeasure);
+    const w = Number(width);
+    const h = Number(height);
     if (points && points.length === maxPoints) {
-      let m = getPerspectiveTransform(points, getDstVertices());
-      let n = getPerspectiveTransform(getDstVertices(), points);
+      let m = getPerspectiveTransformFromPoints(points, w, h, ptDensity, true);
+      let n = getPerspectiveTransformFromPoints(points, w, h, ptDensity, false);
       setPerspective(m);
       setLocalTransform(n);
       setCalibrationTransform(n);
-    }
-
-    function getDstVertices(): Point[] {
-      const ox = 0;
-      const oy = 0;
-      const mx = +width * ptDensity + ox;
-      const my = +height * ptDensity + oy;
-
-      const dstVertices = [
-        { x: ox, y: oy },
-        { x: mx, y: oy },
-        { x: mx, y: my },
-        { x: ox, y: my },
-      ];
-
-      return dstVertices;
     }
   }, [points, width, height, unitOfMeasure]);
 
@@ -261,7 +346,7 @@ export default function Page() {
   return (
     <main
       ref={noZoomRefCallback}
-      className={`${(transformSettings.inverted || transformSettings.isInvertedGreen) && "dark"} w-full h-full absolute overflow-hidden touch-none`}
+      className={`${(displaySettings.inverted || displaySettings.isInvertedGreen) && "dark"} w-full h-full absolute overflow-hidden touch-none`}
     >
       <div className="bg-white dark:bg-black dark:text-white">
         <FullScreen handle={handle}>
@@ -284,10 +369,13 @@ export default function Page() {
               updateLocalSettings({ unitOfMeasure: newUnit });
             }}
             transformSettings={transformSettings}
-            setTransformSettings={(newSettings) => {
-              setTransformSettings(newSettings);
+            setTransformSettings={setTransformSettings}
+            displaySettings={displaySettings}
+            setDisplaySettings={(newSettings) => {
+              setDisplaySettings(newSettings);
               if (newSettings) {
                 updateLocalSettings({
+                  overlayMode: newSettings.overlayMode,
                   inverted: newSettings.inverted,
                   isInvertedGreen: newSettings.isInvertedGreen,
                   isFourCorners: newSettings.isFourCorners,
@@ -295,8 +383,6 @@ export default function Page() {
               }
             }}
             pageCount={pageCount}
-            gridOn={gridOn}
-            setGridOn={setGridOn}
             localTransform={localTransform}
             setLocalTransform={setLocalTransform}
             layoutWidth={layoutWidth}
@@ -341,7 +427,7 @@ export default function Page() {
           />
 
           <CalibrationCanvas
-            className={`absolute z-10 ${visible(isCalibrating || gridOn)}`}
+            className={`absolute z-10`}
             points={points}
             setPoints={setPoints}
             pointToModify={pointToModify}
@@ -349,9 +435,9 @@ export default function Page() {
             width={+width}
             height={+height}
             isCalibrating={isCalibrating}
-            ptDensity={ptDensity}
-            transformSettings={transformSettings}
-            setTransformSettings={setTransformSettings}
+            unitOfMeasure={unitOfMeasure}
+            displaySettings={displaySettings}
+            setDisplaySettings={setDisplaySettings}
           />
           {measuring && (
             <MeasureCanvas
@@ -361,30 +447,26 @@ export default function Page() {
             />
           )}
           <Draggable
-            viewportClassName={`select-none ${visible(!isCalibrating)}`}
+            viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-700 `}
             className={`select-none ${visible(!isCalibrating)}`}
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
+            transformSettings={transformSettings}
+            setTransformSettings={setTransformSettings}
             perspective={perspective}
+            unitOfMeasure={unitOfMeasure}
           >
             <div
+              ref={pdfRef}
               className={"absolute z-0"}
               style={{
                 transform: `${matrix3d}`,
-                transformOrigin: "0 0",
+                transformOrigin: "center",
                 filter: getInversionFilters(
-                  transformSettings.inverted,
-                  transformSettings.isInvertedGreen,
+                  displaySettings.inverted,
+                  displaySettings.isInvertedGreen,
                 ),
               }}
             >
-              <div
-                className={"border-8 border-purple-700"}
-                style={{
-                  transform: `scale(${transformSettings.scale.x}, ${transformSettings.scale.y}) rotate(${transformSettings.degrees}deg)`,
-                  transformOrigin: "center",
-                }}
-              >
+              <div className={"border-8 border-purple-700"}>
                 <PDFViewer
                   file={file}
                   setPageCount={setPageCount}
@@ -393,7 +475,7 @@ export default function Page() {
                   layers={layers}
                   setLayoutWidth={setLayoutWidth}
                   setLayoutHeight={setLayoutHeight}
-                  setLocalTransform={setLocalTransform}
+                  onDocumentLoad={resetTransformMatrix}
                   calibrationTransform={calibrationTransform}
                   lineThickness={lineThickness}
                   columnCount={columnCount}

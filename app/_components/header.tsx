@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { getPtDensity } from "@/_lib/unit";
 import {
   ChangeEvent,
   Dispatch,
@@ -6,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { OverlayMode } from "@/_lib/drawing";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -18,20 +20,32 @@ import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import GridOffIcon from "@/_icons/grid-off-icon";
 import GridOnIcon from "@/_icons/grid-on-icon";
+import OverlayBorderIcon from "@/_icons/overlay-border-icon";
+import OverlayPaperIcon from "@/_icons/overlay-paper-icon";
 import InfoIcon from "@/_icons/info-icon";
 import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
+import { DisplaySettings } from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
 import Matrix from "ml-matrix";
-import { translate } from "@/_lib/geometry";
+import {
+  translate,
+  rotateMatrixDeg,
+  flipMatrixHorizontally,
+  flipMatrixVertically,
+  isMatrixFlippedVertically,
+  isMatrixFlippedHorizontally,
+  overrideTranslationFromMatrix,
+} from "@/_lib/geometry";
 import FourCorners from "@/_icons/four-corners";
 import FourCornersOff from "@/_icons/four-corners-off";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
+import { DropdownIconButton } from "@/_components/buttons/dropdown-icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
@@ -56,9 +70,9 @@ export default function Header({
   setUnitOfMeasure,
   transformSettings,
   setTransformSettings,
+  displaySettings,
+  setDisplaySettings,
   pageCount,
-  gridOn,
-  setGridOn,
   localTransform,
   calibrationTransform,
   setLocalTransform,
@@ -83,10 +97,10 @@ export default function Header({
   unitOfMeasure: string;
   setUnitOfMeasure: (newUnit: string) => void;
   transformSettings: TransformSettings;
-  setTransformSettings: (newTransformSettings: TransformSettings) => void;
+  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
+  displaySettings: DisplaySettings;
+  setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
   pageCount: number;
-  gridOn: boolean;
-  setGridOn: Dispatch<SetStateAction<boolean>>;
   localTransform: Matrix;
   calibrationTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
@@ -105,12 +119,19 @@ export default function Header({
   const [showNav, setShowNav] = useState<boolean>(true);
 
   function handleRecenter() {
-    if (localTransform !== null) {
-      const pdfPixels = 72;
-      const tx = (+width * pdfPixels) / 2 - layoutWidth / 2;
-      const ty = (+height * pdfPixels) / 2 - layoutHeight / 2;
+    if (transformSettings.matrix !== null) {
+      let tx = +width / 2;
+      let ty = +height / 2;
+
       const m = translate({ x: tx, y: ty });
-      setLocalTransform(calibrationTransform.mmul(m));
+      const newTransformMatrix = overrideTranslationFromMatrix(
+        transformSettings.matrix,
+        m,
+      );
+      setTransformSettings({
+        ...transformSettings,
+        matrix: newTransformMatrix,
+      });
     }
   }
 
@@ -121,6 +142,29 @@ export default function Header({
       setShowNav(true);
     }
   }, [fullScreenHandle.active]);
+
+  const overlayOptions = [
+    {
+      icon: <GridOffIcon ariaLabel={t("overlayModeOff")} />,
+      text: t("overlayModeOff"),
+      value: OverlayMode.NONE,
+    },
+    {
+      icon: <GridOnIcon ariaLabel={t("overlayModeGrid")} />,
+      text: t("overlayModeGrid"),
+      value: OverlayMode.GRID,
+    },
+    {
+      icon: <OverlayBorderIcon ariaLabel={t("overlayModeBorder")} />,
+      text: t("overlayModeBorder"),
+      value: OverlayMode.BORDER,
+    },
+    {
+      icon: <OverlayPaperIcon ariaLabel={t("overlayModePaper")} />,
+      text: t("overlayModePaper"),
+      value: OverlayMode.PAPER,
+    },
+  ];
 
   useKeyDown(() => {
     setMeasuring(!measuring);
@@ -169,28 +213,28 @@ export default function Header({
                   onClick={(e) => {
                     let newInverted;
                     let newIsGreenInverted;
-                    if (!transformSettings.inverted) {
+                    if (!displaySettings.inverted) {
                       newInverted = true;
                       newIsGreenInverted = true;
-                    } else if (transformSettings.isInvertedGreen) {
+                    } else if (displaySettings.isInvertedGreen) {
                       newInverted = true;
                       newIsGreenInverted = false;
                     } else {
                       newInverted = false;
                       newIsGreenInverted = false;
                     }
-                    setTransformSettings({
-                      ...transformSettings,
+                    setDisplaySettings({
+                      ...displaySettings,
                       inverted: newInverted,
                       isInvertedGreen: newIsGreenInverted,
                     });
-                    setInvertOpen(!transformSettings.inverted);
+                    setInvertOpen(!displaySettings.inverted);
                   }}
                 >
-                  {transformSettings.inverted ? (
+                  {displaySettings.inverted ? (
                     <InvertColorIcon
                       fill={
-                        transformSettings.isInvertedGreen
+                        displaySettings.isInvertedGreen
                           ? "#32CD32"
                           : "currentColor"
                       }
@@ -206,20 +250,20 @@ export default function Header({
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
             <Tooltip
               description={
-                transformSettings.isFourCorners
+                displaySettings.isFourCorners
                   ? t("fourCornersOff")
                   : t("fourCornersOn")
               }
             >
               <IconButton
                 onClick={() =>
-                  setTransformSettings({
-                    ...transformSettings,
-                    isFourCorners: !transformSettings.isFourCorners,
+                  setDisplaySettings({
+                    ...displaySettings,
+                    isFourCorners: !displaySettings.isFourCorners,
                   })
                 }
               >
-                {transformSettings.isFourCorners ? (
+                {displaySettings.isFourCorners ? (
                   <FourCorners ariaLabel={t("fourCornersOn")} />
                 ) : (
                   <FourCornersOff ariaLabel={t("fourCornersOff")} />
@@ -296,33 +340,28 @@ export default function Header({
                 />
               </div>
             </Tooltip>
-            <Tooltip description={gridOn ? t("gridOff") : t("gridOn")}>
-              <IconButton onClick={() => setGridOn(!gridOn)}>
-                {gridOn ? (
-                  <GridOnIcon ariaLabel={t("gridOn")} />
-                ) : (
-                  <GridOffIcon ariaLabel={t("gridOff")} />
-                )}
-              </IconButton>
-            </Tooltip>
+            <DropdownIconButton
+              selection={displaySettings.overlayMode}
+              setSelection={(newOverlayMode) => {
+                setDisplaySettings({
+                  ...displaySettings,
+                  overlayMode: newOverlayMode,
+                });
+              }}
+              description={t("overlayMode")}
+              options={overlayOptions}
+            />
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
                 onClick={() =>
                   setTransformSettings({
                     ...transformSettings,
-                    scale: {
-                      x: transformSettings.scale.x * -1,
-                      y: transformSettings.scale.y,
-                    },
+                    matrix: flipMatrixHorizontally(transformSettings.matrix),
                   })
                 }
               >
-                {transformSettings.scale.x === -1 ? (
-                  <FlipVerticalOffIcon ariaLabel={t("flipHorizontal")} />
-                ) : (
-                  <FlipVerticalIcon ariaLabel={t("flipHorizontalOff")} />
-                )}
+                <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
@@ -330,18 +369,11 @@ export default function Header({
                 onClick={() =>
                   setTransformSettings({
                     ...transformSettings,
-                    scale: {
-                      x: transformSettings.scale.x,
-                      y: transformSettings.scale.y * -1,
-                    },
+                    matrix: flipMatrixVertically(transformSettings.matrix),
                   })
                 }
               >
-                {transformSettings.scale.y === -1 ? (
-                  <FlipHorizontalOffIcon ariaLabel={t("flipVertical")} />
-                ) : (
-                  <FlipHorizontalIcon ariaLabel={t("flipVerticalOff")} />
-                )}
+                <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>
@@ -349,7 +381,7 @@ export default function Header({
                 onClick={() =>
                   setTransformSettings({
                     ...transformSettings,
-                    degrees: (transformSettings.degrees + 90) % 360,
+                    matrix: rotateMatrixDeg(transformSettings.matrix, 90),
                   })
                 }
               >

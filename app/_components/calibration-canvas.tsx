@@ -8,16 +8,23 @@ import React, {
   useState,
 } from "react";
 
-import { createCheckerboardPattern, drawLine } from "@/_lib/drawing";
+import {
+  createCheckerboardPattern,
+  drawLine,
+  interpolateColorRing,
+  OverlayMode,
+  CanvasState,
+} from "@/_lib/drawing";
+import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { getPerspectiveTransform } from "@/_lib/geometry";
 import {
   minIndex,
   sqrdist,
   transformPoints,
-  checkIsConcave,
+  transformPoint,
 } from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
-import { TransformSettings } from "@/_lib/transform-settings";
+import { DisplaySettings } from "@/_lib/display-settings";
 import { CornerColorHex } from "@/_components/theme/colors";
 import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
 
@@ -25,6 +32,7 @@ const maxPoints = 4; // One point per vertex in rectangle
 const PRECISION_MOVEMENT_THRESHOLD = 15;
 const PRECISION_MOVEMENT_RATIO = 5;
 const PRECISION_MOVEMENT_DELAY = 500;
+const TRANSITION_DURATION = 700;
 
 function getStrokeStyle(pointToModify: number) {
   return [
@@ -35,152 +43,268 @@ function getStrokeStyle(pointToModify: number) {
   ][pointToModify % 4];
 }
 
-function draw(
-  ctx: CanvasRenderingContext2D,
-  offset: Point,
-  points: Point[],
-  width: number,
-  height: number,
-  perspective: Matrix,
-  isCalibrating: boolean,
-  pointToModify: number | null,
-  ptDensity: number,
-  isPrecisionMovement: boolean,
-  errorFillPattern: CanvasPattern,
-  transformSettings: TransformSettings,
-): void {
-  let isConcave = checkIsConcave(points);
-
-  if (isCalibrating) {
-    ctx.fillStyle = transformSettings.inverted ? "#000" : "#fff";
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  ctx.translate(offset.x, offset.y);
-
-  if (isConcave) {
-    ctx.fillStyle = errorFillPattern;
+function drawCalibration(cs: CanvasState): void {
+  const ctx = cs.ctx;
+  ctx.globalCompositeOperation = "source-over";
+  if (cs.isConcave) {
+    ctx.fillStyle = cs.errorFillPattern;
+    drawPolygon(ctx, cs.points, cs.errorFillPattern);
   } else {
-    ctx.fillStyle = "#000";
-  }
-  drawPolygon(ctx, points);
-
-  if (isCalibrating) {
-    ctx.fill();
-  } else {
-    drawBorder(ctx);
+    ctx.lineWidth = cs.majorLineWidth;
+    drawPolygon(ctx, cs.points, "#000", cs.gridLineColor);
   }
 
-  ctx.strokeStyle = "#000";
+  /* Only draw the grid if the polygon is convex */
+  if (!cs.isConcave) {
+    drawGrid(cs, 0);
+  }
+
   ctx.globalCompositeOperation = "difference";
-  ctx.beginPath();
-
-  if (isCalibrating) {
-    ctx.strokeStyle = transformSettings.isInvertedGreen ? "#32CD32" : "#fff";
-
-    /* Only draw the grid if the polygon is convex */
-    if (!isConcave)
-      drawGrid(ctx, width, height, perspective, 0, ptDensity, isCalibrating);
-
-    if (transformSettings.isFourCorners) {
-      points.forEach((point, index) => {
-        ctx.beginPath();
-        ctx.strokeStyle = getStrokeStyle(index);
-        if (index !== pointToModify) {
-          ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
-          ctx.lineWidth = 4;
-        } else {
-          if (isPrecisionMovement) {
-            drawCrosshair(ctx, point, 20);
-            ctx.lineWidth = 2;
-          } else {
-            ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
-            ctx.lineWidth = 4;
-          }
-        }
-        ctx.stroke();
-      });
-    } else if (pointToModify !== null) {
+  if (cs.displaySettings.isFourCorners) {
+    cs.points.forEach((point, index) => {
       ctx.beginPath();
-      ctx.arc(
-        points[pointToModify].x,
-        points[pointToModify].y,
-        20,
-        0,
-        2 * Math.PI,
-      );
-      ctx.strokeStyle = getStrokeStyle(pointToModify);
-      ctx.lineWidth = 4;
+      ctx.strokeStyle = getStrokeStyle(index);
+      if (index !== cs.pointToModify) {
+        ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
+        ctx.lineWidth = 4;
+      } else {
+        if (cs.isPrecisionMovement) {
+          drawCrosshair(ctx, point, 20);
+          ctx.lineWidth = 2;
+        } else {
+          ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
+          ctx.lineWidth = 4;
+        }
+      }
       ctx.stroke();
-    }
-  } else if (!isConcave) {
-    /* Only draw the grid if the polygon is convex */
-    if (transformSettings.inverted) {
-      ctx.strokeStyle = "#fff";
-    } else if (transformSettings.isInvertedGreen) {
-      ctx.strokeStyle = "#00ff00";
-    }
-    ctx.setLineDash([1]);
-    drawGrid(ctx, width, height, perspective, 8, ptDensity, isCalibrating);
+    });
+  } else if (cs.pointToModify !== null) {
+    ctx.beginPath();
+    ctx.arc(
+      cs.points[cs.pointToModify].x,
+      cs.points[cs.pointToModify].y,
+      20,
+      0,
+      2 * Math.PI,
+    );
+    ctx.strokeStyle = getStrokeStyle(cs.pointToModify);
+    ctx.lineWidth = 4;
+    ctx.stroke();
   }
 }
 
-function drawBorder(ctx: CanvasRenderingContext2D) {
-  ctx.strokeStyle = "#000";
+function draw(cs: CanvasState): void {
+  const ctx = cs.ctx;
+
+  /* Calculate canvas state colors */
+  cs.lightColor = "#fff";
+  cs.darkColor = "#000";
+  cs.greenColor = "#32CD32";
+  /* Light color (in light mode) */
+  cs.bgColor = interpolateColorRing(
+    [cs.lightColor, cs.darkColor, cs.darkColor],
+    cs.transitionProgress,
+  );
+  /* Dark color (in light mode) */
+  cs.fillColor = interpolateColorRing(
+    [cs.darkColor, cs.lightColor, cs.lightColor],
+    cs.transitionProgress,
+  );
+  /* Grid line color */
+  cs.gridLineColor = interpolateColorRing(
+    [cs.lightColor, cs.greenColor, cs.lightColor],
+    cs.transitionProgress,
+  );
+  /* Grid line color for projection mode */
+  cs.projectionGridLineColor = interpolateColorRing(
+    [cs.darkColor, cs.greenColor, cs.lightColor],
+    cs.transitionProgress,
+  );
+
+  /* Draw background only in calibration mode */
+  if (cs.isCalibrating) {
+    ctx.fillStyle = cs.bgColor;
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  ctx.translate(cs.offset.x, cs.offset.y);
+
+  if (cs.isCalibrating) {
+    drawCalibration(cs);
+  } else if (cs.isConcave) {
+    /* If the perspective is invalid, just draw the error
+     * fill pattern */
+    drawPolygon(ctx, cs.points, cs.errorFillPattern);
+  } else {
+    switch (cs.displaySettings.overlayMode) {
+      case OverlayMode.BORDER:
+        drawBorder(cs, cs.darkColor, cs.gridLineColor);
+        break;
+      case OverlayMode.GRID:
+        ctx.strokeStyle = cs.projectionGridLineColor;
+        drawGrid(cs, 8, [1]);
+        drawBorder(cs, cs.darkColor, cs.gridLineColor);
+        break;
+      case OverlayMode.PAPER:
+        drawBorder(cs, cs.darkColor, cs.gridLineColor);
+        drawPaperSheet(cs);
+    }
+  }
+}
+
+function drawPaperSheet(cs: CanvasState) {
+  const ctx = cs.ctx;
+  ctx.save();
+  const fontSize = 32;
+  ctx.globalCompositeOperation = "difference";
+  ctx.font = `${fontSize}px monospace`;
+  ctx.fillStyle = "white";
+  /* Portrait text, Landscape text */
+  let textPL: [string, string];
+  let text: string;
+  let paperWidth: number;
+  let paperHeight: number;
+  switch (cs.unitOfMeasure) {
+    case CM:
+      textPL = ["A4", "A4"];
+      paperWidth = 21;
+      paperHeight = 29.7;
+      break;
+    case IN:
+    default:
+      textPL = ["8.5x11", "11x8.5"];
+      paperWidth = 8.5;
+      paperHeight = 11;
+      break;
+  }
+
+  const portrait = false;
+  if (portrait) {
+    text = textPL[0];
+  } else {
+    text = textPL[1];
+    /* Swap the width/height when in landscape mode */
+    const tmp = paperWidth;
+    paperWidth = paperHeight;
+    paperHeight = tmp;
+  }
+
+  paperWidth *= cs.ptDensity;
+  paperHeight *= cs.ptDensity;
+
+  const center = {
+    x: cs.width * cs.ptDensity * 0.5,
+    y: cs.height * cs.ptDensity * 0.5,
+  };
+
+  /* Center Projected */
+  const centerP = transformPoint(center, cs.perspective);
+
+  const corners = [
+    {
+      x: 0.0,
+      y: 0.0,
+    },
+    {
+      x: 0.0,
+      y: paperHeight,
+    },
+    {
+      x: paperWidth,
+      y: paperHeight,
+    },
+    {
+      x: paperWidth,
+      y: 0.0,
+    },
+  ];
+
+  const centerOffset = {
+    x: (cs.width * cs.ptDensity - paperWidth) * 0.5,
+    y: (cs.height * cs.ptDensity - paperHeight) * 0.5,
+  };
+
+  /* Center the page */
+  const cornersCentered = corners.map((p) => {
+    return { x: p.x + centerOffset.x, y: p.y + centerOffset.y };
+  });
+
+  /* Projected corners (centered) */
+  const cornersP = transformPoints(cornersCentered, cs.perspective);
+
+  drawPolygon(ctx, cornersP);
+  ctx.setLineDash([5, 1]);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = cs.projectionGridLineColor;
+  ctx.stroke();
+
+  const labelWidth = ctx.measureText(text).width;
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = cs.projectionGridLineColor;
+  ctx.fillText(text, centerP.x - labelWidth * 0.5, centerP.y);
+  ctx.restore();
+}
+
+function drawBorder(cs: CanvasState, lineColor: string, dashColor: string) {
+  const ctx = cs.ctx;
+  ctx.save();
+  drawPolygon(ctx, cs.points);
+  ctx.strokeStyle = lineColor;
   ctx.lineWidth = 5;
   ctx.stroke();
   ctx.lineDashOffset = 0;
   ctx.setLineDash([4, 4]);
   ctx.lineWidth = 1;
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = dashColor;
   ctx.stroke();
+  ctx.restore();
 }
 
-function drawGrid(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-  perspective: Matrix,
-  outset: number,
-  ptDensity: number,
-  isCalibrating: boolean,
-): void {
+function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
+  const ctx = cs.ctx;
+  ctx.save();
+  if (lineDash === undefined) {
+    ctx.setLineDash([]);
+  } else {
+    ctx.setLineDash(lineDash);
+  }
   ctx.globalCompositeOperation = "source-over";
   const majorLine = 5;
 
-  for (let i = 0; i <= width; i++) {
-    let lineWidth = 1;
-    if (i % majorLine === 0 || i === width) {
-      lineWidth = 2;
+  for (let i = 0; i <= cs.width; i++) {
+    let lineWidth = cs.minorLineWidth;
+    if (i % majorLine === 0 || i === cs.width) {
+      lineWidth = cs.majorLineWidth;
     }
     const line = transformPoints(
       [
-        { x: i * ptDensity, y: -outset * ptDensity },
-        { x: i * ptDensity, y: (height + outset) * ptDensity },
+        { x: i * cs.ptDensity, y: -outset * cs.ptDensity },
+        { x: i * cs.ptDensity, y: (cs.height + outset) * cs.ptDensity },
       ],
-      perspective,
+      cs.perspective,
     );
     drawLine(ctx, line[0], line[1], lineWidth);
   }
-  for (let i = 0; i <= height; i++) {
-    let lineWidth = 1;
-    if (i % majorLine === 0 || i === height) {
-      lineWidth = 2;
+  for (let i = 0; i <= cs.height; i++) {
+    let lineWidth = cs.minorLineWidth;
+    if (i % majorLine === 0 || i === cs.height) {
+      lineWidth = cs.majorLineWidth;
     }
     // Move origin to bottom left to match cutting mat
-    const y = (height - i) * ptDensity;
+    const y = (cs.height - i) * cs.ptDensity;
     const line = transformPoints(
       [
-        { x: -outset * ptDensity, y: y },
-        { x: (width + outset) * ptDensity, y: y },
+        { x: -outset * cs.ptDensity, y: y },
+        { x: (cs.width + outset) * cs.ptDensity, y: y },
       ],
-      perspective,
+      cs.perspective,
     );
     drawLine(ctx, line[0], line[1], lineWidth);
   }
-  if (isCalibrating) {
-    drawDimensionLabels(ctx, width, height, perspective, ptDensity);
+  if (cs.isCalibrating) {
+    drawDimensionLabels(ctx, cs.width, cs.height, cs.perspective, cs.ptDensity);
   }
+  ctx.restore();
 }
 
 function drawDimensionLabels(
@@ -190,6 +314,7 @@ function drawDimensionLabels(
   perspective: Matrix,
   ptDensity: number,
 ) {
+  ctx.save();
   const fontSize = 72;
   const inset = 20;
   ctx.globalCompositeOperation = "difference";
@@ -197,6 +322,12 @@ function drawDimensionLabels(
   ctx.fillStyle = "white";
   const widthText = `${width}`;
   const heightText = `${height}`;
+
+  // Get the actual font height, numbers are all above the baseline on the font used; would need adjustment to work with
+  // fancier fonts where e.g. the 9 descends.
+  const metrics = ctx.measureText(heightText);
+  const height_offset = metrics.actualBoundingBoxAscent / 2;
+
   const line = transformPoints(
     [
       {
@@ -205,7 +336,7 @@ function drawDimensionLabels(
       },
       {
         x: 0,
-        y: height * 0.5 * ptDensity,
+        y: height * 0.5 * ptDensity - height_offset,
       },
     ],
     perspective,
@@ -213,6 +344,7 @@ function drawDimensionLabels(
   const widthLabelWidth = ctx.measureText(widthText).width;
   ctx.fillText(widthText, line[0].x - widthLabelWidth * 0.5, line[0].y - inset);
   ctx.fillText(heightText, line[1].x + inset, line[1].y + fontSize * 0.5);
+  ctx.restore();
 }
 
 function drawCrosshair(
@@ -228,14 +360,24 @@ function drawCrosshair(
   ctx.lineTo(point.x, point.y + halfSize);
 }
 
-function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[]): void {
-  const last = points.at(-1);
-  if (last === undefined) {
-    return;
-  }
-  ctx.moveTo(last.x, last.y);
+function drawPolygon(
+  ctx: CanvasRenderingContext2D,
+  points: Point[],
+  fillStyle?: string | null | CanvasPattern,
+  strokeStyle?: string | null,
+): void {
+  ctx.beginPath();
   for (let p of points) {
     ctx.lineTo(p.x, p.y);
+  }
+  ctx.closePath();
+  if (fillStyle !== undefined && fillStyle !== null) {
+    ctx.fillStyle = fillStyle;
+    ctx.fill();
+  }
+  if (strokeStyle !== undefined && strokeStyle !== null) {
+    ctx.strokeStyle = strokeStyle;
+    ctx.stroke();
   }
 }
 
@@ -254,9 +396,9 @@ export default function CalibrationCanvas({
   width,
   height,
   isCalibrating,
-  ptDensity,
-  transformSettings,
-  setTransformSettings,
+  unitOfMeasure,
+  displaySettings,
+  setDisplaySettings,
 }: {
   className: string | undefined;
   points: Point[];
@@ -266,9 +408,9 @@ export default function CalibrationCanvas({
   width: number;
   height: number;
   isCalibrating: boolean;
-  ptDensity: number;
-  transformSettings: TransformSettings;
-  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
+  unitOfMeasure: string;
+  displaySettings: DisplaySettings;
+  setDisplaySettings: Dispatch<SetStateAction<DisplaySettings>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const patternRef = useRef<CanvasPattern | null>(null);
@@ -285,6 +427,81 @@ export default function CalibrationCanvas({
     useState<Point | null>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const [localPoints, setLocalPoints] = useState<Point[]>(points);
+  /* transitionProgress ranges from 0 to number of colorMode states + 1 */
+  const [transitionProgress, setTransitionProgress] = useState<number>(0);
+  const [colorMode, setColorMode] = useState<number | null>(null);
+  const prevColorModeRef = useRef<number | null>(null);
+
+  const minColorMode = 0;
+  const maxColorMode = 2;
+
+  useEffect(() => {
+    var _colorMode;
+    /* The order is important here. The colorModes should monotonically
+     * increase each time it changes */
+    if (displaySettings.inverted && displaySettings.isInvertedGreen) {
+      _colorMode = 1;
+    } else if (displaySettings.inverted) {
+      _colorMode = 2;
+    } else {
+      _colorMode = 0;
+    }
+
+    setColorMode(_colorMode);
+    /* Initialize prevColorModeRef if needed */
+    if (prevColorModeRef.current == null) prevColorModeRef.current = _colorMode;
+  }, [displaySettings]);
+
+  useEffect(() => {
+    /* No colorMode set yet, nothing to do */
+    if (colorMode == null) return;
+
+    const prevColorMode = prevColorModeRef.current;
+    prevColorModeRef.current = colorMode;
+
+    /* No previous color mode, nothing to do */
+    if (prevColorMode == null) return;
+
+    /* No transition necessary (probably just initialized) */
+    if (colorMode == prevColorMode) {
+      setTransitionProgress(colorMode);
+      return;
+    }
+
+    let frameId: number;
+    const startTime = Date.now();
+    const duration = TRANSITION_DURATION;
+    /* Start from our current progress (avoids jumping on double-click) */
+    const startTransitionProgress = transitionProgress;
+    let endTransitionProgress = colorMode;
+    /* Only allow forward progression */
+    if (colorMode == minColorMode) {
+      endTransitionProgress = maxColorMode + 1;
+    }
+    const transitionDistance = endTransitionProgress - startTransitionProgress;
+
+    const animate = () => {
+      const elapsedTime = Date.now() - startTime;
+      /* progress is a number between 0 and 1 */
+      const progress = Math.min(elapsedTime / duration, 1);
+      let newTransitionProgress =
+        startTransitionProgress + progress * transitionDistance;
+      /* Keep transitionProgress in the range
+       * 0 (inclusive) to maxColorMode + 1 (exclusive) */
+      newTransitionProgress %= maxColorMode + 1;
+      setTransitionProgress(newTransitionProgress);
+
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate);
+      }
+    };
+
+    frameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
+  }, [colorMode]);
 
   useEffect(() => {
     setLocalPoints(points);
@@ -328,7 +545,7 @@ export default function CalibrationCanvas({
       if (ctx !== null) {
         ctx.canvas.width = window.innerWidth;
         ctx.canvas.height = window.innerHeight;
-        draw(
+        let cs = new CanvasState(
           ctx,
           { x: 0, y: 0 },
           localPoints,
@@ -337,17 +554,20 @@ export default function CalibrationCanvas({
           perspective_mtx,
           isCalibrating,
           pointToModify,
-          ptDensity,
+          unitOfMeasure,
           isPrecisionMovement,
           patternRef.current,
-          transformSettings,
+          transitionProgress,
+          displaySettings,
         );
+        draw(cs);
       }
     }
 
     function getDstVertices(): Point[] {
       const ox = 0;
       const oy = 0;
+      const ptDensity = getPtDensity(unitOfMeasure);
       const mx = +width * ptDensity + ox;
       const my = +height * ptDensity + oy;
 
@@ -366,8 +586,9 @@ export default function CalibrationCanvas({
     height,
     isCalibrating,
     pointToModify,
-    ptDensity,
-    transformSettings,
+    unitOfMeasure,
+    transitionProgress,
+    displaySettings,
     isPrecisionMovement,
   ]);
 
@@ -550,9 +771,9 @@ export default function CalibrationCanvas({
       if (e.code === "Tab") {
         e.preventDefault();
         if (e.shiftKey) {
-          setTransformSettings({
-            ...transformSettings,
-            isFourCorners: !transformSettings.isFourCorners,
+          setDisplaySettings({
+            ...displaySettings,
+            isFourCorners: !displaySettings.isFourCorners,
           });
         } else {
           const newPointToModify =
@@ -571,10 +792,10 @@ export default function CalibrationCanvas({
     },
     [
       pointToModify,
-      transformSettings,
+      displaySettings,
       setPointToModify,
       localPoints.length,
-      setTransformSettings,
+      setDisplaySettings,
     ],
   );
 
