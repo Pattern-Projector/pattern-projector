@@ -1,4 +1,3 @@
-import { Point } from "./point";
 import { getPtDensity } from "@/_lib/unit";
 import Matrix from "ml-matrix";
 import { Point } from "@/_lib/point";
