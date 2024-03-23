@@ -278,54 +278,28 @@ export function mirrorMatrix2Points(matrix: Matrix, point1: Point, point2: Point
 }
 
 /* Applies an in-place vertical flip to the transformation matrix */
-export function flipMatrixVertically(matrix: Matrix): Matrix {
-
+export function flipMatrixVertically(matrix: Matrix, yintercept?: number): Matrix {
+  const k = yintercept || matrix.get(1,2);
   // Create a flip matrix to perform horizontal flipping
   const flipMatrix = new Matrix([
     [1, 0, 0],
-    [0, -1, 0],
+    [0, -1, 2*k],
     [0, 0, 1]
   ]);
     
-  const tx = matrix.get(0, 2);
-  const ty = matrix.get(1, 2);
-
-  /* First translate it to origin */
-  const translation = new Matrix([
-    [1, 0, -tx],
-    [0, 1, -ty],
-    [0, 0, 1]
-  ]);
-
-  const m0 = matrix.mmul(translation);
-  const flipped = flipMatrix.mmul(m0);
-  /* Use the original translation component */
-  return overrideTranslationFromMatrix(flipped, matrix)
+  return flipMatrix.mmul(matrix)
 }
 
-/* Applies an in-place horizontal flip to the transformation matrix */
-export function flipMatrixHorizontally(matrix: Matrix): Matrix {
+/* Applies a horizontal flip to the transformation matrix */
+export function flipMatrixHorizontally(matrix: Matrix, xintercept?: number): Matrix {
+  const k = xintercept || matrix.get(0,2);
   // Create a flip matrix to perform horizontal flipping
-  const flipMatrix = new Matrix([
-    [-1, 0, 0],
+  let flipMatrix = new Matrix([
+    [-1, 0, k*2],
     [0, 1, 0],
     [0, 0, 1]
   ]);
-
-  const tx = matrix.get(0, 2);
-  const ty = matrix.get(1, 2);
-
-  /* First translate it to origin */
-  const translation = new Matrix([
-    [1, 0, -tx],
-    [0, 1, -ty],
-    [0, 0, 1]
-  ]);
-
-  const m0 = matrix.mmul(translation);
-  const flipped = flipMatrix.mmul(m0);
-  /* Use the original translation component */
-  return overrideTranslationFromMatrix(flipped, matrix)
+  return flipMatrix.mmul(matrix)
 }
 
 export function isMatrixFlippedVertically(matrix: Matrix): boolean {

@@ -144,7 +144,68 @@ function draw(cs: CanvasState): void {
         drawBorder(cs, cs.darkColor, cs.gridLineColor);
         drawPaperSheet(cs);
     }
+
+    if (cs.displaySettings.flipOnCenter)
+      drawCenterLines(cs);
+
   }
+}
+
+function drawCenterLines(cs: CanvasState) {
+  const ctx = cs.ctx;
+  ctx.save();
+  ctx.globalCompositeOperation = "source-over";
+  const center = {
+    x: cs.width * cs.ptDensity * 0.5,
+    y: cs.height * cs.ptDensity * 0.5,
+  }
+
+  /* Center Projected */
+  const centerP = transformPoint(
+    center,
+    cs.perspective,
+  );
+
+  const yAxisPoints = [
+    {
+      x: center.x,
+      y: 0.0,
+    },{
+      x: center.x,
+      y: cs.height * cs.ptDensity,
+    }
+  ]
+
+  const xAxisPoints = [
+    {
+      x: 0.0,
+      y: center.y,
+    },{
+      x: cs.width * cs.ptDensity,
+      y: center.y,
+    }
+  ]
+
+  const projectedY = transformPoints(
+    yAxisPoints,
+    cs.perspective,
+  );
+  const projectedX = transformPoints(
+    xAxisPoints,
+    cs.perspective,
+  );
+
+  const lineWidth = 3;
+  ctx.setLineDash([5, 1]);
+  ctx.strokeStyle = cs.projectionGridLineColor; 
+
+  drawLine(ctx, projectedY[0], projectedY[1], lineWidth);
+  ctx.stroke();
+
+  drawLine(ctx, projectedX[0], projectedX[1], lineWidth);
+  ctx.stroke();
+
+  ctx.restore();
 }
 
 function drawPaperSheet(cs: CanvasState) {

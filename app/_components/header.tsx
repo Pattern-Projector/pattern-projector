@@ -18,6 +18,8 @@ import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
+import FlipCenterOnIcon from "@/_icons/flip-center-on-icon";
+import FlipCenterOffIcon from "@/_icons/flip-center-off-icon";
 import GridOffIcon from "@/_icons/grid-off-icon";
 import GridOnIcon from "@/_icons/grid-on-icon";
 import OverlayBorderIcon from "@/_icons/overlay-border-icon";
@@ -346,26 +348,60 @@ export default function Header({
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
-                onClick={() =>
-                  setTransformSettings({
-                    ...transformSettings,
-                    matrix: flipMatrixHorizontally(transformSettings.matrix),
-                  })
-                }
+                onClick={() => {
+                  if (displaySettings.flipOnCenter){
+                    setTransformSettings({
+                      ...transformSettings,
+                      matrix: flipMatrixHorizontally(transformSettings.matrix, width/2),
+                    })
+                  } else {
+                    setTransformSettings({
+                      ...transformSettings,
+                      matrix: flipMatrixHorizontally(transformSettings.matrix),
+                    })
+                  }
+                }}
               >
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
               <IconButton
+                onClick={() => {
+                  if (displaySettings.flipOnCenter){
+                    setTransformSettings({
+                      ...transformSettings,
+                      matrix: flipMatrixVertically(transformSettings.matrix, height/2),
+                    })
+                  } else {
+                    setTransformSettings({
+                      ...transformSettings,
+                      matrix: flipMatrixVertically(transformSettings.matrix),
+                    })
+                  }
+                }}
+              >
+                <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              description={
+                displaySettings.flipCenterOn ? t("flipCenterOff") : t("flipCenterOn")
+              }
+            >
+              <IconButton
                 onClick={() =>
-                  setTransformSettings({
-                    ...transformSettings,
-                    matrix: flipMatrixVertically(transformSettings.matrix),
+                  setDisplaySettings({
+                    ...displaySettings,
+                    flipOnCenter: !displaySettings.flipOnCenter
                   })
                 }
               >
-                <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
+                {displaySettings.flipOnCenter ? (
+                  <FlipCenterOnIcon ariaLabel={t("flipCenterOn")} />
+                ) : (
+                  <FlipCenterOffIcon ariaLabel={t("flipCenterOff")} />
+                )}
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>

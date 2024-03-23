@@ -128,6 +128,8 @@
     "flipVerticalOff": "Flip vertically off",
     "flipHorizontal": "Flip horizontally",
     "flipHorizontalOff": "Flip horizontally off",
+    "flipCenterOn": "Flip across center",
+    "flipCenterOff": "Flip across center off",
     "fourCornersOn": "Highlight all corners",
     "fourCornersOff": "Only highlight selected corner",
     "rotate90": "Rotate 90 degrees clockwise",

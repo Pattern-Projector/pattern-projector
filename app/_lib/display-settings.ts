@@ -5,6 +5,7 @@ export interface DisplaySettings {
   isInvertedGreen: boolean;
   isFourCorners: boolean;
   overlayMode: OverlayMode;
+  flipOnCenter: boolean;
 }
 
 export function getDefaultDisplaySettings() {
@@ -12,6 +13,7 @@ export function getDefaultDisplaySettings() {
     inverted: false,
     isInvertedGreen: false,
     isFourCorners: true,
-    overlayMode: OverlayMode.BORDER
+    overlayMode: OverlayMode.BORDER,
+    flipOnCenter: true,
   };
 }
