@@ -3,9 +3,9 @@
         "beta": "beta",
         "pdfstitcherHref": "https://www.pdfstitcher.org/",
         "youTubeSrc": "https://www.youtube.com/embed/m9RTLznEfRM?si=ELCJUrF4bx0OKJMf",
-        "github": "Github icon",
+        "github": "Siehe Quellcode",
         "calibrate": "Starte Kalibrierung",
-        "choose-language": "Language",
+        "choose-language": "Sprache",
         "welcome": {
             "title": "Willkommen bei Pattern Projector!",
             "description": "Pattern projector ist eine kostenlose und quelloffene Web-Applikation, die Benutzern hilft, Beamer für Schnittmuster schnell zu kalibrieren. Dieses Projekt befindet sich derzeit in der Beta-Phase. Es wird noch große Änderungen und neue Funktionen geben, die wir im Laufe der Zeit hinzufügen werden."
@@ -15,24 +15,24 @@
             "projector": "Beamer: mindestens 720p empfohlen",
             "mat": "Schneidematte: idealerweise mit Rasterlininen",
             "mount": "Ständer oder Wand/Regal/Tischhalterung für den Beamer",
-            "computer": "Computer or Tablet um es mit dem Beamer zu verbinden",
-            "pattern": "Ein PDF-Schnittmuster: überlege, ob du den  <pdfstitcher>PDFStitcher</pdfstitcher> benutzt, wenn dein Schnittmuster Ebenen oder mehrere Seiten hat"
+            "computer": "Computer oder Tablet um es mit dem Beamer zu verbinden",
+            "pattern": "Ein PDF-Schnittmuster"
         },
         "setup": {
             "title": "Setup",
             "place": "Stelle den Beamer über oder hinter der Schneidematte auf, so dass er auf die Schneidematte projiziert.",
-            "connect": "Schließe deinen Computer oder Tablet an den Beamer an und spiegel oder erweitere deine Anzeige.",
-            "focus": "Stelle den Focus bei deinem Beamer ein, bis der Text in der Mitte der Projektion scharf ist. Wenn du das Bild nicht scharf bekommst, versichere dich, dass die Entfernung zwischen Beamer und Schneidematte entsprechend, der Herstellerangabe ist.",
+            "connect": "Schließe deinen Computer oder Tablet an den Beamer an und dupliziere oder erweitere deine Anzeige.",
+            "focus": "Stelle den Focus bei deinem Beamer ein, bis der Text in der Mitte der Projektion scharf ist. Wenn du das Bild nicht scharf bekommst, versichere dich, dass die Entfernung zwischen Beamer und Schneidematte der Herstellerangabe entspricht.",
             "keystone": "Wenn dein Beamer Keystones hat, dann versuche es so nah wie möglich am vorgesehenen Rechteck auszurichten."
         },
         "calibration": {
             "title": "Kalibrierung",
             "start": "Klicke auf “Starte Kalibrierung.”",
             "input": "Füge die Weite und Höhe deiner Schneidematte ein.",
-            "fullscreen": "Gehe auf Vollbildmodus, indem du auf das Ikon klickst",
+            "fullscreen": "Gehe auf Vollbildmodus, indem du auf das Ikon klickst ",
             "drag": "Ziehe die Ecken des Rasters auf die Ecken deiner Schneidematte. Mit Blick auf die Matte, justiere die Ecken am PC oder Tablet. Justiere es solange, bis die Ecken und Linien mit deiner Schneidematte übereinstimmen.",
-            "size": "Es muss nicht die gesamte Matte kalibriert werden, sondern nur der größten Bereich, in den das Kalibrierungsgitter passt. Stelle dabei sicher, dass die Breiten- und Höhenangaben mit denen des Gitters übereinstimmen.",
-            "project": "When das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf \"Beamen\"."
+            "size": "Es muss nicht die gesamte Matte kalibriert werden, sondern nur der größte Bereich, in den das Kalibrierungsgitter passt. Stelle dabei sicher, dass die Breiten- und Höhenangaben mit denen des Gitters übereinstimmen.",
+            "project": "Wenn das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf \"Beamen\"."
         },
         "project": {
             "title": "Projiziere ein Schnittmuster",
@@ -58,7 +58,7 @@
             },
             "recenter": {
                 "title": "PDF zentrieren",
-                "description": ""
+                "description": "Zentriert das Schnittmuster auf der Projektionsfläche"
             },
             "fullscreen": {
                 "title": "Vollbild",
@@ -81,7 +81,7 @@
             },
             "chromecastSupport": {
                 "question": "Unterstützt du Chromecast?",
-                "answer": "Es ist möglich die Webseite mit Chrome zu benutzen, allerdings kann es zu Ausfällen in der Verbindung kommen. Dies kann frustierend sein, gerade beim Kalibrieren. Eine bessere Untersüttzung für Chromecast ist für ein kommendes Update geplant."
+                "answer": "Es ist möglich die Webseite mit Chrome zu benutzen, allerdings kann es zu Ausfällen in der Verbindung kommen. Dies kann frustierend sein, gerade beim Kalibrieren. Eine bessere Unterstützung für Chromecast ist für ein kommendes Update geplant."
             },
             "mobileSupport": {
                 "question": "Unterstützt du Tablets oder Handys?",
@@ -92,14 +92,14 @@
             "title": "Zusätzliche Informationen",
             "links": {
                 "projectorsForSewing": {
-                    "title": "Nähen mit beamer",
+                    "title": "Nähen mit Beamer",
                     "link": "https://www.facebook.com/groups/naehenmitbeamer/"
                 }
             }
         },
         "contribute": {
             "title": "Unterstütze dieses Projekt",
-            "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>buying me a coffee</donateLink> unterstützen",
+            "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>kaufe mir einen Kaffee</donateLink> unterstützen",
             "develop": "Hilfe um neue Featuers zu implementieren oder Fehler zu beheben auf <githubLink>GitHub</githubLink>.",
             "translate": "Übersetzung dieses Projekts in mehrere Sprachen.",
             "feedback": "Feedback und Verbesserungsvorschläge sind herzlich Willkommen!"
@@ -107,11 +107,11 @@
         "contact": "Kontakt"
     },
     "Header": {
-        "projecting": "Projektion",
+        "projecting": "Beamen",
         "calibrating": "Kalibrierung",
         "openPDF": "Öffne PDF",
         "height": "H:",
-        "width": "W:",
+        "width": "B:",
         "project": "Beamen",
         "calibrate": "Kalibrieren",
         "delete": "Kalibrierung zurücksetzen",
@@ -132,16 +132,25 @@
         "layersOn": "Blende Ebenenmenü ein",
         "layersOff": "Blende Ebenenmenü aus",
         "recenter": "PDF zentrieren",
-        "fullscreen": "Vollbild",
-        "fullscreenExit": "Vollbild",
-        "lineWeight": "Line weight",
-        "stitchMenuShow": "Show stitch menu",
-        "stitchMenuHide": "Hide stitch menu"
+        "fullscreen": "Vollbild ein",
+        "fullscreenExit": "Vollbild aus",
+        "lineWeight": "Linienstärke",
+        "stitchMenuShow": "Zeige Linienmenü",
+        "stitchMenuHide": "Verstecke Linienmenü",
+        "overlayModeOff": "Aus",
+        "overlayModeGrid": "Raster",
+        "overlayModePaper": "Papierbogen",
+        "measureOff": "Messung beenden",
+        "overlayMode": "Overlay-Modus",
+        "overlayModeBorder": "Umrandung",
+        "menuShow": "Zeige Menü",
+        "menuHide": "Verstecke Menü",
+        "measureOn": "Messung beginnen"
     },
     "StitchMenu": {
-        "columnCount": "Columns",
-        "pageRange": "Pages",
+        "columnCount": "Spalten",
+        "pageRange": "Seiten",
         "horizontal": "Horizontal",
-        "vertical": "Vertical"
+        "vertical": "Vertikal"
     }
 }

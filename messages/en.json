@@ -1,156 +1,156 @@
 {
-  "HomePage": {
-    "beta": "beta",
-    "pdfstitcherHref": "https://www.pdfstitcher.org/",
-    "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
-    "github": "See source code",
-    "calibrate": "Start Calibrating",
-    "choose-language": "Language",
-    "welcome": {
-      "title": "Welcome to Pattern Projector!",
-      "description": "Pattern projector is a free and open source web app that helps users quickly calibrate projectors for sewing patterns. This project is currently in beta, so expect large changes and new features to be added as we iterate."
+    "HomePage": {
+        "beta": "beta",
+        "pdfstitcherHref": "https://www.pdfstitcher.org/",
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "github": "See source code",
+        "calibrate": "Start Calibrating",
+        "choose-language": "Language",
+        "welcome": {
+            "title": "Welcome to Pattern Projector!",
+            "description": "Pattern projector is a free and open source web app that helps users quickly calibrate projectors for sewing patterns. This project is currently in beta, so expect large changes and new features to be added as we iterate."
+        },
+        "requirements": {
+            "title": "What You’ll Need",
+            "projector": "Projector: at least 720p recommended",
+            "mat": "Cutting mat: ideally with grid lines at every inch or centimeter",
+            "mount": "Tripod or wall/shelf/table mount for projector",
+            "computer": "Computer or tablet to connect to the projector",
+            "pattern": "A PDF sewing pattern"
+        },
+        "setup": {
+            "title": "Setup",
+            "place": "Place the projector above the cutting mat, pointing at the cutting mat. Try to place the projector directly above the cutting mat and pointing directly at it.",
+            "connect": "Connect your computer or tablet to the projector and either mirror or extend the display so that image from computer or tablet is shown on the projector.",
+            "focus": "Adjust the focus on the projector, until text is crisp in the centre of the projection. If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended by the manufacturer.",
+            "keystone": "If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves."
+        },
+        "calibration": {
+            "title": "Calibration",
+            "start": "Click (or tap) “Start Calibrating.”",
+            "input": "Input the width and height of your mat.",
+            "fullscreen": "Enter full screen mode by clicking (or tapping) ",
+            "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your computer or tablet. Adjust the placement of the corners until the projected grid matches your mat's grid.",
+            "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and make sure your width and height inputs match the width and height of the grid.",
+            "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
+        },
+        "project": {
+            "title": "Projecting a Pattern",
+            "open": "Click (or tap) <pdficon></pdficon> to open the PDF document.",
+            "move": "Move the PDF by clicking and dragging it around the screen.",
+            "cut": "Cut along the projected design.",
+            "tools": "In projection mode there are several tools provided:",
+            "showGrid": {
+                "title": "Show/hide grid",
+                "description": "When projecting, it shows/hides a faint grid to verify that your calibration is correct."
+            },
+            "invert": {
+                "title": "Invert Colors",
+                "description": "When projecting, it's usually easier to see white lines on black."
+            },
+            "flip": {
+                "title": "Flip Vertical/Horizontal",
+                "description": "Helpful when mirroring patterns in half."
+            },
+            "rotate": {
+                "title": "Rotate",
+                "description": "Change the orientation of the pattern by 90 degrees."
+            },
+            "recenter": {
+                "title": "Recenter",
+                "description": "Centers the pattern on the cutting mat."
+            },
+            "fullscreen": {
+                "title": "Full screen",
+                "description": "It's generally easier to use the software in full screen mode."
+            }
+        },
+        "faq": {
+            "title": "FAQ",
+            "wrongSizePdf": {
+                "question": "Is your PDF projecting too small or large?",
+                "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Patterns from designers usually have the correct scale, so a change in scale could have been introduced when opening the pattern in Affinity Designer or Inkscape."
+            },
+            "saveAsApp": {
+                "question": "Do you want to save Pattern Projector as an app?",
+                "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
+            },
+            "annotationSupport": {
+                "question": "Do you have support for adding annotations?",
+                "answer": "Not yet, but it's planned for an upcoming release."
+            },
+            "chromecastSupport": {
+                "question": "Do you support Chromecast?",
+                "answer": "While it's possible to cast this webpage in Chrome, the lag in the connection can be frustrating, especially when calibrating. Better support for Chromecast is planned in an upcoming release."
+            },
+            "mobileSupport": {
+                "question": "Do you have support mobile phones and tablets?",
+                "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use. Better mobile support is planned in an upcoming release."
+            }
+        },
+        "resources": {
+            "title": "Additional Resources",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Projectors for Sewing Facebook Group",
+                    "link": "https://www.facebook.com/groups/481078582801085"
+                }
+            }
+        },
+        "contribute": {
+            "title": "Contribute to the project",
+            "donation": "If you would like to support the development of this tool, please consider <donateLink>buying me a coffee</donateLink>",
+            "develop": "Help implement features and fix issues on <githubLink>GitHub</githubLink>.",
+            "translate": "Translate this tool into more languages.",
+            "feedback": "Feedback and feature requests are welcome!"
+        },
+        "contact": "Contact"
     },
-    "requirements": {
-      "title": "What You’ll Need",
-      "projector": "Projector: at least 720p recommended",
-      "mat": "Cutting mat: ideally with grid lines at every inch or centimeter",
-      "mount": "Tripod or wall/shelf/table mount for projector",
-      "computer": "Computer or tablet to connect to the projector",
-      "pattern": "A PDF sewing pattern: consider using <pdfstitcher>PDFStitcher</pdfstitcher> if your pattern has multiple pages"
+    "Header": {
+        "projecting": "Projecting",
+        "calibrating": "Calibrating",
+        "openPDF": "Open PDF",
+        "height": "H:",
+        "width": "W:",
+        "project": "Project",
+        "calibrate": "Calibrate",
+        "delete": "Reset calibration",
+        "gridOn": "Grid on",
+        "gridOff": "Grid off",
+        "overlayMode": "Overlay Mode",
+        "overlayModeBorder": "Border",
+        "overlayModeOff": "Off",
+        "overlayModeGrid": "Grid",
+        "overlayModePaper": "Paper Sheet",
+        "invertColor": "Invert colors",
+        "invertColorOff": "Invert colors off",
+        "flipVertical": "Flip vertically",
+        "flipVerticalOff": "Flip vertically off",
+        "flipHorizontal": "Flip horizontally",
+        "flipHorizontalOff": "Flip horizontally off",
+        "fourCornersOn": "Highlight all corners",
+        "fourCornersOff": "Only highlight selected corner",
+        "rotate90": "Rotate 90 degrees clockwise",
+        "arrowBack": "Back 1 page",
+        "arrowForward": "Forward 1 page",
+        "info": "Info page",
+        "layersOn": "Show layer menu",
+        "layersOff": "Hide layer menu",
+        "recenter": "Recenter PDF",
+        "fullscreen": "Enter full screen",
+        "fullscreenExit": "Exit full screen",
+        "menuShow": "Show menu",
+        "menuHide": "Hide menu",
+        "lineWeight": "Line weight",
+        "stitchMenuShow": "Show stitch menu",
+        "stitchMenuHide": "Hide stitch menu",
+        "measureOn": "Start measuring",
+        "measureOff": "Stop measuring"
     },
-    "setup": {
-      "title": "Setup",
-      "place": "Place the projector above the cutting mat, pointing at the cutting mat. Try to place the projector directly above the cutting mat and pointing directly at it.",
-      "connect": "Connect your computer or tablet to the projector and either mirror or extend the display so that image from computer or tablet is shown on the projector.",
-      "focus": "Adjust the focus on the projector, until text is crisp in the centre of the projection. If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended by the manufacturer.",
-      "keystone": "If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves."
-    },
-    "calibration": {
-      "title": "Calibration",
-      "start": "Click (or tap) “Start Calibrating.”",
-      "input": "Input the width and height of your mat.",
-      "fullscreen": "Enter full screen mode by clicking (or tapping) ",
-      "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your computer or tablet. Adjust the placement of the corners until the projected grid matches your mat's grid.",
-      "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and make sure your width and height inputs match the width and height of the grid.",
-      "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
-    },
-    "project": {
-      "title": "Projecting a Pattern",
-      "open": "Click (or tap) <pdficon></pdficon> to open the PDF document.",
-      "move": "Move the PDF by clicking and dragging it around the screen.",
-      "cut": "Cut along the projected design.",
-      "tools": "In projection mode there are several tools provided:",
-      "showGrid": {
-        "title": "Show/hide grid",
-        "description": "When projecting, it shows/hides a faint grid to verify that your calibration is correct."
-      },
-      "invert": {
-        "title": "Invert Colors",
-        "description": "When projecting, it's usually easier to see white lines on black."
-      },
-      "flip": {
-        "title": "Flip Vertical/Horizontal",
-        "description": "Helpful when mirroring patterns in half."
-      },
-      "rotate": {
-        "title": "Rotate",
-        "description": "Change the orientation of the pattern by 90 degrees."
-      },
-      "recenter": {
-        "title": "Recenter",
-        "description": "Centers the pattern on the cutting mat."
-      },
-      "fullscreen": {
-        "title": "Full screen",
-        "description": "It's generally easier to use the software in full screen mode."
-      }
-    },
-    "faq": {
-      "title": "FAQ",
-      "wrongSizePdf": {
-        "question": "Is your PDF projecting too small or large?",
-        "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Patterns from designers usually have the correct scale, so a change in scale could have been introduced when opening the pattern in Affinity Designer or Inkscape."
-      },
-      "saveAsApp": {
-        "question": "Do you want to save Pattern Projector as an app?",
-        "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
-      },
-      "annotationSupport": {
-        "question": "Do you have support for adding annotations?",
-        "answer": "Not yet, but it's planned for an upcoming release."
-      },
-      "chromecastSupport": {
-        "question": "Do you support Chromecast?",
-        "answer": "While it's possible to cast this webpage in Chrome, the lag in the connection can be frustrating, especially when calibrating. Better support for Chromecast is planned in an upcoming release."
-      },
-      "mobileSupport": {
-        "question": "Do you have support mobile phones and tablets?",
-        "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use. Better mobile support is planned in an upcoming release."
-      }
-    },
-    "resources": {
-      "title": "Additional Resources",
-      "links": {
-        "projectorsForSewing": {
-          "title": "Projectors for Sewing Facebook Group",
-          "link": "https://www.facebook.com/groups/481078582801085"
-        }
-      }
-    },
-    "contribute": {
-      "title": "Contribute to the project",
-      "donation": "If you would like to support the development of this tool, please consider <donateLink>buying me a coffee</donateLink>",
-      "develop": "Help implement features and fix issues on <githubLink>GitHub</githubLink>.",
-      "translate": "Translate this tool into more languages.",
-      "feedback": "Feedback and feature requests are welcome!"
-    },
-    "contact": "Contact"
-  },
-  "Header": {
-    "projecting": "Projecting",
-    "calibrating": "Calibrating",
-    "openPDF": "Open PDF",
-    "height": "H:",
-    "width": "W:",
-    "project": "Project",
-    "calibrate": "Calibrate",
-    "delete": "Reset calibration",
-    "gridOn": "Grid on",
-    "gridOff": "Grid off",
-    "overlayMode": "Overlay Mode",
-    "overlayModeBorder": "Border",
-    "overlayModeOff": "Off",
-    "overlayModeGrid": "Grid",
-    "overlayModePaper": "Paper Sheet",
-    "invertColor": "Invert colors",
-    "invertColorOff": "Invert colors off",
-    "flipVertical": "Flip vertically",
-    "flipVerticalOff": "Flip vertically off",
-    "flipHorizontal": "Flip horizontally",
-    "flipHorizontalOff": "Flip horizontally off",
-    "fourCornersOn": "Highlight all corners",
-    "fourCornersOff": "Only highlight selected corner",
-    "rotate90": "Rotate 90 degrees clockwise",
-    "arrowBack": "Back 1 page",
-    "arrowForward": "Forward 1 page",
-    "info": "Info page",
-    "layersOn": "Show layer menu",
-    "layersOff": "Hide layer menu",
-    "recenter": "Recenter PDF",
-    "fullscreen": "Enter full screen",
-    "fullscreenExit": "Exit full screen",
-    "menuShow": "Show menu",
-    "menuHide": "Hide menu",
-    "lineWeight": "Line weight",
-    "stitchMenuShow": "Show stitch menu",
-    "stitchMenuHide": "Hide stitch menu",
-    "measureOn": "Start measuring",
-    "measureOff": "Stop measuring"
-  },
-  "StitchMenu": {
-    "columnCount": "Columns",
-    "pageRange": "Pages",
-    "horizontal": "Horizontal",
-    "vertical": "Vertical"
-  }
+    "StitchMenu": {
+        "columnCount": "Columns",
+        "pageRange": "Pages",
+        "horizontal": "Horizontal",
+        "vertical": "Vertical"
+    }
 }
