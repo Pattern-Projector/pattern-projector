@@ -100,7 +100,7 @@ export function DropdownCheckboxIconButton({
 							tabIndex={-1}
 							type="checkbox"
 							checked={option.selected}
-							className="form-checkbox accent-purple-600 h-4 w-4 mr-3"
+							className="form-checkbox cursor-pointer accent-purple-600 h-4 w-4 mr-3"
 							disabled = {disabled && key != disableOptionKey}
 						/>
             <span className="select-none">{option.text}</span>
