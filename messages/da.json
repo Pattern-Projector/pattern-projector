@@ -142,8 +142,8 @@
         "overlayModeGrid": "Gitter",
         "overlayMode": "Type af overlay",
         "overlayModePaper": "A4-ark",
-        "measureOn": "Vis linealer",
-        "measureOff": "Skjul linealer",
+        "measureOn": "Vis opmåling",
+        "measureOff": "Skjul opmåling",
         "menuShow": "Vis menu",
         "menuHide": "Skjul menu"
     },
