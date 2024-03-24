@@ -109,8 +109,8 @@ export default function Page() {
     /* Resets and recenters the PDF */
     let newTransformMatrix = Matrix.identity(3,3);
 
-    let tx = +width / 2;
-    let ty = +height / 2;
+    let tx = 0;
+    let ty = 0;
     const m = translate({ x: tx, y: ty});
     const recenteredMatrix = overrideTranslationFromMatrix(
       newTransformMatrix, m);

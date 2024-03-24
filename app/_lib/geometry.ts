@@ -127,16 +127,15 @@ export function getPerspectiveTransform(
 
 
 function getDstVertices(width: number, height: number, ptDensity: number): Point[] {
-  const ox = 0;
-  const oy = 0;
-  const mx = +width * ptDensity + ox;
-  const my = +height * ptDensity + oy;
+
+  const dx = +width * ptDensity * 0.5;;
+  const dy = +height * ptDensity * 0.5;
 
   const dstVertices = [
-    { x: ox, y: oy },
-    { x: mx, y: oy },
-    { x: mx, y: my },
-    { x: ox, y: my },
+    { x: -dx, y: -dy },
+    { x: dx, y: -dy },
+    { x: dx, y: dy },
+    { x: -dx, y: dy },
   ];
 
   return dstVertices;
@@ -279,7 +278,7 @@ export function mirrorMatrix2Points(matrix: Matrix, point1: Point, point2: Point
 
 /* Applies an in-place vertical flip to the transformation matrix */
 export function flipMatrixVertically(matrix: Matrix, yintercept?: number): Matrix {
-  const k = yintercept || matrix.get(1,2);
+  const k = yintercept !== undefined ? yintercept : matrix.get(1,2);
   // Create a flip matrix to perform horizontal flipping
   const flipMatrix = new Matrix([
     [1, 0, 0],
@@ -292,7 +291,7 @@ export function flipMatrixVertically(matrix: Matrix, yintercept?: number): Matri
 
 /* Applies a horizontal flip to the transformation matrix */
 export function flipMatrixHorizontally(matrix: Matrix, xintercept?: number): Matrix {
-  const k = xintercept || matrix.get(0,2);
+  const k = xintercept !== undefined ? xintercept : matrix.get(0,2);
   // Create a flip matrix to perform horizontal flipping
   let flipMatrix = new Matrix([
     [-1, 0, k*2],

@@ -122,8 +122,8 @@ export default function Header({
 
   function handleRecenter() {
     if (transformSettings.matrix !== null) {
-      let tx = +width / 2;
-      let ty = +height / 2;
+      let tx = 0;
+      let ty = 0;
       
       const m = translate({ x: tx, y: ty});
       const newTransformMatrix = overrideTranslationFromMatrix(
@@ -352,7 +352,7 @@ export default function Header({
                   if (displaySettings.flipOnCenter){
                     setTransformSettings({
                       ...transformSettings,
-                      matrix: flipMatrixHorizontally(transformSettings.matrix, +width/2),
+                      matrix: flipMatrixHorizontally(transformSettings.matrix, 0),
                     })
                   } else {
                     setTransformSettings({
@@ -371,7 +371,7 @@ export default function Header({
                   if (displaySettings.flipOnCenter){
                     setTransformSettings({
                       ...transformSettings,
-                      matrix: flipMatrixVertically(transformSettings.matrix, +height/2),
+                      matrix: flipMatrixVertically(transformSettings.matrix, 0),
                     })
                   } else {
                     setTransformSettings({

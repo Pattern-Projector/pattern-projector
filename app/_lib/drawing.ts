@@ -18,7 +18,6 @@ export class CanvasState {
   projectionGridLineColor: string = "#fff";
   majorLineWidth: number = 2;
   minorLineWidth: number = 1;
-  ptDensity: number = 96;
 
   constructor(
     public ctx: CanvasRenderingContext2D,
@@ -36,7 +35,6 @@ export class CanvasState {
     public displaySettings: DisplaySettings,
   ) {
     this.isConcave = checkIsConcave(this.points);
-    this.ptDensity = getPtDensity(unitOfMeasure);
   }
 }
 
