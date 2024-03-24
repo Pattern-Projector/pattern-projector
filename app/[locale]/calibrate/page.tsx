@@ -118,11 +118,11 @@ export default function Page() {
 		
 		/* If pdf exceeds the width/height of the calibration
 			 align it to left/top */
-		if (pdfWidth > width){
-			tx = (pdfWidth-width) * 0.5;
+		if (pdfWidth > +width){
+			tx = (pdfWidth-(+width)) * 0.5;
 		}
-		if (pdfHeight > height){
-			ty = (pdfHeight-height) * 0.5;
+		if (pdfHeight > +height){
+			ty = (pdfHeight-(+height)) * 0.5;
 		}
 		
     const m = translate({ x: tx, y: ty});
