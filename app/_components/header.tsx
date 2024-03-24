@@ -387,7 +387,7 @@ export default function Header({
                 onClick={() =>
                   setTransformSettings({
                     ...transformSettings,
-                    matrix: rotateMatrixDeg(transformSettings.matrix, 90),
+                    matrix: rotateMatrixDeg(transformSettings.matrix, 90, { x: 0, y: 0 }),
                   })
                 }
               >

@@ -177,42 +177,38 @@ export function scale(s: number): Matrix {
   return Matrix.from1DArray(3, 3, [s, 0, 0, 0, s, 0, 0, 0, 1]);
 }
 
-export function rotateMatrixDeg(matrix: Matrix, angleDegrees: number): Matrix {
-  // Extract scale/reflection components (top-left 2x2 submatrix)
-  const scaleReflection = matrix.subMatrix(0, 1, 0, 1);
+export function rotateMatrixDeg(matrix: Matrix, angleDegrees: number, center?: Point): Matrix {
+	/* If no center of rotation provided, use the center of the object */
+	if (center === undefined)
+		center = { x: matrix.get(0,2), y: matrix.get(1,2) }
 
-  // Extract translation components
-  const translation = matrix.subMatrix(0, 1, 2, 2);
-
-  // Calculate the determinant of the 2x2 scale/reflection submatrix
-  const det = scaleReflection.get(0, 0) * scaleReflection.get(1, 1) - scaleReflection.get(0, 1) * scaleReflection.get(1, 0);
-
-  // Check if the object is reflected
-  const isReflected = det < 0;
-
-  // Create the rotation matrix
+  /* Create the rotation matrix */
   const angleRadians = (angleDegrees * Math.PI) / 180;
   const cosAngle = Math.cos(angleRadians);
   const sinAngle = Math.sin(angleRadians);
   let rotationMatrix = new Matrix([
-    [cosAngle, -sinAngle],
-    [sinAngle, cosAngle],
-  ]);
-
-  // Modify the rotation matrix if the object is reflected
-  if (isReflected) {
-    rotationMatrix = rotationMatrix.transpose();
-  }
-
-  // Apply the rotation to the scale/reflection components
-  const rotatedScaleReflection = scaleReflection.mmul(rotationMatrix);
-
-  // Reconstruct the final matrix
-  const rotatedMatrix = new Matrix([
-    [rotatedScaleReflection.get(0, 0), rotatedScaleReflection.get(0, 1), translation.get(0, 0)],
-    [rotatedScaleReflection.get(1, 0), rotatedScaleReflection.get(1, 1), translation.get(1, 0)],
+    [cosAngle, -sinAngle, 0],
+    [sinAngle, cosAngle, 0],
     [0, 0, 1],
   ]);
+
+  /* Create the translation matrices for shifting the center of rotation */
+  let translationToOrigin = new Matrix([
+      [1, 0, -center.x],
+      [0, 1, -center.y],
+      [0, 0, 1],
+    ]);
+  let translationBack = new Matrix([
+      [1, 0, center.x],
+      [0, 1, center.y],
+      [0, 0, 1],
+    ]);
+
+  /* Apply the rotation around the specified center */
+  const rotatedMatrix = translationBack
+    .mmul(rotationMatrix)
+    .mmul(translationToOrigin)
+    .mmul(matrix);
 
   return rotatedMatrix;
 }
