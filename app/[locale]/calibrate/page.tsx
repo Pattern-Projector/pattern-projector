@@ -27,6 +27,7 @@ import {
 import {
   getDefaultDisplaySettings,
   DisplaySettings,
+	OverlaySettings
 } from "@/_lib/display-settings";
 import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
@@ -217,7 +218,7 @@ export default function Page() {
       }
 
       const newDisplaySettings: {
-        overlayMode?: OverlayMode;
+        overlay?: OverlaySettings;
         inverted?: boolean;
         isInvertedGreen?: boolean;
         isFourCorners?: boolean;
@@ -225,8 +226,8 @@ export default function Page() {
       
       const defaultDS = getDefaultDisplaySettings();
 
-      newDisplaySettings.overlayMode = localSettings.overlayMode !== undefined 
-        ? localSettings.overlayMode : defaultDS.overlayMode;
+      newDisplaySettings.overlay = localSettings.overlay !== undefined 
+        ? localSettings.overlay : defaultDS.overlay;
       newDisplaySettings.inverted = localSettings.inverted !== undefined
         ? localSettings.inverted : defaultDS.inverted;
       newDisplaySettings.isInvertedGreen = localSettings.isInvertedGreen !== undefined
@@ -362,7 +363,7 @@ export default function Page() {
               setDisplaySettings(newSettings);
               if (newSettings) {
                 updateLocalSettings({
-                  overlayMode: newSettings.overlayMode,
+                  overlay: newSettings.overlay,
                   inverted: newSettings.inverted,
                   isInvertedGreen: newSettings.isInvertedGreen,
                   isFourCorners: newSettings.isFourCorners,

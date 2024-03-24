@@ -30,7 +30,7 @@ import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import { TransformSettings } from "@/_lib/transform-settings";
-import { DisplaySettings } from "@/_lib/display-settings";
+import { DisplaySettings, OverlaySettings } from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
 import Matrix from "ml-matrix";
@@ -47,7 +47,7 @@ import FourCorners from "@/_icons/four-corners";
 import FourCornersOff from "@/_icons/four-corners-off";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
-import { DropdownIconButton } from "@/_components/buttons/dropdown-icon-button";
+import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-checkbox-icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { Layer } from "@/_lib/layer";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
@@ -143,26 +143,33 @@ export default function Header({
     }
   }, [fullScreenHandle.active]);
 
-  const overlayOptions = [
-    {
-      icon: <GridOffIcon ariaLabel={t("overlayModeOff")} />,
-      text: t("overlayModeOff"),
-      value: OverlayMode.NONE
-    },{
-      icon: <GridOnIcon ariaLabel={t("overlayModeGrid")} />,
-      text: t("overlayModeGrid"),
-      value: OverlayMode.GRID
-    },{
-      icon: <OverlayBorderIcon ariaLabel={t("overlayModeBorder")} />,
-      text: t("overlayModeBorder"),
-      value: OverlayMode.BORDER
-    },{
-      icon: <OverlayPaperIcon ariaLabel={t("overlayModePaper")} />,
-      text: t("overlayModePaper"),
-      value: OverlayMode.PAPER
+  const overlayOptions = {
+    "disabled":{
+      icon: <GridOffIcon ariaLabel={t("overlayOptionDisabled")} />,
+      text: t("overlayOptionDisabled"),
+      selected: displaySettings.overlay.disabled,
     },
-
-  ];
+    "grid":{
+      icon: <GridOnIcon ariaLabel={t("overlayOptionGrid")} />,
+      text: t("overlayOptionGrid"),
+      selected: displaySettings.overlay.grid,
+    },
+    "border":{
+      icon: <OverlayBorderIcon ariaLabel={t("overlayOptionBorder")} />,
+      text: t("overlayOptionBorder"),
+      selected: displaySettings.overlay.border,
+    },
+    "paper":{
+      icon: <OverlayPaperIcon ariaLabel={t("overlayOptionPaper")} />,
+      text: t("overlayOptionPaper"),
+      selected: displaySettings.overlay.paper,
+    },
+    "fliplines":{
+      icon: <FlipCenterOnIcon ariaLabel={t("overlayOptionFliplines")} />,
+      text: t("overlayOptionFliplines"),
+      selected: displaySettings.overlay.fliplines,
+    },
+  };
 
   return (
     <>
@@ -334,32 +341,30 @@ export default function Header({
                 />
               </div>
             </Tooltip>
-            <DropdownIconButton
-              selection={displaySettings.overlayMode}
-              setSelection={(newOverlayMode)=>{
+            <DropdownCheckboxIconButton
+              description={t("overlayOptions")}
+              icon={<GridOnIcon ariaLabel={t("overlayOptions")} />}
+              disabledIcon={<GridOffIcon ariaLabel={t("overlayOptions")} />}
+              disableOptionKey="disabled"
+              options={overlayOptions}
+              setSelectedOptions={(options) => {
                 setDisplaySettings({
                   ...displaySettings,
-                  overlayMode: newOverlayMode,
+									overlay: {
+										...displaySettings.overlay,
+										...options
+									},
                 });
               }}
-              description={t("overlayMode")}
-              options={overlayOptions}
             />
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
                 onClick={() => {
-                  if (displaySettings.flipOnCenter){
-                    setTransformSettings({
-                      ...transformSettings,
-                      matrix: flipMatrixHorizontally(transformSettings.matrix, 0),
-                    })
-                  } else {
-                    setTransformSettings({
-                      ...transformSettings,
-                      matrix: flipMatrixHorizontally(transformSettings.matrix),
-                    })
-                  }
+									setTransformSettings({
+										...transformSettings,
+										matrix: flipMatrixHorizontally(transformSettings.matrix, 0),
+									})
                 }}
               >
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
@@ -368,40 +373,13 @@ export default function Header({
             <Tooltip description={t("flipVertical")}>
               <IconButton
                 onClick={() => {
-                  if (displaySettings.flipOnCenter){
-                    setTransformSettings({
-                      ...transformSettings,
-                      matrix: flipMatrixVertically(transformSettings.matrix, 0),
-                    })
-                  } else {
-                    setTransformSettings({
-                      ...transformSettings,
-                      matrix: flipMatrixVertically(transformSettings.matrix),
-                    })
-                  }
+									setTransformSettings({
+										...transformSettings,
+										matrix: flipMatrixVertically(transformSettings.matrix, 0),
+									})
                 }}
               >
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              description={
-                displaySettings.flipOnCenter ? t("flipCenterOff") : t("flipCenterOn")
-              }
-            >
-              <IconButton
-                onClick={() =>
-                  setDisplaySettings({
-                    ...displaySettings,
-                    flipOnCenter: !displaySettings.flipOnCenter
-                  })
-                }
-              >
-                {displaySettings.flipOnCenter ? (
-                  <FlipCenterOnIcon ariaLabel={t("flipCenterOn")} />
-                ) : (
-                  <FlipCenterOffIcon ariaLabel={t("flipCenterOff")} />
-                )}
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>

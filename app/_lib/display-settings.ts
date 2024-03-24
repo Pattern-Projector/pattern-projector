@@ -1,11 +1,28 @@
 import { OverlayMode } from "@/_lib/drawing";
 
+export interface OverlaySettings {
+  disabled: boolean;
+  grid: boolean;
+  border: boolean;
+  paper: boolean;
+  fliplines: boolean;
+}
+
+export function getDefaultOverlaySettings() {
+  return {
+    disabled: false,
+    grid: false,
+    border: true,
+    paper: false,
+    fliplines: false,
+  };
+}
+
 export interface DisplaySettings {
   inverted: boolean;
   isInvertedGreen: boolean;
   isFourCorners: boolean;
-  overlayMode: OverlayMode;
-  flipOnCenter: boolean;
+  overlay: OverlaySettings;
 }
 
 export function getDefaultDisplaySettings() {
@@ -13,7 +30,6 @@ export function getDefaultDisplaySettings() {
     inverted: false,
     isInvertedGreen: false,
     isFourCorners: true,
-    overlayMode: OverlayMode.BORDER,
-    flipOnCenter: true,
+    overlay: getDefaultOverlaySettings(),
   };
 }

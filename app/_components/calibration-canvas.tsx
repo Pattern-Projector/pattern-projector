@@ -131,24 +131,25 @@ function draw(cs: CanvasState): void {
      * fill pattern */
     drawPolygon(ctx, cs.points, cs.errorFillPattern);
   } else {
-    switch(cs.displaySettings.overlayMode) {
-      case OverlayMode.BORDER:
-        drawBorder(cs, cs.darkColor, cs.gridLineColor);
-      break;
-      case OverlayMode.GRID:
-        ctx.strokeStyle = cs.projectionGridLineColor
-        drawGrid(cs, 8, [1]) 
-        drawBorder(cs, cs.darkColor, cs.gridLineColor);
-      break;
-      case OverlayMode.PAPER:
-        drawBorder(cs, cs.darkColor, cs.gridLineColor);
-        drawPaperSheet(cs);
-    }
-
-    if (cs.displaySettings.flipOnCenter)
-      drawCenterLines(cs);
-
+		/* Draw projection page */
+		if (!cs.displaySettings.overlay.disabled)
+			drawOverlays(cs)
   }
+}
+
+function drawOverlays(cs: CanvasState) {
+	const o = cs.displaySettings.overlay;
+	const ctx = cs.ctx;
+	if (o.grid){
+		ctx.strokeStyle = cs.projectionGridLineColor
+		drawGrid(cs, 8, [1]) 
+	}
+	if (o.border)
+		drawBorder(cs, cs.darkColor, cs.gridLineColor);
+	if (o.paper)
+		drawPaperSheet(cs);
+	if (o.fliplines)
+		drawCenterLines(cs);
 }
 
 function drawCenterLines(cs: CanvasState) {
