@@ -109,9 +109,22 @@ export default function Page() {
   function resetTransformMatrix() {
     /* Resets and recenters the PDF */
     let newTransformMatrix = Matrix.identity(3,3);
-
     let tx = 0;
     let ty = 0;
+
+    const scale = getPtDensity(unitOfMeasure) * .75;
+		const pdfWidth = layoutWidth / scale;
+		const pdfHeight = layoutHeight / scale;
+		
+		/* If pdf exceeds the width/height of the calibration
+			 align it to left/top */
+		if (pdfWidth > width){
+			tx = (pdfWidth-width) * 0.5;
+		}
+		if (pdfHeight > height){
+			ty = (pdfHeight-height) * 0.5;
+		}
+		
     const m = translate({ x: tx, y: ty});
     const recenteredMatrix = overrideTranslationFromMatrix(
       newTransformMatrix, m);
@@ -192,10 +205,10 @@ export default function Page() {
     setPageRange(`1-${pageCount}`);
   }, [pageCount]);
 
-  /* If the pdfDimensions change, reset and recenter tranformation matrix */
+  /* If the layout dimensions change, reset and recenter tranformation matrix */
   useEffect(() => {
     resetTransformMatrix();
-  }, [pdfDimensions]);
+  }, [layoutWidth, layoutHeight, unitOfMeasure]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
