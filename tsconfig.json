@@ -21,7 +21,13 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./app/*"]
-    }
+    },
+    "types": [
+      "@serwist/next/typings"
+    ],
+    "lib": [
+      "webworker"
+    ],
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "types/**/*.ts", "global.d.ts"],
   "exclude": ["node_modules"]

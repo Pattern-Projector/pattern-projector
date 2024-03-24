@@ -16,6 +16,9 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@serwist/next": "^8.4.4",
+    "@serwist/precaching": "^8.4.4",
+    "@serwist/sw": "^8.4.4",
     "@types/node": "20.6.2",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
@@ -27,7 +30,6 @@
     "ml-matrix": "^6.10.5",
     "next": "13.4.19",
     "next-intl": "^3.9.0",
-    "next-pwa": "^5.6.0",
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -48,6 +50,7 @@
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "3.2.5",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "webpack": "^5.91.0"
   }
 }
