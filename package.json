@@ -52,5 +52,8 @@
     "prettier": "3.2.5",
     "ts-node": "^10.9.2",
     "webpack": "^5.91.0"
-  }
+  },
+  "resolutions": {
+    "string-width": "4.2.3"
+ }
 }
