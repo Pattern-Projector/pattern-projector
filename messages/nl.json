@@ -138,7 +138,14 @@
         "stitchMenuShow": "Toon het samenvoegen menu",
         "stitchMenuHide": "Verberg het samenvoegen menu",
         "menuShow": "Toon menu",
-        "menuHide": "Verberg menu"
+        "menuHide": "Verberg menu",
+        "overlayMode": "Extra laag",
+        "overlayModeBorder": "Rand",
+        "overlayModeOff": "Geen",
+        "overlayModeGrid": "Raster",
+        "overlayModePaper": "Blad papier",
+        "measureOn": "Begin met meten",
+        "measureOff": "Stop met meten"
     },
     "StitchMenu": {
         "columnCount": "Kolommen",
