@@ -27,6 +27,7 @@ import {
 import {
   getDefaultDisplaySettings,
   DisplaySettings,
+	OverlaySettings
 } from "@/_lib/display-settings";
 import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
@@ -108,11 +109,24 @@ export default function Page() {
 
   function resetTransformMatrix() {
     /* Resets and recenters the PDF */
-    let newTransformMatrix = Matrix.identity(3, 3);
+    let newTransformMatrix = Matrix.identity(3,3);
+    let tx = 0;
+    let ty = 0;
 
-    let tx = +width / 2;
-    let ty = +height / 2;
-    const m = translate({ x: tx, y: ty });
+    const scale = getPtDensity(unitOfMeasure) * .75;
+		const pdfWidth = layoutWidth / scale;
+		const pdfHeight = layoutHeight / scale;
+		
+		/* If pdf exceeds the width/height of the calibration
+			 align it to left/top */
+		if (pdfWidth > +width){
+			tx = (pdfWidth-(+width)) * 0.5;
+		}
+		if (pdfHeight > +height){
+			ty = (pdfHeight-(+height)) * 0.5;
+		}
+		
+    const m = translate({ x: tx, y: ty});
     const recenteredMatrix = overrideTranslationFromMatrix(
       newTransformMatrix,
       m,
@@ -194,10 +208,10 @@ export default function Page() {
     setPageRange(`1-${pageCount}`);
   }, [pageCount]);
 
-  /* If the pdfDimensions change, reset and recenter tranformation matrix */
+  /* If the layout dimensions change, reset and recenter tranformation matrix */
   useEffect(() => {
     resetTransformMatrix();
-  }, [pdfDimensions]);
+  }, [layoutWidth, layoutHeight, unitOfMeasure]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -220,7 +234,7 @@ export default function Page() {
       }
 
       const newDisplaySettings: {
-        overlayMode?: OverlayMode;
+        overlay?: OverlaySettings;
         inverted?: boolean;
         isInvertedGreen?: boolean;
         isFourCorners?: boolean;
@@ -228,22 +242,14 @@ export default function Page() {
 
       const defaultDS = getDefaultDisplaySettings();
 
-      newDisplaySettings.overlayMode =
-        localSettings.overlayMode !== undefined
-          ? localSettings.overlayMode
-          : defaultDS.overlayMode;
-      newDisplaySettings.inverted =
-        localSettings.inverted !== undefined
-          ? localSettings.inverted
-          : defaultDS.inverted;
-      newDisplaySettings.isInvertedGreen =
-        localSettings.isInvertedGreen !== undefined
-          ? localSettings.isInvertedGreen
-          : defaultDS.isInvertedGreen;
-      newDisplaySettings.isFourCorners =
-        localSettings.isFourCorners !== undefined
-          ? localSettings.isFourCorners
-          : defaultDS.isFourCorners;
+      newDisplaySettings.overlay = localSettings.overlay !== undefined 
+        ? localSettings.overlay : defaultDS.overlay;
+      newDisplaySettings.inverted = localSettings.inverted !== undefined
+        ? localSettings.inverted : defaultDS.inverted;
+      newDisplaySettings.isInvertedGreen = localSettings.isInvertedGreen !== undefined
+        ? localSettings.isInvertedGreen : defaultDS.isInvertedGreen;
+      newDisplaySettings.isFourCorners = localSettings.isFourCorners !== undefined
+        ? localSettings.isFourCorners : defaultDS.isFourCorners;
       setDisplaySettings({ ...displaySettings, ...newDisplaySettings });
     }
   }, []);
@@ -375,7 +381,7 @@ export default function Page() {
               setDisplaySettings(newSettings);
               if (newSettings) {
                 updateLocalSettings({
-                  overlayMode: newSettings.overlayMode,
+                  overlay: newSettings.overlay,
                   inverted: newSettings.inverted,
                   isInvertedGreen: newSettings.isInvertedGreen,
                   isFourCorners: newSettings.isFourCorners,
