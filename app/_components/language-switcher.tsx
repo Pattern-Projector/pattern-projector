@@ -5,7 +5,7 @@ import InlineSelect from "@/_components/inline-select";
 
 interface LanguageSwitcherProps {
   ariaLabel?: string;
-  className?: string; 
+  className?: string;
 }
 
 const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, className }) => {
@@ -34,8 +34,8 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, classNam
         name="change_language"
         value={locale}
         options={Object.entries(locale_data).map(([key, {flag, name}]) => ({
-            value: key,
-            label: flag + " " + name
+          value: key,
+          label: flag + " " + name
         }))}
       />
     </div>

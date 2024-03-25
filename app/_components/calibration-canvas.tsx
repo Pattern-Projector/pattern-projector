@@ -136,25 +136,25 @@ function draw(cs: CanvasState): void {
      * fill pattern */
     drawPolygon(ctx, cs.points, cs.errorFillPattern);
   } else {
-		/* Draw projection page */
-		if (!cs.displaySettings.overlay.disabled)
-			drawOverlays(cs)
+    /* Draw projection page */
+    if (!cs.displaySettings.overlay.disabled)
+      drawOverlays(cs)
   }
 }
 
 function drawOverlays(cs: CanvasState) {
-	const o = cs.displaySettings.overlay;
-	const ctx = cs.ctx;
-	if (o.grid){
-		ctx.strokeStyle = cs.projectionGridLineColor
-		drawGrid(cs, 8, [1]) 
-	}
-	if (o.border)
-		drawBorder(cs, cs.darkColor, cs.gridLineColor);
-	if (o.paper)
-		drawPaperSheet(cs);
-	if (o.fliplines)
-		drawCenterLines(cs);
+  const o = cs.displaySettings.overlay;
+  const ctx = cs.ctx;
+  if (o.grid){
+    ctx.strokeStyle = cs.projectionGridLineColor
+    drawGrid(cs, 8, [1])
+  }
+  if (o.border)
+    drawBorder(cs, cs.darkColor, cs.gridLineColor);
+  if (o.paper)
+    drawPaperSheet(cs);
+  if (o.fliplines)
+    drawCenterLines(cs);
 }
 
 function drawCenterLines(cs: CanvasState) {
@@ -208,7 +208,7 @@ function drawCenterLines(cs: CanvasState) {
 
   const lineWidth = 3;
   ctx.setLineDash([5, 1]);
-  ctx.strokeStyle = cs.projectionGridLineColor; 
+  ctx.strokeStyle = cs.projectionGridLineColor;
 
   drawLine(ctx, projectedY[0], projectedY[1], lineWidth);
   ctx.stroke();
@@ -438,7 +438,7 @@ function drawPolygon(
   strokeStyle?: string | null,
 ): void {
   ctx.beginPath();
-  for (let p of points) {
+  for (const p of points) {
     ctx.lineTo(p.x, p.y);
   }
   ctx.closePath();
@@ -507,7 +507,7 @@ export default function CalibrationCanvas({
   const maxColorMode = 2;
 
   useEffect(() => {
-    var _colorMode;
+    let _colorMode;
     /* The order is important here. The colorModes should monotonically
      * increase each time it changes */
     if (displaySettings.inverted && displaySettings.isInvertedGreen) {
@@ -608,7 +608,7 @@ export default function CalibrationCanvas({
     ) {
 
       /* All drawing is done in unitsOfMeasure, ptDensity = 1.0 */
-      let perspective_mtx = getPerspectiveTransformFromPoints(
+      const perspective_mtx = getPerspectiveTransformFromPoints(
         localPoints,
         width,
         height,
@@ -622,7 +622,7 @@ export default function CalibrationCanvas({
       if (ctx !== null) {
         ctx.canvas.width = window.innerWidth;
         ctx.canvas.height = window.innerHeight;
-        let cs = new CanvasState(
+        const cs = new CanvasState(
           ctx,
           { x: 0, y: 0 },
           localPoints,

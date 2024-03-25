@@ -27,7 +27,7 @@ import {
 import {
   getDefaultDisplaySettings,
   DisplaySettings,
-	OverlaySettings
+  OverlaySettings
 } from "@/_lib/display-settings";
 import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
@@ -109,23 +109,23 @@ export default function Page() {
 
   function resetTransformMatrix() {
     /* Resets and recenters the PDF */
-    let newTransformMatrix = Matrix.identity(3,3);
+    const newTransformMatrix = Matrix.identity(3,3);
     let tx = 0;
     let ty = 0;
 
     const scale = getPtDensity(unitOfMeasure) * .75;
-		const pdfWidth = layoutWidth / scale;
-		const pdfHeight = layoutHeight / scale;
-		
-		/* If pdf exceeds the width/height of the calibration
-			 align it to left/top */
-		if (pdfWidth > +width){
-			tx = (pdfWidth-(+width)) * 0.5;
-		}
-		if (pdfHeight > +height){
-			ty = (pdfHeight-(+height)) * 0.5;
-		}
-		
+    const pdfWidth = layoutWidth / scale;
+    const pdfHeight = layoutHeight / scale;
+
+    /* If pdf exceeds the width/height of the calibration
+       align it to left/top */
+    if (pdfWidth > +width){
+      tx = (pdfWidth-(+width)) * 0.5;
+    }
+    if (pdfHeight > +height){
+      ty = (pdfHeight-(+height)) * 0.5;
+    }
+
     const m = translate({ x: tx, y: ty});
     const recenteredMatrix = overrideTranslationFromMatrix(
       newTransformMatrix,
@@ -242,7 +242,7 @@ export default function Page() {
 
       const defaultDS = getDefaultDisplaySettings();
 
-      newDisplaySettings.overlay = localSettings.overlay !== undefined 
+      newDisplaySettings.overlay = localSettings.overlay !== undefined
         ? localSettings.overlay : defaultDS.overlay;
       newDisplaySettings.inverted = localSettings.inverted !== undefined
         ? localSettings.inverted : defaultDS.inverted;
@@ -286,7 +286,7 @@ export default function Page() {
   /* Update the pdfWidth and pdfHeight when it changes */
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         const { width, height } = entry.contentRect;
         /* Only trigger if the dimension is non-zero
          * and different that the current dimension */
@@ -315,8 +315,8 @@ export default function Page() {
     const w = Number(width);
     const h = Number(height);
     if (points && points.length === maxPoints) {
-      let m = getPerspectiveTransformFromPoints(points, w, h, ptDensity, true);
-      let n = getPerspectiveTransformFromPoints(points, w, h, ptDensity, false);
+      const m = getPerspectiveTransformFromPoints(points, w, h, ptDensity, true);
+      const n = getPerspectiveTransformFromPoints(points, w, h, ptDensity, false);
       setPerspective(m);
       setLocalTransform(n);
       setCalibrationTransform(n);

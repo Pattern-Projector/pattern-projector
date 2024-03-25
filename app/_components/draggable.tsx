@@ -51,7 +51,7 @@ export default function Draggable({
       if (e.key === AXIS_LOCK_KEYBIND) {
         e.preventDefault();
         setIsAxisLocked(true);
-      } 
+      }
     },
     [
       setIsAxisLocked,
@@ -63,7 +63,7 @@ export default function Draggable({
       if (e.key === AXIS_LOCK_KEYBIND) {
         e.preventDefault();
         setIsAxisLocked(false);
-      } 
+      }
     },
     [
       setIsAxisLocked,
@@ -110,9 +110,9 @@ export default function Draggable({
 
   function toSingleAxisVector(vec: Point): Point{
     if (Math.abs(vec.x) > Math.abs(vec.y)){
-      return {x: vec.x, y:0} 
+      return {x: vec.x, y:0}
     } else {
-      return {x: 0, y:vec.y} 
+      return {x: 0, y:vec.y}
     }
   }
 
@@ -129,14 +129,14 @@ export default function Draggable({
       const m = translate(vec);
       const newTransformMatrix = m.mmul(transformStart);
       setTransformSettings({
-       ...transformSettings,
+        ...transformSettings,
         matrix: newTransformMatrix,
       })
     }
   }
 
   function handleOnStart(p: Point): void {
-    var pt = transformPoint(p, perspective);
+    const pt = transformPoint(p, perspective);
     setDragStart(pt);
     setTransformStart(transformSettings.matrix.clone());
   }

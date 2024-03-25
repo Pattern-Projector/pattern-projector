@@ -1,7 +1,7 @@
 export function getPageNumbers(pageRange: string, pageCount: number): number[] {
   const ranges = pageRange.split(",");
   let pages = [];
-  for (let r of ranges) {
+  for (const r of ranges) {
     if (r.indexOf('-') < 0) {
       pages.push(Math.min(pageCount, Number(r)));
     } else {

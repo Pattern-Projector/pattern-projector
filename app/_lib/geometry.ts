@@ -121,7 +121,7 @@ export function getPerspectiveTransform(
   const X = x.getColumn(0);
   X.push(1);
 
-  var s = Matrix.from1DArray(3, 3, X);
+  const s = Matrix.from1DArray(3, 3, X);
   return s;
 }
 
@@ -160,12 +160,12 @@ export function transformPoints(points: Point[], m: Matrix): Point[] {
 }
 
 export function transformPoint(p: Point, mm: Matrix): Point {
-  let m = mm.to1DArray();
-  var w = p.x * m[6] + p.y * m[7] + m[8];
+  const m = mm.to1DArray();
+  let w = p.x * m[6] + p.y * m[7] + m[8];
   w = 1 / w;
-  let ox = (p.x * m[0] + p.y * m[1] + m[2]) * w;
-  let oy = (p.x * m[3] + p.y * m[4] + m[5]) * w;
-  let result = { x: ox, y: oy };
+  const ox = (p.x * m[0] + p.y * m[1] + m[2]) * w;
+  const oy = (p.x * m[3] + p.y * m[4] + m[5]) * w;
+  const result = { x: ox, y: oy };
   return result;
 }
 
@@ -178,31 +178,31 @@ export function scale(s: number): Matrix {
 }
 
 export function rotateMatrixDeg(matrix: Matrix, angleDegrees: number, center?: Point): Matrix {
-	/* If no center of rotation provided, use the center of the object */
-	if (center === undefined)
-		center = { x: matrix.get(0,2), y: matrix.get(1,2) }
+  /* If no center of rotation provided, use the center of the object */
+  if (center === undefined)
+    center = { x: matrix.get(0,2), y: matrix.get(1,2) }
 
   /* Create the rotation matrix */
   const angleRadians = (angleDegrees * Math.PI) / 180;
   const cosAngle = Math.cos(angleRadians);
   const sinAngle = Math.sin(angleRadians);
-  let rotationMatrix = new Matrix([
+  const rotationMatrix = new Matrix([
     [cosAngle, -sinAngle, 0],
     [sinAngle, cosAngle, 0],
     [0, 0, 1],
   ]);
 
   /* Create the translation matrices for shifting the center of rotation */
-  let translationToOrigin = new Matrix([
-      [1, 0, -center.x],
-      [0, 1, -center.y],
-      [0, 0, 1],
-    ]);
-  let translationBack = new Matrix([
-      [1, 0, center.x],
-      [0, 1, center.y],
-      [0, 0, 1],
-    ]);
+  const translationToOrigin = new Matrix([
+    [1, 0, -center.x],
+    [0, 1, -center.y],
+    [0, 0, 1],
+  ]);
+  const translationBack = new Matrix([
+    [1, 0, center.x],
+    [0, 1, center.y],
+    [0, 0, 1],
+  ]);
 
   /* Apply the rotation around the specified center */
   const rotatedMatrix = translationBack
@@ -236,7 +236,7 @@ export class DecomposedTransform {
   formatCssNoTranslation(): string {
     return `matrix(${this.a}, ${this.b}, ${this.c}, ${this.d}, 0, 0)`;
   }
-  
+
 }
 
 export function decomposeTransformMatrix(matrix: Matrix): DecomposedTransform {
@@ -281,7 +281,7 @@ export function flipMatrixVertically(matrix: Matrix, yintercept?: number): Matri
     [0, -1, 2*k],
     [0, 0, 1]
   ]);
-    
+
   return flipMatrix.mmul(matrix)
 }
 
@@ -289,7 +289,7 @@ export function flipMatrixVertically(matrix: Matrix, yintercept?: number): Matri
 export function flipMatrixHorizontally(matrix: Matrix, xintercept?: number): Matrix {
   const k = xintercept !== undefined ? xintercept : matrix.get(0,2);
   // Create a flip matrix to perform horizontal flipping
-  let flipMatrix = new Matrix([
+  const flipMatrix = new Matrix([
     [-1, 0, k*2],
     [0, 1, 0],
     [0, 0, 1]
@@ -299,12 +299,12 @@ export function flipMatrixHorizontally(matrix: Matrix, xintercept?: number): Mat
 
 export function isMatrixFlippedVertically(matrix: Matrix): boolean {
   const decomposedMatrix = decomposeTransformMatrix(matrix)
-  return decomposedMatrix.scale.y < 0; 
+  return decomposedMatrix.scale.y < 0;
 }
 
 export function isMatrixFlippedHorizontally(matrix: Matrix): boolean {
   const decomposedMatrix = decomposeTransformMatrix(matrix)
-  return decomposedMatrix.scale.x < 0; 
+  return decomposedMatrix.scale.x < 0;
 }
 
 /* Overrides the translation component of destMatrix with the srcMatrix's */
@@ -312,7 +312,7 @@ export function overrideTranslationFromMatrix(destMatrix: Matrix, srcMatrix: Mat
   const tx = srcMatrix.get(0, 2);
   const ty = srcMatrix.get(1, 2);
 
-  let newMatrix = destMatrix.clone()
+  const newMatrix = destMatrix.clone()
   newMatrix.set(0, 2, tx);
   newMatrix.set(1, 2, ty);
 
@@ -355,7 +355,7 @@ export function extractRotationScaleMatrix(matrix: Matrix): Matrix {
  * @returns A css transfomr string
  */
 export function toMatrix3d(m: Matrix): string {
-  var r = m.clone();
+  let r = m.clone();
   // Make the 3x3 into 4x4 by inserting a z component in the 3rd column.
   r.addColumn(2, AbstractMatrix.zeros(1, 3));
   r.addRow(2, AbstractMatrix.from1DArray(1, 4, [0, 0, 1, 0]));
@@ -366,14 +366,14 @@ export function toMatrix3d(m: Matrix): string {
 }
 
 export function sqrdist(a: Point, b: Point): number {
-  let dx = a.x - b.x;
-  let dy = a.y - b.y;
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
   return dx * dx + dy * dy;
 }
 
 export function minIndex(a: number[]): number {
-  var min = 0;
-  for (var i = 1; i < a.length; i++) {
+  let min = 0;
+  for (let i = 1; i < a.length; i++) {
     if (a[i] < a[min]) {
       min = i;
     }

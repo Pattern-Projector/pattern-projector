@@ -66,11 +66,11 @@ export default function MeasureCanvas({
         if (startPoint && movingPoint) {
           let dest = axisConstrained
             ? constrainInSpace(
-                movingPoint,
-                startPoint,
-                perspective,
-                calibrationTransform,
-              )
+              movingPoint,
+              startPoint,
+              perspective,
+              calibrationTransform,
+            )
             : movingPoint;
           if (endPoint) {
             dest = endPoint;

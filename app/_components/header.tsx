@@ -122,9 +122,9 @@ export default function Header({
 
   function handleRecenter() {
     if (transformSettings.matrix !== null) {
-      let tx = 0;
-      let ty = 0;
-      
+      const tx = 0;
+      const ty = 0;
+
       const m = translate({ x: tx, y: ty});
       const newTransformMatrix = overrideTranslationFromMatrix(
         transformSettings.matrix,
@@ -356,10 +356,10 @@ export default function Header({
               setSelectedOptions={(options) => {
                 setDisplaySettings({
                   ...displaySettings,
-									overlay: {
-										...displaySettings.overlay,
-										...options
-									},
+                  overlay: {
+                    ...displaySettings.overlay,
+                    ...options
+                  },
                 });
               }}
             />
@@ -367,10 +367,10 @@ export default function Header({
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
                 onClick={() => {
-									setTransformSettings({
-										...transformSettings,
-										matrix: flipMatrixHorizontally(transformSettings.matrix, 0),
-									})
+                  setTransformSettings({
+                    ...transformSettings,
+                    matrix: flipMatrixHorizontally(transformSettings.matrix, 0),
+                  })
                 }}
               >
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
@@ -379,10 +379,10 @@ export default function Header({
             <Tooltip description={t("flipVertical")}>
               <IconButton
                 onClick={() => {
-									setTransformSettings({
-										...transformSettings,
-										matrix: flipMatrixVertically(transformSettings.matrix, 0),
-									})
+                  setTransformSettings({
+                    ...transformSettings,
+                    matrix: flipMatrixVertically(transformSettings.matrix, 0),
+                  })
                 }}
               >
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />

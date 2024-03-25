@@ -11,7 +11,7 @@ export class CanvasState {
 
   lightColor: string = "#fff";
   darkColor: string = "#000";
-  greenColor: string = "#32CD32" 
+  greenColor: string = "#32CD32"
   bgColor: string = "#fff";
   fillColor: string = "#000";
   gridLineColor: string = "#fff";
@@ -51,7 +51,7 @@ export function createCheckerboardPattern(
   size: number = 3,
   color1: string = "black",
   color2: string = "#CCC"
-  ): CanvasPattern {
+): CanvasPattern {
   /* We first create a new canvas on which to draw the pattern */
   const patternCanvas = document.createElement('canvas');
   try {
@@ -60,7 +60,7 @@ export function createCheckerboardPattern(
     if (!patternCtx) {
       throw new Error('Failed to get 2D context from pattern canvas');
     }
-  
+
     /* Integer which defines the size of a checkboard square (in pixels) */
     size = Math.round(size)
 
@@ -93,25 +93,25 @@ export function createCheckerboardPattern(
  * "value" should be a number between zero and len(colors). */
 export function interpolateColorRing(colors: string[], value: number, useEaseInOut: boolean = true): string {
   const len = colors.length;
-  
+
   // Normalize the value to be between 0 and len
   const normalizedValue = ((value % len) + len) % len;
-  
+
   // Find the indices of the two colors to interpolate between
   const startIndex = Math.floor(normalizedValue);
   const endIndex = (startIndex + 1) % len;
-  
+
   // Calculate the portion for interpolation
   let portion = normalizedValue - startIndex;
 
   // Apply the easing function if set
   if (useEaseInOut) {
     portion = easeInOut(portion);
-  }  
+  }
   // Get the start and end colors
   const startColor = colors[startIndex];
   const endColor = colors[endIndex];
-  
+
   // Interpolate between the start and end colors using the interpolateColors function
   return interpolateColor(startColor, endColor, portion);
 }
@@ -136,11 +136,11 @@ export function cubicBezierTiming(t: number, x1?: number, y1?: number, x2?: numb
   const sampleCurveX = (t: number): number => {
     return ((ax * t + bx) * t + cx) * t;
   }
-  
+
   const sampleCurveDerivativeX = (t: number): number => {
     return (3 * ax * t + 2 * bx) * t + cx;
   }
-  
+
   const solveCurveX = (x: number): number => {
     // Set Precision
     const epsilon = 1e-6;
