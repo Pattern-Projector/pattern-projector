@@ -1,0 +1,112 @@
+{
+    "HomePage": {
+        "beta": "bêta",
+        "pdfstitcherHref": "https://www.pdfstitcher.org/",
+        "github": "Voir le code source",
+        "calibrate": "Démarrer la calibration",
+        "welcome": {
+            "title": "Bienvenue dans Pattern Projector !",
+            "description": "Pattern projector est une application web libre et open source qui aide les utilisateurs à calibrer rapidement les projecteurs pour les patrons de couture. Ce projet est actuellement en bêta donc vous pouvez attendre de grands changements et de nouvelles fonctionnalités tant que nous itérons."
+        },
+        "choose-language": "Langue",
+        "requirements": {
+            "computer": "Ordinateur ou tablette pour connecter au projecteur",
+            "pattern": "Un patron de couture PDF",
+            "projector": "Projecteur : au moins 720p sont recommandés",
+            "title": "Ce dont vous aurez besoin",
+            "mat": "Tapis de découpe : idéalement avec un quadrillage tous les pouces ou centimètres"
+        },
+        "setup": {
+            "title": "Configuration",
+            "connect": "Connectez votre ordinateur ou tablette au projecteur et soit dupliquez soit étendez votre écran pour que l'image de l'ordinateur ou de la tablette s'affiche sur le projecteur."
+        },
+        "calibration": {
+            "input": "Saisissez la largeur et la hauteur de votre tapis de découpe.",
+            "title": "Calibration",
+            "start": "Cliquez (ou appuyez) sur \"Démarrer la calibration\"",
+            "fullscreen": "Passez en mode plein écran en cliquant (ou en appuyant) sur ",
+            "drag": "Déplacez les coins du quadrillage pour les aligner avec votre tapis. Avec vos yeux sur le tapis, ajuster les coins sur votre ordinateur ou tablette. Ajustez le placement des coins jusqu'à ce que le quadrillage projeté corresponde au quadrillage de votre tapis."
+        },
+        "project": {
+            "title": "Projeter un patron",
+            "flip": {
+                "title": "Renverser verticalement/horizontalement"
+            },
+            "fullscreen": {
+                "title": "Plein écran",
+                "description": "Il est généralement plus facile d'utiliser le logiciel en mode plein écran."
+            },
+            "cut": "Découpez sur le dessin projeté.",
+            "tools": "En mode projection, il y a plusieurs outils proposés :",
+            "showGrid": {
+                "title": "Montrer/cacher le quadrillage"
+            },
+            "invert": {
+                "title": "Inverser les couleurs",
+                "description": "Lors de la projection, il est généralement plus facile de voir des lignes blanches sur du noir."
+            },
+            "rotate": {
+                "description": "Change l'orientation du patron de 90 degrés.",
+                "title": "Tourner"
+            },
+            "recenter": {
+                "title": "Recentrer",
+                "description": "Centre le patron sur le tapis de découpe."
+            }
+        },
+        "faq": {
+            "title": "FAQ",
+            "annotationSupport": {
+                "answer": "Pas encore, mais c'est prévu pour une prochaine release.",
+                "question": "Avez-vous du support pour ajouter des annotation ?"
+            },
+            "wrongSizePdf": {
+                "question": "Est-ce que votre PDF est projeté trop petit ou trop large ?"
+            },
+            "saveAsApp": {
+                "question": "Voulez-vous enregistrer Pattern Projector en tant qu'application ?"
+            },
+            "chromecastSupport": {
+                "question": "Supportez-vous Chromecast ?"
+            }
+        },
+        "resources": {
+            "title": "Ressources additionnelles"
+        },
+        "contribute": {
+            "title": "Contribuer au projet",
+            "translate": "Traduisez cet outils dans plus de langues.",
+            "feedback": "Les retours et demandes de fonctionnalités sont les bienvenus !"
+        },
+        "contact": "Contact"
+    },
+    "Header": {
+        "rotate90": "Tourner de 90 degrés dans le sens horaire",
+        "projecting": "Projection",
+        "calibrating": "Calibration",
+        "openPDF": "Ouvrir un PDF",
+        "height": "h :",
+        "width": "l :",
+        "calibrate": "Calibrer",
+        "delete": "Réinitialiser la calibration",
+        "overlayModeGrid": "Quadrillage",
+        "invertColor": "Inverser les couleurs",
+        "flipVertical": "Renverser verticalement",
+        "layersOn": "Voir le menu des calques",
+        "layersOff": "Masquer le menu des calques",
+        "recenter": "Recentrer le PDF",
+        "fullscreen": "Passer en plein écran",
+        "fullscreenExit": "Quitter le plein écran",
+        "lineWeight": "Épaisseur des lignes",
+        "menuShow": "Voir le menu",
+        "menuHide": "Masquer le menu",
+        "measureOn": "Commencer à mesurer",
+        "measureOff": "Arrêter de mesurer"
+    },
+    "StitchMenu": {
+        "columnCount": "Colonnes",
+        "pageRange": "Pages",
+        "horizontal": "Horizontal",
+        "vertical": "Vertical"
+    }
+}
