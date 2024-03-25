@@ -120,6 +120,11 @@ function draw(cs: CanvasState): void {
     [cs.darkColor, cs.greenColor, cs.lightColor],
     cs.transitionProgress,
   );
+  /* Border line color */
+  cs.borderLineColor = interpolateColorRing(
+    [cs.lightColor, cs.greenColor, cs.lightColor],
+    cs.transitionProgress,
+  );
 
   /* Draw background only in calibration mode */
   if (cs.isCalibrating) {
@@ -136,25 +141,34 @@ function draw(cs: CanvasState): void {
      * fill pattern */
     drawPolygon(ctx, cs.points, cs.errorFillPattern);
   } else {
-		/* Draw projection page */
-		if (!cs.displaySettings.overlay.disabled)
-			drawOverlays(cs)
+    /* Draw projection page */
+    if (!cs.displaySettings.overlay.disabled)
+      drawOverlays(cs)
   }
 }
 
 function drawOverlays(cs: CanvasState) {
-	const o = cs.displaySettings.overlay;
-	const ctx = cs.ctx;
-	if (o.grid){
-		ctx.strokeStyle = cs.projectionGridLineColor
-		drawGrid(cs, 8, [1]) 
-	}
-	if (o.border)
-		drawBorder(cs, cs.darkColor, cs.gridLineColor);
-	if (o.paper)
-		drawPaperSheet(cs);
-	if (o.fliplines)
-		drawCenterLines(cs);
+  const o = cs.displaySettings.overlay;
+  const ctx = cs.ctx;
+  ctx.save();
+  if (o.grid){
+    ctx.strokeStyle = cs.projectionGridLineColor
+    drawGrid(cs, 8, [1]) 
+  }
+  if (o.border)
+    drawBorder(cs, cs.darkColor, cs.borderLineColor);
+  if (o.paper)
+    drawPaperSheet(cs);
+  if (o.fliplines)
+    drawCenterLines(cs);
+
+  if (o.opacity !== undefined) {
+    const opacity = o.opacity / 100.0;
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.globalAlpha = 1 - opacity;
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+  ctx.restore();
 }
 
 function drawCenterLines(cs: CanvasState) {

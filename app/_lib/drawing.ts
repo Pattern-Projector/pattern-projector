@@ -16,6 +16,7 @@ export class CanvasState {
   fillColor: string = "#000";
   gridLineColor: string = "#fff";
   projectionGridLineColor: string = "#fff";
+  borderLineColor: string = "#fff";
   majorLineWidth: number = 2;
   minorLineWidth: number = 1;
 
@@ -252,11 +253,9 @@ export function drawLine(
   p2: Point,
   lineWidth: number = 1,
 ): void {
-  ctx.save();
   ctx.beginPath();
   ctx.lineWidth = lineWidth;
   ctx.moveTo(p1.x, p1.y);
   ctx.lineTo(p2.x, p2.y);
   ctx.stroke();
-  ctx.restore();
 }

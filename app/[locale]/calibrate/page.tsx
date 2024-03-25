@@ -27,7 +27,7 @@ import {
 import {
   getDefaultDisplaySettings,
   DisplaySettings,
-	OverlaySettings
+  OverlaySettings
 } from "@/_lib/display-settings";
 import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
@@ -114,18 +114,18 @@ export default function Page() {
     let ty = 0;
 
     const scale = getPtDensity(unitOfMeasure) * .75;
-		const pdfWidth = layoutWidth / scale;
-		const pdfHeight = layoutHeight / scale;
-		
-		/* If pdf exceeds the width/height of the calibration
-			 align it to left/top */
-		if (pdfWidth > +width){
-			tx = (pdfWidth-(+width)) * 0.5;
-		}
-		if (pdfHeight > +height){
-			ty = (pdfHeight-(+height)) * 0.5;
-		}
-		
+    const pdfWidth = layoutWidth / scale;
+    const pdfHeight = layoutHeight / scale;
+    
+    /* If pdf exceeds the width/height of the calibration
+       align it to left/top */
+    if (pdfWidth > +width){
+      tx = (pdfWidth-(+width)) * 0.5;
+    }
+    if (pdfHeight > +height){
+      ty = (pdfHeight-(+height)) * 0.5;
+    }
+    
     const m = translate({ x: tx, y: ty});
     const recenteredMatrix = overrideTranslationFromMatrix(
       newTransformMatrix,
@@ -233,7 +233,7 @@ export default function Page() {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
 
-      const newDisplaySettings: {
+      let newDisplaySettings: {
         overlay?: OverlaySettings;
         inverted?: boolean;
         isInvertedGreen?: boolean;
@@ -242,8 +242,9 @@ export default function Page() {
 
       const defaultDS = getDefaultDisplaySettings();
 
-      newDisplaySettings.overlay = localSettings.overlay !== undefined 
-        ? localSettings.overlay : defaultDS.overlay;
+      newDisplaySettings.overlay = localSettings.overlay !== undefined
+        ? { ...defaultDS.overlay, ...localSettings.overlay }
+        : defaultDS.overlay;
       newDisplaySettings.inverted = localSettings.inverted !== undefined
         ? localSettings.inverted : defaultDS.inverted;
       newDisplaySettings.isInvertedGreen = localSettings.isInvertedGreen !== undefined
