@@ -51,7 +51,7 @@ function drawCalibration(cs: CanvasState): void {
     drawPolygon(ctx, cs.points, cs.errorFillPattern);
   } else {
     ctx.lineWidth = cs.majorLineWidth;
-    drawPolygon(ctx, cs.points, "#000", cs.gridLineColor);
+    drawPolygon(ctx, cs.points, cs.fillColor, cs.gridLineColor);
   }
 
   /* Only draw the grid if the polygon is convex */
@@ -107,12 +107,12 @@ function draw(cs: CanvasState): void {
   );
   /* Dark color (in light mode) */
   cs.fillColor = interpolateColorRing(
-    [cs.darkColor, cs.lightColor, cs.lightColor],
+    [cs.lightColor, cs.darkColor, cs.darkColor],
     cs.transitionProgress,
   );
   /* Grid line color */
   cs.gridLineColor = interpolateColorRing(
-    [cs.lightColor, cs.greenColor, cs.lightColor],
+    [cs.darkColor, cs.greenColor, cs.lightColor],
     cs.transitionProgress,
   );
   /* Grid line color for projection mode */
