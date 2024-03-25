@@ -84,8 +84,8 @@ export default function Page() {
   const [pageRange, setPageRange] = useState<string>("");
   const [columnCount, setColumnCount] = useState<string>("");
   const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
-    horizontal: "",
-    vertical: "",
+    horizontal: "0",
+    vertical: "0",
   });
 
   const pdfRef = useRef<HTMLDivElement | null>(null);
@@ -109,24 +109,24 @@ export default function Page() {
 
   function resetTransformMatrix() {
     /* Resets and recenters the PDF */
-    let newTransformMatrix = Matrix.identity(3,3);
+    let newTransformMatrix = Matrix.identity(3, 3);
     let tx = 0;
     let ty = 0;
 
-    const scale = getPtDensity(unitOfMeasure) * .75;
-		const pdfWidth = layoutWidth / scale;
-		const pdfHeight = layoutHeight / scale;
-		
-		/* If pdf exceeds the width/height of the calibration
+    const scale = getPtDensity(unitOfMeasure) * 0.75;
+    const pdfWidth = layoutWidth / scale;
+    const pdfHeight = layoutHeight / scale;
+
+    /* If pdf exceeds the width/height of the calibration
 			 align it to left/top */
-		if (pdfWidth > +width){
-			tx = (pdfWidth-(+width)) * 0.5;
-		}
-		if (pdfHeight > +height){
-			ty = (pdfHeight-(+height)) * 0.5;
-		}
-		
-    const m = translate({ x: tx, y: ty});
+    if (pdfWidth > +width) {
+      tx = (pdfWidth - +width) * 0.5;
+    }
+    if (pdfHeight > +height) {
+      ty = (pdfHeight - +height) * 0.5;
+    }
+
+    const m = translate({ x: tx, y: ty });
     const recenteredMatrix = overrideTranslationFromMatrix(
       newTransformMatrix,
       m,
@@ -242,14 +242,22 @@ export default function Page() {
 
       const defaultDS = getDefaultDisplaySettings();
 
-      newDisplaySettings.overlay = localSettings.overlay !== undefined 
-        ? localSettings.overlay : defaultDS.overlay;
-      newDisplaySettings.inverted = localSettings.inverted !== undefined
-        ? localSettings.inverted : defaultDS.inverted;
-      newDisplaySettings.isInvertedGreen = localSettings.isInvertedGreen !== undefined
-        ? localSettings.isInvertedGreen : defaultDS.isInvertedGreen;
-      newDisplaySettings.isFourCorners = localSettings.isFourCorners !== undefined
-        ? localSettings.isFourCorners : defaultDS.isFourCorners;
+      newDisplaySettings.overlay =
+        localSettings.overlay !== undefined
+          ? localSettings.overlay
+          : defaultDS.overlay;
+      newDisplaySettings.inverted =
+        localSettings.inverted !== undefined
+          ? localSettings.inverted
+          : defaultDS.inverted;
+      newDisplaySettings.isInvertedGreen =
+        localSettings.isInvertedGreen !== undefined
+          ? localSettings.isInvertedGreen
+          : defaultDS.isInvertedGreen;
+      newDisplaySettings.isFourCorners =
+        localSettings.isFourCorners !== undefined
+          ? localSettings.isFourCorners
+          : defaultDS.isFourCorners;
       setDisplaySettings({ ...displaySettings, ...newDisplaySettings });
     }
   }, []);
@@ -482,7 +490,6 @@ export default function Page() {
                   setLayoutWidth={setLayoutWidth}
                   setLayoutHeight={setLayoutHeight}
                   onDocumentLoad={resetTransformMatrix}
-                  calibrationTransform={calibrationTransform}
                   lineThickness={lineThickness}
                   columnCount={columnCount}
                   edgeInsets={edgeInsets}

@@ -16,7 +16,6 @@ import { Layer } from "@/_lib/layer";
 import Matrix from "ml-matrix";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
-import { use } from "chai";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -37,7 +36,6 @@ export default function PdfViewer({
   pageCount,
   layers,
   onDocumentLoad,
-  calibrationTransform,
   lineThickness,
   columnCount,
   edgeInsets,
@@ -51,7 +49,6 @@ export default function PdfViewer({
   pageCount: number;
   layers: Map<string, Layer>;
   onDocumentLoad: () => void;
-  calibrationTransform: Matrix;
   lineThickness: number;
   columnCount: string;
   edgeInsets: EdgeInsets;
@@ -86,9 +83,13 @@ export default function PdfViewer({
 
   useEffect(() => {
     const itemCount = getPageNumbers(pageRange, pageCount).length;
-    setLayoutWidth(pageWidth * Number(columnCount));
+    const rowCount = Math.ceil(itemCount / (Number(columnCount) || 1));
+    setLayoutWidth(
+      pageWidth * Number(columnCount) -
+        Number(edgeInsets.horizontal) * Number(columnCount),
+    );
     setLayoutHeight(
-      pageHeight * Math.ceil(itemCount / (Number(columnCount) || 1)),
+      pageHeight * rowCount - Number(edgeInsets.vertical) * rowCount,
     );
   }, [
     pageWidth,
@@ -98,6 +99,7 @@ export default function PdfViewer({
     pageCount,
     setLayoutWidth,
     setLayoutHeight,
+    edgeInsets,
   ]);
 
   return (
