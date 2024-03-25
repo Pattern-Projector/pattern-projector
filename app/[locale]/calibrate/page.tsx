@@ -422,7 +422,7 @@ export default function Page() {
               description={showLayerMenu ? t("layersOff") : t("layersOn")}
             >
               <IconButton
-                className={`${showStitchMenu ? "top-72" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
+                className={`${visible(!isCalibrating)} ${showStitchMenu ? "top-72" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
                 onClick={() => setShowLayerMenu(true)}
               >
                 <LayersIcon ariaLabel="layers" />
