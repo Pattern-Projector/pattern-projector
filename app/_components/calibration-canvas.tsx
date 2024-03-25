@@ -10,9 +10,10 @@ import React, {
 
 import {
   createCheckerboardPattern,
+  drawLine,
   interpolateColorRing,
   OverlayMode,
-  CanvasState
+  CanvasState,
 } from "@/_lib/drawing";
 import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { getPerspectiveTransformFromPoints } from "@/_lib/geometry";
@@ -54,8 +55,8 @@ function drawCalibration(cs: CanvasState): void {
   }
 
   /* Only draw the grid if the polygon is convex */
-  if (!cs.isConcave){
-    drawGrid(cs, 0) 
+  if (!cs.isConcave) {
+    drawGrid(cs, 0);
   }
 
   ctx.globalCompositeOperation = "difference";
@@ -93,28 +94,32 @@ function drawCalibration(cs: CanvasState): void {
 }
 
 function draw(cs: CanvasState): void {
-  const ctx = cs.ctx
+  const ctx = cs.ctx;
 
   /* Calculate canvas state colors */
   cs.lightColor = "#fff";
   cs.darkColor = "#000";
-  cs.greenColor = "#32CD32" 
+  cs.greenColor = "#32CD32";
   /* Light color (in light mode) */
   cs.bgColor = interpolateColorRing(
     [cs.lightColor, cs.darkColor, cs.darkColor],
-    cs.transitionProgress);
+    cs.transitionProgress,
+  );
   /* Dark color (in light mode) */
   cs.fillColor = interpolateColorRing(
     [cs.darkColor, cs.lightColor, cs.lightColor],
-    cs.transitionProgress);
+    cs.transitionProgress,
+  );
   /* Grid line color */
   cs.gridLineColor = interpolateColorRing(
     [cs.lightColor, cs.greenColor, cs.lightColor],
-    cs.transitionProgress);
+    cs.transitionProgress,
+  );
   /* Grid line color for projection mode */
   cs.projectionGridLineColor = interpolateColorRing(
     [cs.darkColor, cs.greenColor, cs.lightColor],
-    cs.transitionProgress);
+    cs.transitionProgress,
+  );
 
   /* Draw background only in calibration mode */
   if (cs.isCalibrating) {
@@ -222,34 +227,34 @@ function drawPaperSheet(cs: CanvasState) {
   ctx.font = `${fontSize}px monospace`;
   ctx.fillStyle = "white";
   /* Portrait text, Landscape text */
-  let textPL: [string,string];
+  let textPL: [string, string];
   let text: string;
   let paperWidth: number;
   let paperHeight: number;
-  switch(cs.unitOfMeasure){
+  switch (cs.unitOfMeasure) {
     case CM:
-      textPL = ["A4","A4"];
+      textPL = ["A4", "A4"];
       paperWidth = 21;
       paperHeight = 29.7;
-    break;
+      break;
     case IN:
     default:
-      textPL = ["8.5x11","11x8.5"];
+      textPL = ["8.5x11", "11x8.5"];
       paperWidth = 8.5;
       paperHeight = 11;
-    break;
+      break;
   }
-  
+
   const portrait = false;
   if (portrait) {
     text = textPL[0];
-  }else {
+  } else {
     text = textPL[1];
     /* Swap the width/height when in landscape mode */
     const tmp = paperWidth;
     paperWidth = paperHeight;
     paperHeight = tmp;
-  } 
+  }
 
   const center = {
     x: 0,
@@ -257,10 +262,7 @@ function drawPaperSheet(cs: CanvasState) {
   }
 
   /* Center Projected */
-  const centerP = transformPoint(
-    center,
-    cs.perspective,
-  );
+  const centerP = transformPoint(center, cs.perspective);
 
   const hw = paperWidth/2;
   const hh = paperHeight/2;
@@ -287,20 +289,17 @@ function drawPaperSheet(cs: CanvasState) {
   });
 
   /* Projected corners (centered) */
-  const cornersP = transformPoints(
-    cornersCentered,
-    cs.perspective,
-  );
+  const cornersP = transformPoints(cornersCentered, cs.perspective);
 
   drawPolygon(ctx, cornersP);
-  ctx.setLineDash([5,1]);
+  ctx.setLineDash([5, 1]);
   ctx.lineWidth = 2;
-  ctx.strokeStyle = cs.projectionGridLineColor; 
+  ctx.strokeStyle = cs.projectionGridLineColor;
   ctx.stroke();
 
   const labelWidth = ctx.measureText(text).width;
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = cs.projectionGridLineColor; 
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = cs.projectionGridLineColor;
   ctx.fillText(text, centerP.x - labelWidth * 0.5, centerP.y);
   ctx.restore();
 }
@@ -315,19 +314,15 @@ function drawBorder(cs: CanvasState, lineColor: string, dashColor: string) {
   ctx.lineDashOffset = 0;
   ctx.setLineDash([4, 4]);
   ctx.lineWidth = 1;
-  ctx.strokeStyle = dashColor; 
+  ctx.strokeStyle = dashColor;
   ctx.stroke();
   ctx.restore();
 }
 
-function drawGrid(
-  cs: CanvasState,
-  outset: number,
-  lineDash?: number[],
-): void {
+function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
   const ctx = cs.ctx;
   ctx.save();
-  if (lineDash === undefined){
+  if (lineDash === undefined) {
     ctx.setLineDash([]);
   } else {
     ctx.setLineDash(lineDash);
@@ -374,7 +369,7 @@ function drawGrid(
   if (cs.isCalibrating) {
     drawDimensionLabels(ctx, cs.width, cs.height, cs.perspective);
   }
-  ctx.restore()
+  ctx.restore();
 }
 
 function drawDimensionLabels(
@@ -395,7 +390,7 @@ function drawDimensionLabels(
   // Get the actual font height, numbers are all above the baseline on the font used; would need adjustment to work with
   // fancier fonts where e.g. the 9 descends.
   const metrics = ctx.measureText(heightText);
-  const height_offset = (metrics.actualBoundingBoxAscent / 2);
+  const height_offset = metrics.actualBoundingBoxAscent / 2;
 
   const line = transformPoints(
     [
@@ -416,21 +411,6 @@ function drawDimensionLabels(
   ctx.restore();
 }
 
-function drawLine(
-  ctx: CanvasRenderingContext2D,
-  p1: Point,
-  p2: Point,
-  lineWidth: number = 1,
-): void {
-  ctx.save();
-  ctx.beginPath();
-  ctx.lineWidth = lineWidth;
-  ctx.moveTo(p1.x, p1.y);
-  ctx.lineTo(p2.x, p2.y);
-  ctx.stroke();
-  ctx.restore();
-}
-
 function drawCrosshair(
   ctx: CanvasRenderingContext2D,
   point: Point,
@@ -444,7 +424,12 @@ function drawCrosshair(
   ctx.lineTo(point.x, point.y + halfSize);
 }
 
-function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[], fillStyle?: string | null | CanvasPattern , strokeStyle?: string | null): void {
+function drawPolygon(
+  ctx: CanvasRenderingContext2D,
+  points: Point[],
+  fillStyle?: string | null | CanvasPattern,
+  strokeStyle?: string | null,
+): void {
   ctx.beginPath();
   for (let p of points) {
     ctx.lineTo(p.x, p.y);
@@ -458,7 +443,7 @@ function drawPolygon(ctx: CanvasRenderingContext2D, points: Point[], fillStyle?:
     ctx.strokeStyle = strokeStyle;
     ctx.stroke();
   }
-} 
+}
 
 const CORNER_MARGIN = 150;
 
@@ -516,7 +501,7 @@ export default function CalibrationCanvas({
 
   useEffect(() => {
     var _colorMode;
-    /* The order is important here. The colorModes should monotonically 
+    /* The order is important here. The colorModes should monotonically
      * increase each time it changes */
     if (displaySettings.inverted && displaySettings.isInvertedGreen) {
       _colorMode = 1;
@@ -528,11 +513,10 @@ export default function CalibrationCanvas({
 
     setColorMode(_colorMode);
     /* Initialize prevColorModeRef if needed */
-    if (prevColorModeRef.current == null)
-      prevColorModeRef.current = _colorMode;
-  },[displaySettings])
+    if (prevColorModeRef.current == null) prevColorModeRef.current = _colorMode;
+  }, [displaySettings]);
 
-useEffect(() => {
+  useEffect(() => {
     /* No colorMode set yet, nothing to do */
     if (colorMode == null) return;
 
@@ -541,12 +525,12 @@ useEffect(() => {
 
     /* No previous color mode, nothing to do */
     if (prevColorMode == null) return;
-    
+
     /* No transition necessary (probably just initialized) */
     if (colorMode == prevColorMode) {
       setTransitionProgress(colorMode);
       return;
-    } 
+    }
 
     let frameId: number;
     const startTime = Date.now();
@@ -555,7 +539,7 @@ useEffect(() => {
     const startTransitionProgress = transitionProgress;
     let endTransitionProgress = colorMode;
     /* Only allow forward progression */
-    if (colorMode == minColorMode){
+    if (colorMode == minColorMode) {
       endTransitionProgress = maxColorMode + 1;
     }
     const transitionDistance = endTransitionProgress - startTransitionProgress;
@@ -564,10 +548,11 @@ useEffect(() => {
       const elapsedTime = Date.now() - startTime;
       /* progress is a number between 0 and 1 */
       const progress = Math.min(elapsedTime / duration, 1);
-      let newTransitionProgress = startTransitionProgress + progress * transitionDistance; 
-      /* Keep transitionProgress in the range 
+      let newTransitionProgress =
+        startTransitionProgress + progress * transitionDistance;
+      /* Keep transitionProgress in the range
        * 0 (inclusive) to maxColorMode + 1 (exclusive) */
-      newTransitionProgress %= maxColorMode+1; 
+      newTransitionProgress %= maxColorMode + 1;
       setTransitionProgress(newTransitionProgress);
 
       if (progress < 1) {
@@ -644,7 +629,7 @@ useEffect(() => {
           patternRef.current,
           transitionProgress,
           displaySettings,
-        )
+        );
         draw(cs);
       }
     }

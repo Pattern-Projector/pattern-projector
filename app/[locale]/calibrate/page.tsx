@@ -1,7 +1,7 @@
 "use client";
 
 import { Matrix, inverse } from "ml-matrix";
-import { ChangeEvent, useCallback, useEffect, useState, useRef} from "react";
+import { ChangeEvent, useCallback, useEffect, useState, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
@@ -40,6 +40,7 @@ import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
+import MeasureCanvas from "@/_components/measure-canvas";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -77,6 +78,7 @@ export default function Page() {
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
+  const [measuring, setMeasuring] = useState<boolean>(false);
 
   const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
   const [pageRange, setPageRange] = useState<string>("");
@@ -105,7 +107,6 @@ export default function Page() {
     return p;
   }
 
-
   function resetTransformMatrix() {
     /* Resets and recenters the PDF */
     let newTransformMatrix = Matrix.identity(3,3);
@@ -127,12 +128,14 @@ export default function Page() {
 		
     const m = translate({ x: tx, y: ty});
     const recenteredMatrix = overrideTranslationFromMatrix(
-      newTransformMatrix, m);
+      newTransformMatrix,
+      m,
+    );
 
     setTransformSettings({
-     ...transformSettings,
+      ...transformSettings,
       matrix: recenteredMatrix,
-    })
+    });
   }
 
   const ptDensity = getPtDensity(unitOfMeasure);
@@ -236,7 +239,7 @@ export default function Page() {
         isInvertedGreen?: boolean;
         isFourCorners?: boolean;
       } = {};
-      
+
       const defaultDS = getDefaultDisplaySettings();
 
       newDisplaySettings.overlay = localSettings.overlay !== undefined 
@@ -252,12 +255,12 @@ export default function Page() {
   }, []);
 
   /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in/cm */
-  useProgArrowKeyToMatrix(!isCalibrating, 1.0/16.0, (matrix) => {
-      const newTransformMatrix = matrix.mmul(transformSettings.matrix);
-      setTransformSettings({
-       ...transformSettings,
-        matrix: newTransformMatrix,
-      })
+  useProgArrowKeyToMatrix(!isCalibrating, 1.0 / 16.0, (matrix) => {
+    const newTransformMatrix = matrix.mmul(transformSettings.matrix);
+    setTransformSettings({
+      ...transformSettings,
+      matrix: newTransformMatrix,
+    });
   });
 
   useEffect(() => {
@@ -267,15 +270,17 @@ export default function Page() {
 
     const pdfWidth = pdfDimensions.width;
     const pdfHeight = pdfDimensions.height;
-    const translateToCenter = translate({x: -pdfWidth/2, y: -pdfHeight/2})
+    const translateToCenter = translate({
+      x: -pdfWidth / 2,
+      y: -pdfHeight / 2,
+    });
 
     const ptDensity = getPtDensity(unitOfMeasure);
     const scaled = scaleMatrixTranslation(transformSettings.matrix, ptDensity);
 
-    const m0 = localTransform.mmul(scaled)
+    const m0 = localTransform.mmul(scaled);
     const m1 = translateToCenter.mmul(m0);
     setMatrix3d(toMatrix3d(m1));
-
   }, [localTransform, transformSettings, unitOfMeasure, pdfDimensions]);
 
   /* Update the pdfWidth and pdfHeight when it changes */
@@ -285,9 +290,10 @@ export default function Page() {
         const { width, height } = entry.contentRect;
         /* Only trigger if the dimension is non-zero
          * and different that the current dimension */
-        if (width !== 0 && height !== 0 &&
-          (width != pdfDimensions.width 
-          || height != pdfDimensions.height)
+        if (
+          width !== 0 &&
+          height !== 0 &&
+          (width != pdfDimensions.width || height != pdfDimensions.height)
         )
           setPdfDimensions({ width, height });
       }
@@ -315,7 +321,6 @@ export default function Page() {
       setLocalTransform(n);
       setCalibrationTransform(n);
     }
-
   }, [points, width, height, unitOfMeasure]);
 
   useEffect(() => {
@@ -384,9 +389,6 @@ export default function Page() {
               }
             }}
             pageCount={pageCount}
-            layers={layers}
-            showLayerMenu={showLayerMenu}
-            setShowLayerMenu={setShowLayerMenu}
             localTransform={localTransform}
             setLocalTransform={setLocalTransform}
             layoutWidth={layoutWidth}
@@ -396,6 +398,8 @@ export default function Page() {
             setLineThickness={setLineThickness}
             setShowStitchMenu={setShowStitchMenu}
             showStitchMenu={showStitchMenu}
+            measuring={measuring}
+            setMeasuring={setMeasuring}
           />
 
           <LayerMenu
@@ -441,6 +445,13 @@ export default function Page() {
             displaySettings={displaySettings}
             setDisplaySettings={setDisplaySettings}
           />
+          {measuring && (
+            <MeasureCanvas
+              perspective={perspective}
+              calibrationTransform={calibrationTransform}
+              unitOfMeasure={unitOfMeasure}
+            />
+          )}
           <Draggable
             viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-700 `}
             className={`select-none ${visible(!isCalibrating)}`}
@@ -461,9 +472,7 @@ export default function Page() {
                 ),
               }}
             >
-              <div
-                className={"border-8 border-purple-700"}
-              >
+              <div className={"border-8 border-purple-700"}>
                 <PDFViewer
                   file={file}
                   setPageCount={setPageCount}
