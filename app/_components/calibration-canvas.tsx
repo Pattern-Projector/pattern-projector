@@ -331,8 +331,8 @@ function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
   const majorLine = 5;
 
   /* Half width and half height */
-  const hw = cs.width/2;
-  const hh = cs.height/2;
+  const hw = cs.width / 2;
+  const hh = cs.height / 2;
 
   /* Vertical lines */
   for (let i = -hw; i <= hw; i++) {
@@ -342,8 +342,8 @@ function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
     }
     const line = transformPoints(
       [
-        { x: i, y: (-hh-outset)},
-        { x: i, y: (hh + outset)},
+        { x: i, y: -hh - outset },
+        { x: i, y: hh + outset },
       ],
       cs.perspective,
     );
@@ -359,7 +359,7 @@ function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
     const y = -i;
     const line = transformPoints(
       [
-        { x: -outset-hw, y: y },
+        { x: -outset - hw, y: y },
         { x: hw + outset, y: y },
       ],
       cs.perspective,
@@ -367,7 +367,13 @@ function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
     drawLine(ctx, line[0], line[1], lineWidth);
   }
   if (cs.isCalibrating) {
-    drawDimensionLabels(ctx, cs.width, cs.height, cs.perspective);
+    drawDimensionLabels(
+      ctx,
+      cs.width,
+      cs.height,
+      cs.perspective,
+      cs.unitOfMeasure,
+    );
   }
   ctx.restore();
 }
@@ -376,16 +382,17 @@ function drawDimensionLabels(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  perspective: Matrix
+  perspective: Matrix,
+  unitOfMeasure: string,
 ) {
   ctx.save();
-  const fontSize = 72;
+  const fontSize = 48;
   const inset = 20;
   ctx.globalCompositeOperation = "difference";
   ctx.font = `${fontSize}px monospace`;
   ctx.fillStyle = "white";
-  const widthText = `${width}`;
-  const heightText = `${height}`;
+  const widthText = `${width}${unitOfMeasure.toLocaleLowerCase()}`;
+  const heightText = `${height}${unitOfMeasure.toLocaleLowerCase()}`;
 
   // Get the actual font height, numbers are all above the baseline on the font used; would need adjustment to work with
   // fancier fonts where e.g. the 9 descends.
@@ -396,10 +403,10 @@ function drawDimensionLabels(
     [
       {
         x: 0,
-        y: height/2,
+        y: height / 2,
       },
       {
-        x: -width/2,
+        x: -width / 2,
         y: 0,
       },
     ],
