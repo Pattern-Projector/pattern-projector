@@ -255,7 +255,7 @@ export default function Page() {
   }, []);
 
   /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in/cm */
-  useProgArrowKeyToMatrix(!isCalibrating, 1.0 / 16.0, (matrix) => {
+  useProgArrowKeyToMatrix(!isCalibrating, 16.0, (matrix) => {
     const newTransformMatrix = matrix.mmul(transformSettings.matrix);
     setTransformSettings({
       ...transformSettings,
