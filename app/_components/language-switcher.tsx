@@ -21,9 +21,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ ariaLabel, classNam
   // Language names are not translated because we want them to be the same always, regardless of the current language.
   const locale_data = {
     'de': { 'flag': '\uD83C\uDDE9\uD83C\uDDEA', 'name': "Deutsch" },  // DE flag for German
-    'da': { 'flag': '\uD83C\uDDE9\uD83C\uDDF0', 'name': "Danish" },  // DK flag for Danish
+    'da': { 'flag': '\uD83C\uDDE9\uD83C\uDDF0', 'name': "Dansk" },  // DK flag for Danish
     'nl': { 'flag': '\uD83C\uDDF3\uD83C\uDDF1', 'name': "Nederlands" },  // NL flag for Dutch
-    'en': { 'flag': '\uD83C\uDDFA\uD83C\uDDF8', 'name': "English" }  // US flag for English
+    'en': { 'flag': '\uD83C\uDDFA\uD83C\uDDF8', 'name': "English" },  // US flag for English
+    'fr': { 'flag': '\uD83C\uDDEB\uD83C\uDDF7', 'name': "Français" }  // FR flag for French
   };
 
   return (
