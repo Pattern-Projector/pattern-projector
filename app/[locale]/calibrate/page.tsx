@@ -8,6 +8,7 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
+import TransformMatrixDisplay from "@/_components/transform-matrix-display";
 import {
   getPerspectiveTransformFromPoints,
   toMatrix3d,
@@ -27,7 +28,7 @@ import {
 import {
   getDefaultDisplaySettings,
   DisplaySettings,
-	OverlaySettings
+  OverlaySettings
 } from "@/_lib/display-settings";
 import { CM, IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
@@ -114,18 +115,18 @@ export default function Page() {
     let ty = 0;
 
     const scale = getPtDensity(unitOfMeasure) * .75;
-		const pdfWidth = layoutWidth / scale;
-		const pdfHeight = layoutHeight / scale;
-		
-		/* If pdf exceeds the width/height of the calibration
-			 align it to left/top */
-		if (pdfWidth > +width){
-			tx = (pdfWidth-(+width)) * 0.5;
-		}
-		if (pdfHeight > +height){
-			ty = (pdfHeight-(+height)) * 0.5;
-		}
-		
+    const pdfWidth = layoutWidth / scale;
+    const pdfHeight = layoutHeight / scale;
+    
+    /* If pdf exceeds the width/height of the calibration
+       align it to left/top */
+    if (pdfWidth > +width){
+      tx = (pdfWidth-(+width)) * 0.5;
+    }
+    if (pdfHeight > +height){
+      ty = (pdfHeight-(+height)) * 0.5;
+    }
+    
     const m = translate({ x: tx, y: ty});
     const recenteredMatrix = overrideTranslationFromMatrix(
       newTransformMatrix,
@@ -401,6 +402,12 @@ export default function Page() {
             showStitchMenu={showStitchMenu}
             measuring={measuring}
             setMeasuring={setMeasuring}
+          />
+
+          <TransformMatrixDisplay
+            matrix={transformSettings.matrix}
+            unitOfMeasure={unitOfMeasure}
+            className={`z-30 ${visible(!isCalibrating)}`}
           />
 
           <LayerMenu
