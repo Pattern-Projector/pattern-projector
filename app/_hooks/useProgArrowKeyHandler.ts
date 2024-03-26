@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { useKeyUp } from "@/_hooks/use-key-up";
 import { KeyCode } from "@/_lib/key-code";
@@ -12,10 +12,12 @@ export default function useProgArrowKeyHandler(
 ) {
   const [pixelIdx, setPixelIdx] = useState<number>(0);
   const [timeoutFunc, setTimeoutFunc] = useState<NodeJS.Timeout | null>();
-  const [shiftPressed, setShiftPressed] = useState<boolean>(false);
+  const shiftPressedRef= useRef<boolean>(false);
 
   const arrowKeyHandler = useCallback(
     function (keycode: KeyCode) {
+      if (!active)
+        return;
       if (!timeoutFunc && pixelIdx < pixelList.length - 1) {
         setTimeoutFunc(
           setTimeout(() => {
@@ -24,12 +26,12 @@ export default function useProgArrowKeyHandler(
           }, 600),
         );
       }
-      const pixelValue = shiftPressed
+      const pixelValue = shiftPressedRef.current
         ? pixelList[pixelIdx] * modifierScale
         : pixelList[pixelIdx];
       handler(keycode, pixelValue);
     },
-    [timeoutFunc, pixelIdx, handler, pixelList, shiftPressed],
+    [timeoutFunc, pixelIdx, handler, pixelList],
   );
 
   const keyupHandler = useCallback(
@@ -44,11 +46,11 @@ export default function useProgArrowKeyHandler(
   );
 
   useKeyDown(() => {
-    setShiftPressed(true);
+    shiftPressedRef.current = true;
   }, [KeyCode.ShiftLeft]);
 
   useKeyUp(() => {
-    setShiftPressed(false);
+    shiftPressedRef.current = false;
   }, [KeyCode.ShiftLeft]);
 
   useKeyDown(
