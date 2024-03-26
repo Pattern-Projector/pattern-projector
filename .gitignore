@@ -43,7 +43,7 @@ next-env.d.ts
 # IDE
 .idea/
 
-# next-pwa
+# serwist
 /public/precache.*.*.js
 /public/sw.js
 /public/workbox-*.js
@@ -53,4 +53,5 @@ next-env.d.ts
 /public/sw.js.map
 /public/workbox-*.js.map
 /public/worker-*.js.map
-/public/fallback-*.js
+/public/fallback-*.js/
+public/swe-worker-*.js*
