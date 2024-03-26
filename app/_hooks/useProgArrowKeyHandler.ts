@@ -47,25 +47,16 @@ export default function useProgArrowKeyHandler(
     setShiftPressed(true);
   }, [KeyCode.ShiftLeft]);
 
-  useKeyDown(() => {
-    arrowKeyHandler(KeyCode.ArrowUp);
-  }, [KeyCode.ArrowUp]);
-
-  useKeyDown(() => {
-    arrowKeyHandler(KeyCode.ArrowDown);
-  }, [KeyCode.ArrowDown]);
-
-  useKeyDown(() => {
-    arrowKeyHandler(KeyCode.ArrowLeft);
-  }, [KeyCode.ArrowLeft]);
-
-  useKeyDown(() => {
-    arrowKeyHandler(KeyCode.ArrowRight);
-  }, [KeyCode.ArrowRight]);
-
   useKeyUp(() => {
     setShiftPressed(false);
   }, [KeyCode.ShiftLeft]);
+
+  useKeyDown(
+    (key: KeyCode) => {
+      arrowKeyHandler(key);
+    },
+    [KeyCode.ArrowUp, KeyCode.ArrowDown, KeyCode.ArrowLeft, KeyCode.ArrowRight],
+  );
 
   useKeyUp(() => {
     keyupHandler();
