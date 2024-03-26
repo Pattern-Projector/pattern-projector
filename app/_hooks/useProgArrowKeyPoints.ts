@@ -3,6 +3,7 @@ import { applyOffset, Point } from "@/_lib/point";
 import { translate } from "@/_lib/geometry";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Matrix } from "ml-matrix";
+import { KeyCode } from "@/_lib/key-code";
 
 export default function useProgArrowKeyPoints(
   points: Point[],
@@ -10,21 +11,21 @@ export default function useProgArrowKeyPoints(
   pointToModify: number | null,
   active: boolean,
 ) {
-  function getNewOffset(key: string, px: number) {
+  function getNewOffset(key: KeyCode, px: number) {
     if (pointToModify !== null) {
       const newPoints = [...points];
       let newPoint: Point = points[pointToModify];
       switch (key) {
-        case "ArrowUp":
+        case KeyCode.ArrowUp:
           newPoint = applyOffset(points[pointToModify], { y: -px, x: 0 });
           break;
-        case "ArrowDown":
+        case KeyCode.ArrowDown:
           newPoint = applyOffset(points[pointToModify], { y: px, x: 0 });
           break;
-        case "ArrowLeft":
+        case KeyCode.ArrowLeft:
           newPoint = applyOffset(points[pointToModify], { y: 0, x: -px });
           break;
-        case "ArrowRight":
+        case KeyCode.ArrowRight:
           newPoint = applyOffset(points[pointToModify], { y: 0, x: px });
           break;
         default:
