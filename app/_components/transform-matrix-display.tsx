@@ -103,9 +103,9 @@ export default function TransformMatrixDisplay({
   return (
     <div
       className={`absolute bg-white dark:bg-black text-current w-56 top-20
-      right-4 rounded-lg shadow pr-2 pl-2 pt-1 pb-1 transition-opacity duration-500
+      right-4 rounded-lg shadow pr-2 pl-2 pt-1 pb-1 transition-opacity
       ease-out select-none
-      ${isVisible ? "opacity-100" : "opacity-0"}
+      ${isVisible ? "opacity-100 duration-0" : "opacity-0 duration-500"}
       ${className}
       `}
     >
