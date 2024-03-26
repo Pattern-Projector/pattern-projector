@@ -5,12 +5,18 @@ export default function useProgArrowKeyHandler(
   handler: (key: string, px: number) => void,
   active: boolean,
   pixelList: number[] = PIXEL_LIST,
+  modifierScale?: number
 ) {
   const [pixelIdx, setPixelIdx] = useState<number>(0);
   const [timeoutFunc, setTimeoutFunc] = useState<NodeJS.Timeout | null>();
+  const [shiftPressed, setShiftPressed] = useState<boolean>(false);
+  const scale = modifierScale !== undefined ? modifierScale : 16;
 
   const keydownHandler = useCallback(
     function (e: KeyboardEvent) {
+      if (e.shiftKey) {
+        setShiftPressed(true);
+      }
       if (
         ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(e.code)
       ) {
@@ -23,14 +29,18 @@ export default function useProgArrowKeyHandler(
             }, 600),
           );
         }
-        handler(e.code, pixelList[pixelIdx]);
+        const pixelValue = shiftPressed ? pixelList[pixelIdx] * scale : pixelList[pixelIdx];
+        handler(e.code, pixelValue);
       }
     },
-    [timeoutFunc, pixelIdx, handler, pixelList],
+    [timeoutFunc, pixelIdx, handler, pixelList, shiftPressed],
   );
 
   const keyupHandler = useCallback(
-    function () {
+    function (e: KeyboardEvent) {
+      if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+        setShiftPressed(false);
+      }
       if (timeoutFunc) {
         clearTimeout(timeoutFunc);
         setTimeoutFunc(null);

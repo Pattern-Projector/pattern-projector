@@ -262,8 +262,9 @@ export default function Page() {
     }
   }, []);
 
-  /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in/cm */
-  useProgArrowKeyToMatrix(!isCalibrating, 1.0 / 16.0, (matrix) => {
+  /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in or  1 mm */
+  const arrowKeyScale = unitOfMeasure == IN ? 16.0 : 10.0;
+  useProgArrowKeyToMatrix(!isCalibrating, arrowKeyScale, (matrix) => {
     const newTransformMatrix = matrix.mmul(transformSettings.matrix);
     setTransformSettings({
       ...transformSettings,
