@@ -38,7 +38,11 @@ function formatValue(
     const decimalPart = posValue - integerPart;
     const denominator = getSmallestDenom(posValue, fractionGranularity);
     /* No fraction could be made */
-    if (decimalPart < 0.001 || denominator === null) {
+    if (denominator === null) {
+      return `${sign}${posValue.toFixed(2)}`;
+    }
+    /* Decimal is small enough to just use whole number */
+    if (decimalPart < 0.001) {
       return `${sign}${posValue.toFixed(0)}`;
     }
 
