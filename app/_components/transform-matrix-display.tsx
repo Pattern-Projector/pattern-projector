@@ -31,9 +31,12 @@ function formatValue(
   value: number,
   unitOfMeasure: string,
   fractionGranularity: number,
+  showSign: boolean = true,
   epsilon: number = 0.000001,
 ) {
-  const sign = value >= 0 ? " " : "-";
+  let sign = ""
+  if (showSign)
+    sign = value >= 0 ? " " : "-";
   const posValue = Math.abs(value);
   if (unitOfMeasure === IN) {
     const integerPart = Math.floor(posValue);
@@ -52,8 +55,8 @@ function formatValue(
 
     if (denominator !== null) {
       return integerPart === 0
-        ? `${sign}${numerator}/${denominator}`
-        : `${sign}${integerPart} ${numerator}/${denominator}`;
+        ? `${sign}${numerator}\u2044${denominator}`
+        : `${sign}${integerPart}-${numerator}\u2044${denominator}`;
     }
 
     return `${sign}${posValue.toFixed(2)}`;
@@ -66,12 +69,14 @@ function formatValue(
 export default function TransformMatrixDisplay({
   matrix,
   unitOfMeasure,
+  preventReset,
   fractionGranularity = 16,
   timeout = 1000,
   className,
 }: {
   matrix: Matrix;
   unitOfMeasure: string;
+  preventReset: boolean;
   className?: string | undefined;
   fractionGranularity?: number;
   timeout?: number;
@@ -79,22 +84,36 @@ export default function TransformMatrixDisplay({
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const previousMatrix = useRef<Matrix>(matrix);
   const initialMatrix = useRef<Matrix | null>(null);
+  const resetNeeded = useRef<boolean>(false);
 
   useEffect(() => {
     setIsVisible(true);
-    if (initialMatrix.current === null)
+    if (initialMatrix.current === null || resetNeeded.current){
+      resetNeeded.current = false;
       initialMatrix.current = previousMatrix.current;
+    }
+
+    previousMatrix.current = matrix;
+
+    if (preventReset)
+      return;
 
     const timer = setTimeout(() => {
-      initialMatrix.current = null;
+      resetNeeded.current = true;
       setIsVisible(false);
     }, timeout);
 
-    previousMatrix.current = matrix;
     return () => {
       clearTimeout(timer);
     };
-  }, [matrix]);
+  }, [matrix, preventReset]);
+
+  useEffect(() => {
+    if (preventReset === false) {
+      resetNeeded.current = true;
+      setIsVisible(false);
+    }
+  }, [preventReset])
 
   const decomposed = decomposeTransformMatrix(matrix);
   const position = decomposed.translation;
@@ -106,32 +125,40 @@ export default function TransformMatrixDisplay({
     delta = decomposedDelta.translation;
   }
 
+  const xlabel = delta.x >= 0 ? "Right" : "Left";
+  const ylabel = delta.y > 0 ? "Down" : "Up";
+  const units = unitOfMeasure === IN ? '"' : " cm";
+
+  if (delta.x === 0 && delta.y === 0) {
+    return null;
+  }
+
   return (
     <div
-      className={`absolute bg-white dark:bg-black text-current w-56 top-20
+      className={`absolute bg-white dark:bg-black text-current w-36 top-20
       right-4 rounded-lg shadow pr-2 pl-2 pt-1 pb-1 transition-opacity
       ease-out select-none
       ${isVisible ? "opacity-100 duration-0" : "opacity-0 duration-500"}
       ${className}
       `}
     >
-      <pre className="text-sm grid grid-cols-8 gap-1">
-        <span>x:</span>
-        <span className="col-span-3">
-          {formatValue(position.x, unitOfMeasure, fractionGranularity)}
-        </span>
-        <span>y:</span>
-        <span className="col-span-3">
-          {formatValue(position.y, unitOfMeasure, fractionGranularity)}
-        </span>
-        <span>Δx:</span>
-        <span className="col-span-3">
-          {formatValue(delta.x, unitOfMeasure, fractionGranularity)}
-        </span>
-        <span>Δy:</span>
-        <span className="col-span-3">
-          {formatValue(delta.y, unitOfMeasure, fractionGranularity)}
-        </span>
+      <pre className="text-md grid grid-cols-[auto_1fr] gap-1">
+        {delta.x !== 0 && (
+          <>
+            <span>{xlabel}:</span>
+            <span>
+              {formatValue(Math.abs(delta.x), unitOfMeasure, fractionGranularity, false)}{units}
+            </span>
+          </>
+        )}
+        {delta.y !== 0 && (
+          <>
+            <span>{ylabel}:</span>
+            <span>
+              {formatValue(Math.abs(delta.y), unitOfMeasure, fractionGranularity, false)}{units}
+            </span>
+          </>
+        )}
       </pre>
     </div>
   );

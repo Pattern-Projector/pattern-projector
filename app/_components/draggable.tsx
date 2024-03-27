@@ -32,6 +32,7 @@ export default function Draggable({
   perspective,
   unitOfMeasure,
   gridSize,
+  setIsDragging,
 }: {
   children: ReactNode;
   className: string | undefined;
@@ -41,6 +42,7 @@ export default function Draggable({
   perspective: Matrix;
   unitOfMeasure: string;
   gridSize: number;
+  setIsDragging: Dispatch<SetStateAction<boolean>>;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
@@ -74,6 +76,7 @@ export default function Draggable({
   function handleOnEnd(): void {
     setDragStart(null);
     setTransformStart(null);
+    setIsDragging(false);
   }
 
   function handleOnMouseMove(e: MouseEvent<HTMLDivElement>): void {
@@ -109,21 +112,20 @@ export default function Draggable({
 
   function handleMove(p: Point) {
     if (transformStart !== null && dragStart !== null) {
-      const dest = transformPoint(p, perspective);
-      const tx = dest.x - dragStart.x;
-      const ty = dest.y - dragStart.y;
+      let dest = transformPoint(p, perspective);
+      let start = dragStart;
+      if (gridSnapping){
+        dest = moveToGrid(dest, gridSize);
+        start = moveToGrid(dragStart, gridSize);
+      }
+      const tx = dest.x - start.x;
+      const ty = dest.y - start.y;
       let vec = {x: tx, y:ty};
       if (isAxisLocked) {
         vec = toSingleAxisVector(vec);
       }
       const m = translate(vec);
-      let newTransformMatrix = m.mmul(transformStart);
-      /* If grid snapping is enabled, move the final matrix to the grid */
-      if (gridSnapping) {
-        const pos = decomposeTransformMatrix(newTransformMatrix).translation;
-        const gridPos = moveToGrid(pos, gridSize);
-        newTransformMatrix = overrideTranslationFromMatrix(newTransformMatrix, translate(gridPos));
-      }
+      const newTransformMatrix = m.mmul(transformStart);
       setTransformSettings({
        ...transformSettings,
         matrix: newTransformMatrix,
@@ -134,6 +136,7 @@ export default function Draggable({
   function handleOnStart(p: Point): void {
     var pt = transformPoint(p, perspective);
     setDragStart(pt);
+    setIsDragging(true);
     setTransformStart(transformSettings.matrix.clone());
   }
 

@@ -81,6 +81,7 @@ export default function Page() {
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
   const [gridSize, setGridSize] = useState<number>(16.0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
   const [pageRange, setPageRange] = useState<string>("");
@@ -412,6 +413,7 @@ export default function Page() {
             matrix={transformSettings.matrix}
             unitOfMeasure={unitOfMeasure}
             className={`z-30 ${visible(!isCalibrating)}`}
+            preventReset={isDragging}
           />
 
           <LayerMenu
@@ -472,6 +474,7 @@ export default function Page() {
             perspective={perspective}
             unitOfMeasure={unitOfMeasure}
             gridSize={gridSize}
+            setIsDragging={setIsDragging}
           >
             <div
               ref={pdfRef}
