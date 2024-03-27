@@ -172,6 +172,7 @@ export default function Page() {
     const { files } = e.target;
 
     if (files && files[0] && isValidPDF(files[0])) {
+      resetTransformMatrix();
       setFile(files[0]);
     }
   }
@@ -208,10 +209,10 @@ export default function Page() {
     setPageRange(`1-${pageCount}`);
   }, [pageCount]);
 
-  /* If the layout dimensions change, reset and recenter tranformation matrix */
+  /* If unitOfMeasure changes, reset and recenter tranformation matrix */
   useEffect(() => {
     resetTransformMatrix();
-  }, [layoutWidth, layoutHeight, unitOfMeasure]);
+  }, [unitOfMeasure]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
