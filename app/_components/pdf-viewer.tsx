@@ -7,8 +7,10 @@ import {
   useCallback,
   useEffect,
   useState,
+  useRef,
 } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import { Size } from "@/_lib/size";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
@@ -31,8 +33,7 @@ export default function PdfViewer({
   file,
   setLayers,
   setPageCount,
-  setLayoutWidth,
-  setLayoutHeight,
+  setLayoutSize,
   pageCount,
   layers,
   onDocumentLoad,
@@ -44,28 +45,31 @@ export default function PdfViewer({
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
   setPageCount: Dispatch<SetStateAction<number>>;
-  setLayoutWidth: Dispatch<SetStateAction<number>>;
-  setLayoutHeight: Dispatch<SetStateAction<number>>;
+  setLayoutSize: Dispatch<SetStateAction<Size>>;
   pageCount: number;
   layers: Map<string, Layer>;
-  onDocumentLoad: () => void;
+  onDocumentLoad: (newSize: Size) => void;
   lineThickness: number;
   columnCount: string;
   edgeInsets: EdgeInsets;
   pageRange: string;
 }) {
-  const [pageWidth, setPageWidth] = useState<number>(0);
-  const [pageHeight, setPageHeight] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<Size>({width:0, height:0});
+  const pageCountRef = useRef<number | null>(null);
+  const pageSizeRef = useRef<Size | null>(null);
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
+    pageCountRef.current = docProxy.numPages;
     setLayers(new Map());
-    /* Call document load callback */
-    onDocumentLoad();
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
-    setPageWidth(pdfProxy.view[2] * (pdfProxy.userUnit || 1));
-    setPageHeight(pdfProxy.view[3] * (pdfProxy.userUnit || 1));
+    const newPageSize = {
+      width: pdfProxy.view[2] * (pdfProxy.userUnit || 1),
+      height: pdfProxy.view[3] * (pdfProxy.userUnit || 1),
+    }
+    setPageSize(newPageSize)
+    pageSizeRef.current = newPageSize;
   }
 
   const customRenderer = useCallback(
@@ -84,21 +88,33 @@ export default function PdfViewer({
   useEffect(() => {
     const itemCount = getPageNumbers(pageRange, pageCount).length;
     const rowCount = Math.ceil(itemCount / (Number(columnCount) || 1));
-    setLayoutWidth(
-      pageWidth * Number(columnCount) -
+    const newSize = {
+      width: pageSize.width * Number(columnCount) -
         Number(edgeInsets.horizontal) * Number(columnCount),
-    );
-    setLayoutHeight(
-      pageHeight * rowCount - Number(edgeInsets.vertical) * rowCount,
-    );
+      height: pageSize.height * rowCount - Number(edgeInsets.vertical) * rowCount,
+    }
+    setLayoutSize(newSize);
+
+    /* Only call onDocumentLoad once the layoutSize has
+     * finished updating, use references to get latest values */
+    if( pageCountRef.current !== null &&
+        pageSizeRef.current !== null
+    ){
+      const newSize = {
+        width: pageSizeRef.current.width * Number(columnCount) -
+          Number(edgeInsets.horizontal) * Number(columnCount),
+        height: pageSizeRef.current.height * rowCount - Number(edgeInsets.vertical) * rowCount,
+      }
+      pageCountRef.current = null;
+      pageSizeRef.current = null;
+      onDocumentLoad(newSize);
+    }
   }, [
-    pageWidth,
-    pageHeight,
+    pageSize,
     pageRange,
     columnCount,
     pageCount,
-    setLayoutWidth,
-    setLayoutHeight,
+    setLayoutSize,
     edgeInsets,
   ]);
 
@@ -117,8 +133,8 @@ export default function PdfViewer({
             <div
               key={`page_${index}_${value}`}
               style={{
-                width: `${pageWidth - Number(edgeInsets.horizontal)}pt`,
-                height: `${pageHeight - Number(edgeInsets.vertical)}pt`,
+                width: `${pageSize.width - Number(edgeInsets.horizontal)}pt`,
+                height: `${pageSize.height - Number(edgeInsets.vertical)}pt`,
                 mixBlendMode: "multiply",
               }}
             >

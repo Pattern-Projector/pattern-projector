@@ -19,6 +19,7 @@ import {
 import { OverlayMode } from "@/_lib/drawing";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
+import { Size } from "@/_lib/size";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   getDefaultTransforms,
@@ -75,8 +76,7 @@ export default function Page() {
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
   const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
-  const [layoutWidth, setLayoutWidth] = useState<number>(0);
-  const [layoutHeight, setLayoutHeight] = useState<number>(0);
+  const [layoutSize, setLayoutSize] = useState<Size>({width: 0, height: 0});
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
 
@@ -89,7 +89,8 @@ export default function Page() {
   });
 
   const pdfRef = useRef<HTMLDivElement | null>(null);
-  const [pdfDimensions, setPdfDimensions] = useState({ width: 0, height: 0 });
+  const [pdfDimensions, setPdfDimensions] = useState<Size>({ width: 0, height: 0 });
+  const [initialLayoutSize, setInitialLayoutSize] = useState<Size>({ width: 0, height: 0 });
 
   function getDefaultPoints() {
     const o = 150;
@@ -107,18 +108,18 @@ export default function Page() {
     return p;
   }
 
-  function resetTransformMatrix() {
-    /* Resets and recenters the PDF */
+  /* Resets and recenters the PDF */
+  function resetTransformMatrix(layoutSize: Size) { 
     let newTransformMatrix = Matrix.identity(3, 3);
     let tx = 0;
     let ty = 0;
 
     const scale = getPtDensity(unitOfMeasure) * 0.75;
-    const pdfWidth = layoutWidth / scale;
-    const pdfHeight = layoutHeight / scale;
+    const pdfWidth = layoutSize.width / scale;
+    const pdfHeight = layoutSize.height / scale;
 
     /* If pdf exceeds the width/height of the calibration
-			 align it to left/top */
+       align it to left/top */
     if (pdfWidth > +width) {
       tx = (pdfWidth - +width) * 0.5;
     }
@@ -172,7 +173,6 @@ export default function Page() {
     const { files } = e.target;
 
     if (files && files[0] && isValidPDF(files[0])) {
-      resetTransformMatrix();
       setFile(files[0]);
     }
   }
@@ -211,7 +211,7 @@ export default function Page() {
 
   /* If unitOfMeasure changes, reset and recenter tranformation matrix */
   useEffect(() => {
-    resetTransformMatrix();
+    resetTransformMatrix(layoutSize);
   }, [unitOfMeasure]);
 
   useEffect(() => {
@@ -400,8 +400,7 @@ export default function Page() {
             pageCount={pageCount}
             localTransform={localTransform}
             setLocalTransform={setLocalTransform}
-            layoutWidth={layoutWidth}
-            layoutHeight={layoutHeight}
+            layoutSize={layoutSize}
             calibrationTransform={calibrationTransform}
             lineThickness={lineThickness}
             setLineThickness={setLineThickness}
@@ -488,8 +487,7 @@ export default function Page() {
                   pageCount={pageCount}
                   setLayers={setLayers}
                   layers={layers}
-                  setLayoutWidth={setLayoutWidth}
-                  setLayoutHeight={setLayoutHeight}
+                  setLayoutSize={setLayoutSize}
                   onDocumentLoad={resetTransformMatrix}
                   lineThickness={lineThickness}
                   columnCount={columnCount}

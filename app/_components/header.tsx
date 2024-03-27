@@ -9,6 +9,7 @@ import {
 } from "react";
 import { OverlayMode } from "@/_lib/drawing";
 import { FullScreenHandle } from "react-full-screen";
+import { Size } from "@/_lib/size";
 
 import FileInput from "@/_components/file-input";
 import InlineInput from "@/_components/inline-input";
@@ -78,8 +79,7 @@ export default function Header({
   localTransform,
   calibrationTransform,
   setLocalTransform,
-  layoutWidth,
-  layoutHeight,
+  layoutSize,
   setShowStitchMenu,
   showStitchMenu,
   lineThickness,
@@ -106,8 +106,7 @@ export default function Header({
   localTransform: Matrix;
   calibrationTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
-  layoutWidth: number;
-  layoutHeight: number;
+  layoutSize: Size;
   lineThickness: number;
   setLineThickness: Dispatch<SetStateAction<number>>;
   setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
