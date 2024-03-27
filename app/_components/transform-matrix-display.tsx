@@ -6,6 +6,7 @@ import { Matrix } from "ml-matrix";
 function getSmallestDenom(
   value: number,
   fractionGranularity: number,
+  epsilon: number = 0.000001,
 ): number | null {
   if (fractionGranularity < 2) return null;
   const integerPart = Math.floor(value);
@@ -16,7 +17,7 @@ function getSmallestDenom(
     if (
       Math.abs(
         Math.round(decimalPart * denominator) / denominator - decimalPart,
-      ) > 0.001
+      ) > epsilon
     ) {
       return smallestFound;
     }
@@ -30,6 +31,7 @@ function formatValue(
   value: number,
   unitOfMeasure: string,
   fractionGranularity: number,
+  epsilon: number = 0.000001,
 ) {
   const sign = value >= 0 ? " " : "-";
   const posValue = Math.abs(value);
@@ -42,7 +44,7 @@ function formatValue(
       return `${sign}${posValue.toFixed(2)}`;
     }
     /* Decimal is small enough to just use whole number */
-    if (decimalPart < 0.001) {
+    if (decimalPart < epsilon) {
       return `${sign}${posValue.toFixed(0)}`;
     }
 
