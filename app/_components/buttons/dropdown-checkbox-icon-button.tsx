@@ -16,7 +16,7 @@ type NumberOption = {
 };
 
 type OptionSettings<T> = {
-  [K in keyof T]: T[K] extends boolean ? BooleanOption : NumberOption;
+  [K in keyof T]?: T[K] extends boolean ? BooleanOption : NumberOption;
 };
 
 export function DropdownCheckboxIconButton<T>({
