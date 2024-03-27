@@ -59,7 +59,6 @@ export default function PdfViewer({
   const pageSizeRef = useRef<Size | null>(null);
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
-    setPageCount(0);
     const newPageCount = docProxy.numPages;
     setPageCount(newPageCount);
     pageCountRef.current = newPageCount 
