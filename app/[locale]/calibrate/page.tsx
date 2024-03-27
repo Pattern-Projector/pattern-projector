@@ -80,6 +80,7 @@ export default function Page() {
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
+  const [gridSize, setGridSize] = useState<number>(16.0);
 
   const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
   const [pageRange, setPageRange] = useState<string>("");
@@ -89,6 +90,7 @@ export default function Page() {
     vertical: "",
   });
 
+  /* Needed for final perspective transform */
   const pdfRef = useRef<HTMLDivElement | null>(null);
   const [pdfDimensions, setPdfDimensions] = useState({ width: 0, height: 0 });
 
@@ -255,8 +257,8 @@ export default function Page() {
     }
   }, []);
 
-  /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in or  1 mm */
-  const arrowKeyScale = unitOfMeasure == IN ? 16.0 : 10.0;
+  /* Scale of 1.0 would mean 1 in/cm per key press. 16.0 -> 1/16th in/cm */
+  const arrowKeyScale = gridSize;
   useProgArrowKeyToMatrix(!isCalibrating, arrowKeyScale, (matrix) => {
     const newTransformMatrix = matrix.mmul(transformSettings.matrix);
     setTransformSettings({
@@ -264,6 +266,10 @@ export default function Page() {
       matrix: newTransformMatrix,
     });
   });
+
+  useEffect(() => {
+    setGridSize(unitOfMeasure === IN ? 16.0 : 10.0);
+  }, [unitOfMeasure])
 
   useEffect(() => {
     /* Combine the translation portion of tranformSettings
@@ -317,7 +323,8 @@ export default function Page() {
     const w = Number(width);
     const h = Number(height);
     if (points && points.length === maxPoints) {
-      let m = getPerspectiveTransformFromPoints(points, w, h, ptDensity, true);
+      /* In units of measure */
+      let m = getPerspectiveTransformFromPoints(points, w, h, 1.0, true);
       let n = getPerspectiveTransformFromPoints(points, w, h, ptDensity, false);
       setPerspective(m);
       setLocalTransform(n);
@@ -391,11 +398,8 @@ export default function Page() {
               }
             }}
             pageCount={pageCount}
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
             layoutWidth={layoutWidth}
             layoutHeight={layoutHeight}
-            calibrationTransform={calibrationTransform}
             lineThickness={lineThickness}
             setLineThickness={setLineThickness}
             setShowStitchMenu={setShowStitchMenu}
@@ -467,6 +471,7 @@ export default function Page() {
             setTransformSettings={setTransformSettings}
             perspective={perspective}
             unitOfMeasure={unitOfMeasure}
+            gridSize={gridSize}
           >
             <div
               ref={pdfRef}

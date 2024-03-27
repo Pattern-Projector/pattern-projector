@@ -75,9 +75,6 @@ export default function Header({
   displaySettings,
   setDisplaySettings,
   pageCount,
-  localTransform,
-  calibrationTransform,
-  setLocalTransform,
   layoutWidth,
   layoutHeight,
   setShowStitchMenu,
@@ -103,9 +100,6 @@ export default function Header({
   displaySettings: DisplaySettings;
   setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
   pageCount: number;
-  localTransform: Matrix;
-  calibrationTransform: Matrix;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   layoutWidth: number;
   layoutHeight: number;
   lineThickness: number;

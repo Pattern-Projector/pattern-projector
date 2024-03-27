@@ -15,9 +15,13 @@ import {
 import {
   transformPoint,
   translate,
+  decomposeTransformMatrix,
+  overrideTranslationFromMatrix
 } from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint, nativeMouseToCanvasPoint} from "@/_lib/point";
 import { TransformSettings } from "@/_lib/transform-settings";
+import { useKeyHeld } from "@/_hooks/use-key-held";
+import { KeyCode } from "@/_lib/key-code";
 
 export default function Draggable({
   children,
@@ -27,6 +31,7 @@ export default function Draggable({
   setTransformSettings,
   perspective,
   unitOfMeasure,
+  gridSize,
 }: {
   children: ReactNode;
   className: string | undefined;
@@ -35,6 +40,7 @@ export default function Draggable({
   setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
   perspective: Matrix;
   unitOfMeasure: string;
+  gridSize: number;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
@@ -42,41 +48,20 @@ export default function Draggable({
   const [isAxisLocked, setIsAxisLocked] = useState<Boolean>(false);
   const [isIdle, setIsIdle] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [gridSnapping, setGridSnapping] = useState<Boolean>(false);
 
-  const AXIS_LOCK_KEYBIND = 'Shift';
   const IDLE_TIMEOUT = 1500;
 
-  const handleKeyDown = useCallback(
-    function (e: React.KeyboardEvent) {
-      if (e.key === AXIS_LOCK_KEYBIND) {
-        e.preventDefault();
-        setIsAxisLocked(true);
-      } 
-    },
-    [
-      setIsAxisLocked,
-    ],
-  );
-
-  const handleKeyUp = useCallback(
-    function (e: React.KeyboardEvent) {
-      if (e.key === AXIS_LOCK_KEYBIND) {
-        e.preventDefault();
-        setIsAxisLocked(false);
-      } 
-    },
-    [
-      setIsAxisLocked,
-    ],
-  );
+  useKeyHeld(setGridSnapping, [KeyCode.KeyG]);
+  useKeyHeld(setIsAxisLocked, [KeyCode.ShiftLeft]);
 
   /* This effect causes the position of the div to update instantly if
    isAxisLocked changes, rather than needing the mouse to move first */
   useEffect(() => {
-    if (dragStart !==null && isAxisLocked && currentMousePos !== null) {
+    if (dragStart !== null && currentMousePos !== null) {
       handleMove(currentMousePos);
     }
-  }, [dragStart, isAxisLocked, currentMousePos]);
+  }, [isAxisLocked, currentMousePos, gridSnapping]);
 
   function resetIdle() {
     setIsIdle(false);
@@ -116,18 +101,29 @@ export default function Draggable({
     }
   }
 
+  function moveToGrid(p: Point, gridSize: number): Point {
+    const px = Math.round(p.x * gridSize) / gridSize;
+    const py = Math.round(p.y * gridSize) / gridSize;
+    return {x: px, y: py}
+  }
+
   function handleMove(p: Point) {
     if (transformStart !== null && dragStart !== null) {
-      const ptDensity = getPtDensity(unitOfMeasure);
       const dest = transformPoint(p, perspective);
       const tx = dest.x - dragStart.x;
       const ty = dest.y - dragStart.y;
-      let vec = {x: tx/ptDensity, y:ty/ptDensity};
-      if (isAxisLocked){
+      let vec = {x: tx, y:ty};
+      if (isAxisLocked) {
         vec = toSingleAxisVector(vec);
       }
       const m = translate(vec);
-      const newTransformMatrix = m.mmul(transformStart);
+      let newTransformMatrix = m.mmul(transformStart);
+      /* If grid snapping is enabled, move the final matrix to the grid */
+      if (gridSnapping) {
+        const pos = decomposeTransformMatrix(newTransformMatrix).translation;
+        const gridPos = moveToGrid(pos, gridSize);
+        newTransformMatrix = overrideTranslationFromMatrix(newTransformMatrix, translate(gridPos));
+      }
       setTransformSettings({
        ...transformSettings,
         matrix: newTransformMatrix,
@@ -158,8 +154,6 @@ export default function Draggable({
       onMouseMove={handleOnMouseMove}
       onMouseEnter={resetIdle}
       onMouseUp={handleOnEnd}
-      onKeyUp={handleKeyUp}
-      onKeyDown={handleKeyDown}
       style={{
         cursor:viewportCursorMode
       }}
