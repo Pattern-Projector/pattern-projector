@@ -57,10 +57,25 @@ export default function PdfViewer({
   const [pageSize, setPageSize] = useState<Size>({width:0, height:0});
   const pageCountRef = useRef<number | null>(null);
   const pageSizeRef = useRef<Size | null>(null);
+  const pageRangeRef = useRef<string | null>(null);
+  const columnCountRef = useRef<string | null>(null);
+  const documentLoadingRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (documentLoadingRef.current)
+      pageRangeRef.current = pageRange; 
+  }, [pageRange]);
+
+  useEffect(() => {
+    if (documentLoadingRef.current)
+      columnCountRef.current = columnCount; 
+  }, [columnCount]);
+
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     pageCountRef.current = docProxy.numPages;
     setLayers(new Map());
+    documentLoadingRef.current = true;
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
@@ -98,15 +113,22 @@ export default function PdfViewer({
     /* Only call onDocumentLoad once the layoutSize has
      * finished updating, use references to get latest values */
     if( pageCountRef.current !== null &&
-        pageSizeRef.current !== null
+        pageSizeRef.current !== null &&
+        pageRangeRef.current !== null &&
+        columnCountRef.current !== null
     ){
+      const itemCount = getPageNumbers(pageRangeRef.current, pageCountRef.current).length;
+      const rowCount = Math.ceil(itemCount / (Number(columnCountRef.current) || 1));
       const newSize = {
-        width: pageSizeRef.current.width * Number(columnCount) -
-          Number(edgeInsets.horizontal) * Number(columnCount),
+        width: pageSizeRef.current.width * Number(columnCountRef.current) -
+          Number(edgeInsets.horizontal) * Number(columnCountRef.current),
         height: pageSizeRef.current.height * rowCount - Number(edgeInsets.vertical) * rowCount,
       }
       pageCountRef.current = null;
       pageSizeRef.current = null;
+      pageRangeRef.current = null;
+      columnCountRef.current = null;
+      documentLoadingRef.current = false;
       onDocumentLoad(newSize);
     }
   }, [
