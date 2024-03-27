@@ -165,12 +165,7 @@ export default function Header({
     "fliplines":{
       icon: <FlipCenterOnIcon ariaLabel={t("overlayOptionFliplines")} />,
       text: t("overlayOptionFliplines"),
-    },
-    "opacity":{
-      text: t("overlayOptionOpacity"),
-      min: 0,
-      max: 100
-    },
+    }
   };
 
   useKeyDown(() => {
