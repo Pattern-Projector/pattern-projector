@@ -1,4 +1,3 @@
-import { OverlayMode } from "@/_lib/drawing";
 
 export interface OverlaySettings {
   disabled: boolean;

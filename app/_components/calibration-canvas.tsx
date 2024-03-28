@@ -12,11 +12,14 @@ import {
   createCheckerboardPattern,
   drawLine,
   interpolateColorRing,
-  OverlayMode,
   CanvasState,
 } from "@/_lib/drawing";
-import { CM, IN, getPtDensity } from "@/_lib/unit";
-import { getPerspectiveTransformFromPoints } from "@/_lib/geometry";
+import { CM, IN } from "@/_lib/unit";
+import {
+  getPerspectiveTransformFromPoints,
+  rectCorners,
+  translatePoints,
+} from "@/_lib/geometry";
 import {
   minIndex,
   sqrdist,
@@ -60,37 +63,24 @@ function drawCalibration(cs: CanvasState): void {
   }
 
   ctx.globalCompositeOperation = "difference";
-  if (cs.displaySettings.isFourCorners) {
-    cs.points.forEach((point, index) => {
-      ctx.beginPath();
-      ctx.strokeStyle = getStrokeStyle(index);
-      if (index !== cs.pointToModify) {
-        ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
-        ctx.lineWidth = 4;
-      } else {
-        if (cs.isPrecisionMovement) {
-          drawCrosshair(ctx, point, 20);
-          ctx.lineWidth = 2;
-        } else {
-          ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
-          ctx.lineWidth = 4;
-        }
-      }
-      ctx.stroke();
-    });
-  } else if (cs.pointToModify !== null) {
+
+  cs.points.forEach((point, index) => {
     ctx.beginPath();
-    ctx.arc(
-      cs.points[cs.pointToModify].x,
-      cs.points[cs.pointToModify].y,
-      20,
-      0,
-      2 * Math.PI,
-    );
-    ctx.strokeStyle = getStrokeStyle(cs.pointToModify);
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = getStrokeStyle(index);
+    if (index !== cs.pointToModify) {
+      ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
+      ctx.lineWidth = 4;
+    } else {
+      if (cs.isPrecisionMovement) {
+        drawCrosshair(ctx, point, 20);
+        ctx.lineWidth = 2;
+      } else {
+        ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
+        ctx.lineWidth = 4;
+      }
+    }
     ctx.stroke();
-  }
+  });
 }
 
 function draw(cs: CanvasState): void {
@@ -127,8 +117,6 @@ function draw(cs: CanvasState): void {
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
 
-  ctx.translate(cs.offset.x, cs.offset.y);
-
   if (cs.isCalibrating) {
     drawCalibration(cs);
   } else if (cs.isConcave) {
@@ -136,170 +124,87 @@ function draw(cs: CanvasState): void {
      * fill pattern */
     drawPolygon(ctx, cs.points, cs.errorFillPattern);
   } else {
-		/* Draw projection page */
-		if (!cs.displaySettings.overlay.disabled)
-			drawOverlays(cs)
+    /* Draw projection page */
+    if (!cs.displaySettings.overlay.disabled) {
+      drawOverlays(cs);
+    }
   }
 }
 
 function drawOverlays(cs: CanvasState) {
-	const o = cs.displaySettings.overlay;
-	const ctx = cs.ctx;
-	if (o.grid){
-		ctx.strokeStyle = cs.projectionGridLineColor
-		drawGrid(cs, 8, [1]) 
-	}
-	if (o.border)
-		drawBorder(cs, cs.darkColor, cs.gridLineColor);
-	if (o.paper)
-		drawPaperSheet(cs);
-	if (o.fliplines)
-		drawCenterLines(cs);
+  const { grid, border, paper, fliplines } = cs.displaySettings.overlay;
+  const ctx = cs.ctx;
+  if (grid) {
+    ctx.strokeStyle = cs.projectionGridLineColor;
+    drawGrid(cs, 8, [1]);
+  }
+  if (border) {
+    drawBorder(cs, cs.darkColor, cs.gridLineColor);
+  }
+  if (paper) {
+    drawPaperSheet(cs);
+  }
+  if (fliplines) {
+    drawCenterLines(cs);
+  }
 }
 
 function drawCenterLines(cs: CanvasState) {
-  const ctx = cs.ctx;
+  const { width, height, ctx, perspective } = cs;
   ctx.save();
   ctx.globalCompositeOperation = "source-over";
+  ctx.strokeStyle = "red";
 
-  const center = {
-    x: 0.0,
-    y: 0.0,
+  function drawProjectedLine(p1: Point, p2: Point) {
+    const pts = transformPoints([p1, p2], perspective);
+    const lineWidth = 2;
+    drawLine(ctx, pts[0], pts[1], lineWidth);
+    ctx.stroke();
   }
 
-  /* Center Projected */
-  const centerP = transformPoint(
-    center,
-    cs.perspective,
-  );
-
-  /* Half width and half height */
-  const hw = (cs.width/2);
-  const hh = (cs.height/2);
-
-  const yAxisPoints = [
-    {
-      x: 0.0,
-      y: -hh,
-    },{
-      x: 0.0,
-      y: hh,
-    }
-  ]
-
-  const xAxisPoints = [
-    {
-      x: -hw,
-      y: 0.0,
-    },{
-      x: hw,
-      y: 0.0,
-    }
-  ]
-
-  const projectedY = transformPoints(
-    yAxisPoints,
-    cs.perspective,
-  );
-  const projectedX = transformPoints(
-    xAxisPoints,
-    cs.perspective,
-  );
-
-  const lineWidth = 3;
-  ctx.setLineDash([5, 1]);
-  ctx.strokeStyle = cs.projectionGridLineColor; 
-
-  drawLine(ctx, projectedY[0], projectedY[1], lineWidth);
-  ctx.stroke();
-
-  drawLine(ctx, projectedX[0], projectedX[1], lineWidth);
-  ctx.stroke();
+  // X-axis
+  drawProjectedLine({ x: 0, y: height * 0.5 }, { x: width, y: height * 0.5 });
+  drawProjectedLine({ x: width * 0.5, y: 0 }, { x: width * 0.5, y: height });
 
   ctx.restore();
 }
 
 function drawPaperSheet(cs: CanvasState) {
-  const ctx = cs.ctx;
-  ctx.save();
+  const { ctx, perspective, unitOfMeasure, width, height } = cs;
   const fontSize = 32;
+
+  ctx.save();
   ctx.globalCompositeOperation = "difference";
   ctx.font = `${fontSize}px monospace`;
   ctx.fillStyle = "white";
-  /* Portrait text, Landscape text */
-  let textPL: [string, string];
-  let text: string;
-  let paperWidth: number;
-  let paperHeight: number;
-  switch (cs.unitOfMeasure) {
-    case CM:
-      textPL = ["A4", "A4"];
-      paperWidth = 21;
-      paperHeight = 29.7;
-      break;
-    case IN:
-    default:
-      textPL = ["8.5x11", "11x8.5"];
-      paperWidth = 8.5;
-      paperHeight = 11;
-      break;
-  }
 
-  const portrait = false;
-  if (portrait) {
-    text = textPL[0];
-  } else {
-    text = textPL[1];
-    /* Swap the width/height when in landscape mode */
-    const tmp = paperWidth;
-    paperWidth = paperHeight;
-    paperHeight = tmp;
-  }
+  const [text, paperWidth, paperHeight] =
+    unitOfMeasure == CM ? ["A4", 29.7, 21] : ["11x8.5", 11, 8.5];
 
-  const center = {
-    x: 0,
-    y: 0,
-  }
-
-  /* Center Projected */
-  const centerP = transformPoint(center, cs.perspective);
-
-  const hw = paperWidth/2;
-  const hh = paperHeight/2;
-
-  const corners = [
-    {
-      x: -hw,
-      y: -hh
-    },{
-      x: hw,
-      y: -hh,
-    },{
-      x: hw,
-      y: hh,
-    },{
-      x: -hw,
-      y: hh,
-    }
-  ]
-
-  /* Center the page to 'center' */
-  const cornersCentered = corners.map((p) => {
-    return { x: p.x + center.x, y: p.y + center.y };
-  });
-
-  /* Projected corners (centered) */
-  const cornersP = transformPoints(cornersCentered, cs.perspective);
-
+  const cornersP = transformPoints(
+    translatePoints(
+      rectCorners(paperWidth, paperHeight),
+      (width - paperWidth) * 0.5,
+      (height - paperHeight) * 0.5,
+    ),
+    perspective,
+  );
   drawPolygon(ctx, cornersP);
-  ctx.setLineDash([5, 1]);
-  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 2]);
+  ctx.lineWidth = 4;
   ctx.strokeStyle = cs.projectionGridLineColor;
   ctx.stroke();
 
   const labelWidth = ctx.measureText(text).width;
   ctx.textBaseline = "middle";
   ctx.fillStyle = cs.projectionGridLineColor;
+  const centerP = transformPoint(
+    {
+      x: width * 0.5,
+      y: height * 0.5,
+    },
+    perspective,
+  );
   ctx.fillText(text, centerP.x - labelWidth * 0.5, centerP.y);
   ctx.restore();
 }
@@ -330,20 +235,16 @@ function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
   ctx.globalCompositeOperation = "source-over";
   const majorLine = 5;
 
-  /* Half width and half height */
-  const hw = cs.width / 2;
-  const hh = cs.height / 2;
-
   /* Vertical lines */
-  for (let i = -hw; i <= hw; i++) {
+  for (let i = 0; i <= cs.width; i++) {
     let lineWidth = cs.minorLineWidth;
-    if (i % majorLine === 0 || i === hw) {
+    if (i % majorLine === 0 || i === cs.width) {
       lineWidth = cs.majorLineWidth;
     }
     const line = transformPoints(
       [
-        { x: i, y: -hh - outset },
-        { x: i, y: hh + outset },
+        { x: i, y: -outset },
+        { x: i, y: cs.height + outset },
       ],
       cs.perspective,
     );
@@ -351,16 +252,16 @@ function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
   }
 
   /* Horizontal lines */
-  for (let i = -hh; i <= hh; i++) {
+  for (let i = 0; i <= cs.height; i++) {
     let lineWidth = cs.minorLineWidth;
-    if (i % majorLine === 0 || i === hh) {
+    if (i % majorLine === 0 || i === cs.height) {
       lineWidth = cs.majorLineWidth;
     }
-    const y = -i;
+    const y = cs.height - i;
     const line = transformPoints(
       [
-        { x: -outset - hw, y: y },
-        { x: hw + outset, y: y },
+        { x: -outset, y: y },
+        { x: cs.width + outset, y: y },
       ],
       cs.perspective,
     );
@@ -385,7 +286,6 @@ function drawDimensionLabels(
   perspective: Matrix,
   unitOfMeasure: string,
 ) {
-  ctx.save();
   const fontSize = 48;
   const inset = 20;
   ctx.globalCompositeOperation = "difference";
@@ -393,21 +293,15 @@ function drawDimensionLabels(
   ctx.fillStyle = "white";
   const widthText = `${width}${unitOfMeasure.toLocaleLowerCase()}`;
   const heightText = `${height}${unitOfMeasure.toLocaleLowerCase()}`;
-
-  // Get the actual font height, numbers are all above the baseline on the font used; would need adjustment to work with
-  // fancier fonts where e.g. the 9 descends.
-  const metrics = ctx.measureText(heightText);
-  const height_offset = metrics.actualBoundingBoxAscent / 2;
-
   const line = transformPoints(
     [
       {
-        x: 0,
-        y: height / 2,
+        x: width * 0.5,
+        y: height,
       },
       {
-        x: -width / 2,
-        y: 0,
+        x: 0,
+        y: height * 0.5,
       },
     ],
     perspective,
@@ -415,7 +309,6 @@ function drawDimensionLabels(
   const widthLabelWidth = ctx.measureText(widthText).width;
   ctx.fillText(widthText, line[0].x - widthLabelWidth * 0.5, line[0].y - inset);
   ctx.fillText(heightText, line[1].x + inset, line[1].y + fontSize * 0.5);
-  ctx.restore();
 }
 
 function drawCrosshair(
@@ -606,14 +499,13 @@ export default function CalibrationCanvas({
       localPoints &&
       localPoints.length === maxPoints
     ) {
-
       /* All drawing is done in unitsOfMeasure, ptDensity = 1.0 */
       let perspective_mtx = getPerspectiveTransformFromPoints(
         localPoints,
         width,
         height,
         1.0,
-        false
+        false,
       );
 
       const canvas = canvasRef.current;

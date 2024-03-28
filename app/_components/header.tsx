@@ -1,5 +1,4 @@
 import { useTranslations } from "next-intl";
-import { getPtDensity } from "@/_lib/unit";
 import {
   ChangeEvent,
   Dispatch,
@@ -7,7 +6,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { OverlayMode } from "@/_lib/drawing";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -15,11 +13,8 @@ import InlineInput from "@/_components/inline-input";
 import InlineSelect from "@/_components/inline-select";
 import DeleteIcon from "@/_icons/delete-icon";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
-import FlipHorizontalOffIcon from "@/_icons/flip-horizontal-off-icon";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
-import FlipVerticalOffIcon from "@/_icons/flip-vertical-off-icon";
 import FlipCenterOnIcon from "@/_icons/flip-center-on-icon";
-import FlipCenterOffIcon from "@/_icons/flip-center-off-icon";
 import GridOffIcon from "@/_icons/grid-off-icon";
 import GridOnIcon from "@/_icons/grid-on-icon";
 import OverlayBorderIcon from "@/_icons/overlay-border-icon";
@@ -29,19 +24,17 @@ import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
-import { TransformSettings } from "@/_lib/transform-settings";
-import { DisplaySettings, OverlaySettings } from "@/_lib/display-settings";
+import { DisplaySettings } from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
-import Matrix from "ml-matrix";
+import Matrix, { inverse } from "ml-matrix";
 import {
   translate,
   rotateMatrixDeg,
-  flipMatrixHorizontally,
-  flipMatrixVertically,
-  isMatrixFlippedVertically,
-  isMatrixFlippedHorizontally,
-  overrideTranslationFromMatrix,
+  flipVertical,
+  flipHorizontal,
+  getCenterPoint,
+  transformPoint,
 } from "@/_lib/geometry";
 import FourCorners from "@/_icons/four-corners";
 import FourCornersOff from "@/_icons/four-corners-off";
@@ -70,13 +63,10 @@ export default function Header({
   fullScreenHandle,
   unitOfMeasure,
   setUnitOfMeasure,
-  transformSettings,
-  setTransformSettings,
   displaySettings,
   setDisplaySettings,
   pageCount,
   localTransform,
-  calibrationTransform,
   setLocalTransform,
   layoutWidth,
   layoutHeight,
@@ -98,13 +88,10 @@ export default function Header({
   fullScreenHandle: FullScreenHandle;
   unitOfMeasure: string;
   setUnitOfMeasure: (newUnit: string) => void;
-  transformSettings: TransformSettings;
-  setTransformSettings: Dispatch<SetStateAction<TransformSettings>>;
   displaySettings: DisplaySettings;
   setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
   pageCount: number;
   localTransform: Matrix;
-  calibrationTransform: Matrix;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   layoutWidth: number;
   layoutHeight: number;
@@ -121,20 +108,16 @@ export default function Header({
   const [showNav, setShowNav] = useState<boolean>(true);
 
   function handleRecenter() {
-    if (transformSettings.matrix !== null) {
-      let tx = 0;
-      let ty = 0;
-      
-      const m = translate({ x: tx, y: ty});
-      const newTransformMatrix = overrideTranslationFromMatrix(
-        transformSettings.matrix,
-        m,
-      );
-      setTransformSettings({
-        ...transformSettings,
-        matrix: newTransformMatrix,
-      });
-    }
+    const current = transformPoint(
+      { x: layoutWidth * 0.5, y: layoutHeight * 0.5 },
+      localTransform,
+    );
+    const center = getCenterPoint(+width, +height, unitOfMeasure);
+    const p = {
+      x: center.x - current.x,
+      y: center.y - current.y,
+    };
+    setLocalTransform(translate(p).mmul(localTransform));
   }
 
   useEffect(() => {
@@ -146,27 +129,27 @@ export default function Header({
   }, [fullScreenHandle.active]);
 
   const overlayOptions = {
-    "disabled":{
+    disabled: {
       icon: <GridOffIcon ariaLabel={t("overlayOptionDisabled")} />,
       text: t("overlayOptionDisabled"),
       selected: displaySettings.overlay.disabled,
     },
-    "grid":{
+    grid: {
       icon: <GridOnIcon ariaLabel={t("overlayOptionGrid")} />,
       text: t("overlayOptionGrid"),
       selected: displaySettings.overlay.grid,
     },
-    "border":{
+    border: {
       icon: <OverlayBorderIcon ariaLabel={t("overlayOptionBorder")} />,
       text: t("overlayOptionBorder"),
       selected: displaySettings.overlay.border,
     },
-    "paper":{
+    paper: {
       icon: <OverlayPaperIcon ariaLabel={t("overlayOptionPaper")} />,
       text: t("overlayOptionPaper"),
       selected: displaySettings.overlay.paper,
     },
-    "fliplines":{
+    fliplines: {
       icon: <FlipCenterOnIcon ariaLabel={t("overlayOptionFliplines")} />,
       text: t("overlayOptionFliplines"),
       selected: displaySettings.overlay.fliplines,
@@ -356,34 +339,36 @@ export default function Header({
               setSelectedOptions={(options) => {
                 setDisplaySettings({
                   ...displaySettings,
-									overlay: {
-										...displaySettings.overlay,
-										...options
-									},
+                  overlay: {
+                    ...displaySettings.overlay,
+                    ...options,
+                  },
                 });
               }}
             />
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
-                onClick={() => {
-									setTransformSettings({
-										...transformSettings,
-										matrix: flipMatrixHorizontally(transformSettings.matrix, 0),
-									})
-                }}
+                onClick={() =>
+                  setLocalTransform(
+                    flipHorizontal(
+                      getCenterPoint(+width, +height, unitOfMeasure),
+                    ).mmul(localTransform),
+                  )
+                }
               >
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
               <IconButton
-                onClick={() => {
-									setTransformSettings({
-										...transformSettings,
-										matrix: flipMatrixVertically(transformSettings.matrix, 0),
-									})
-                }}
+                onClick={() =>
+                  setLocalTransform(
+                    flipVertical(
+                      getCenterPoint(+width, +height, unitOfMeasure),
+                    ).mmul(localTransform),
+                  )
+                }
               >
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
@@ -391,10 +376,12 @@ export default function Header({
             <Tooltip description={t("rotate90")}>
               <IconButton
                 onClick={() =>
-                  setTransformSettings({
-                    ...transformSettings,
-                    matrix: rotateMatrixDeg(transformSettings.matrix, 90, { x: 0, y: 0 }),
-                  })
+                  setLocalTransform(
+                    rotateMatrixDeg(
+                      90,
+                      getCenterPoint(+width, +height, unitOfMeasure),
+                    ).mmul(localTransform),
+                  )
                 }
               >
                 <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />

@@ -12,10 +12,12 @@ export default function MeasureCanvas({
   perspective,
   calibrationTransform,
   unitOfMeasure,
+  className,
 }: {
   perspective: Matrix;
   calibrationTransform: Matrix;
   unitOfMeasure: string;
+  className?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [startPoint, setStartPoint] = useState<Point | null>(null);
@@ -116,7 +118,7 @@ export default function MeasureCanvas({
       onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
-      className="cursor-crosshair absolute inset-0 w-full h-full z-20"
+      className={`${className} cursor-crosshair absolute inset-0 w-full h-full z-20`}
       tabIndex={-1}
     />
   );
