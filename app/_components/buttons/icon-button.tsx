@@ -36,7 +36,7 @@ export function IconButton({
 
   return href ? (
     <a
-      className={`${defaultClasses} ${colorClasses} ${className || ""}`}
+      className={`${className || ""} ${defaultClasses} ${colorClasses}`}
       href={href}
     >
       {children}

@@ -29,6 +29,13 @@ import { useTranslations } from "next-intl";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
+import FlexWrapIcon from "@/_icons/flex-wrap-icon";
+import {
+  getDefaultMenuStates,
+  getMenuStatesFromLayers,
+  getMenuStatesFromPageCount,
+  MenuStates,
+} from "@/_lib/menu-states";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -59,13 +66,11 @@ export default function Page() {
   const [pageCount, setPageCount] = useState<number>(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
-  const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
 
-  const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
   const [pageRange, setPageRange] = useState<string>("");
   const [columnCount, setColumnCount] = useState<string>("");
   const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
@@ -74,6 +79,9 @@ export default function Page() {
   });
 
   const pdfRef = useRef<HTMLDivElement | null>(null);
+  const [menuStates, setMenuStates] = useState<MenuStates>(
+    getDefaultMenuStates(),
+  );
 
   function getDefaultPoints() {
     const o = 150;
@@ -157,7 +165,12 @@ export default function Page() {
   useEffect(() => {
     setColumnCount(String(pageCount));
     setPageRange(`1-${pageCount}`);
+    setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
   }, [pageCount]);
+
+  useEffect(() => {
+    setMenuStates((m) => getMenuStatesFromLayers(m, layers));
+  }, [layers]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -219,14 +232,6 @@ export default function Page() {
       setCalibrationTransform(n);
     }
   }, [points, width, height, unitOfMeasure]);
-
-  useEffect(() => {
-    if (layers.size > 0) {
-      setShowLayerMenu(true);
-    } else {
-      setShowLayerMenu(false);
-    }
-  }, [layers]);
 
   const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
     if (element === null) {
@@ -290,33 +295,17 @@ export default function Page() {
             layoutHeight={layoutHeight}
             lineThickness={lineThickness}
             setLineThickness={setLineThickness}
-            setShowStitchMenu={setShowStitchMenu}
-            showStitchMenu={showStitchMenu}
+            setMenuStates={setMenuStates}
+            menuStates={menuStates}
             measuring={measuring}
             setMeasuring={setMeasuring}
           />
 
-          <LayerMenu
-            visible={!isCalibrating && showLayerMenu}
-            setVisible={(visible) => setShowLayerMenu(visible)}
-            layers={layers}
-            setLayers={setLayers}
-            className={`${showStitchMenu ? "top-72" : "top-20"} overflow-scroll`}
-          />
-          {layers.size && !showLayerMenu ? (
-            <Tooltip
-              description={showLayerMenu ? t("layersOff") : t("layersOn")}
-            >
-              <IconButton
-                className={`${visible(!isCalibrating)} ${showStitchMenu ? "top-72" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
-                onClick={() => setShowLayerMenu(true)}
-              >
-                <LayersIcon ariaLabel="layers" />
-              </IconButton>
-            </Tooltip>
-          ) : null}
           <StitchMenu
-            className={`${visible(!isCalibrating && showStitchMenu)} absolute left-0 top-16 z-30 w-48 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
+            showMenu={!isCalibrating && menuStates.stitch && menuStates.nav}
+            setShowMenu={(showMenu) =>
+              setMenuStates({ ...menuStates, stitch: showMenu })
+            }
             setColumnCount={setColumnCount}
             setEdgeInsets={setEdgeInsets}
             setPageRange={setPageRange}
@@ -325,6 +314,27 @@ export default function Page() {
             pageRange={pageRange}
             pageCount={pageCount}
           />
+          <LayerMenu
+            visible={!isCalibrating && menuStates.layers}
+            setVisible={(visible) =>
+              setMenuStates({ ...menuStates, layers: visible })
+            }
+            layers={layers}
+            setLayers={setLayers}
+            className={`${menuStates.stitch ? "top-32" : "top-20"} overflow-scroll`}
+          />
+          {layers.size && !menuStates.layers ? (
+            <Tooltip
+              description={menuStates.layers ? t("layersOff") : t("layersOn")}
+            >
+              <IconButton
+                className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400 transition-all duration-700`}
+                onClick={() => setMenuStates({ ...menuStates, layers: true })}
+              >
+                <LayersIcon ariaLabel="layers" />
+              </IconButton>
+            </Tooltip>
+          ) : null}
 
           <CalibrationCanvas
             className={`absolute z-10`}

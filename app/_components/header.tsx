@@ -50,6 +50,7 @@ import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import SquareFootIcon from "@/_icons/square-foot";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
+import { MenuStates } from "@/_lib/menu-states";
 
 export default function Header({
   isCalibrating,
@@ -70,12 +71,12 @@ export default function Header({
   setLocalTransform,
   layoutWidth,
   layoutHeight,
-  setShowStitchMenu,
-  showStitchMenu,
   lineThickness,
   setLineThickness,
   measuring,
   setMeasuring,
+  menuStates,
+  setMenuStates,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -97,15 +98,14 @@ export default function Header({
   layoutHeight: number;
   lineThickness: number;
   setLineThickness: Dispatch<SetStateAction<number>>;
-  setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
-  showStitchMenu: boolean;
   measuring: boolean;
   setMeasuring: Dispatch<SetStateAction<boolean>>;
+  menuStates: MenuStates;
+  setMenuStates: Dispatch<SetStateAction<MenuStates>>;
 }) {
   const t = useTranslations("Header");
 
   const [invertOpen, setInvertOpen] = useState<boolean>(false);
-  const [showNav, setShowNav] = useState<boolean>(true);
 
   function handleRecenter() {
     const current = transformPoint(
@@ -122,9 +122,10 @@ export default function Header({
 
   useEffect(() => {
     if (fullScreenHandle.active) {
-      setShowNav(false);
+      setMenuStates({ ...menuStates, nav: false, layers: false });
+      // TODO setup button hides
     } else {
-      setShowNav(true);
+      setMenuStates({ ...menuStates, nav: true });
     }
   }, [fullScreenHandle.active]);
 
@@ -163,7 +164,7 @@ export default function Header({
   return (
     <>
       <header
-        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b-2 dark:border-gray-700 transition-all duration-700 h-16 flex items-center ${showNav ? "top-0" : "-top-20"}`}
+        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-700 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
@@ -192,75 +193,64 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <IconButton
-              className={`!p-1 border-2 border-black dark:border-white`}
-              onClick={() => setShowNav(false)}
+              className={`!p-1 border-2 border-slate-400 dark:border-white`}
+              onClick={() => setMenuStates({ ...menuStates, nav: false })}
             >
               <ExpandLessIcon ariaLabel={t("menuHide")} />
             </IconButton>
-            <div className="relative inline-block text-left">
-              <Tooltip description={t("invertColor")}>
-                <IconButton
-                  onClick={(e) => {
-                    let newInverted;
-                    let newIsGreenInverted;
-                    if (!displaySettings.inverted) {
-                      newInverted = true;
-                      newIsGreenInverted = true;
-                    } else if (displaySettings.isInvertedGreen) {
-                      newInverted = true;
-                      newIsGreenInverted = false;
-                    } else {
-                      newInverted = false;
-                      newIsGreenInverted = false;
-                    }
-                    setDisplaySettings({
-                      ...displaySettings,
-                      inverted: newInverted,
-                      isInvertedGreen: newIsGreenInverted,
-                    });
-                    setInvertOpen(!displaySettings.inverted);
-                  }}
-                >
-                  {displaySettings.inverted ? (
-                    <InvertColorIcon
-                      fill={
-                        displaySettings.isInvertedGreen
-                          ? "#32CD32"
-                          : "currentColor"
-                      }
-                      ariaLabel={t("invertColor")}
-                    />
-                  ) : (
-                    <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
-                  )}
-                </IconButton>
-              </Tooltip>
-            </div>
-          </div>
-          <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
-            <Tooltip
-              description={
-                displaySettings.isFourCorners
-                  ? t("fourCornersOff")
-                  : t("fourCornersOn")
-              }
-            >
+            <Tooltip description={t("invertColor")}>
               <IconButton
-                onClick={() =>
+                onClick={(e) => {
+                  let newInverted;
+                  let newIsGreenInverted;
+                  if (!displaySettings.inverted) {
+                    newInverted = true;
+                    newIsGreenInverted = true;
+                  } else if (displaySettings.isInvertedGreen) {
+                    newInverted = true;
+                    newIsGreenInverted = false;
+                  } else {
+                    newInverted = false;
+                    newIsGreenInverted = false;
+                  }
                   setDisplaySettings({
                     ...displaySettings,
-                    isFourCorners: !displaySettings.isFourCorners,
-                  })
-                }
+                    inverted: newInverted,
+                    isInvertedGreen: newIsGreenInverted,
+                  });
+                  setInvertOpen(!displaySettings.inverted);
+                }}
               >
-                {displaySettings.isFourCorners ? (
-                  <FourCorners ariaLabel={t("fourCornersOn")} />
+                {displaySettings.inverted ? (
+                  <InvertColorIcon
+                    fill={
+                      displaySettings.isInvertedGreen
+                        ? "#32CD32"
+                        : "currentColor"
+                    }
+                    ariaLabel={t("invertColor")}
+                  />
                 ) : (
-                  <FourCornersOff ariaLabel={t("fourCornersOff")} />
+                  <InvertColorOffIcon ariaLabel={t("invertColorOff")} />
                 )}
               </IconButton>
             </Tooltip>
-
+            {!isCalibrating ? (
+              <DropdownIconButton
+                className="-ml-2"
+                selection={displaySettings.overlayMode}
+                setSelection={(newOverlayMode) => {
+                  setDisplaySettings({
+                    ...displaySettings,
+                    overlayMode: newOverlayMode,
+                  });
+                }}
+                description={t("overlayMode")}
+                options={overlayOptions}
+              />
+            ) : null}
+          </div>
+          <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
             <div className="flex gap-1">
               <InlineInput
                 className="relative flex flex-col"
@@ -305,14 +295,23 @@ export default function Header({
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
             <Tooltip
               description={
-                showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+                menuStates.stitch ? t("stitchMenuHide") : t("stitchMenuShow")
               }
               className={`${visible(pageCount > 1)}`}
             >
-              <IconButton onClick={() => setShowStitchMenu(!showStitchMenu)}>
+              <IconButton
+                onClick={() =>
+                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
+                }
+                className={
+                  menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""
+                }
+              >
                 <FlexWrapIcon
                   ariaLabel={
-                    showStitchMenu ? t("stitchMenuHide") : t("stitchMenuShow")
+                    menuStates.stitch
+                      ? t("stitchMenuHide")
+                      : t("stitchMenuShow")
                   }
                 />
               </IconButton>
@@ -330,22 +329,6 @@ export default function Header({
                 />
               </div>
             </Tooltip>
-            <DropdownCheckboxIconButton
-              description={t("overlayOptions")}
-              icon={<GridOnIcon ariaLabel={t("overlayOptions")} />}
-              disabledIcon={<GridOffIcon ariaLabel={t("overlayOptions")} />}
-              disableOptionKey="disabled"
-              options={overlayOptions}
-              setSelectedOptions={(options) => {
-                setDisplaySettings({
-                  ...displaySettings,
-                  overlay: {
-                    ...displaySettings.overlay,
-                    ...options,
-                  },
-                });
-              }}
-            />
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
@@ -432,14 +415,12 @@ export default function Header({
           </div>
         </nav>
       </header>
-      {!showNav ? (
-        <IconButton
-          className={`!p-1 border-2 border-black dark:border-white absolute top-2 z-40 left-1/4 focus:ring-0`}
-          onClick={() => setShowNav(true)}
-        >
-          <ExpandMoreIcon ariaLabel={t("menuShow")} />
-        </IconButton>
-      ) : null}
+      <IconButton
+        className={`!p-1 border-2 border-slate-400 dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} transition-all duration-700 z-30 left-1/4 focus:ring-0`}
+        onClick={() => setMenuStates({ ...menuStates, nav: true })}
+      >
+        <ExpandMoreIcon ariaLabel={t("menuShow")} />
+      </IconButton>
     </>
   );
 }
