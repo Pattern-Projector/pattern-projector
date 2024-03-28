@@ -18,20 +18,20 @@
             "mount": "Trépied ou support mur/étagère/table pour le projecteur"
         },
         "setup": {
-            "title": "Configuration",
+            "title": "Installation",
             "connect": "Connectez votre ordinateur ou tablette au projecteur et soit dupliquez soit étendez votre écran pour que l'image de l'ordinateur ou de la tablette s'affiche sur le projecteur.",
-            "place": "Placer le projecteur au-dessus du tapis de découpe, en l'orientant vers le tapis de découpe. Essayer de placer le projecteur directement au-dessus du tapis de découpe et de l'orienter directement vers lui.",
-            "keystone": "Si votre projecteur a un keystone, ajustez-le pour que la projection soit presque rectangulaire et que le focus proche des côtés s'améliore.",
-            "focus": "Ajuster le focus sur le projecteur jusqu'à ce que le texte soit net au centre de la projection. Si vous n'arrivez pas à obtenir une image clair, assurez-vous que la distance entre le projecteur et le tapis de découpe est dans l'intervalle de fonctionnement recommandé par le fabricant."
+            "place": "Placez le projecteur au-dessus du tapis de découpe, en l'orientant vers le tapis de découpe. Essayez de placer le projecteur directement au-dessus du tapis de découpe et de l'orienter directement vers lui.",
+            "keystone": "Si votre projecteur a un keystone, ajustez-le pour que la projection soit autant rectangulaire que possible et que le focus proche des côtés s'améliore.",
+            "focus": "Ajustez le focus sur le projecteur jusqu'à ce que le texte soit net au centre de la projection. Si vous n'arrivez pas à obtenir une image clair, assurez-vous que la distance entre le projecteur et le tapis de découpe est dans l'intervalle de fonctionnement recommandé par le fabricant."
         },
         "calibration": {
             "input": "Saisissez la largeur et la hauteur de votre tapis de découpe.",
             "title": "Calibration",
             "start": "Cliquez (ou appuyez) sur \"Démarrer la calibration\"",
             "fullscreen": "Passez en mode plein écran en cliquant (ou en appuyant) sur ",
-            "drag": "Déplacez les coins du quadrillage pour les aligner avec votre tapis. Avec vos yeux sur le tapis, ajuster les coins sur votre ordinateur ou tablette. Ajustez le placement des coins jusqu'à ce que le quadrillage projeté corresponde au quadrillage de votre tapis.",
+            "drag": "Déplacez les coins du quadrillage pour les aligner avec votre tapis. Avec vos yeux sur le tapis, ajustez les coins sur votre ordinateur ou tablette. Ajustez le placement des coins jusqu'à ce que le quadrillage projeté corresponde au quadrillage de votre tapis.",
             "size": "Vous n'avez pas besoin de calibrer en utilisant tout votre tapis. Choisissez plutôt l'espace le plus grand où vous pouvez faire rentrer le quadrillage de calibration et assurez-vous que la largeur et la hauteur entrées correspondent à celles du quadrillage.",
-            "project": "Quand le quadrillage projeté est aligné avec votre tapis, cliquer (ou appuyer) sur \"Projeter.\""
+            "project": "Quand le quadrillage projeté est aligné avec votre tapis, cliquez (ou appuyer) sur \"Projeter.\""
         },
         "project": {
             "title": "Projeter un patron",
@@ -50,7 +50,7 @@
                 "description": "Lors de la projection, cela montre un quadrillage atténué pour vérifier que la calibration est correcte."
             },
             "invert": {
-                "title": "Inverser les couleurs",
+                "title": "Inverser les Couleurs",
                 "description": "Lors de la projection, il est généralement plus facile de voir des lignes blanches sur du noir."
             },
             "rotate": {
@@ -61,14 +61,14 @@
                 "title": "Recentrer",
                 "description": "Centre le patron sur le tapis de découpe."
             },
-            "move": "Déplacer le PDF and cliquant et en le faisant glisser autour de l'écran.",
-            "open": "Cliquer (ou appuyer) sur <pdficon></pdficon> pour ouvrir le document PDF."
+            "move": "Déplacez le PDF en cliquant et en le faisant glisser sur l'écran.",
+            "open": "Cliquez (ou appuyer) sur <pdficon></pdficon> pour ouvrir le document PDF."
         },
         "faq": {
             "title": "FAQ",
             "annotationSupport": {
                 "answer": "Pas encore, mais c'est prévu pour une prochaine release.",
-                "question": "Avez-vous du support pour ajouter des annotation ?"
+                "question": "Avez-vous du support pour ajouter des annotations ?"
             },
             "wrongSizePdf": {
                 "question": "Est-ce que votre PDF est projeté trop petit ou trop large ?",
@@ -91,17 +91,17 @@
             "title": "Ressources additionnelles",
             "links": {
                 "projectorsForSewing": {
-                    "title": "Projection et Patrons (de couture)",
+                    "title": "Groupe Facebook Projection et Patrons (de couture)",
                     "link": "https://www.facebook.com/groups/612018956087067/"
                 }
             }
         },
         "contribute": {
-            "title": "Contribuer au projet",
-            "translate": "Traduisez cet outils dans plus de langues.",
-            "feedback": "Les retours et demandes de fonctionnalités sont les bienvenus !",
-            "develop": "Aider à implémenter des fonctionnalités et fixer des problèmes sur <githubLink>GitHub</githubLink>.",
-            "donation": "Si vous voulez supporter le développement de cet outil, merci d'envisager de <donateLink>m'acheter un café</donateLink>"
+            "title": "Participer au projet",
+            "translate": "Traduisez cet outil dans plus de langues.",
+            "feedback": "Les retours d'expérience et demandes de fonctionnalités sont les bienvenus !",
+            "develop": "Aidez à implémenter des fonctionnalités et fixer des problèmes sur <githubLink>GitHub</githubLink>.",
+            "donation": "Si vous voulez soutenir le développement de cet outil, merci d'envisager de <donateLink>m'acheter un café</donateLink>"
         },
         "contact": "Contact",
         "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr"
@@ -129,11 +129,11 @@
         "measureOn": "Commencer à mesurer",
         "measureOff": "Arrêter de mesurer",
         "project": "Projeter",
-        "gridOn": "Activer le quadrillage",
-        "gridOff": "Désactiver le quadrillage",
+        "gridOn": "Quadrillage activé",
+        "gridOff": "Quadrillage désactivé",
         "invertColorOff": "Inversion de couleurs désactivée",
-        "flipVerticalOff": "Renversement vertical désativé",
-        "flipHorizontalOff": "Renversement vertical désactivé",
+        "flipVerticalOff": "Renversement vertical désactivé",
+        "flipHorizontalOff": "Renversement horizontal désactivé",
         "flipHorizontal": "Renverser horizontalement",
         "info": "Page d'infos",
         "overlayOptions": "Options de recouvrement",
@@ -141,7 +141,13 @@
         "overlayOptionDisabled": "Désactivé",
         "overlayOptionGrid": "Quadrillage",
         "fourCornersOn": "Surligner tous les coins",
-        "fourCornersOff": "Surligner uniquement le coin sélectionné"
+        "fourCornersOff": "Surligner uniquement le coin sélectionné",
+        "arrowBack": "Reculer d'1 page",
+        "arrowForward": "Avancer d'1 page",
+        "stitchMenuHide": "Masquer le menu d'assemblage",
+        "stitchMenuShow": "Afficher le menu d'assemblage",
+        "overlayOptionPaper": "Feuille de papier",
+        "overlayOptionFliplines": "Lignes de renversement / symétrie"
     },
     "StitchMenu": {
         "columnCount": "Colonnes",
