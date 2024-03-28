@@ -6,7 +6,6 @@ export interface OverlaySettings {
   border: boolean;
   paper: boolean;
   fliplines: boolean;
-  opacity: number;
 }
 
 export function getDefaultOverlaySettings() {
@@ -16,7 +15,6 @@ export function getDefaultOverlaySettings() {
     border: true,
     paper: false,
     fliplines: false,
-    opacity: 100,
   };
 }
 

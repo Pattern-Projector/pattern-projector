@@ -162,12 +162,6 @@ function drawOverlays(cs: CanvasState) {
   if (o.fliplines)
     drawCenterLines(cs);
 
-  if (o.opacity !== undefined) {
-    const opacity = o.opacity / 100.0;
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.globalAlpha = 1 - opacity;
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
   ctx.restore();
 }
 
