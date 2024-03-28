@@ -100,27 +100,12 @@ export function DropdownCheckboxIconButton<T>({
           const isNumber = typeof value === "number";
           const inputId = `checkbox-${key}`;
 
-          const handleKeyDown = (
-            event: React.KeyboardEvent<HTMLLabelElement>,
-          ) => {
-            if (event.key === "Enter") {
-              event.preventDefault();
-              if (isBoolean) {
-                updateOption(key as keyof T, !options[key as keyof T]);
-              }
-            }
-          };
-
           return (
             <label
               key={String(key)}
               htmlFor={inputId}
               className={`flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 rounded-md cursor-pointer space-x-3`}
               role="menuitem"
-              tabIndex={0}
-              onKeyDown={
-                disabled && key !== disableOptionKey ? undefined : handleKeyDown
-              }
             >
               {isBoolean && (option as BooleanOption).icon && (
                 <span>{(option as BooleanOption).icon}</span>
@@ -138,7 +123,7 @@ export function DropdownCheckboxIconButton<T>({
                     updateOption(key as keyof T, !options[key as keyof T])
                   }
                   disabled={disabled && key !== disableOptionKey}
-                  tabIndex={-1}
+                  tabIndex={0}
                 />
               )}
               {isNumber && (
@@ -153,6 +138,7 @@ export function DropdownCheckboxIconButton<T>({
                     updateOption(key as keyof T, parseInt(e.target.value, 10))
                   }
                   disabled={disabled && key !== disableOptionKey}
+                  tabIndex={0}
                 />
               )}
               <span className="select-none flex-grow">
