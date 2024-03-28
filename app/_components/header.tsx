@@ -235,20 +235,24 @@ export default function Header({
                 )}
               </IconButton>
             </Tooltip>
-            {!isCalibrating ? (
-              <DropdownIconButton
-                className="-ml-2"
-                selection={displaySettings.overlayMode}
-                setSelection={(newOverlayMode) => {
+            {!isCalibrating && (
+              <DropdownCheckboxIconButton
+                description={t("overlayOptions")}
+                icon={<GridOnIcon ariaLabel={t("overlayOptions")} />}
+                disabledIcon={<GridOffIcon ariaLabel={t("overlayOptions")} />}
+                disableOptionKey="disabled"
+                options={overlayOptions}
+                setSelectedOptions={(options) => {
                   setDisplaySettings({
                     ...displaySettings,
-                    overlayMode: newOverlayMode,
+                    overlay: {
+                      ...displaySettings.overlay,
+                      ...options,
+                    },
                   });
                 }}
-                description={t("overlayMode")}
-                options={overlayOptions}
               />
-            ) : null}
+            )}
           </div>
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
             <div className="flex gap-1">
