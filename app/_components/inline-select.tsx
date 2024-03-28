@@ -33,7 +33,7 @@ export default function InlineSelect({
       }
     >
       <select
-        className="py-2.5 px-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20"
+        className="py-2.5 px-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-800 dark:focus:border-blue-800"
         id={id}
         name={name}
         onChange={(e: ChangeEvent<HTMLSelectElement>) => handleChange(e)}

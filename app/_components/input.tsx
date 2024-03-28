@@ -9,14 +9,13 @@ import { ChangeEvent, ReactElement } from "react";
  * @param name - Name submitted with the form
  * @param value - Input value
  */
-export default function InlineInput({
+export default function Input({
   className,
   inputClassName,
   handleChange,
   id,
   inputTestId,
   label,
-  labelRight,
   name,
   value,
   min,
@@ -28,7 +27,6 @@ export default function InlineInput({
   id?: string;
   inputTestId?: string;
   label?: string | ReactElement;
-  labelRight?: string | null;
   name?: string;
   value: string;
   type?: string;
@@ -37,7 +35,7 @@ export default function InlineInput({
   return (
     <div className={className}>
       <label
-        className="text-sm font-medium text-gray-500 dark:text-white mb-2 absolute left-2 top-0 h-full flex items-center"
+        className="text-sm font-medium text-gray-500 dark:text-white mr-1"
         htmlFor={id}
       >
         {label}
@@ -45,7 +43,7 @@ export default function InlineInput({
       <input
         min={min}
         type={type ? type : "text"}
-        className={`${inputClassName} p-2.5 bg-gray-50 border border-gray-300 text-gray-900text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 w-20 text-right dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-800 dark:focus:border-blue-800`}
+        className={`${inputClassName} p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-800 dark:focus:border-blue-800`}
         id={id}
         data-test-id={inputTestId}
         name={name}
@@ -53,12 +51,6 @@ export default function InlineInput({
         required
         value={value}
       />
-      <label
-        className="text-sm text-gray-500 dark:text-white mb-2 absolute right-2 top-0 h-full flex items-center"
-        htmlFor={id}
-      >
-        {labelRight}
-      </label>
     </div>
   );
 }

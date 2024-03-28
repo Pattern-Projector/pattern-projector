@@ -4,34 +4,34 @@ import { translate } from "@/_lib/geometry";
 import { useEffect, useMemo, useState } from "react";
 import { Matrix } from "ml-matrix";
 
-export default function useProgArrowKeyToMatrix(active: boolean) {
-  const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
-  const translation: Matrix = useMemo(() => {
-    return translate(offset);
-  }, [offset]);
-
+export default function useProgArrowKeyToMatrix(
+  active: boolean,
+  scale: number,
+  applyChange: (matrix: Matrix) => void,
+  ) {
+  const PIXEL_LIST = [1, 10, 20, 100];
   function moveWithArrowKey(key: string, px: number) {
     let newOffset: Point = { x: 0, y: 0 };
+    const dist = px*scale;
     switch (key) {
       case "ArrowUp":
-        newOffset = applyOffset(offset, { y: -px, x: 0 });
+        newOffset = { y: -dist, x: 0 };
         break;
       case "ArrowDown":
-        newOffset = applyOffset(offset, { y: px, x: 0 });
+        newOffset = { y: dist, x: 0 };
         break;
       case "ArrowLeft":
-        newOffset = applyOffset(offset, { y: 0, x: -px });
+        newOffset = { y: 0, x: -dist };
         break;
       case "ArrowRight":
-        newOffset = applyOffset(offset, { y: 0, x: px });
+        newOffset = { y: 0, x: dist };
         break;
       default:
         break;
     }
-    setOffset(newOffset);
+    const m = translate(newOffset);
+    applyChange(m);
   }
 
-  useProgArrowKeyHandler(moveWithArrowKey, active);
-
-  return translation;
+  useProgArrowKeyHandler(moveWithArrowKey, active, PIXEL_LIST);
 }

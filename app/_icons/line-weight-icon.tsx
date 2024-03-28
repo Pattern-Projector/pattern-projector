@@ -2,7 +2,7 @@ export default function LineWeightIcon({ ariaLabel }: { ariaLabel: string }) {
   return (
     <svg
       aria-label={ariaLabel}
-      fill="#000"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       height="24"
       viewBox="0 -960 960 960"

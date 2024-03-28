@@ -1,14 +1,4 @@
-import {
-  FocusEvent,
-  FocusEventHandler,
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { document } from "postcss";
-import doc = Mocha.reporters.doc;
+import { useCallback, useEffect, useRef } from "react";
 
 export function Dropdown({
   position,

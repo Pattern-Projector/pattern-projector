@@ -1,0 +1,158 @@
+{
+    "HomePage": {
+        "beta": "bêta",
+        "pdfstitcherHref": "https://www.pdfstitcher.org/",
+        "github": "Voir le code source",
+        "calibrate": "Démarrer la calibration",
+        "welcome": {
+            "title": "Bienvenue dans Pattern Projector !",
+            "description": "Pattern projector est une application web libre et open source qui aide les utilisateurs à calibrer rapidement les projecteurs pour les patrons de couture. Ce projet est actuellement en bêta donc attendez-vous à de grands changements et de nouvelles fonctionnalités tant que nous itérons."
+        },
+        "choose-language": "Langue",
+        "requirements": {
+            "computer": "Ordinateur ou tablette pour connecter au projecteur",
+            "pattern": "Un patron de couture PDF",
+            "projector": "Projecteur : au moins 720p sont recommandés",
+            "title": "Ce dont vous aurez besoin",
+            "mat": "Tapis de découpe : idéalement avec un quadrillage tous les pouces ou centimètres",
+            "mount": "Trépied ou support mur/étagère/table pour le projecteur"
+        },
+        "setup": {
+            "title": "Installation",
+            "connect": "Connectez votre ordinateur ou tablette au projecteur et soit dupliquez soit étendez votre écran pour que l'image de l'ordinateur ou de la tablette s'affiche sur le projecteur.",
+            "place": "Placez le projecteur au-dessus du tapis de découpe, en l'orientant vers le tapis de découpe. Essayez de placer le projecteur directement au-dessus du tapis de découpe et de l'orienter directement vers lui.",
+            "keystone": "Si votre projecteur a un keystone, ajustez-le pour que la projection soit autant rectangulaire que possible et que le focus proche des côtés s'améliore.",
+            "focus": "Ajustez le focus sur le projecteur jusqu'à ce que le texte soit net au centre de la projection. Si vous n'arrivez pas à obtenir une image clair, assurez-vous que la distance entre le projecteur et le tapis de découpe est dans l'intervalle de fonctionnement recommandé par le fabricant."
+        },
+        "calibration": {
+            "input": "Saisissez la largeur et la hauteur de votre tapis de découpe.",
+            "title": "Calibration",
+            "start": "Cliquez (ou appuyez) sur \"Démarrer la calibration\"",
+            "fullscreen": "Passez en mode plein écran en cliquant (ou en appuyant) sur ",
+            "drag": "Déplacez les coins du quadrillage pour les aligner avec votre tapis. Avec vos yeux sur le tapis, ajustez les coins sur votre ordinateur ou tablette. Ajustez le placement des coins jusqu'à ce que le quadrillage projeté corresponde au quadrillage de votre tapis.",
+            "size": "Vous n'avez pas besoin de calibrer en utilisant tout votre tapis. Choisissez plutôt l'espace le plus grand où vous pouvez faire rentrer le quadrillage de calibration et assurez-vous que la largeur et la hauteur entrées correspondent à celles du quadrillage.",
+            "project": "Quand le quadrillage projeté est aligné avec votre tapis, cliquez (ou appuyer) sur \"Projeter.\""
+        },
+        "project": {
+            "title": "Projeter un patron",
+            "flip": {
+                "title": "Renverser verticalement/horizontalement",
+                "description": "Utile lors du miroitement des patrons en 2."
+            },
+            "fullscreen": {
+                "title": "Plein écran",
+                "description": "Il est généralement plus facile d'utiliser le logiciel en mode plein écran."
+            },
+            "cut": "Découpez sur le dessin projeté.",
+            "tools": "En mode projection, il y a plusieurs outils proposés :",
+            "showGrid": {
+                "title": "Montrer/cacher le quadrillage",
+                "description": "Lors de la projection, cela montre un quadrillage atténué pour vérifier que la calibration est correcte."
+            },
+            "invert": {
+                "title": "Inverser les Couleurs",
+                "description": "Lors de la projection, il est généralement plus facile de voir des lignes blanches sur du noir."
+            },
+            "rotate": {
+                "description": "Change l'orientation du patron de 90 degrés.",
+                "title": "Tourner"
+            },
+            "recenter": {
+                "title": "Recentrer",
+                "description": "Centre le patron sur le tapis de découpe."
+            },
+            "move": "Déplacez le PDF en cliquant et en le faisant glisser sur l'écran.",
+            "open": "Cliquez (ou appuyer) sur <pdficon></pdficon> pour ouvrir le document PDF."
+        },
+        "faq": {
+            "title": "FAQ",
+            "annotationSupport": {
+                "answer": "Pas encore, mais c'est prévu pour une prochaine release.",
+                "question": "Avez-vous du support pour ajouter des annotations ?"
+            },
+            "wrongSizePdf": {
+                "question": "Est-ce que votre PDF est projeté trop petit ou trop large ?",
+                "answer": "L'outil de calibration Pattern Projector n'a pas de zoom car l'échelle de la projection provient des informations de taille du PDF. Les patrons des designers ont généralement une échelle correcte donc un changement d'échelle peut avoir été introduit lors de l'ouverture du patron dans Affinity Designer ou Inkscape."
+            },
+            "saveAsApp": {
+                "question": "Voulez-vous enregistrer Pattern Projector en tant qu'application ?",
+                "answer": "Pattern Projector est une Progressive Web App (PWA) donc il peut être enregistrer comme une application. Sur un ordinateur, vous pouvez l'installer en utilisant <googleChromeLink>Chrome</googleChromeLink> ou <microsoftEdgeLink>Edge</microsoftEdgeLink>. Sur une tablette, ouvrir le menu Partager et appuyer sur Ajouter à l'écran d'accueil."
+            },
+            "chromecastSupport": {
+                "question": "Supportez-vous Chromecast ?",
+                "answer": "Bien qu'il soit possible de caster cette page web avec Chrome, la latence de connexion peut être frustrante, en particulier lors de la calibration. Un meilleur support de Chromecast est prévu pour une prochaine release."
+            },
+            "mobileSupport": {
+                "answer": "Bien qu'il soit possible de visiter et d'utiliser la page web depuis un smartphone, la taille d'écran limitée la rend difficile à utiliser. Un meilleur support pour mobile est prévu pour une prochaine release.",
+                "question": "Supportez-vous pour les téléphones mobiles et les tablettes ?"
+            }
+        },
+        "resources": {
+            "title": "Ressources additionnelles",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Groupe Facebook Projection et Patrons (de couture)",
+                    "link": "https://www.facebook.com/groups/612018956087067/"
+                }
+            }
+        },
+        "contribute": {
+            "title": "Participer au projet",
+            "translate": "Traduisez cet outil dans plus de langues.",
+            "feedback": "Les retours d'expérience et demandes de fonctionnalités sont les bienvenus !",
+            "develop": "Aidez à implémenter des fonctionnalités et fixer des problèmes sur <githubLink>GitHub</githubLink>.",
+            "donation": "Si vous voulez soutenir le développement de cet outil, merci d'envisager de <donateLink>m'acheter un café</donateLink>"
+        },
+        "contact": "Contact",
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr"
+    },
+    "Header": {
+        "rotate90": "Tourner de 90 degrés dans le sens horaire",
+        "projecting": "Projection",
+        "calibrating": "Calibration",
+        "openPDF": "Ouvrir un PDF",
+        "height": "h :",
+        "width": "l :",
+        "calibrate": "Calibrer",
+        "delete": "Réinitialiser la calibration",
+        "overlayModeGrid": "Quadrillage",
+        "invertColor": "Inverser les couleurs",
+        "flipVertical": "Renverser verticalement",
+        "layersOn": "Voir le menu des calques",
+        "layersOff": "Masquer le menu des calques",
+        "recenter": "Recentrer le PDF",
+        "fullscreen": "Passer en plein écran",
+        "fullscreenExit": "Quitter le plein écran",
+        "lineWeight": "Épaisseur des lignes",
+        "menuShow": "Voir le menu",
+        "menuHide": "Masquer le menu",
+        "measureOn": "Commencer à mesurer",
+        "measureOff": "Arrêter de mesurer",
+        "project": "Projeter",
+        "gridOn": "Quadrillage activé",
+        "gridOff": "Quadrillage désactivé",
+        "invertColorOff": "Inversion de couleurs désactivée",
+        "flipVerticalOff": "Renversement vertical désactivé",
+        "flipHorizontalOff": "Renversement horizontal désactivé",
+        "flipHorizontal": "Renverser horizontalement",
+        "info": "Page d'infos",
+        "overlayOptions": "Options de recouvrement",
+        "overlayOptionBorder": "Bordure",
+        "overlayOptionDisabled": "Désactivé",
+        "overlayOptionGrid": "Quadrillage",
+        "fourCornersOn": "Surligner tous les coins",
+        "fourCornersOff": "Surligner uniquement le coin sélectionné",
+        "arrowBack": "Reculer d'1 page",
+        "arrowForward": "Avancer d'1 page",
+        "stitchMenuHide": "Masquer le menu d'assemblage",
+        "stitchMenuShow": "Afficher le menu d'assemblage",
+        "overlayOptionPaper": "Feuille de papier",
+        "overlayOptionFliplines": "Lignes de renversement / symétrie"
+    },
+    "StitchMenu": {
+        "columnCount": "Colonnes",
+        "pageRange": "Pages",
+        "horizontal": "Horizontal",
+        "vertical": "Vertical"
+    }
+}

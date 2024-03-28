@@ -41,9 +41,10 @@
 //
 //M*/
 
+import { Point } from "@/_lib/point";
 import { AbstractMatrix, Matrix, solve } from 'ml-matrix';
+import { getPtDensity } from "./unit";
 
-import { Point } from './point';
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
@@ -125,6 +126,46 @@ export function getPerspectiveTransform(
   return s;
 }
 
+export function translatePoints(pts: Point[], dx: number, dy: number): Point[] {
+  return pts.map((p) => ({ x: p.x + dx, y: p.y + dy }));
+}
+
+export function rectCorners(width: number, height: number): Point[] {
+  return  [
+    { x: 0, y: 0 },
+    { x: width, y: 0 },
+    { x: width, y: height },
+    { x: 0, y: height },
+  ];
+}
+
+function getDstVertices(width: number, height: number, ptDensity: number): Point[] {
+  const dx = +width * ptDensity;
+  const dy = +height * ptDensity;
+  return rectCorners(dx, dy);
+}
+
+export function getCenterPoint(width: number, height: number, unitOfMeasure: string): Point {
+  return {
+    x: width * getPtDensity(unitOfMeasure) * 0.5,
+    y: height * getPtDensity(unitOfMeasure) * 0.5,
+  }
+}
+
+export function getPerspectiveTransformFromPoints(
+  points: Point[],
+  width: number,
+  height: number,
+  ptDensity: number,
+  reverse?: boolean,
+): Matrix {
+  if (reverse){
+    return getPerspectiveTransform(points, getDstVertices(width, height, ptDensity));
+  }else{
+    return getPerspectiveTransform(getDstVertices(width, height, ptDensity), points);
+  }
+}
+
 export function transformPoints(points: Point[], m: Matrix): Point[] {
   return points.map((p) => transformPoint(p, m));
 }
@@ -140,11 +181,45 @@ export function transformPoint(p: Point, mm: Matrix): Point {
 }
 
 export function translate(p: Point): Matrix {
-  return Matrix.from1DArray(3, 3, [1, 0, p.x, 0, 1, p.y, 0, 0, 1]);
+  return Matrix.from1DArray(3, 3,
+    [1, 0, p.x, 
+     0, 1, p.y, 
+     0, 0, 1]);
 }
 
-export function scale(s: number): Matrix {
-  return Matrix.from1DArray(3, 3, [s, 0, 0, 0, s, 0, 0, 0, 1]);
+export function scale(s: number, sy: null | number = null): Matrix {
+  sy = sy ?? s;
+  return Matrix.from1DArray(3, 3, [s, 0, 0, 0, sy, 0, 0, 0, 1]);
+}
+
+export function rotate(angle: number): Matrix {
+  const cosAngle = Math.cos(angle);
+  const sinAngle = Math.sin(angle);
+  return new Matrix([
+    [cosAngle, -sinAngle, 0],
+    [sinAngle, cosAngle, 0],
+    [0, 0, 1],
+  ]);
+}
+
+export function transformAboutPoint(matrix: Matrix, point: Point): Matrix {
+  const translationToOrigin = translate({ x: -point.x, y: -point.y });
+  const translationBack = translate(point);
+  return translationBack.mmul(matrix).mmul(translationToOrigin);
+}
+
+export function rotateMatrixDeg(angleDegrees: number, origin: Point): Matrix {
+  const angleRadians = (angleDegrees * Math.PI) / 180;
+  const rotationMatrix = rotate(angleRadians);
+  return transformAboutPoint(rotationMatrix, origin);
+}
+
+export function flipVertical(origin: Point): Matrix {
+  return transformAboutPoint(scale(1, -1), origin);
+}
+
+export function flipHorizontal(origin: Point): Matrix {
+  return transformAboutPoint(scale(-1, 1), origin);
 }
 
 /**
@@ -219,5 +294,39 @@ function getOrientation(p1: Point, p2: Point, p3: Point): number {
     return 1; // Counterclockwise orientation
   } else {
     return 0; // Collinear points
+  }
+}
+
+export function constrainInSpace(p: Point, anchorPoint: Point, matrix: Matrix, inverse: Matrix): Point {
+  const p1 = transformPoint(p, matrix);
+  const p2 = transformPoint(anchorPoint, matrix);
+  const c = constrained(p1, p2);
+  return transformPoint(c, inverse);
+}
+
+export function constrained(p: Point, anchorPoint: Point) {
+  const dx = Math.abs(anchorPoint.x - p.x);
+  const dy = Math.abs(anchorPoint.y - p.y);
+  if (dx > 2 * dy) {
+    return { x: p.x, y: anchorPoint.y };
+  } else if (dy > 2 * dx) {
+    return { x: anchorPoint.x, y: p.y };
+  } else if (dx === 0 && dy === 0) {
+    return anchorPoint;
+  } else {
+    // snap to 45 degree angle
+    if (dx < dy) {
+      return { x: p.x, y: anchorPoint.y + ((p.y - anchorPoint.y) / dy) * dx };
+    } else {
+      return { x: anchorPoint.x + ((p.x - anchorPoint.x) / dx) * dy, y: p.y };
+    }
+  }
+}
+
+export function toSingleAxisVector(vec: Point): Point {
+  if (Math.abs(vec.x) > Math.abs(vec.y)) {
+    return { x: vec.x, y: 0 };
+  } else {
+    return { x: 0, y: vec.y };
   }
 }
