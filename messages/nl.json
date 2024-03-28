@@ -8,7 +8,7 @@
         "choose-language": "Taal",
         "welcome": {
             "title": "Welkom bij Pattern Projector!",
-            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projektors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan regelmatig veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
+            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projectors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan regelmatig veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
         },
         "requirements": {
             "title": "Wat je nodig hebt",
@@ -145,7 +145,15 @@
         "overlayModeGrid": "Raster",
         "overlayModePaper": "Blad papier",
         "measureOn": "Begin met meten",
-        "measureOff": "Stop met meten"
+        "measureOff": "Stop met meten",
+        "overlayOptions": "Overlay instellingen",
+        "overlayOptionBorder": "Rand",
+        "overlayOptionDisabled": "Geen",
+        "overlayOptionGrid": "Raster",
+        "overlayOptionPaper": "Blad papier",
+        "overlayOptionFliplines": "Spiegel lijnen",
+        "flipCenterOn": "Spiegel rond midden aan",
+        "flipCenterOff": "Spiegel rond midden uit"
     },
     "StitchMenu": {
         "columnCount": "Kolommen",
