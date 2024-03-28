@@ -20,7 +20,7 @@ import { IconButton } from "@/_components/buttons/icon-button";
 export default function Home() {
   const t = useTranslations("HomePage");
   const messages = useMessages() as IntlMessages;
-  const keys = Object.keys(messages.HomePage.resources.links);
+  const keys = Object.keys(messages.HomePage.resources.links ? messages.HomePage.resources.links : {});
 
   return (
     <main className="m-4">

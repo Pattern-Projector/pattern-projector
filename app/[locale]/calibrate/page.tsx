@@ -8,28 +8,16 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import {
-  getPerspectiveTransformFromPoints,
-  toMatrix3d,
-  decomposeTransformMatrix,
-  scaleMatrixTranslation,
-  overrideTranslationFromMatrix,
-  translate,
-} from "@/_lib/geometry";
-import { OverlayMode } from "@/_lib/drawing";
+import { getPerspectiveTransformFromPoints, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
-  getDefaultTransforms,
-  TransformSettings,
-} from "@/_lib/transform-settings";
-import {
   getDefaultDisplaySettings,
   DisplaySettings,
-	OverlaySettings
+  OverlaySettings,
 } from "@/_lib/display-settings";
-import { CM, IN, getPtDensity } from "@/_lib/unit";
+import { IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
@@ -41,6 +29,13 @@ import { useTranslations } from "next-intl";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
+import FlexWrapIcon from "@/_icons/flex-wrap-icon";
+import {
+  getDefaultMenuStates,
+  getMenuStatesFromLayers,
+  getMenuStatesFromPageCount,
+  MenuStates,
+} from "@/_lib/menu-states";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -51,9 +46,6 @@ export default function Page() {
   const handle = useFullScreenHandle();
 
   const [points, setPoints] = useState<Point[]>([]);
-  const [transformSettings, setTransformSettings] = useState<TransformSettings>(
-    getDefaultTransforms(),
-  );
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
@@ -74,13 +66,11 @@ export default function Page() {
   const [pageCount, setPageCount] = useState<number>(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
-  const [showLayerMenu, setShowLayerMenu] = useState<boolean>(false);
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
 
-  const [showStitchMenu, setShowStitchMenu] = useState<boolean>(false);
   const [pageRange, setPageRange] = useState<string>("");
   const [columnCount, setColumnCount] = useState<string>("");
   const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
@@ -89,7 +79,9 @@ export default function Page() {
   });
 
   const pdfRef = useRef<HTMLDivElement | null>(null);
-  const [pdfDimensions, setPdfDimensions] = useState({ width: 0, height: 0 });
+  const [menuStates, setMenuStates] = useState<MenuStates>(
+    getDefaultMenuStates(),
+  );
 
   function getDefaultPoints() {
     const o = 150;
@@ -106,39 +98,6 @@ export default function Page() {
     ];
     return p;
   }
-
-  function resetTransformMatrix() {
-    /* Resets and recenters the PDF */
-    let newTransformMatrix = Matrix.identity(3, 3);
-    let tx = 0;
-    let ty = 0;
-
-    const scale = getPtDensity(unitOfMeasure) * 0.75;
-    const pdfWidth = layoutWidth / scale;
-    const pdfHeight = layoutHeight / scale;
-
-    /* If pdf exceeds the width/height of the calibration
-			 align it to left/top */
-    if (pdfWidth > +width) {
-      tx = (pdfWidth - +width) * 0.5;
-    }
-    if (pdfHeight > +height) {
-      ty = (pdfHeight - +height) * 0.5;
-    }
-
-    const m = translate({ x: tx, y: ty });
-    const recenteredMatrix = overrideTranslationFromMatrix(
-      newTransformMatrix,
-      m,
-    );
-
-    setTransformSettings({
-      ...transformSettings,
-      matrix: recenteredMatrix,
-    });
-  }
-
-  const ptDensity = getPtDensity(unitOfMeasure);
 
   function updateLocalSettings(newSettings: {}) {
     const settingString = localStorage.getItem("canvasSettings");
@@ -206,12 +165,12 @@ export default function Page() {
   useEffect(() => {
     setColumnCount(String(pageCount));
     setPageRange(`1-${pageCount}`);
+    setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
   }, [pageCount]);
 
-  /* If the layout dimensions change, reset and recenter tranformation matrix */
   useEffect(() => {
-    resetTransformMatrix();
-  }, [layoutWidth, layoutHeight, unitOfMeasure]);
+    setMenuStates((m) => getMenuStatesFromLayers(m, layers));
+  }, [layers]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -242,81 +201,25 @@ export default function Page() {
 
       const defaultDS = getDefaultDisplaySettings();
 
-      newDisplaySettings.overlay =
-        localSettings.overlay !== undefined
-          ? localSettings.overlay
-          : defaultDS.overlay;
+      newDisplaySettings.overlay = localSettings.overlay ?? defaultDS.overlay;
       newDisplaySettings.inverted =
-        localSettings.inverted !== undefined
-          ? localSettings.inverted
-          : defaultDS.inverted;
+        localSettings.inverted ?? defaultDS.inverted;
       newDisplaySettings.isInvertedGreen =
-        localSettings.isInvertedGreen !== undefined
-          ? localSettings.isInvertedGreen
-          : defaultDS.isInvertedGreen;
+        localSettings.isInvertedGreen ?? defaultDS.isInvertedGreen;
       newDisplaySettings.isFourCorners =
-        localSettings.isFourCorners !== undefined
-          ? localSettings.isFourCorners
-          : defaultDS.isFourCorners;
+        localSettings.isFourCorners ?? defaultDS.isFourCorners;
       setDisplaySettings({ ...displaySettings, ...newDisplaySettings });
     }
   }, []);
 
   /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in/cm */
   useProgArrowKeyToMatrix(!isCalibrating, 1.0 / 16.0, (matrix) => {
-    const newTransformMatrix = matrix.mmul(transformSettings.matrix);
-    setTransformSettings({
-      ...transformSettings,
-      matrix: newTransformMatrix,
-    });
+    setLocalTransform(matrix.mmul(localTransform));
   });
 
   useEffect(() => {
-    /* Combine the translation portion of tranformSettings
-     * with the localTransformMatrix. Note that the transformSettings
-     * matrix must be scaled by ptDensity first */
-
-    const pdfWidth = pdfDimensions.width;
-    const pdfHeight = pdfDimensions.height;
-    const translateToCenter = translate({
-      x: -pdfWidth / 2,
-      y: -pdfHeight / 2,
-    });
-
-    const ptDensity = getPtDensity(unitOfMeasure);
-    const scaled = scaleMatrixTranslation(transformSettings.matrix, ptDensity);
-
-    const m0 = localTransform.mmul(scaled);
-    const m1 = translateToCenter.mmul(m0);
-    setMatrix3d(toMatrix3d(m1));
-  }, [localTransform, transformSettings, unitOfMeasure, pdfDimensions]);
-
-  /* Update the pdfWidth and pdfHeight when it changes */
-  useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const { width, height } = entry.contentRect;
-        /* Only trigger if the dimension is non-zero
-         * and different that the current dimension */
-        if (
-          width !== 0 &&
-          height !== 0 &&
-          (width != pdfDimensions.width || height != pdfDimensions.height)
-        )
-          setPdfDimensions({ width, height });
-      }
-    });
-
-    if (pdfRef.current) {
-      observer.observe(pdfRef.current);
-    }
-
-    return () => {
-      if (pdfRef.current) {
-        observer.unobserve(pdfRef.current);
-      }
-    };
-  }, [pdfDimensions]);
+    setMatrix3d(toMatrix3d(calibrationTransform.mmul(localTransform)));
+  }, [localTransform, calibrationTransform]);
 
   useEffect(() => {
     const ptDensity = getPtDensity(unitOfMeasure);
@@ -326,18 +229,9 @@ export default function Page() {
       let m = getPerspectiveTransformFromPoints(points, w, h, ptDensity, true);
       let n = getPerspectiveTransformFromPoints(points, w, h, ptDensity, false);
       setPerspective(m);
-      setLocalTransform(n);
       setCalibrationTransform(n);
     }
   }, [points, width, height, unitOfMeasure]);
-
-  useEffect(() => {
-    if (layers.size > 0) {
-      setShowLayerMenu(true);
-    } else {
-      setShowLayerMenu(false);
-    }
-  }, [layers]);
 
   const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
     if (element === null) {
@@ -382,8 +276,6 @@ export default function Page() {
               setUnitOfMeasure(newUnit);
               updateLocalSettings({ unitOfMeasure: newUnit });
             }}
-            transformSettings={transformSettings}
-            setTransformSettings={setTransformSettings}
             displaySettings={displaySettings}
             setDisplaySettings={(newSettings) => {
               setDisplaySettings(newSettings);
@@ -401,36 +293,19 @@ export default function Page() {
             setLocalTransform={setLocalTransform}
             layoutWidth={layoutWidth}
             layoutHeight={layoutHeight}
-            calibrationTransform={calibrationTransform}
             lineThickness={lineThickness}
             setLineThickness={setLineThickness}
-            setShowStitchMenu={setShowStitchMenu}
-            showStitchMenu={showStitchMenu}
+            setMenuStates={setMenuStates}
+            menuStates={menuStates}
             measuring={measuring}
             setMeasuring={setMeasuring}
           />
 
-          <LayerMenu
-            visible={!isCalibrating && showLayerMenu}
-            setVisible={(visible) => setShowLayerMenu(visible)}
-            layers={layers}
-            setLayers={setLayers}
-            className={`${showStitchMenu ? "top-72" : "top-20"} overflow-scroll`}
-          />
-          {layers.size && !showLayerMenu ? (
-            <Tooltip
-              description={showLayerMenu ? t("layersOff") : t("layersOn")}
-            >
-              <IconButton
-                className={`${visible(!isCalibrating)} ${showStitchMenu ? "top-72" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
-                onClick={() => setShowLayerMenu(true)}
-              >
-                <LayersIcon ariaLabel="layers" />
-              </IconButton>
-            </Tooltip>
-          ) : null}
           <StitchMenu
-            className={`${visible(!isCalibrating && showStitchMenu)} absolute left-0 top-16 z-30 w-48 transition-all duration-700 ${showStitchMenu ? "right-0" : "-right-60"}`}
+            showMenu={!isCalibrating && menuStates.stitch && menuStates.nav}
+            setShowMenu={(showMenu) =>
+              setMenuStates({ ...menuStates, stitch: showMenu })
+            }
             setColumnCount={setColumnCount}
             setEdgeInsets={setEdgeInsets}
             setPageRange={setPageRange}
@@ -439,6 +314,27 @@ export default function Page() {
             pageRange={pageRange}
             pageCount={pageCount}
           />
+          <LayerMenu
+            visible={!isCalibrating && menuStates.layers}
+            setVisible={(visible) =>
+              setMenuStates({ ...menuStates, layers: visible })
+            }
+            layers={layers}
+            setLayers={setLayers}
+            className={`${menuStates.stitch ? "top-32" : "top-20"} overflow-scroll`}
+          />
+          {layers.size && !menuStates.layers ? (
+            <Tooltip
+              description={menuStates.layers ? t("layersOff") : t("layersOn")}
+            >
+              <IconButton
+                className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400 transition-all duration-700`}
+                onClick={() => setMenuStates({ ...menuStates, layers: true })}
+              >
+                <LayersIcon ariaLabel="layers" />
+              </IconButton>
+            </Tooltip>
+          ) : null}
 
           <CalibrationCanvas
             className={`absolute z-10`}
@@ -455,6 +351,7 @@ export default function Page() {
           />
           {measuring && (
             <MeasureCanvas
+              className={visible(!isCalibrating)}
               perspective={perspective}
               calibrationTransform={calibrationTransform}
               unitOfMeasure={unitOfMeasure}
@@ -463,24 +360,23 @@ export default function Page() {
           <Draggable
             viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-700 `}
             className={`select-none ${visible(!isCalibrating)}`}
-            transformSettings={transformSettings}
-            setTransformSettings={setTransformSettings}
+            localTransform={localTransform}
+            setLocalTransform={setLocalTransform}
             perspective={perspective}
-            unitOfMeasure={unitOfMeasure}
           >
             <div
               ref={pdfRef}
               className={"absolute z-0"}
               style={{
                 transform: `${matrix3d}`,
-                transformOrigin: "center",
+                transformOrigin: "0 0",
                 filter: getInversionFilters(
                   displaySettings.inverted,
                   displaySettings.isInvertedGreen,
                 ),
               }}
             >
-              <div className={"border-8 border-purple-700"}>
+              <div className={"outline outline-8 outline-purple-600"}>
                 <PDFViewer
                   file={file}
                   setPageCount={setPageCount}
@@ -489,11 +385,11 @@ export default function Page() {
                   layers={layers}
                   setLayoutWidth={setLayoutWidth}
                   setLayoutHeight={setLayoutHeight}
-                  onDocumentLoad={resetTransformMatrix}
                   lineThickness={lineThickness}
                   columnCount={columnCount}
                   edgeInsets={edgeInsets}
                   pageRange={pageRange}
+                  setLocalTransform={setLocalTransform}
                 />
               </div>
             </div>
