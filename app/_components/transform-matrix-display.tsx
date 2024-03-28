@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { decomposeTransformMatrix } from "@/_lib/geometry";
 import { IN, CM } from "@/_lib/unit";
 import { Matrix } from "ml-matrix";
+import { useKeyToggle } from "@/_hooks/use-key-toggle"
+import { KeyCode } from "@/_lib/key-code"
 
 function getSmallestDenom(
   value: number,
@@ -85,17 +87,28 @@ export default function TransformMatrixDisplay({
   const previousMatrix = useRef<Matrix>(matrix);
   const initialMatrix = useRef<Matrix | null>(null);
   const resetNeeded = useRef<boolean>(false);
+  const [lockKeyToggled, setLockKeyToggled] = useState<boolean>(false);
+  const [lockKeyWasToggled, setLockKeyWasToggled] = useState<boolean>(false);
+
+  useKeyToggle(setLockKeyToggled, [KeyCode.KeyL]);
 
   useEffect(() => {
     setIsVisible(true);
     if (initialMatrix.current === null || resetNeeded.current){
       resetNeeded.current = false;
       initialMatrix.current = previousMatrix.current;
+      if (!lockKeyToggled){
+        setLockKeyWasToggled(false);
+      }
     }
 
     previousMatrix.current = matrix;
 
-    if (preventReset)
+    if (lockKeyToggled){
+      setLockKeyWasToggled(true);
+    }
+
+    if (preventReset || lockKeyToggled)
       return;
 
     const timer = setTimeout(() => {
@@ -106,14 +119,14 @@ export default function TransformMatrixDisplay({
     return () => {
       clearTimeout(timer);
     };
-  }, [matrix, preventReset]);
+  }, [matrix, preventReset, lockKeyToggled]);
 
   useEffect(() => {
-    if (preventReset === false) {
+    if (preventReset === false && lockKeyToggled === false) {
       resetNeeded.current = true;
       setIsVisible(false);
     }
-  }, [preventReset])
+  }, [preventReset, lockKeyToggled])
 
   const decomposed = decomposeTransformMatrix(matrix);
   const position = decomposed.translation;
@@ -129,9 +142,11 @@ export default function TransformMatrixDisplay({
   const ylabel = delta.y > 0 ? "Down" : "Up";
   const units = unitOfMeasure === IN ? '"' : " cm";
 
-  if (delta.x === 0 && delta.y === 0) {
+  if (!(lockKeyToggled || lockKeyWasToggled) && delta.x === 0 && delta.y === 0) {
     return null;
   }
+
+  const forceDisplay = lockKeyToggled || lockKeyWasToggled;
 
   return (
     <div
@@ -143,7 +158,7 @@ export default function TransformMatrixDisplay({
       `}
     >
       <pre className="text-md grid grid-cols-[auto_1fr] gap-1">
-        {delta.x !== 0 && (
+        {(delta.x !== 0 || forceDisplay) && (
           <>
             <span>{xlabel}:</span>
             <span>
@@ -151,7 +166,7 @@ export default function TransformMatrixDisplay({
             </span>
           </>
         )}
-        {delta.y !== 0 && (
+        {(delta.y !== 0 || forceDisplay) && (
           <>
             <span>{ylabel}:</span>
             <span>
