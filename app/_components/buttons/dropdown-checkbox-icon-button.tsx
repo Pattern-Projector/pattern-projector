@@ -46,7 +46,7 @@ export function DropdownCheckboxIconButton<T>({
   };
 
   const dropdownClasses =
-    "absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10";
+    "absolute left-0 mt-2 min-w-max bg-white dark:bg-gray-800 rounded-md shadow-lg z-10";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
