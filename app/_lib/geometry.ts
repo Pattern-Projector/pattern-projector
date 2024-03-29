@@ -222,7 +222,7 @@ export function flipHorizontal(origin: Point): Matrix {
   return transformAboutPoint(scale(-1, 1), origin);
 }
 
-export function scaleTranslation(matrix: Matrix, scale: number): Point {
+export function scaleTranslation(matrix: Matrix, scale: number): Matrix {
   let newMatrix = matrix.clone()
   newMatrix.set(0,2, matrix.get(0,2) * scale);
   newMatrix.set(1,2, matrix.get(1,2) * scale);
