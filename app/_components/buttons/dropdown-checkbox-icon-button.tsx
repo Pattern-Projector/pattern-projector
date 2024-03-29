@@ -74,7 +74,7 @@ export function DropdownCheckboxIconButton<T>({
   };
 
   const disabled = options[disableOptionKey];
-  const labelClassName = `flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 rounded-md cursor-pointer space-x-3`
+  const labelClassName = `flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 rounded-md cursor-pointer space-x-3`;
 
   return (
     <div
@@ -111,8 +111,7 @@ export function DropdownCheckboxIconButton<T>({
                 role="menuitem"
                 tabIndex={isDisabled ? -1 : 0}
                 onKeyDown={(e) => {
-                  if (isDisabled)
-                    return;
+                  if (isDisabled) return;
                   if (e.key === " " || e.key === "Enter") {
                     e.preventDefault();
                     updateOption(key as keyof T, !options[key as keyof T]);
