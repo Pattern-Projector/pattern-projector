@@ -159,6 +159,12 @@ export default function Page() {
     requestWakeLock();
   });
 
+  /* Reset the PDF position on unit change.
+   * Prevents PDF from going off-screen after cm->in */
+  useEffect(() => {
+    setLocalTransform(Matrix.identity(3));
+  }, [unitOfMeasure])
+
   useEffect(() => {
     const ptDensity = getPtDensity(unitOfMeasure);
     setLayoutWidth(layoutWidthPt / ptDensity);
