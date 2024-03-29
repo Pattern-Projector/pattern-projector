@@ -133,27 +133,22 @@ export default function Header({
     disabled: {
       icon: <GridOffIcon ariaLabel={t("overlayOptionDisabled")} />,
       text: t("overlayOptionDisabled"),
-      selected: displaySettings.overlay.disabled,
     },
     grid: {
       icon: <GridOnIcon ariaLabel={t("overlayOptionGrid")} />,
       text: t("overlayOptionGrid"),
-      selected: displaySettings.overlay.grid,
     },
     border: {
       icon: <OverlayBorderIcon ariaLabel={t("overlayOptionBorder")} />,
       text: t("overlayOptionBorder"),
-      selected: displaySettings.overlay.border,
     },
     paper: {
       icon: <OverlayPaperIcon ariaLabel={t("overlayOptionPaper")} />,
       text: t("overlayOptionPaper"),
-      selected: displaySettings.overlay.paper,
     },
     fliplines: {
       icon: <FlipCenterOnIcon ariaLabel={t("overlayOptionFliplines")} />,
       text: t("overlayOptionFliplines"),
-      selected: displaySettings.overlay.fliplines,
     },
   };
 
@@ -241,7 +236,8 @@ export default function Header({
                 icon={<GridOnIcon ariaLabel={t("overlayOptions")} />}
                 disabledIcon={<GridOffIcon ariaLabel={t("overlayOptions")} />}
                 disableOptionKey="disabled"
-                options={overlayOptions}
+                options={displaySettings.overlay}
+                optionSettings={overlayOptions}
                 setSelectedOptions={(options) => {
                   setDisplaySettings({
                     ...displaySettings,
