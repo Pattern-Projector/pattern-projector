@@ -32,8 +32,8 @@ export default function PdfViewer({
   file,
   setLayers,
   setPageCount,
-  setLayoutWidth,
-  setLayoutHeight,
+  setLayoutWidthPt,
+  setLayoutHeightPt,
   setLocalTransform,
   pageCount,
   layers,
@@ -45,8 +45,8 @@ export default function PdfViewer({
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
   setPageCount: Dispatch<SetStateAction<number>>;
-  setLayoutWidth: Dispatch<SetStateAction<number>>;
-  setLayoutHeight: Dispatch<SetStateAction<number>>;
+  setLayoutWidthPt: Dispatch<SetStateAction<number>>;
+  setLayoutHeightPt: Dispatch<SetStateAction<number>>;
   setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   pageCount: number;
   layers: Map<string, Layer>;
@@ -89,16 +89,16 @@ export default function PdfViewer({
       pageWidth * columns - (columns - 1) * Number(edgeInsets.horizontal);
     const h =
       pageHeight * rowCount - (rowCount - 1) * Number(edgeInsets.vertical);
-    setLayoutWidth(w);
-    setLayoutHeight(h);
+    setLayoutWidthPt(w);
+    setLayoutHeightPt(h);
   }, [
     pageWidth,
     pageHeight,
     pageRange,
     columnCount,
     pageCount,
-    setLayoutWidth,
-    setLayoutHeight,
+    setLayoutWidthPt,
+    setLayoutHeightPt,
     edgeInsets,
   ]);
 

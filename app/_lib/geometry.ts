@@ -145,10 +145,10 @@ function getDstVertices(width: number, height: number, ptDensity: number): Point
   return rectCorners(dx, dy);
 }
 
-export function getCenterPoint(width: number, height: number, unitOfMeasure: string): Point {
+export function getCenterPoint(width: number, height: number): Point {
   return {
-    x: width * getPtDensity(unitOfMeasure) * 0.5,
-    y: height * getPtDensity(unitOfMeasure) * 0.5,
+    x: width * 0.5,
+    y: height * 0.5,
   }
 }
 
@@ -220,6 +220,13 @@ export function flipVertical(origin: Point): Matrix {
 
 export function flipHorizontal(origin: Point): Matrix {
   return transformAboutPoint(scale(-1, 1), origin);
+}
+
+export function scaleTranslation(matrix: Matrix, scale: number): Point {
+  let newMatrix = matrix.clone()
+  newMatrix.set(0,2, matrix.get(0,2) * scale);
+  newMatrix.set(1,2, matrix.get(1,2) * scale);
+  return newMatrix;
 }
 
 /**

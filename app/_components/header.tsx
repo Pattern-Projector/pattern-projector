@@ -112,7 +112,7 @@ export default function Header({
       { x: layoutWidth * 0.5, y: layoutHeight * 0.5 },
       localTransform,
     );
-    const center = getCenterPoint(+width, +height, unitOfMeasure);
+    const center = getCenterPoint(+width, +height);
     const p = {
       x: center.x - current.x,
       y: center.y - current.y,
@@ -339,7 +339,7 @@ export default function Header({
                 onClick={() =>
                   setLocalTransform(
                     flipHorizontal(
-                      getCenterPoint(+width, +height, unitOfMeasure),
+                      getCenterPoint(+width, +height),
                     ).mmul(localTransform),
                   )
                 }
@@ -352,7 +352,7 @@ export default function Header({
                 onClick={() =>
                   setLocalTransform(
                     flipVertical(
-                      getCenterPoint(+width, +height, unitOfMeasure),
+                      getCenterPoint(+width, +height),
                     ).mmul(localTransform),
                   )
                 }
@@ -366,7 +366,7 @@ export default function Header({
                   setLocalTransform(
                     rotateMatrixDeg(
                       90,
-                      getCenterPoint(+width, +height, unitOfMeasure),
+                      getCenterPoint(+width, +height),
                     ).mmul(localTransform),
                   )
                 }

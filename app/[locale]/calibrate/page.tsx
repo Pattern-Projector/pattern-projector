@@ -8,7 +8,11 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
-import { getPerspectiveTransformFromPoints, toMatrix3d } from "@/_lib/geometry";
+import {
+  getPerspectiveTransformFromPoints,
+  toMatrix3d,
+  scaleTranslation
+} from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
@@ -66,8 +70,13 @@ export default function Page() {
   const [pageCount, setPageCount] = useState<number>(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
+  /* Layout size in pt (PDF units) */
+  const [layoutWidthPt, setLayoutWidthPt] = useState<number>(0);
+  const [layoutHeightPt, setLayoutHeightPt] = useState<number>(0);
+  /* Layout size in units of measure (inches / cm) */
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
+
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
 
@@ -151,6 +160,16 @@ export default function Page() {
   });
 
   useEffect(() => {
+    const ptDensity = getPtDensity(unitOfMeasure);
+    setLayoutWidth(layoutWidthPt / ptDensity);
+  }, [layoutWidthPt, unitOfMeasure]);
+
+  useEffect(() => {
+    const ptDensity = getPtDensity(unitOfMeasure);
+    setLayoutHeight(layoutHeightPt / ptDensity);
+  }, [layoutHeightPt, unitOfMeasure]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       const p = { x: window.screenX, y: window.screenY };
       if (windowScreen.x !== p.x || windowScreen.y !== p.y) {
@@ -218,15 +237,17 @@ export default function Page() {
   });
 
   useEffect(() => {
-    setMatrix3d(toMatrix3d(calibrationTransform.mmul(localTransform)));
-  }, [localTransform, calibrationTransform]);
+    const ptDensity = getPtDensity(unitOfMeasure);
+    const scaledTransform = scaleTranslation(localTransform, ptDensity);
+    setMatrix3d(toMatrix3d(calibrationTransform.mmul(scaledTransform)));
+  }, [localTransform, calibrationTransform, unitOfMeasure]);
 
   useEffect(() => {
     const ptDensity = getPtDensity(unitOfMeasure);
     const w = Number(width);
     const h = Number(height);
     if (points && points.length === maxPoints) {
-      let m = getPerspectiveTransformFromPoints(points, w, h, ptDensity, true);
+      let m = getPerspectiveTransformFromPoints(points, w, h, 1.0, true);
       let n = getPerspectiveTransformFromPoints(points, w, h, ptDensity, false);
       setPerspective(m);
       setCalibrationTransform(n);
@@ -383,8 +404,8 @@ export default function Page() {
                   pageCount={pageCount}
                   setLayers={setLayers}
                   layers={layers}
-                  setLayoutWidth={setLayoutWidth}
-                  setLayoutHeight={setLayoutHeight}
+                  setLayoutWidthPt={setLayoutWidthPt}
+                  setLayoutHeightPt={setLayoutHeightPt}
                   lineThickness={lineThickness}
                   columnCount={columnCount}
                   edgeInsets={edgeInsets}
