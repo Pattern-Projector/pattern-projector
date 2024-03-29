@@ -14,25 +14,27 @@ import PdfIcon from "../_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "../_icons/rotate-90-degrees-cw-icon";
 import RecenterIcon from "@/_icons/recenter-icon";
 import Tooltip from "@/_components/tooltip/tooltip";
+import LanguageSwitcher from '@/_components/language-switcher';
 import { IconButton } from "@/_components/buttons/icon-button";
 
 export default function Home() {
   const t = useTranslations("HomePage");
   const messages = useMessages() as IntlMessages;
-  const keys = Object.keys(messages.HomePage.resources.links);
+  const keys = Object.keys(messages.HomePage.resources.links ? messages.HomePage.resources.links : {});
 
   return (
     <main className="m-4">
       <nav className="flex items-center gap-2">
         <PatternProjectorIcon ariaLabel="" />
         <span className="font-bold">{t("beta")}</span>
-        <Tooltip description={t("github")} className="ml-auto">
+        <LanguageSwitcher ariaLabel={t("choose-language")} className="ml-auto"/>
+        <Tooltip description={t("github")}>
           <IconButton href="https://github.com/Pattern-Projector/pattern-projector">
             <GithubIcon ariaLabel={t("github")} />
           </IconButton>
         </Tooltip>
         <Link
-          className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 dark:focus:ring-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           href="/calibrate"
         >
           {t("calibrate")}

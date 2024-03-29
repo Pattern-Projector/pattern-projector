@@ -1,12 +1,13 @@
 import { EdgeInsets } from "@/_lib/edge-insets";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
-import InlineInput from "./inline-input";
 import { useTranslations } from "next-intl";
 import { allowInteger } from "@/_lib/remove-non-digits";
 import { validPageRange } from "@/_lib/get-page-numbers";
+import Input from "@/_components/input";
+import { IconButton } from "@/_components/buttons/icon-button";
+import CloseIcon from "@/_icons/close-icon";
 
 export default function StitchMenu({
-  setShowStitchMenu,
   setColumnCount,
   setEdgeInsets,
   setPageRange,
@@ -15,8 +16,9 @@ export default function StitchMenu({
   pageRange,
   pageCount,
   className,
+  showMenu,
+  setShowMenu,
 }: {
-  setShowStitchMenu: Dispatch<SetStateAction<boolean>>;
   setColumnCount: Dispatch<SetStateAction<string>>;
   setEdgeInsets: Dispatch<SetStateAction<EdgeInsets>>;
   setPageRange: Dispatch<SetStateAction<string>>;
@@ -24,7 +26,9 @@ export default function StitchMenu({
   edgeInsets: EdgeInsets;
   pageRange: string;
   pageCount: number;
-  className: string | undefined;
+  className?: string;
+  showMenu: boolean;
+  setShowMenu: (showMenu: boolean) => void;
 }) {
   const t = useTranslations("StitchMenu");
 
@@ -60,41 +64,42 @@ export default function StitchMenu({
 
   return (
     <menu
-      className={`flex flex-col gap-2 ${className} bg-white border border-gray-200 rounded-lg absolute p-2`}
+      className={`flex justify-between ${showMenu ? "top-16" : "-top-60"} absolute left-0 w-full z-20 transition-all duration-700 ${className} bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 p-2`}
     >
-      <InlineInput
-        type="number"
-        className="flex relative justify-end"
-        inputClassName="w-12 !text-left"
-        handleChange={handleColumnCountChange}
-        label={t("columnCount")}
-        value={columnCount}
-      />
-      <InlineInput
-        className="flex relative justify-end"
-        inputClassName="!w-20 !text-left"
-        handleChange={handlePageRangeChange}
-        label={t("pageRange")}
-        value={pageRange}
-      />
-      <InlineInput
-        type="number"
-        className="flex relative justify-end"
-        inputClassName="w-12 !text-left"
-        handleChange={handleEdgeInsetChange}
-        label={t("horizontal")}
-        name="horizontal"
-        value={String(edgeInsets.horizontal)}
-      />
-      <InlineInput
-        type="number"
-        className="flex relative justify-end"
-        inputClassName="w-12 !text-left"
-        handleChange={handleEdgeInsetChange}
-        label={t("vertical")}
-        name="vertical"
-        value={String(edgeInsets.vertical)}
-      />
+      <div className="flex gap-2">
+        <Input
+          type="number"
+          inputClassName="w-20"
+          handleChange={handleColumnCountChange}
+          label={t("columnCount")}
+          value={columnCount}
+        />
+        <Input
+          inputClassName="w-36"
+          handleChange={handlePageRangeChange}
+          label={t("pageRange")}
+          value={pageRange}
+        />
+        <Input
+          type="number"
+          inputClassName="w-20"
+          handleChange={handleEdgeInsetChange}
+          label={t("horizontal")}
+          name="horizontal"
+          value={String(edgeInsets.horizontal || 0)}
+        />
+        <Input
+          type="number"
+          inputClassName="w-20"
+          handleChange={handleEdgeInsetChange}
+          label={t("vertical")}
+          name="vertical"
+          value={String(edgeInsets.vertical || 0)}
+        />
+      </div>
+      <IconButton onClick={() => setShowMenu(false)}>
+        <CloseIcon ariaLabel="close" />
+      </IconButton>
     </menu>
   );
 }

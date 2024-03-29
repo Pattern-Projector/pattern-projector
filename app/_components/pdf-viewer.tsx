@@ -13,10 +13,10 @@ import { Document, Page, pdfjs } from "react-pdf";
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
 import { Layer } from "@/_lib/layer";
-import Matrix from "ml-matrix";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
-import { use } from "chai";
+import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
+import Matrix from "ml-matrix";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -34,10 +34,9 @@ export default function PdfViewer({
   setPageCount,
   setLayoutWidth,
   setLayoutHeight,
+  setLocalTransform,
   pageCount,
   layers,
-  setLocalTransform,
-  calibrationTransform,
   lineThickness,
   columnCount,
   edgeInsets,
@@ -48,10 +47,9 @@ export default function PdfViewer({
   setPageCount: Dispatch<SetStateAction<number>>;
   setLayoutWidth: Dispatch<SetStateAction<number>>;
   setLayoutHeight: Dispatch<SetStateAction<number>>;
+  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   pageCount: number;
   layers: Map<string, Layer>;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
-  calibrationTransform: Matrix;
   lineThickness: number;
   columnCount: string;
   edgeInsets: EdgeInsets;
@@ -59,17 +57,19 @@ export default function PdfViewer({
 }) {
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
-
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     setLayers(new Map());
-    // reset local transform
-    setLocalTransform(calibrationTransform);
+    setLocalTransform(Matrix.identity(3));
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
-    setPageWidth(pdfProxy.view[2] * (pdfProxy.userUnit || 1));
-    setPageHeight(pdfProxy.view[3] * (pdfProxy.userUnit || 1));
+    setPageWidth(
+      PDF_TO_CSS_UNITS * pdfProxy.view[2] * (pdfProxy.userUnit || 1),
+    );
+    setPageHeight(
+      PDF_TO_CSS_UNITS * pdfProxy.view[3] * (pdfProxy.userUnit || 1),
+    );
   }
 
   const customRenderer = useCallback(
@@ -81,16 +81,16 @@ export default function PdfViewer({
     return `<span class="opacity-0 hover:opacity-100 hover:text-6xl" style="background-color: #FFF; color: #000;">${str}</span>`;
   }, []);
 
-  const CSS = 96.0;
-  const PDF = 72.0;
-  const PDF_TO_CSS_UNITS = CSS / PDF;
-
   useEffect(() => {
     const itemCount = getPageNumbers(pageRange, pageCount).length;
-    setLayoutWidth(pageWidth * Number(columnCount));
-    setLayoutHeight(
-      pageHeight * Math.ceil(itemCount / (Number(columnCount) || 1)),
-    );
+    const columns = Math.max(Math.min(Number(columnCount), itemCount), 1);
+    const rowCount = Math.ceil((itemCount || 1) / columns);
+    const w =
+      pageWidth * columns - (columns - 1) * Number(edgeInsets.horizontal);
+    const h =
+      pageHeight * rowCount - (rowCount - 1) * Number(edgeInsets.vertical);
+    setLayoutWidth(w);
+    setLayoutHeight(h);
   }, [
     pageWidth,
     pageHeight,
@@ -99,6 +99,7 @@ export default function PdfViewer({
     pageCount,
     setLayoutWidth,
     setLayoutHeight,
+    edgeInsets,
   ]);
 
   return (
@@ -107,6 +108,8 @@ export default function PdfViewer({
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${columnCount}, max-content)`,
+          marginRight: `${edgeInsets.horizontal}px`,
+          marginBottom: `${edgeInsets.vertical}px`,
         }}
       >
         {getPageNumbers(pageRange, pageCount).map((value, index, array) => {
@@ -116,8 +119,8 @@ export default function PdfViewer({
             <div
               key={`page_${index}_${value}`}
               style={{
-                width: `${pageWidth - Number(edgeInsets.horizontal)}pt`,
-                height: `${pageHeight - Number(edgeInsets.vertical)}pt`,
+                width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
+                height: `${pageHeight - Number(edgeInsets.vertical)}px`,
                 mixBlendMode: "multiply",
               }}
             >

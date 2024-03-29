@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
 import invariant from "tiny-invariant";
 import { usePageContext, useDocumentContext } from "react-pdf";
 
@@ -15,6 +8,7 @@ import type {
 } from "pdfjs-dist/types/src/display/api.js";
 import { Layer } from "@/_lib/layer";
 import { PDFPageProxy } from "pdfjs-dist";
+import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 
 function erodeImageData(imageData: ImageData, output: ImageData) {
   const { width, height, data } = imageData;
@@ -96,9 +90,6 @@ export default function CustomRenderer(
   const canvasElement = useRef<HTMLCanvasElement>(null);
   const userUnit = (page as PDFPageProxy).userUnit || 1;
 
-  const CSS = 96.0;
-  const PDF = 72.0;
-  const PDF_TO_CSS_UNITS = CSS / PDF;
   invariant(page, "Unable to find page.");
   invariant(pdf, "Unable to find pdf.");
 
@@ -106,8 +97,10 @@ export default function CustomRenderer(
 
   const renderViewport = useMemo(
     () =>
-      page.getViewport({ scale: getScale(viewport.width, viewport.height) }),
-    [page, viewport],
+      page.getViewport({
+        scale: getScale(viewport.width, viewport.height, userUnit),
+      }),
+    [page, viewport, userUnit],
   );
 
   function drawPageOnCanvas() {
@@ -225,21 +218,18 @@ export default function CustomRenderer(
   );
 }
 
-function getScale(w: number, h: number): number {
+function getScale(w: number, h: number, userUnit: number): number {
   const dpr = window.devicePixelRatio;
-  let renderArea = dpr * dpr * w * h;
-  const maxArea = 16777216; // pdfjs
-  // TODO: increase limit in pdfjs or tile support?
-  // https://github.com/mozilla/pdf.js/issues/17371
-  let scale = dpr;
+  const dpi = dpr * userUnit * PDF_TO_CSS_UNITS;
+  const renderArea = dpi * w * dpi * h;
+  const maxArea = 16_777_216; // limit for iOS device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
+  let scale = dpi;
   if (renderArea > maxArea) {
-    // drop high dpi.
-    scale = 1;
-    renderArea = w * h;
-    if (renderArea > maxArea) {
-      // scale to fit
-      scale = Math.sqrt(maxArea / renderArea);
-    }
+    // scale to fit max area.
+    scale = Math.sqrt(maxArea / (w * h));
+    console.log(
+      `Canvas area ${renderArea} exceeds max area ${maxArea}, scaling by ${scale} instead.`,
+    );
   }
   return scale;
 }
