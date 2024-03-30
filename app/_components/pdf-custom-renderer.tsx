@@ -10,71 +10,9 @@ import { Layer } from "@/_lib/layer";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 
-function erodeImageData(imageData: ImageData, output: ImageData) {
-  const { width, height, data } = imageData;
-  const erodedData = output.data;
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      let index = (y * width + x) * 4;
-      for (let i = 0; i < 3; i++) {
-        erodedData[index + i] = erodeAtIndex(
-          imageData,
-          x,
-          y,
-          index,
-          width,
-          height,
-        );
-      }
-      erodedData[index + 3] = 255;
-    }
-  }
-}
-
-function erodeAtIndex(
-  imageData: ImageData,
-  x: number,
-  y: number,
-  index: number,
-  width: number,
-  height: number,
-): number {
-  const { data } = imageData;
-  let c = data[index];
-  if (c !== 255) {
-    return 0;
-  }
-  if (x > 0) {
-    let n = data[index - 4];
-    if (n < c) {
-      c = n;
-    }
-  }
-  if (x < width - 1) {
-    let n = data[index + 4];
-    if (n < c) {
-      c = n;
-    }
-  }
-  if (y > 0) {
-    let n = data[index - width * 4];
-    if (n < c) {
-      c = n;
-    }
-  }
-  if (y < height - 1) {
-    let n = data[index + width * 4];
-    if (n < c) {
-      c = n;
-    }
-  }
-  return c;
-}
-
 export default function CustomRenderer(
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>,
   layers: Map<string, Layer>,
-  erosions: number,
 ) {
   const pageContext = usePageContext();
 
@@ -162,31 +100,9 @@ export default function CustomRenderer(
     const cancellable = page.render(renderContext);
     const runningTask = cancellable;
 
-    cancellable.promise
-      .then(() => {
-        if (erosions === 0) {
-          return;
-        }
-        let ctx = renderContext.canvasContext;
-        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const erodedData = new Uint8ClampedArray(imageData.data.length);
-        let output = new ImageData(
-          erodedData,
-          imageData.width,
-          imageData.height,
-        );
-        for (let i = 0; i < erosions; i++) {
-          erodeImageData(imageData, output);
-          const temp = imageData;
-          imageData = output;
-          output = temp;
-        }
-        // put the eroded imageData back on the canvas
-        ctx.putImageData(imageData, 0, 0);
-      })
-      .catch(() => {
-        // Intentionally empty
-      });
+    cancellable.promise.catch(() => {
+      // Intentionally empty
+    });
 
     return () => {
       runningTask.cancel();
@@ -200,7 +116,6 @@ export default function CustomRenderer(
     layers,
     pdf,
     setLayers,
-    erosions,
   ]);
 
   return (

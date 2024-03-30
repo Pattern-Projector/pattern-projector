@@ -23,6 +23,16 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
+function erosionFilter(erosions: number): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg">
+  <filter id="erode">
+    <feMorphology operator="erode" radius="${erosions}" />
+  </filter>
+</svg>`;
+  const url = `data:image/svg+xml;base64,${btoa(svg)}`;
+  return `url(${url}#erode)`;
+}
+
 /**
  *
  * @param file - File to be opened by PdfViewer
@@ -73,8 +83,8 @@ export default function PdfViewer({
   }
 
   const customRenderer = useCallback(
-    () => CustomRenderer(setLayers, layers, lineThickness),
-    [setLayers, layers, lineThickness],
+    () => CustomRenderer(setLayers, layers),
+    [setLayers, layers],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -122,6 +132,7 @@ export default function PdfViewer({
                 width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
                 height: `${pageHeight - Number(edgeInsets.vertical)}px`,
                 mixBlendMode: "multiply",
+                filter: erosionFilter(lineThickness),
               }}
             >
               <Page
