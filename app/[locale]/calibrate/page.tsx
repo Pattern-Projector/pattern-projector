@@ -83,15 +83,15 @@ export default function Page() {
 
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
-    const min_x = innerWidth * 0.2;
-    const min_y = innerHeight * 0.2;
-    const max_x = innerWidth * 0.8;
-    const max_y = innerHeight * 0.8;
+    const minX = innerWidth * 0.2;
+    const minY = innerHeight * 0.2;
+    const maxX = innerWidth * 0.8;
+    const maxY = innerHeight * 0.8;
     return [
-      { x: min_x, y: min_y },
-      { x: max_x, y: min_y },
-      { x: max_x, y: max_y },
-      { x: min_x, y: max_y },
+      { x: minX, y: minY },
+      { x: maxX, y: minY },
+      { x: maxX, y: maxY },
+      { x: minX, y: maxY },
     ];
   }
 
