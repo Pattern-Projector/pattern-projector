@@ -11,6 +11,7 @@ export default function useProgArrowKeyHandler(
 
   const keydownHandler = useCallback(
     function (e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement) return;
       if (
         ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(e.code)
       ) {
