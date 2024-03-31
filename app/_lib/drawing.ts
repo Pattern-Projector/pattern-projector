@@ -61,7 +61,7 @@ export function createCheckerboardPattern(
       throw new Error('Failed to get 2D context from pattern canvas');
     }
   
-    /* Integer which defines the size of a checkboard square (in pixels) */
+    /* Integer which defines the size of a checkerboard square (in pixels) */
     size = Math.round(size)
 
     patternCanvas.width = size*2;

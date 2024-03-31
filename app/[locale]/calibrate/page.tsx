@@ -29,7 +29,6 @@ import { useTranslations } from "next-intl";
 import { EdgeInsets } from "@/_lib/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
-import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import {
   getDefaultMenuStates,
   getMenuStatesFromLayers,
@@ -56,7 +55,6 @@ export default function Page() {
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
   const [matrix3d, setMatrix3d] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
-  const [windowScreen, setWindowScreen] = useState<Point>({ x: 0, y: 0 });
   const [localTransform, setLocalTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
@@ -84,19 +82,17 @@ export default function Page() {
   );
 
   function getDefaultPoints() {
-    const o = 150;
-    const minx = window.innerWidth * 0.2;
-    const miny = window.innerHeight * 0.2;
-    const maxx = window.innerWidth * 0.8;
-    const maxy = window.innerHeight * 0.8;
-
-    const p = [
-      { x: minx, y: miny },
-      { x: maxx, y: miny },
-      { x: maxx, y: maxy },
-      { x: minx, y: maxy },
+    const { innerWidth, innerHeight } = window;
+    const min_x = innerWidth * 0.2;
+    const min_y = innerHeight * 0.2;
+    const max_x = innerWidth * 0.8;
+    const max_y = innerHeight * 0.8;
+    return [
+      { x: min_x, y: min_y },
+      { x: max_x, y: min_y },
+      { x: max_x, y: max_y },
+      { x: min_x, y: max_y },
     ];
-    return p;
   }
 
   function updateLocalSettings(newSettings: {}) {
@@ -149,18 +145,6 @@ export default function Page() {
   useEffect(() => {
     requestWakeLock();
   });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const p = { x: window.screenX, y: window.screenY };
-      if (windowScreen.x !== p.x || windowScreen.y !== p.y) {
-        setWindowScreen(p);
-      }
-    }, 500);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
 
   useEffect(() => {
     setColumnCount(String(pageCount));
