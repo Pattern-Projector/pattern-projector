@@ -9,10 +9,12 @@ import type {
 import { Layer } from "@/_lib/layer";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
+import { erodeImageData } from "@/_lib/erode";
 
 export default function CustomRenderer(
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>,
   layers: Map<string, Layer>,
+  erosions: number,
 ) {
   const pageContext = usePageContext();
 
@@ -100,9 +102,31 @@ export default function CustomRenderer(
     const cancellable = page.render(renderContext);
     const runningTask = cancellable;
 
-    cancellable.promise.catch(() => {
-      // Intentionally empty
-    });
+    cancellable.promise
+      .then(() => {
+        if (erosions === 0) {
+          return;
+        }
+        let ctx = renderContext.canvasContext;
+        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const erodedData = new Uint8ClampedArray(imageData.data.length);
+        let output = new ImageData(
+          erodedData,
+          imageData.width,
+          imageData.height,
+        );
+        for (let i = 0; i < erosions; i++) {
+          erodeImageData(imageData, output);
+          const temp = imageData;
+          imageData = output;
+          output = temp;
+        }
+        // put the eroded imageData back on the canvas
+        ctx.putImageData(imageData, 0, 0);
+      })
+      .catch(() => {
+        // Intentionally empty
+      });
 
     return () => {
       runningTask.cancel();
@@ -116,6 +140,7 @@ export default function CustomRenderer(
     layers,
     pdf,
     setLayers,
+    erosions,
   ]);
 
   return (

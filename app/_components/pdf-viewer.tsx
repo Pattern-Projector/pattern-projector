@@ -6,6 +6,7 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -17,27 +18,13 @@ import { EdgeInsets } from "@/_lib/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import Matrix from "ml-matrix";
+import { erosionFilter } from "@/_lib/erode";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url,
 ).toString();
 
-function erosionFilter(erosions: number): string {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg">
-  <filter id="erode">
-    <feMorphology operator="erode" radius="${erosions}" />
-  </filter>
-</svg>`;
-  const url = `data:image/svg+xml;base64,${btoa(svg)}`;
-  return `url(${url}#erode)`;
-}
-
-/**
- *
- * @param file - File to be opened by PdfViewer
- * @param pageNumber - Number of page to be displayed
- */
 export default function PdfViewer({
   file,
   setLayers,
@@ -82,9 +69,15 @@ export default function PdfViewer({
     );
   }
 
+  const isSafari = useMemo(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
+  }, []);
+
   const customRenderer = useCallback(
-    () => CustomRenderer(setLayers, layers),
-    [setLayers, layers],
+    // Safari does not support filters on canvas so the erosions must be done in the renderer
+    () => CustomRenderer(setLayers, layers, isSafari ? lineThickness : 0),
+    [setLayers, layers, isSafari, lineThickness],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
