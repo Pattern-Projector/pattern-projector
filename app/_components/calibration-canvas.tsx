@@ -1,4 +1,3 @@
-import Matrix from "ml-matrix";
 import React, {
   Dispatch,
   SetStateAction,
@@ -7,29 +6,22 @@ import React, {
   useRef,
   useState,
 } from "react";
-
 import {
   createCheckerboardPattern,
-  drawLine,
   interpolateColorRing,
   CanvasState,
+  drawPolygon,
+  drawOverlays,
+  drawGrid,
 } from "@/_lib/drawing";
-import { CM, IN } from "@/_lib/unit";
-import {
-  getPerspectiveTransformFromPoints,
-  rectCorners,
-  translatePoints,
-} from "@/_lib/geometry";
-import {
-  minIndex,
-  sqrdist,
-  transformPoints,
-  transformPoint,
-} from "@/_lib/geometry";
-import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
+import { getPerspectiveTransformFromPoints } from "@/_lib/geometry";
+import { minIndex, sqrdist } from "@/_lib/geometry";
+import { Point } from "@/_lib/point";
 import { DisplaySettings } from "@/_lib/display-settings";
 import { CornerColorHex } from "@/_components/theme/colors";
 import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
+import { useKeyDown } from "@/_hooks/use-key-down";
+import { KeyCode } from "@/_lib/key-code";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const TRANSITION_DURATION = 700;
@@ -64,18 +56,9 @@ function drawCalibration(cs: CanvasState): void {
   cs.points.forEach((point, index) => {
     ctx.beginPath();
     ctx.strokeStyle = getStrokeStyle(index);
-    if (index !== cs.pointToModify) {
-      ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
-      ctx.lineWidth = 4;
-    } else {
-      if (cs.isPrecisionMovement) {
-        drawCrosshair(ctx, point, 20);
-        ctx.lineWidth = 2;
-      } else {
-        ctx.arc(point.x, point.y, 20, 0, 2 * Math.PI);
-        ctx.lineWidth = 4;
-      }
-    }
+    let r = cs.corners.has(index) ? 20 : 10;
+    ctx.arc(point.x, point.y, r, 0, 2 * Math.PI);
+    ctx.lineWidth = 4;
     ctx.stroke();
   });
 }
@@ -128,257 +111,35 @@ function draw(cs: CanvasState): void {
   }
 }
 
-function drawOverlays(cs: CanvasState) {
-  const { grid, border, paper, fliplines } = cs.displaySettings.overlay;
-  const ctx = cs.ctx;
-  if (grid) {
-    ctx.strokeStyle = cs.projectionGridLineColor;
-    drawGrid(cs, 8, [1]);
-  }
-  if (border) {
-    drawBorder(cs, cs.darkColor, cs.gridLineColor);
-  }
-  if (paper) {
-    drawPaperSheet(cs);
-  }
-  if (fliplines) {
-    drawCenterLines(cs);
-  }
-}
-
-function drawCenterLines(cs: CanvasState) {
-  const { width, height, ctx, perspective } = cs;
-  ctx.save();
-  ctx.globalCompositeOperation = "source-over";
-  ctx.strokeStyle = "red";
-
-  function drawProjectedLine(p1: Point, p2: Point) {
-    const pts = transformPoints([p1, p2], perspective);
-    const lineWidth = 2;
-    drawLine(ctx, pts[0], pts[1], lineWidth);
-    ctx.stroke();
-  }
-
-  // X-axis
-  drawProjectedLine({ x: 0, y: height * 0.5 }, { x: width, y: height * 0.5 });
-  drawProjectedLine({ x: width * 0.5, y: 0 }, { x: width * 0.5, y: height });
-
-  ctx.restore();
-}
-
-function drawPaperSheet(cs: CanvasState) {
-  const { ctx, perspective, unitOfMeasure, width, height } = cs;
-  const fontSize = 32;
-
-  ctx.save();
-  ctx.globalCompositeOperation = "difference";
-  ctx.font = `${fontSize}px monospace`;
-  ctx.fillStyle = "white";
-
-  const [text, paperWidth, paperHeight] =
-    unitOfMeasure == CM ? ["A4", 29.7, 21] : ["11x8.5", 11, 8.5];
-
-  const cornersP = transformPoints(
-    translatePoints(
-      rectCorners(paperWidth, paperHeight),
-      (width - paperWidth) * 0.5,
-      (height - paperHeight) * 0.5,
-    ),
-    perspective,
-  );
-  drawPolygon(ctx, cornersP);
-  ctx.setLineDash([4, 2]);
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = cs.projectionGridLineColor;
-  ctx.stroke();
-
-  const labelWidth = ctx.measureText(text).width;
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = cs.projectionGridLineColor;
-  const centerP = transformPoint(
-    {
-      x: width * 0.5,
-      y: height * 0.5,
-    },
-    perspective,
-  );
-  ctx.fillText(text, centerP.x - labelWidth * 0.5, centerP.y);
-  ctx.restore();
-}
-
-function drawBorder(cs: CanvasState, lineColor: string, dashColor: string) {
-  const ctx = cs.ctx;
-  ctx.save();
-  drawPolygon(ctx, cs.points);
-  ctx.strokeStyle = lineColor;
-  ctx.lineWidth = 5;
-  ctx.stroke();
-  ctx.lineDashOffset = 0;
-  ctx.setLineDash([4, 4]);
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = dashColor;
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
-  const ctx = cs.ctx;
-  ctx.save();
-  if (lineDash === undefined) {
-    ctx.setLineDash([]);
-  } else {
-    ctx.setLineDash(lineDash);
-  }
-  ctx.globalCompositeOperation = "source-over";
-  const majorLine = 5;
-
-  /* Vertical lines */
-  for (let i = 0; i <= cs.width; i++) {
-    let lineWidth = cs.minorLineWidth;
-    if (i % majorLine === 0 || i === cs.width) {
-      lineWidth = cs.majorLineWidth;
-    }
-    const line = transformPoints(
-      [
-        { x: i, y: -outset },
-        { x: i, y: cs.height + outset },
-      ],
-      cs.perspective,
-    );
-    drawLine(ctx, line[0], line[1], lineWidth);
-  }
-
-  /* Horizontal lines */
-  for (let i = 0; i <= cs.height; i++) {
-    let lineWidth = cs.minorLineWidth;
-    if (i % majorLine === 0 || i === cs.height) {
-      lineWidth = cs.majorLineWidth;
-    }
-    const y = cs.height - i;
-    const line = transformPoints(
-      [
-        { x: -outset, y: y },
-        { x: cs.width + outset, y: y },
-      ],
-      cs.perspective,
-    );
-    drawLine(ctx, line[0], line[1], lineWidth);
-  }
-  if (cs.isCalibrating) {
-    drawDimensionLabels(
-      ctx,
-      cs.width,
-      cs.height,
-      cs.perspective,
-      cs.unitOfMeasure,
-    );
-  }
-  ctx.restore();
-}
-
-function drawDimensionLabels(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-  perspective: Matrix,
-  unitOfMeasure: string,
-) {
-  const fontSize = 48;
-  const inset = 20;
-  ctx.globalCompositeOperation = "difference";
-  ctx.font = `${fontSize}px monospace`;
-  ctx.fillStyle = "white";
-  const widthText = `${width}${unitOfMeasure.toLocaleLowerCase()}`;
-  const heightText = `${height}${unitOfMeasure.toLocaleLowerCase()}`;
-  const line = transformPoints(
-    [
-      {
-        x: width * 0.5,
-        y: height,
-      },
-      {
-        x: 0,
-        y: height * 0.5,
-      },
-    ],
-    perspective,
-  );
-  const widthLabelWidth = ctx.measureText(widthText).width;
-  ctx.fillText(widthText, line[0].x - widthLabelWidth * 0.5, line[0].y - inset);
-  ctx.fillText(heightText, line[1].x + inset, line[1].y + fontSize * 0.5);
-}
-
-function drawCrosshair(
-  ctx: CanvasRenderingContext2D,
-  point: Point,
-  size: number,
-) {
-  const halfSize = size / 2;
-  ctx.beginPath();
-  ctx.moveTo(point.x - halfSize, point.y);
-  ctx.lineTo(point.x + halfSize, point.y);
-  ctx.moveTo(point.x, point.y - halfSize);
-  ctx.lineTo(point.x, point.y + halfSize);
-}
-
-function drawPolygon(
-  ctx: CanvasRenderingContext2D,
-  points: Point[],
-  fillStyle?: string | null | CanvasPattern,
-  strokeStyle?: string | null,
-): void {
-  ctx.beginPath();
-  for (let p of points) {
-    ctx.lineTo(p.x, p.y);
-  }
-  ctx.closePath();
-  if (fillStyle !== undefined && fillStyle !== null) {
-    ctx.fillStyle = fillStyle;
-    ctx.fill();
-  }
-  if (strokeStyle !== undefined && strokeStyle !== null) {
-    ctx.strokeStyle = strokeStyle;
-    ctx.stroke();
-  }
-}
-
 const CORNER_MARGIN = 150;
 
-/**
- * A window width and height canvas used for projector calibration
- * @param draw - Draws in the canvas rendering context
- */
 export default function CalibrationCanvas({
   className,
   points,
   setPoints,
-  pointToModify,
-  setPointToModify,
   width,
   height,
   isCalibrating,
   unitOfMeasure,
   displaySettings,
-  setDisplaySettings,
 }: {
   className: string | undefined;
   points: Point[];
   setPoints: Dispatch<SetStateAction<Point[]>>;
-  pointToModify: number | null;
-  setPointToModify: Dispatch<SetStateAction<number | null>>;
   width: number;
   height: number;
   isCalibrating: boolean;
   unitOfMeasure: string;
   displaySettings: DisplaySettings;
-  setDisplaySettings: Dispatch<SetStateAction<DisplaySettings>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const patternRef = useRef<CanvasPattern | null>(null);
   const prevColorModeRef = useRef<number | null>(null);
 
-  const [dragOffset, setDragOffset] = useState<Point | null>(null);
+  const [dragPoint, setDragPoint] = useState<Point | null>(null);
   const [localPoints, setLocalPoints] = useState<Point[]>(points);
+  const [corners, setCorners] = useState<Set<number>>(new Set());
+
   /* transitionProgress ranges from 0 to number of colorMode states + 1 */
   const [transitionProgress, setTransitionProgress] = useState<number>(0);
   const [colorMode, setColorMode] = useState<number | null>(null);
@@ -478,7 +239,7 @@ export default function CalibrationCanvas({
       localPoints.length === maxPoints
     ) {
       /* All drawing is done in unitsOfMeasure, ptDensity = 1.0 */
-      let perspective_mtx = getPerspectiveTransformFromPoints(
+      let perspectiveMatrix = getPerspectiveTransformFromPoints(
         localPoints,
         width,
         height,
@@ -498,9 +259,9 @@ export default function CalibrationCanvas({
           localPoints,
           width,
           height,
-          perspective_mtx,
+          perspectiveMatrix,
           isCalibrating,
-          pointToModify,
+          corners,
           unitOfMeasure,
           false,
           patternRef.current,
@@ -515,7 +276,7 @@ export default function CalibrationCanvas({
     width,
     height,
     isCalibrating,
-    pointToModify,
+    corners,
     unitOfMeasure,
     transitionProgress,
     displaySettings,
@@ -532,38 +293,27 @@ export default function CalibrationCanvas({
 
   const handleKeyDown = useCallback(
     function (e: React.KeyboardEvent) {
-      if (e.code === "Tab") {
-        e.preventDefault();
-        if (e.shiftKey) {
-          setDisplaySettings({
-            ...displaySettings,
-            isFourCorners: !displaySettings.isFourCorners,
-          });
-        } else {
-          const newPointToModify =
-            (pointToModify === null ? 0 : pointToModify + 1) %
-            localPoints.length;
-          setPointToModify(newPointToModify);
-        }
-      } else if (e.code === "Escape") {
-        if (pointToModify !== null) {
+      if (e.code === "Escape") {
+        if (corners.size) {
           if (e.target instanceof HTMLElement) {
             e.target.blur();
           }
-          setPointToModify(null);
+          setCorners(new Set());
         }
       }
     },
-    [
-      pointToModify,
-      displaySettings,
-      setPointToModify,
-      localPoints.length,
-      setDisplaySettings,
-    ],
+    [corners, setCorners],
   );
 
-  useProgArrowKeyPoints(points, setPoints, pointToModify, isCalibrating);
+  useKeyDown(() => {
+    if (corners.size) {
+      setCorners(new Set(Array.from(corners).map((c) => (c + 1) % 4)));
+    } else {
+      setCorners(new Set([0]));
+    }
+  }, [KeyCode.Tab]);
+
+  useProgArrowKeyPoints(points, setPoints, corners, isCalibrating);
 
   function handlePointerDown(e: React.PointerEvent) {
     const p = { x: e.clientX, y: e.clientY };
@@ -572,34 +322,37 @@ export default function CalibrationCanvas({
     } else {
       const corner = getNearbyCorner(p);
       if (corner !== -1) {
-        let current = localPoints[corner];
-        setDragOffset({ x: current.x - p.x, y: current.y - p.y });
-        setPointToModify(corner);
+        setDragPoint(p);
+        setCorners(new Set([corner]));
       } else {
-        setPointToModify(null);
+        setCorners(new Set());
       }
     }
   }
 
   function handlePointerMove(e: React.PointerEvent) {
-    if (pointToModify === null || dragOffset == null) return;
+    if (corners.size == 0 || dragPoint == null) return;
     const p = { x: e.clientX, y: e.clientY };
     const newPoints = [...localPoints];
-    newPoints[pointToModify] = {
-      x: p.x + dragOffset.x,
-      y: p.y + dragOffset.y,
-    };
+    for (let corner of corners) {
+      const currentPoint = newPoints[corner];
+      newPoints[corner] = {
+        x: currentPoint.x + (p.x - dragPoint.x),
+        y: currentPoint.y + (p.y - dragPoint.y),
+      };
+    }
+    setDragPoint(p);
     setLocalPoints(newPoints);
   }
 
   function handlePointerUp() {
     /* Nothing to do. This short circuit is required to prevent setting
      * the localStorage of the points to invalid values */
-    if (dragOffset === null) return;
+    if (dragPoint === null) return;
 
     localStorage.setItem("points", JSON.stringify(localPoints));
     setPoints(localPoints);
-    setDragOffset(null);
+    setDragPoint(null);
   }
 
   return (

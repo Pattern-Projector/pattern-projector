@@ -48,7 +48,6 @@ export default function Page() {
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
-  const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
@@ -324,14 +323,11 @@ export default function Page() {
             className={`absolute z-10`}
             points={points}
             setPoints={setPoints}
-            pointToModify={pointToModify}
-            setPointToModify={setPointToModify}
             width={+width}
             height={+height}
             isCalibrating={isCalibrating}
             unitOfMeasure={unitOfMeasure}
             displaySettings={displaySettings}
-            setDisplaySettings={setDisplaySettings}
           />
           {measuring && (
             <MeasureCanvas
