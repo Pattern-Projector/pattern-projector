@@ -15,7 +15,8 @@ import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   getDefaultDisplaySettings,
   DisplaySettings,
-  OverlaySettings,
+  isDarkTheme,
+  themeFilter,
 } from "@/_lib/display-settings";
 import { IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/layer";
@@ -175,23 +176,11 @@ export default function Page() {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
 
-      const newDisplaySettings: {
-        overlay?: OverlaySettings;
-        inverted?: boolean;
-        isInvertedGreen?: boolean;
-        isFourCorners?: boolean;
-      } = {};
-
-      const defaultDS = getDefaultDisplaySettings();
-
-      newDisplaySettings.overlay = localSettings.overlay ?? defaultDS.overlay;
-      newDisplaySettings.inverted =
-        localSettings.inverted ?? defaultDS.inverted;
-      newDisplaySettings.isInvertedGreen =
-        localSettings.isInvertedGreen ?? defaultDS.isInvertedGreen;
-      newDisplaySettings.isFourCorners =
-        localSettings.isFourCorners ?? defaultDS.isFourCorners;
-      setDisplaySettings({ ...displaySettings, ...newDisplaySettings });
+      const defaults = getDefaultDisplaySettings();
+      setDisplaySettings({
+        overlay: localSettings.overlay ?? defaults.overlay,
+        theme: localSettings.theme ?? defaults.theme,
+      });
     }
   }, []);
 
@@ -225,19 +214,10 @@ export default function Page() {
     });
   }, []);
 
-  function getInversionFilters(inverted: boolean, isGreen: boolean): string {
-    if (!inverted) {
-      return "invert(0)";
-    }
-    return `invert(1) ${
-      isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""
-    }`;
-  }
-
   return (
     <main
       ref={noZoomRefCallback}
-      className={`${(displaySettings.inverted || displaySettings.isInvertedGreen) && "dark"} w-full h-full absolute overflow-hidden touch-none`}
+      className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} transition-all duration-700 w-full h-full absolute overflow-hidden touch-none`}
     >
       <div className="bg-white dark:bg-black dark:text-white">
         <FullScreen handle={handle}>
@@ -263,12 +243,7 @@ export default function Page() {
             setDisplaySettings={(newSettings) => {
               setDisplaySettings(newSettings);
               if (newSettings) {
-                updateLocalSettings({
-                  overlay: newSettings.overlay,
-                  inverted: newSettings.inverted,
-                  isInvertedGreen: newSettings.isInvertedGreen,
-                  isFourCorners: newSettings.isFourCorners,
-                });
+                updateLocalSettings(newSettings);
               }
             }}
             pageCount={pageCount}
@@ -350,10 +325,7 @@ export default function Page() {
               style={{
                 transform: `${matrix3d}`,
                 transformOrigin: "0 0",
-                filter: getInversionFilters(
-                  displaySettings.inverted,
-                  displaySettings.isInvertedGreen,
-                ),
+                filter: themeFilter(displaySettings.theme),
               }}
             >
               <div className={"outline outline-8 outline-purple-600"}>

@@ -226,7 +226,7 @@ export function flipHorizontal(origin: Point): Matrix {
  * Converts 3x3 matrix returned from getPerspectiveTransform(src, dst) to a 4x4 matrix as per https://stackoverflow.com/a/4833408/3376039
  * @param src - Coordinates of quadrangle vertices in the source image starting from top left clockwise.
  * @param dst - Coordinates of the corresponding quadrangle vertices in the destination image starting from top left clockwise.
- * @returns A css transfomr string
+ * @returns A css transform string
  */
 export function toMatrix3d(m: Matrix): string {
   var r = m.clone();
@@ -239,7 +239,7 @@ export function toMatrix3d(m: Matrix): string {
   return `matrix3d(${r.to1DArray().toString()})`;
 }
 
-export function sqrdist(a: Point, b: Point): number {
+export function sqrDist(a: Point, b: Point): number {
   let dx = a.x - b.x;
   let dy = a.y - b.y;
   return dx * dx + dy * dy;

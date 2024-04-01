@@ -1,5 +1,4 @@
-import { ButtonColor, IconButtonStateClass } from "@/_components/theme/colors";
-import { ButtonStyle } from "@/_components/theme/styles";
+import { IconButtonStateClass } from "@/_components/theme/colors";
 import { MouseEventHandler } from "react";
 
 export function IconButton({
@@ -32,7 +31,7 @@ export function IconButton({
   }
 
   const defaultClasses =
-    "bg-white dark:bg-black cursor-pointer focus:ring-4 focus:outline-none rounded-full p-2.5";
+    "transition-all duration-100 bg-white dark:bg-black cursor-pointer focus:ring-4 focus:outline-none rounded-full p-2.5";
 
   return href ? (
     <a

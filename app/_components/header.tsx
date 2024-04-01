@@ -24,10 +24,15 @@ import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
-import { DisplaySettings } from "@/_lib/display-settings";
+import {
+  DisplaySettings,
+  isDarkTheme,
+  strokeColor,
+  themes,
+} from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
-import Matrix, { inverse } from "ml-matrix";
+import Matrix from "ml-matrix";
 import {
   translate,
   rotateMatrixDeg,
@@ -36,8 +41,6 @@ import {
   getCenterPoint,
   transformPoint,
 } from "@/_lib/geometry";
-import FourCorners from "@/_icons/four-corners";
-import FourCornersOff from "@/_icons/four-corners-off";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-checkbox-icon-button";
@@ -105,8 +108,6 @@ export default function Header({
 }) {
   const t = useTranslations("Header");
 
-  const [invertOpen, setInvertOpen] = useState<boolean>(false);
-
   function handleRecenter() {
     const current = transformPoint(
       { x: layoutWidth * 0.5, y: layoutHeight * 0.5 },
@@ -146,7 +147,7 @@ export default function Header({
       icon: <OverlayPaperIcon ariaLabel={t("overlayOptionPaper")} />,
       text: t("overlayOptionPaper"),
     },
-    fliplines: {
+    flipLines: {
       icon: <FlipCenterOnIcon ariaLabel={t("overlayOptionFliplines")} />,
       text: t("overlayOptionFliplines"),
     },
@@ -196,33 +197,17 @@ export default function Header({
             <Tooltip description={t("invertColor")}>
               <IconButton
                 onClick={(e) => {
-                  let newInverted;
-                  let newIsGreenInverted;
-                  if (!displaySettings.inverted) {
-                    newInverted = true;
-                    newIsGreenInverted = true;
-                  } else if (displaySettings.isInvertedGreen) {
-                    newInverted = true;
-                    newIsGreenInverted = false;
-                  } else {
-                    newInverted = false;
-                    newIsGreenInverted = false;
-                  }
+                  const currentIdx = themes().indexOf(displaySettings.theme);
+                  const theme = themes()[(currentIdx + 1) % themes().length];
                   setDisplaySettings({
                     ...displaySettings,
-                    inverted: newInverted,
-                    isInvertedGreen: newIsGreenInverted,
+                    theme,
                   });
-                  setInvertOpen(!displaySettings.inverted);
                 }}
               >
-                {displaySettings.inverted ? (
+                {isDarkTheme(displaySettings.theme) ? (
                   <InvertColorIcon
-                    fill={
-                      displaySettings.isInvertedGreen
-                        ? "#32CD32"
-                        : "currentColor"
-                    }
+                    fill={strokeColor(displaySettings.theme)}
                     ariaLabel={t("invertColor")}
                   />
                 ) : (
