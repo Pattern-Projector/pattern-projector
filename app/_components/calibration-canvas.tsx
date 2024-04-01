@@ -32,9 +32,6 @@ import { CornerColorHex } from "@/_components/theme/colors";
 import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
 
 const maxPoints = 4; // One point per vertex in rectangle
-const PRECISION_MOVEMENT_THRESHOLD = 15;
-const PRECISION_MOVEMENT_RATIO = 5;
-const PRECISION_MOVEMENT_DELAY = 500;
 const TRANSITION_DURATION = 700;
 
 function getStrokeStyle(pointToModify: number) {
@@ -378,23 +375,13 @@ export default function CalibrationCanvas({
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const patternRef = useRef<CanvasPattern | null>(null);
-  const [panStart, setPanStart] = useState<Point | null>(null);
-  const [panStartPoints, setPanStartPoints] = useState<Point[] | null>(null);
-  const [cursorMode, setCursorMode] = useState<string | null>(null);
-  const [isPrecisionMovement, setIsPrecisionMovement] = useState(false);
-  const [dragStartTime, setDragStartTime] = useState<number | null>(null);
-  const [dragStartMousePoint, setDragStartMousePoint] = useState<Point | null>(
-    null,
-  );
-  const [dragStartPoint, setDragStartPoint] = useState<Point | null>(null);
-  const [precisionActivationPoint, setPrecisionActivationPoint] =
-    useState<Point | null>(null);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const prevColorModeRef = useRef<number | null>(null);
+
+  const [dragOffset, setDragOffset] = useState<Point | null>(null);
   const [localPoints, setLocalPoints] = useState<Point[]>(points);
   /* transitionProgress ranges from 0 to number of colorMode states + 1 */
   const [transitionProgress, setTransitionProgress] = useState<number>(0);
   const [colorMode, setColorMode] = useState<number | null>(null);
-  const prevColorModeRef = useRef<number | null>(null);
 
   const minColorMode = 0;
   const maxColorMode = 2;
@@ -471,15 +458,6 @@ export default function CalibrationCanvas({
     setLocalPoints(points);
   }, [points, setLocalPoints]);
 
-  useEffect(() => {
-    if (
-      isPrecisionMovement &&
-      pointToModify !== null &&
-      localPoints.length > pointToModify
-    )
-      setPrecisionActivationPoint((prevPoint) => localPoints[pointToModify]);
-  }, [isPrecisionMovement, pointToModify]);
-
   /* Used to create the error fill pattern */
   useEffect(() => {
     if (!canvasRef === null || canvasRef.current === null) return;
@@ -524,7 +502,7 @@ export default function CalibrationCanvas({
           isCalibrating,
           pointToModify,
           unitOfMeasure,
-          isPrecisionMovement,
+          false,
           patternRef.current,
           transitionProgress,
           displaySettings,
@@ -541,181 +519,15 @@ export default function CalibrationCanvas({
     unitOfMeasure,
     transitionProgress,
     displaySettings,
-    isPrecisionMovement,
   ]);
 
-  function getShortestDistance(p: Point): number {
-    return localPoints
-      .map((a) => Math.sqrt(sqrdist(a, p)))
-      .reduce((final, a) => (!final || a < final ? a : final));
-  }
-
-  function handleDown(newPoint: Point) {
-    if (localPoints.length < maxPoints) {
-      setLocalPoints([...localPoints, newPoint]);
-    } else {
-      const shortestDist: number = getShortestDistance(newPoint);
-      if (shortestDist < CORNER_MARGIN) {
-        const newPointToModify = minIndex(
-          localPoints.map((a) => sqrdist(a, newPoint)),
-        );
-        setPointToModify(newPointToModify);
-        setDragStartTime(Date.now());
-        setDragStartMousePoint(newPoint);
-        setDragStartPoint(localPoints[newPointToModify]);
-
-        // Set a timeout to activate precision movement after the delay
-        const timeoutId = setTimeout(() => {
-          if (!isPrecisionMovement) setIsPrecisionMovement(true);
-        }, PRECISION_MOVEMENT_DELAY);
-
-        // Store the timeout ID to clear it if needed
-        setTimeoutId(timeoutId);
-      } else {
-        setPointToModify(null);
-        setPanStart(newPoint);
-        setPanStartPoints(localPoints);
-      }
+  function getNearbyCorner(p: Point): number {
+    const distances = localPoints.map((a) => sqrdist(a, p));
+    const corner = minIndex(distances);
+    if (CORNER_MARGIN * CORNER_MARGIN > distances[corner]) {
+      return corner;
     }
-  }
-
-  function handleMove(p: Point, filter: number) {
-    if (pointToModify !== null) {
-      //Check if we should active precision movement
-      if (
-        !isPrecisionMovement &&
-        dragStartTime !== null &&
-        dragStartMousePoint !== null &&
-        Date.now() - dragStartTime > PRECISION_MOVEMENT_DELAY &&
-        Math.sqrt(sqrdist(dragStartMousePoint, p)) <
-          PRECISION_MOVEMENT_THRESHOLD &&
-        timeoutId != null
-      ) {
-        setIsPrecisionMovement(true);
-        if (pointToModify !== null)
-          setPrecisionActivationPoint(localPoints[pointToModify]);
-      }
-
-      if (
-        !isPrecisionMovement &&
-        dragStartTime !== null &&
-        dragStartMousePoint !== null &&
-        Math.sqrt(sqrdist(dragStartMousePoint, p)) >
-          PRECISION_MOVEMENT_THRESHOLD &&
-        timeoutId != null
-      ) {
-        // Clear the timeout when the mouse is released
-        // Setting timeoutId to null deactivates precision drag for the rest
-        // of this drag sequence
-        clearTimeout(timeoutId);
-        setTimeoutId(null);
-      }
-
-      const newPoints = [...localPoints];
-      let destination = {
-        x: p.x,
-        y: p.y,
-      };
-      if (dragStartMousePoint !== null && dragStartPoint !== null) {
-        destination = {
-          x:
-            dragStartMousePoint.x +
-            (p.x - dragStartMousePoint.x) /
-              (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1),
-          y:
-            dragStartMousePoint.y +
-            (p.y - dragStartMousePoint.y) /
-              (isPrecisionMovement ? PRECISION_MOVEMENT_RATIO : 1),
-        };
-        /* The following 2 lines help to prevent the calibration point from "jumping" */
-        destination.x -= dragStartMousePoint.x - dragStartPoint.x;
-        destination.y -= dragStartMousePoint.y - dragStartPoint.y;
-      }
-      if (precisionActivationPoint && dragStartPoint) {
-        /* The following 2 lines help to prevent the calibration point from "jumping" */
-        destination.x += precisionActivationPoint.x - dragStartPoint.x;
-        destination.y += precisionActivationPoint.y - dragStartPoint.y;
-      }
-
-      const offset = {
-        x: destination.x - newPoints[pointToModify].x,
-        y: destination.y - newPoints[pointToModify].y,
-      };
-      newPoints[pointToModify] = {
-        x: newPoints[pointToModify].x + offset.x,
-        y: newPoints[pointToModify].y + offset.y,
-      };
-      setLocalPoints(newPoints);
-    } else if (
-      panStart !== null &&
-      panStartPoints !== null &&
-      panStartPoints.length === maxPoints
-    ) {
-      /* Panning. Apply the offset to the panStartPoints */
-      const dragOffset = { x: p.x - panStart.x, y: p.y - panStart.y };
-      setPoints(
-        panStartPoints.map((p) => {
-          return { x: p.x + dragOffset.x, y: p.y + dragOffset.y };
-        }),
-      );
-    }
-  }
-
-  function handleHover(p: Point) {
-    const shortestDist: number = getShortestDistance(p);
-    if (shortestDist < CORNER_MARGIN) {
-      setCursorMode("corner");
-    } else {
-      setCursorMode("pan");
-    }
-  }
-
-  function handleMouseUp() {
-    /* Nothing to do. This short circuit is required to prevent setting
-     * the localStorage of the points to invalid values */
-    if (panStart === null && dragStartPoint === null) return;
-
-    localStorage.setItem("points", JSON.stringify(localPoints));
-    if (panStart) {
-      setPanStart(null);
-      setPanStartPoints(null);
-    } else {
-      setPoints(localPoints);
-    }
-    setIsPrecisionMovement(false);
-    setDragStartTime(null);
-    setDragStartMousePoint(null);
-    setDragStartPoint(null);
-    setPrecisionActivationPoint(null);
-
-    // Clear the timeout when the mouse is released
-    if (timeoutId !== null) {
-      clearTimeout(timeoutId);
-      setTimeoutId(null);
-    }
-  }
-
-  function handleTouchUp() {
-    /* Nothing to do. This short circuit is required to prevent setting
-     * the localStorage of the points to invalid values */
-    if (panStart === null && dragStartPoint === null) return;
-
-    localStorage.setItem("points", JSON.stringify(localPoints));
-    setPoints(localPoints);
-    setPointToModify(null);
-    setPanStart(null);
-    setPanStartPoints(null);
-    setIsPrecisionMovement(false);
-    setDragStartTime(null);
-    setDragStartMousePoint(null);
-    setDragStartPoint(null);
-    setPrecisionActivationPoint(null);
-
-    // Clear the timeout when the touch is released
-    if (timeoutId !== null) {
-      clearTimeout(timeoutId);
-      setTimeoutId(null);
-    }
+    return -1;
   }
 
   const handleKeyDown = useCallback(
@@ -753,32 +565,53 @@ export default function CalibrationCanvas({
 
   useProgArrowKeyPoints(points, setPoints, pointToModify, isCalibrating);
 
+  function handlePointerDown(e: React.PointerEvent) {
+    const p = { x: e.clientX, y: e.clientY };
+    if (localPoints.length < maxPoints) {
+      setLocalPoints([...localPoints, p]);
+    } else {
+      const corner = getNearbyCorner(p);
+      if (corner !== -1) {
+        let current = localPoints[corner];
+        setDragOffset({ x: current.x - p.x, y: current.y - p.y });
+        setPointToModify(corner);
+      } else {
+        setPointToModify(null);
+      }
+    }
+  }
+
+  function handlePointerMove(e: React.PointerEvent) {
+    if (pointToModify === null || dragOffset == null) return;
+    const p = { x: e.clientX, y: e.clientY };
+    const newPoints = [...localPoints];
+    newPoints[pointToModify] = {
+      x: p.x + dragOffset.x,
+      y: p.y + dragOffset.y,
+    };
+    setLocalPoints(newPoints);
+  }
+
+  function handlePointerUp() {
+    /* Nothing to do. This short circuit is required to prevent setting
+     * the localStorage of the points to invalid values */
+    if (dragOffset === null) return;
+
+    localStorage.setItem("points", JSON.stringify(localPoints));
+    setPoints(localPoints);
+    setDragOffset(null);
+  }
+
   return (
     <canvas
       tabIndex={0}
       ref={canvasRef}
-      className={className + " outline-none"}
+      className={`${className} outline-none`}
       onKeyDown={handleKeyDown}
-      onMouseMove={(e: React.MouseEvent) => {
-        if ((e.buttons & 1) == 0) {
-          handleMouseUp();
-          handleHover(mouseToCanvasPoint(e));
-        } else {
-          handleMove(mouseToCanvasPoint(e), 1);
-        }
-      }}
-      onMouseDown={(e) => handleDown(mouseToCanvasPoint(e))}
-      onMouseUp={() => handleMouseUp()}
-      onTouchStart={(e: React.TouchEvent) => handleDown(touchToCanvasPoint(e))}
-      onTouchMove={(e: React.TouchEvent) =>
-        handleMove(touchToCanvasPoint(e), 0.05)
-      }
-      onTouchEnd={() => handleTouchUp()}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
       style={{
-        cursor:
-          cursorMode === "corner"
-            ? "url('/crosshair.png') 11 11, crosshair"
-            : "grab",
         pointerEvents: isCalibrating ? "auto" : "none",
       }}
     />
