@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Spanish translation
+
 ### Changed
 
+- Added canvas filter for erosions, with a polyfill for Safari
 - Changed the stitch menu open logic. By default, if the page count is more than one, the stitch menu will open. If the page count is one, the stitch menu will close (#134)
 - Moved menu logic into a single object
 - Changed stitch menu to be a horizontal menu instead of a vertical one
