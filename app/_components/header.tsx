@@ -240,22 +240,22 @@ export default function Header({
               <InlineInput
                 className="relative flex flex-col"
                 inputClassName="pl-6 pr-7"
+                handleChange={handleWidthChange}
+                id="width"
+                label={t("width")}
+                labelRight={unitOfMeasure === CM ? "cm" : "in"}
+                name="width"
+                value={width}
+              />
+              <InlineInput
+                className="relative flex flex-col"
+                inputClassName="pl-6 pr-7"
                 handleChange={handleHeightChange}
                 id="height"
                 label={t("height")}
                 labelRight={unitOfMeasure === CM ? "cm" : "in"}
                 name="height"
                 value={height}
-              />
-              <InlineInput
-                className="relative flex flex-col"
-                inputClassName="pl-6 pr-7"
-                handleChange={handleWidthChange}
-                id="height"
-                label={t("width")}
-                labelRight={unitOfMeasure === CM ? "cm" : "in"}
-                name="width"
-                value={width}
               />
               <InlineSelect
                 handleChange={(e) => setUnitOfMeasure(e.target.value)}
