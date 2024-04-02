@@ -243,7 +243,7 @@ export default function Header({
                 handleChange={handleWidthChange}
                 id="width"
                 label={t("width")}
-                labelRight={unitOfMeasure === CM ? "cm" : "in"}
+                labelRight={unitOfMeasure.toLocaleLowerCase()}
                 name="width"
                 value={width}
               />
@@ -253,7 +253,7 @@ export default function Header({
                 handleChange={handleHeightChange}
                 id="height"
                 label={t("height")}
-                labelRight={unitOfMeasure === CM ? "cm" : "in"}
+                labelRight={unitOfMeasure.toLocaleLowerCase()}
                 name="height"
                 value={height}
               />
