@@ -11,10 +11,12 @@ import {
   drawPolygon,
   drawOverlays,
   drawGrid,
-  drawCalibrationPoints,
 } from "@/_lib/drawing";
-import { getPerspectiveTransformFromPoints } from "@/_lib/geometry";
-import { minIndex, sqrDist } from "@/_lib/geometry";
+import {
+  getPerspectiveTransformFromPoints,
+  transformPoint,
+} from "@/_lib/geometry";
+import { minIndex, sqrDist, sqrDistToLine } from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
 import { DisplaySettings, strokeColor } from "@/_lib/display-settings";
 import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
@@ -22,8 +24,7 @@ import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 
 const maxPoints = 4; // One point per vertex in rectangle
-const majorLineWidth = 4;
-const cornerMargin = 150;
+const cornerMargin = 96;
 
 export default function CalibrationCanvas({
   className,
@@ -48,6 +49,7 @@ export default function CalibrationCanvas({
   const [dragPoint, setDragPoint] = useState<Point | null>(null);
   const [localPoints, setLocalPoints] = useState<Point[]>(points);
   const [corners, setCorners] = useState<Set<number>>(new Set());
+  const [hoverCorners, setHoverCorners] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     setLocalPoints(points);
@@ -84,6 +86,7 @@ export default function CalibrationCanvas({
           perspectiveMatrix,
           isCalibrating,
           corners,
+          hoverCorners,
           unitOfMeasure,
           strokeColor(displaySettings.theme),
           displaySettings,
@@ -97,9 +100,48 @@ export default function CalibrationCanvas({
     height,
     isCalibrating,
     corners,
+    hoverCorners,
     unitOfMeasure,
     displaySettings,
   ]);
+
+  function isNearCenter(p: Point): boolean {
+    let sum = localPoints.reduce(
+      (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
+      { x: 0, y: 0 },
+    );
+    const center = {
+      x: sum.x / localPoints.length,
+      y: sum.y / localPoints.length,
+    };
+    return sqrDist(center, p) < 4 * cornerMargin ** 2;
+  }
+
+  function selectCorners(p: Point): Set<number> {
+    const corner = getNearbyCorner(p);
+    if (corner !== -1) {
+      return new Set([corner]);
+    }
+    const edges = getNearbyEdge(p);
+    if (edges.length) {
+      return new Set(getNearbyEdge(p));
+    }
+    if (isNearCenter(p)) {
+      return new Set([0, 1, 2, 3]);
+    }
+    return new Set();
+  }
+
+  function getNearbyEdge(p: Point): number[] {
+    const distances = localPoints.map((a, idx) =>
+      sqrDistToLine(a, localPoints[(idx + 1) % localPoints.length], p),
+    );
+    const edge = minIndex(distances);
+    if (cornerMargin ** 2 > distances[edge]) {
+      return [edge, edge === localPoints.length - 1 ? 0 : edge + 1];
+    }
+    return [];
+  }
 
   function getNearbyCorner(p: Point): number {
     const distances = localPoints.map((a) => sqrDist(a, p));
@@ -125,10 +167,10 @@ export default function CalibrationCanvas({
   );
 
   useKeyDown(() => {
-    if (corners.size) {
-      setCorners(new Set(Array.from(corners).map((c) => (c + 1) % 4)));
-    } else {
+    if (corners.size === 4 || corners.size === 0) {
       setCorners(new Set([0]));
+    } else {
+      setCorners(new Set(Array.from(corners).map((c) => (c + 1) % 4)));
     }
   }, [KeyCode.Tab]);
 
@@ -139,29 +181,41 @@ export default function CalibrationCanvas({
     if (localPoints.length < maxPoints) {
       setLocalPoints([...localPoints, p]);
     } else {
-      const corner = getNearbyCorner(p);
-      if (corner !== -1) {
+      const selectedCorners = selectCorners(p);
+      if (selectedCorners.size) {
         setDragPoint(p);
-        setCorners(new Set([corner]));
-      } else {
-        setCorners(new Set());
+        setCorners(selectedCorners);
+        setHoverCorners(new Set());
       }
     }
   }
 
   function handlePointerMove(e: React.PointerEvent) {
-    if (corners.size == 0 || dragPoint == null) return;
     const p = { x: e.clientX, y: e.clientY };
-    const newPoints = [...localPoints];
-    for (let corner of corners) {
-      const currentPoint = newPoints[corner];
-      newPoints[corner] = {
-        x: currentPoint.x + (p.x - dragPoint.x),
-        y: currentPoint.y + (p.y - dragPoint.y),
-      };
+    if (dragPoint === null) {
+      setHoverCorners(selectCorners(p));
+    } else if (corners.size) {
+      const newPoints = [...localPoints];
+      let dx = p.x - dragPoint.x;
+      let dy = p.y - dragPoint.y;
+      if (corners.size === 2) {
+        // axis constrained edges.
+        if (hasTopEdge(corners) || hasBottomEdge(corners)) {
+          dx = 0;
+        } else {
+          dy = 0;
+        }
+      }
+      for (let corner of corners) {
+        const currentPoint = newPoints[corner];
+        newPoints[corner] = {
+          x: currentPoint.x + dx,
+          y: currentPoint.y + dy,
+        };
+      }
+      setDragPoint(p);
+      setLocalPoints(newPoints);
     }
-    setDragPoint(p);
-    setLocalPoints(newPoints);
   }
 
   function handlePointerUp() {
@@ -190,6 +244,22 @@ export default function CalibrationCanvas({
   );
 }
 
+function hasTopEdge(corners: Set<number>): boolean {
+  return corners.has(0) && corners.has(1);
+}
+
+function hasBottomEdge(corners: Set<number>): boolean {
+  return corners.has(2) && corners.has(3);
+}
+
+function hasLeftEdge(corners: Set<number>): boolean {
+  return corners.has(0) && corners.has(3);
+}
+
+function hasRightEdge(corners: Set<number>): boolean {
+  return corners.has(1) && corners.has(2);
+}
+
 function draw(cs: CanvasState): void {
   const { ctx, isCalibrating, displaySettings } = cs;
 
@@ -208,16 +278,84 @@ function draw(cs: CanvasState): void {
   }
 }
 
+function drawCalibrationPoints(cs: CanvasState) {
+  const { ctx, points, corners, hoverCorners } = cs;
+  points.forEach((point, index) => {
+    ctx.beginPath();
+    const radius = corners.size === 1 && corners.has(index) ? 20 : 10;
+    if (hoverCorners.size === 1 && hoverCorners.has(index)) {
+      ctx.setLineDash([4, 4]);
+    } else {
+      ctx.setLineDash([]);
+    }
+    ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+}
+
 function drawCalibration(cs: CanvasState): void {
-  const { ctx, points, errorFillPattern, isConcave } = cs;
+  const {
+    ctx,
+    points,
+    errorFillPattern,
+    isConcave,
+    corners,
+    hoverCorners,
+    width,
+    height,
+  } = cs;
   if (isConcave) {
     ctx.fillStyle = errorFillPattern;
     drawPolygon(ctx, points);
     ctx.fill();
   } else {
-    ctx.lineWidth = majorLineWidth;
+    ctx.lineWidth = 2;
     ctx.strokeStyle = strokeColor(cs.displaySettings.theme);
-    drawPolygon(ctx, points);
+    ctx.save();
+    for (let i = 0; i < points.length; i++) {
+      const j = (i + 1) % points.length;
+      const p1 = points[i];
+      const p2 = points[j];
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      const isHovered = hoverCorners.has(i) && hoverCorners.has(j);
+      if (isHovered) {
+        ctx.setLineDash([4, 4]);
+      } else {
+        ctx.setLineDash([]);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    function drawChevron(p: Point, angle: number) {
+      const ctr = transformPoint(p, cs.perspective);
+      ctx.save();
+      ctx.translate(ctr.x, ctr.y);
+      ctx.rotate(angle);
+      const t = 20;
+      const s = 10;
+      ctx.moveTo(t, -t);
+      ctx.lineTo(s, 0);
+      ctx.lineTo(t, t);
+      ctx.restore();
+    }
+
+    ctx.beginPath();
+    if (hasTopEdge(corners)) {
+      drawChevron({ x: width * 0.5, y: 0 }, Math.PI / 2);
+    }
+    if (hasBottomEdge(corners)) {
+      drawChevron({ x: width * 0.5, y: height }, (Math.PI * 3) / 2);
+    }
+    if (hasLeftEdge(corners)) {
+      drawChevron({ x: 0, y: height * 0.5 }, 0);
+    }
+    if (hasRightEdge(corners)) {
+      drawChevron({ x: width, y: height * 0.5 }, Math.PI);
+    }
     ctx.stroke();
     drawGrid(cs, 0);
   }

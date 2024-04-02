@@ -255,6 +255,19 @@ export function minIndex(a: number[]): number {
   return min;
 }
 
+export function sqrDistToLine(a: Point, b: Point, p: Point): number {
+  const len2 = sqrDist(a, b);
+  if (len2 === 0) {
+    return sqrDist(p, a);
+  }
+  const rise = b.y - a.y;
+  const run = b.x - a.x;
+  let t = ((p.x - a.x) * run + (p.y - a.y) * rise) / len2;
+  // constrain t to the segment between a and b
+  t = Math.max(0, Math.min(1, t));
+  return sqrDist(p, { x: a.x + t * run, y: a.y + t * rise });
+}
+
 export function interp(from: Point, to: Point, portion: number): Point {
   const rest = 1.0 - portion;
   return { x: to.x * portion + from.x * rest, y: to.y * portion + from.y * rest };

@@ -5,7 +5,6 @@ import { DisplaySettings, fillColor, strokeColor } from "@/_lib/display-settings
 import {
   checkIsConcave, rectCorners, transformPoint, transformPoints, translatePoints
 } from "@/_lib/geometry";
-import { CornerColorHex } from "@/_components/theme/colors";
 
 export class CanvasState {
   isConcave: boolean = false;
@@ -21,6 +20,7 @@ export class CanvasState {
     public perspective: Matrix,
     public isCalibrating: boolean,
     public corners: Set<number>,
+    public hoverCorners: Set<number>,
     public unitOfMeasure: string,
     public errorFillPattern: CanvasFillStrokeStyles["fillStyle"],
     public displaySettings: DisplaySettings,
@@ -101,23 +101,6 @@ export function drawCenterLines(cs: CanvasState) {
   ctx.restore();
 }
 
-export function drawCalibrationPoints(cs: CanvasState) {
-  const { ctx, points } = cs;
-  points.forEach((point, index) => {
-    ctx.beginPath();
-    ctx.strokeStyle = [
-      CornerColorHex.TOPLEFT,
-      CornerColorHex.TOPRIGHT,
-      CornerColorHex.BOTTOMRIGHT,
-      CornerColorHex.BOTTOMLEFT,
-    ][index];
-    const radius = cs.corners.has(index) ? 20 : 10;
-    ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
-    ctx.lineWidth = 4;
-    ctx.stroke();
-  });
-}
-
 export function drawPaperSheet(cs: CanvasState) {
   const { ctx, perspective, unitOfMeasure, width, height, displaySettings } = cs;
   const fontSize = 32;
@@ -185,7 +168,7 @@ export function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): 
   const majorLine = 5;
 
   /* Vertical lines */
-  for (let i = 0; i <= cs.width; i++) {
+  for (let i = 1; i < cs.width; i++) {
     let lineWidth = cs.minorLineWidth;
     if (i % majorLine === 0 || i === cs.width) {
       lineWidth = cs.majorLineWidth;
@@ -201,7 +184,7 @@ export function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): 
   }
 
   /* Horizontal lines */
-  for (let i = 0; i <= cs.height; i++) {
+  for (let i = 1; i < cs.height; i++) {
     let lineWidth = cs.minorLineWidth;
     if (i % majorLine === 0 || i === cs.height) {
       lineWidth = cs.majorLineWidth;
@@ -237,7 +220,7 @@ export function drawDimensionLabels(
   unitOfMeasure: string,
 ) {
   const fontSize = 48;
-  const inset = 20;
+  const inset = 36;
   ctx.font = `${fontSize}px monospace`;
   const widthText = `${width}${unitOfMeasure.toLocaleLowerCase()}`;
   const heightText = `${height}${unitOfMeasure.toLocaleLowerCase()}`;
@@ -255,19 +238,7 @@ export function drawDimensionLabels(
     perspective,
   );
   const widthLabelWidth = ctx.measureText(widthText).width;
+  const heightLabelHeight = ctx.measureText(heightText).actualBoundingBoxAscent;
   ctx.fillText(widthText, line[0].x - widthLabelWidth * 0.5, line[0].y - inset);
-  ctx.fillText(heightText, line[1].x + inset, line[1].y + fontSize * 0.5);
-}
-
-export function drawCrosshair(
-  ctx: CanvasRenderingContext2D,
-  point: Point,
-  size: number,
-) {
-  const halfSize = size / 2;
-  ctx.beginPath();
-  ctx.moveTo(point.x - halfSize, point.y);
-  ctx.lineTo(point.x + halfSize, point.y);
-  ctx.moveTo(point.x, point.y - halfSize);
-  ctx.lineTo(point.x, point.y + halfSize);
+  ctx.fillText(heightText, line[1].x + inset, line[1].y + heightLabelHeight * 0.5);
 }
