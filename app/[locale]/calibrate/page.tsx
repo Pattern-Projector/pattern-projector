@@ -223,7 +223,7 @@ export default function Page() {
     >
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
         <FullScreen handle={handle} className="w-full h-full">
-          {showingMovePad && (
+          {isCalibrating && showingMovePad && (
             <MovementPad
               corners={corners}
               setCorners={setCorners}
