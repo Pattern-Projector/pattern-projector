@@ -1,4 +1,4 @@
-import { Layer } from "@/_lib/layer";
+import { Layer } from "@/_lib/interfaces/layer";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { IconButton } from "@/_components/buttons/icon-button";
 import CloseIcon from "@/_icons/close-icon";

@@ -13,8 +13,8 @@ import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
-import { Layer } from "@/_lib/layer";
-import { EdgeInsets } from "@/_lib/edge-insets";
+import { Layer } from "@/_lib/interfaces/layer";
+import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import Matrix from "ml-matrix";

@@ -1,11 +1,5 @@
 import { useTranslations } from "next-intl";
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -54,6 +48,7 @@ import SquareFootIcon from "@/_icons/square-foot";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
+import MoveIcon from "@/_icons/move-icon";
 
 export default function Header({
   isCalibrating,
@@ -80,6 +75,8 @@ export default function Header({
   setMeasuring,
   menuStates,
   setMenuStates,
+  showingMovePad,
+  setShowingMovePad,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -105,6 +102,8 @@ export default function Header({
   setMeasuring: Dispatch<SetStateAction<boolean>>;
   menuStates: MenuStates;
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
+  showingMovePad: boolean;
+  setShowingMovePad: Dispatch<SetStateAction<boolean>>;
 }) {
   const t = useTranslations("Header");
 
@@ -189,7 +188,7 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <IconButton
-              className={`!p-1 border-2 border-slate-400 dark:border-white`}
+              className={`!p-1 border-2 border-black dark:border-white`}
               onClick={() => setMenuStates({ ...menuStates, nav: false })}
             >
               <ExpandLessIcon ariaLabel={t("menuHide")} />
@@ -236,6 +235,22 @@ export default function Header({
             )}
           </div>
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
+            <Tooltip
+              description={
+                showingMovePad ? t("hideMovement") : t("showMovement")
+              }
+            >
+              <IconButton
+                className={`${visible(isCalibrating)}`}
+                onClick={() => setShowingMovePad(!showingMovePad)}
+              >
+                <MoveIcon
+                  ariaLabel={
+                    showingMovePad ? t("hideMovement") : t("showMovement")
+                  }
+                />
+              </IconButton>
+            </Tooltip>
             <div className="flex gap-1">
               <InlineInput
                 className="relative flex flex-col"
@@ -401,7 +416,7 @@ export default function Header({
         </nav>
       </header>
       <IconButton
-        className={`!p-1 border-2 border-slate-400 dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} transition-all duration-700 z-30 left-1/4 focus:ring-0`}
+        className={`!p-1 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} transition-all duration-700 z-30 left-1/4 focus:ring-0`}
         onClick={() => setMenuStates({ ...menuStates, nav: true })}
       >
         <ExpandMoreIcon ariaLabel={t("menuShow")} />

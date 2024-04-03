@@ -35,6 +35,8 @@ export default function CalibrationCanvas({
   isCalibrating,
   unitOfMeasure,
   displaySettings,
+  corners,
+  setCorners,
 }: {
   className: string | undefined;
   points: Point[];
@@ -44,11 +46,12 @@ export default function CalibrationCanvas({
   isCalibrating: boolean;
   unitOfMeasure: string;
   displaySettings: DisplaySettings;
+  corners: Set<number>;
+  setCorners: Dispatch<SetStateAction<Set<number>>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [dragPoint, setDragPoint] = useState<Point | null>(null);
   const [localPoints, setLocalPoints] = useState<Point[]>(points);
-  const [corners, setCorners] = useState<Set<number>>(new Set());
   const [hoverCorners, setHoverCorners] = useState<Set<number>>(new Set());
 
   useEffect(() => {

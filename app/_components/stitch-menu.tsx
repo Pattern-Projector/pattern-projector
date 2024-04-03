@@ -1,4 +1,4 @@
-import { EdgeInsets } from "@/_lib/edge-insets";
+import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
 import { allowInteger } from "@/_lib/remove-non-digits";

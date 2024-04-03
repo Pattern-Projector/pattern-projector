@@ -6,7 +6,7 @@ import type {
   RenderParameters,
   PDFDocumentProxy,
 } from "pdfjs-dist/types/src/display/api.js";
-import { Layer } from "@/_lib/layer";
+import { Layer } from "@/_lib/interfaces/layer";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { erodeImageData } from "@/_lib/erode";

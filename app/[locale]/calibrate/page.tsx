@@ -1,7 +1,7 @@
 "use client";
 
-import { Matrix, inverse } from "ml-matrix";
-import { ChangeEvent, useCallback, useEffect, useState, useRef } from "react";
+import { Matrix } from "ml-matrix";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
@@ -19,7 +19,7 @@ import {
   themeFilter,
 } from "@/_lib/display-settings";
 import { IN, getPtDensity } from "@/_lib/unit";
-import { Layer } from "@/_lib/layer";
+import { Layer } from "@/_lib/interfaces/layer";
 import LayerMenu from "@/_components/layer-menu";
 import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
 import { visible } from "@/_components/theme/css-functions";
@@ -27,7 +27,7 @@ import { IconButton } from "@/_components/buttons/icon-button";
 import LayersIcon from "@/_icons/layers-icon";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
-import { EdgeInsets } from "@/_lib/edge-insets";
+import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
 import {
@@ -36,6 +36,7 @@ import {
   getMenuStatesFromPageCount,
   MenuStates,
 } from "@/_lib/menu-states";
+import MovementPad from "@/_components/movement-pad";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -76,10 +77,11 @@ export default function Page() {
     vertical: "0",
   });
 
-  const pdfRef = useRef<HTMLDivElement | null>(null);
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
   );
+  const [showingMovePad, setShowingMovePad] = useState(true);
+  const [corners, setCorners] = useState<Set<number>>(new Set([0]));
 
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
@@ -219,8 +221,16 @@ export default function Page() {
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} transition-all duration-700 w-full h-full absolute overflow-hidden touch-none`}
     >
-      <div className="bg-white dark:bg-black dark:text-white">
-        <FullScreen handle={handle}>
+      <div className="bg-white dark:bg-black dark:text-white w-full h-full">
+        <FullScreen handle={handle} className="w-full h-full">
+          {showingMovePad && (
+            <MovementPad
+              corners={corners}
+              setCorners={setCorners}
+              points={points}
+              setPoints={setPoints}
+            />
+          )}
           <div
             className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
           />
@@ -257,6 +267,8 @@ export default function Page() {
             menuStates={menuStates}
             measuring={measuring}
             setMeasuring={setMeasuring}
+            showingMovePad={showingMovePad}
+            setShowingMovePad={setShowingMovePad}
           />
 
           <StitchMenu
@@ -303,6 +315,8 @@ export default function Page() {
             isCalibrating={isCalibrating}
             unitOfMeasure={unitOfMeasure}
             displaySettings={displaySettings}
+            corners={corners}
+            setCorners={setCorners}
           />
           {measuring && (
             <MeasureCanvas
@@ -320,7 +334,6 @@ export default function Page() {
             perspective={perspective}
           >
             <div
-              ref={pdfRef}
               className={"absolute z-0"}
               style={{
                 transform: `${matrix3d}`,
