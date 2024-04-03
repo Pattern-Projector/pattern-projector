@@ -60,7 +60,7 @@ export default function MovementPad({
   }
 
   return (
-    <div className="absolute top-1/2 left-1/2 z-50">
+    <div className="absolute top-[calc(50vh-80px)] right-0 z-50">
       <menu className={`grid grid-cols-3 gap-2`}>
         <IconButton
           onClick={() => handleMove(Direction.Up)}
