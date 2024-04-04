@@ -228,7 +228,7 @@ export default function Page() {
 
   function getInversionFilters(inverted: boolean, isGreen: boolean): string {
     if (!inverted) {
-      return "invert(0)";
+      return "none";
     }
     return `invert(1) ${
       isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""

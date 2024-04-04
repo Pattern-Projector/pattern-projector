@@ -74,10 +74,20 @@ export default function PdfViewer({
     return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
   }, []);
 
+  const isFirefox = useMemo(() => {
+    return navigator.userAgent.toLowerCase().includes("firefox");
+  }, []);
+
   const customRenderer = useCallback(
     // Safari does not support filters on canvas so the erosions must be done in the renderer
-    () => CustomRenderer(setLayers, layers, isSafari ? lineThickness : 0),
-    [setLayers, layers, isSafari, lineThickness],
+    // Firefox runs very slowly with the filters so the erosions must be done in the renderer
+    () =>
+      CustomRenderer(
+        setLayers,
+        layers,
+        isSafari || isFirefox ? lineThickness : 0,
+      ),
+    [setLayers, layers, isSafari, isFirefox, lineThickness],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -125,7 +135,8 @@ export default function PdfViewer({
                 width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
                 height: `${pageHeight - Number(edgeInsets.vertical)}px`,
                 mixBlendMode: "multiply",
-                filter: erosionFilter(lineThickness),
+                filter:
+                  isSafari || isFirefox ? "none" : erosionFilter(lineThickness),
               }}
             >
               <Page
