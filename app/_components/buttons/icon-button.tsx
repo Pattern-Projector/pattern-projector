@@ -1,5 +1,5 @@
 import { IconButtonStateClass } from "@/_components/theme/colors";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, PointerEventHandler } from "react";
 
 export function IconButton({
   children,
@@ -10,6 +10,8 @@ export function IconButton({
   href,
   name,
   active,
+  onPointerDown,
+  onPointerUp,
 }: {
   children: any;
   color?: IconButtonStateClass;
@@ -19,6 +21,8 @@ export function IconButton({
   href?: string;
   name?: string;
   active?: boolean;
+  onPointerDown?: PointerEventHandler<HTMLButtonElement>;
+  onPointerUp?: PointerEventHandler<HTMLButtonElement>;
 }) {
   // Placeholder for multiple color options in the future
   // Add other options to IconButtonColor in theme/styles.ts and
@@ -47,6 +51,9 @@ export function IconButton({
       className={`${defaultClasses} ${colorClasses} ${className || ""}`}
       onClick={onClick}
       disabled={disabled}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
     >
       {children}
     </button>

@@ -16,7 +16,6 @@ import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
 import { getPerspectiveTransformFromPoints, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
-import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   getDefaultDisplaySettings,
@@ -87,7 +86,7 @@ export default function Page() {
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
   );
-  const [showingMovePad, setShowingMovePad] = useState(true);
+  const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
 
   function getDefaultPoints() {
@@ -184,6 +183,12 @@ export default function Page() {
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
+      const isTouchDevice = "ontouchstart" in window;
+      if (localSettings.showingMovePad !== undefined) {
+        setShowingMovePad(localSettings.showingMovePad);
+      } else {
+        setShowingMovePad(isTouchDevice);
+      }
 
       const defaults = getDefaultDisplaySettings();
       setDisplaySettings({
@@ -276,7 +281,10 @@ export default function Page() {
             measuring={measuring}
             setMeasuring={setMeasuring}
             showingMovePad={showingMovePad}
-            setShowingMovePad={setShowingMovePad}
+            setShowingMovePad={(show) => {
+              setShowingMovePad(show);
+              updateLocalSettings({ showingMovePad: show });
+            }}
           />
 
           <StitchMenu

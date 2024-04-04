@@ -235,22 +235,6 @@ export default function Header({
             )}
           </div>
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
-            <Tooltip
-              description={
-                showingMovePad ? t("hideMovement") : t("showMovement")
-              }
-            >
-              <IconButton
-                className={`${visible(isCalibrating)}`}
-                onClick={() => setShowingMovePad(!showingMovePad)}
-              >
-                <MoveIcon
-                  ariaLabel={
-                    showingMovePad ? t("hideMovement") : t("showMovement")
-                  }
-                />
-              </IconButton>
-            </Tooltip>
             <div className="flex gap-1">
               <InlineInput
                 className="relative flex flex-col"
@@ -289,6 +273,22 @@ export default function Header({
                 onClick={handleResetCalibration}
               >
                 <DeleteIcon ariaLabel={t("delete")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              description={
+                showingMovePad ? t("hideMovement") : t("showMovement")
+              }
+            >
+              <IconButton
+                className={`${visible(isCalibrating)}`}
+                onClick={() => setShowingMovePad(!showingMovePad)}
+              >
+                <MoveIcon
+                  ariaLabel={
+                    showingMovePad ? t("hideMovement") : t("showMovement")
+                  }
+                />
               </IconButton>
             </Tooltip>
           </div>

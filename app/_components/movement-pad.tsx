@@ -7,8 +7,12 @@ import KeyboardArrowDownIcon from "@/_icons/keyboard-arrow-down";
 import KeyboardArrowLeftIcon from "@/_icons/keyboard-arrow-left";
 import KeyboardArrowRightIcon from "@/_icons/keyboard-arrow-right";
 import { Point } from "@/_lib/point";
-import StepIcon from "@/_icons/step-icon";
 import { PointAction } from "@/_reducers/pointsReducer";
+import CycleIcon from "@/_icons/cycle-icon";
+
+const PIXEL_LIST = [1, 4, 8, 16];
+const REPEAT_MS = 100;
+const REPEAT_PX_COUNT = 6;
 
 export default function MovementPad({
   corners,
@@ -21,9 +25,11 @@ export default function MovementPad({
 }) {
   const t = useTranslations("MovementPad");
   const border = "border-2 border-purple-600";
+  const [intervalFunc, setIntervalFunc] = React.useState<NodeJS.Timeout | null>(
+    null,
+  );
 
-  function getOffset(direction: Direction): Point {
-    const px = 1;
+  function getOffset(direction: Direction, px: number): Point {
     switch (direction) {
       case Direction.Up:
         return { y: -px, x: 0 };
@@ -38,10 +44,29 @@ export default function MovementPad({
     }
   }
 
-  function handleMove(direction: Direction) {
+  function handleMove(direction: Direction, px: number) {
     if (corners.size) {
-      let offset = getOffset(direction);
+      let offset = getOffset(direction, px);
       dispatch({ type: "offset", offset, corners });
+    }
+  }
+
+  function handleStart(direction: Direction) {
+    handleMove(direction, PIXEL_LIST[0]);
+    let i = 0;
+    setIntervalFunc(
+      setInterval(() => {
+        if (i < PIXEL_LIST.length * REPEAT_PX_COUNT - 1) {
+          ++i;
+        }
+        handleMove(direction, PIXEL_LIST[Math.floor(i / REPEAT_PX_COUNT)]);
+      }, REPEAT_MS),
+    );
+  }
+
+  function handleStop() {
+    if (intervalFunc) {
+      clearInterval(intervalFunc);
     }
   }
 
@@ -54,17 +79,19 @@ export default function MovementPad({
   }
 
   return (
-    <div className="absolute top-[calc(50vh-80px)] right-0 z-50">
+    <div className="absolute top-[calc(50vh-80px)] right-8 z-50">
       <menu className={`grid grid-cols-3 gap-2`}>
         <IconButton
-          onClick={() => handleMove(Direction.Up)}
+          onPointerDown={() => handleStart(Direction.Up)}
+          onPointerUp={handleStop}
           className={`${border} col-start-2`}
         >
           <KeyboardArrowUpIcon ariaLabel={t("up")} />
         </IconButton>
 
         <IconButton
-          onClick={() => handleMove(Direction.Left)}
+          onPointerDown={() => handleStart(Direction.Left)}
+          onPointerUp={handleStop}
           className={`${border} col-start-1`}
         >
           <KeyboardArrowLeftIcon ariaLabel={t("left")} />
@@ -74,18 +101,20 @@ export default function MovementPad({
           onClick={handleChangeCorners}
           className={`${border} col-start-2`}
         >
-          <StepIcon ariaLabel={t("next")} />
+          <CycleIcon ariaLabel={t("next")} />
         </IconButton>
 
         <IconButton
-          onClick={() => handleMove(Direction.Right)}
+          onPointerDown={() => handleStart(Direction.Right)}
+          onPointerUp={handleStop}
           className={`${border} col-start-3`}
         >
           <KeyboardArrowRightIcon ariaLabel={t("right")} />
         </IconButton>
 
         <IconButton
-          onClick={() => handleMove(Direction.Down)}
+          onPointerDown={() => handleStart(Direction.Down)}
+          onPointerUp={handleStop}
           className={`${border} col-start-2`}
         >
           <KeyboardArrowDownIcon ariaLabel={t("down")} />

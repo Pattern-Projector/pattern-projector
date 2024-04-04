@@ -53,7 +53,7 @@ export default function useProgArrowKeyHandler(
       document.addEventListener("keyup", keyupHandler);
       return () => {
         document.removeEventListener("keydown", keydownHandler);
-        document.addEventListener("keyup", keyupHandler);
+        document.removeEventListener("keyup", keyupHandler);
       };
     }
   }, [keydownHandler, keyupHandler, active]);

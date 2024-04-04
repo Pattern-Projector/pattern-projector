@@ -149,8 +149,8 @@
         "stitchMenuHide": "Hide stitch menu",
         "measureOn": "Start measuring",
         "measureOff": "Stop measuring",
-        "showMovement": "Show movement pad",
-        "hideMovement": "Hide movement pad"
+        "showMovement": "Show move tool",
+        "hideMovement": "Hide move tool"
       },
       "StitchMenu": {
         "columnCount": "Columns",

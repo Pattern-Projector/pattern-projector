@@ -1,7 +1,6 @@
 import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
-import { applyOffset, Point } from "@/_lib/point";
+import { Point } from "@/_lib/point";
 import { translate } from "@/_lib/geometry";
-import { useEffect, useMemo, useState } from "react";
 import { Matrix } from "ml-matrix";
 
 export default function useProgArrowKeyToMatrix(
