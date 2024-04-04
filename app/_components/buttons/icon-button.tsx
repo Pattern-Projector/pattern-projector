@@ -1,5 +1,4 @@
-import { ButtonColor, IconButtonStateClass } from "@/_components/theme/colors";
-import { ButtonStyle } from "@/_components/theme/styles";
+import { IconButtonStateClass } from "@/_components/theme/colors";
 import { MouseEventHandler } from "react";
 
 export function IconButton({

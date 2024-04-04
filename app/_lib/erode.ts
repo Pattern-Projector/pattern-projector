@@ -1,4 +1,7 @@
 export function erosionFilter(erosions: number): string {
+  if (erosions === 0) {
+    return "none";
+  }
   const svg = `<svg xmlns="http://www.w3.org/2000/svg">
   <filter id="erode">
     <feMorphology operator="erode" radius="${erosions}" />
@@ -9,7 +12,7 @@ export function erosionFilter(erosions: number): string {
 }
 
 export function erodeImageData(imageData: ImageData, output: ImageData) {
-  const { width, height, data } = imageData;
+  const { width, height } = imageData;
   const erodedData = output.data;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
@@ -19,7 +22,7 @@ export function erodeImageData(imageData: ImageData, output: ImageData) {
           imageData,
           x,
           y,
-          index,
+          index + i,
           width,
           height,
         );
@@ -39,9 +42,6 @@ function erodeAtIndex(
 ): number {
   const { data } = imageData;
   let c = data[index];
-  if (c !== 255) {
-    return 0;
-  }
   if (x > 0) {
     let n = data[index - 4];
     if (n < c) {

@@ -36,8 +36,6 @@ import {
   getCenterPoint,
   transformPoint,
 } from "@/_lib/geometry";
-import FourCorners from "@/_icons/four-corners";
-import FourCornersOff from "@/_icons/four-corners-off";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-checkbox-icon-button";
