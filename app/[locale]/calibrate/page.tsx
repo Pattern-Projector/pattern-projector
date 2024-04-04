@@ -354,10 +354,6 @@ export default function Page() {
               style={{
                 transform: `${matrix3d}`,
                 transformOrigin: "0 0",
-                filter: getInversionFilters(
-                  displaySettings.inverted,
-                  displaySettings.isInvertedGreen,
-                ),
               }}
             >
               <div className={"outline outline-8 outline-purple-600"}>
@@ -374,6 +370,10 @@ export default function Page() {
                   edgeInsets={edgeInsets}
                   pageRange={pageRange}
                   setLocalTransform={setLocalTransform}
+                  filter={getInversionFilters(
+                    displaySettings.inverted,
+                    displaySettings.isInvertedGreen,
+                  )}
                 />
               </div>
             </div>

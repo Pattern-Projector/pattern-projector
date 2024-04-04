@@ -38,6 +38,7 @@ export default function PdfViewer({
   columnCount,
   edgeInsets,
   pageRange,
+  filter,
 }: {
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
@@ -51,6 +52,7 @@ export default function PdfViewer({
   columnCount: string;
   edgeInsets: EdgeInsets;
   pageRange: string;
+  filter: string;
 }) {
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
@@ -132,23 +134,29 @@ export default function PdfViewer({
             <div
               key={`page_${index}_${value}`}
               style={{
-                width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
-                height: `${pageHeight - Number(edgeInsets.vertical)}px`,
-                mixBlendMode: "multiply",
                 filter:
                   isSafari || isFirefox ? "none" : erosionFilter(lineThickness),
               }}
             >
-              <Page
-                scale={PDF_TO_CSS_UNITS}
-                pageNumber={value}
-                renderMode="custom"
-                customRenderer={customRenderer}
-                customTextRenderer={customTextRenderer}
-                renderAnnotationLayer={false}
-                renderTextLayer={true}
-                onLoadSuccess={onPageLoadSuccess}
-              />
+              <div
+                style={{
+                  width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
+                  height: `${pageHeight - Number(edgeInsets.vertical)}px`,
+                  filter: filter,
+                }}
+              >
+                <Page
+                  scale={PDF_TO_CSS_UNITS}
+                  pageNumber={value}
+                  renderMode="custom"
+                  customRenderer={customRenderer}
+                  customTextRenderer={customTextRenderer}
+                  renderAnnotationLayer={false}
+                  renderTextLayer={true}
+                  canvasBackground="transparent"
+                  onLoadSuccess={onPageLoadSuccess}
+                />
+              </div>
             </div>
           );
         })}
