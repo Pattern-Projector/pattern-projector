@@ -1,7 +1,13 @@
 "use client";
 
 import { Matrix } from "ml-matrix";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
@@ -37,6 +43,7 @@ import {
   MenuStates,
 } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
+import pointsReducer from "@/_reducers/pointsReducer";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -46,7 +53,7 @@ export default function Page() {
 
   const handle = useFullScreenHandle();
 
-  const [points, setPoints] = useState<Point[]>([]);
+  const [points, dispatch] = useReducer(pointsReducer, []);
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
@@ -161,9 +168,9 @@ export default function Page() {
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
-      setPoints(JSON.parse(localPoints));
+      dispatch({ type: "set", points: JSON.parse(localPoints) });
     } else {
-      setPoints(getDefaultPoints());
+      dispatch({ type: "set", points: getDefaultPoints() });
     }
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
@@ -227,8 +234,7 @@ export default function Page() {
             <MovementPad
               corners={corners}
               setCorners={setCorners}
-              points={points}
-              setPoints={setPoints}
+              dispatch={dispatch}
             />
           )}
           <div
@@ -241,7 +247,9 @@ export default function Page() {
             width={width}
             handleHeightChange={handleHeightChange}
             handleWidthChange={handleWidthChange}
-            handleResetCalibration={() => setPoints(getDefaultPoints())}
+            handleResetCalibration={() =>
+              dispatch({ type: "set", points: getDefaultPoints() })
+            }
             handleFileChange={handleFileChange}
             fullScreenHandle={handle}
             unitOfMeasure={unitOfMeasure}
@@ -309,7 +317,7 @@ export default function Page() {
           <CalibrationCanvas
             className={`absolute z-10`}
             points={points}
-            setPoints={setPoints}
+            dispatch={dispatch}
             width={+width}
             height={+height}
             isCalibrating={isCalibrating}

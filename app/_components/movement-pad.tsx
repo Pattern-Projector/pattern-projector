@@ -1,60 +1,54 @@
 import { Direction } from "@/_lib/direction";
 import { useTranslations } from "next-intl";
-import React from "react";
+import React, { Dispatch } from "react";
 import { IconButton } from "./buttons/icon-button";
 import KeyboardArrowUpIcon from "@/_icons/keyboard-arrow-up";
 import KeyboardArrowDownIcon from "@/_icons/keyboard-arrow-down";
 import KeyboardArrowLeftIcon from "@/_icons/keyboard-arrow-left";
 import KeyboardArrowRightIcon from "@/_icons/keyboard-arrow-right";
-import { Point, applyOffset } from "@/_lib/point";
+import { Point } from "@/_lib/point";
 import StepIcon from "@/_icons/step-icon";
+import { PointAction } from "@/_reducers/pointsReducer";
 
 export default function MovementPad({
   corners,
   setCorners,
-  points,
-  setPoints,
+  dispatch,
 }: {
   corners: Set<number>;
   setCorners: (corners: Set<number>) => void;
-  points: Point[];
-  setPoints: (points: Point[]) => void;
+  dispatch: Dispatch<PointAction>;
 }) {
   const t = useTranslations("MovementPad");
   const border = "border-2 border-purple-600";
 
+  function getOffset(direction: Direction): Point {
+    const px = 1;
+    switch (direction) {
+      case Direction.Up:
+        return { y: -px, x: 0 };
+      case Direction.Down:
+        return { y: px, x: 0 };
+      case Direction.Left:
+        return { y: 0, x: -px };
+      case Direction.Right:
+        return { y: 0, x: px };
+      default:
+        return { x: 0, y: 0 };
+    }
+  }
+
   function handleMove(direction: Direction) {
     if (corners.size) {
-      const newPoints = [...points];
-      for (const pointToModify of corners) {
-        let newPoint = points[pointToModify];
-        const px = 1;
-        switch (direction) {
-          case Direction.Up:
-            newPoint = applyOffset(newPoint, { y: -px, x: 0 });
-            break;
-          case Direction.Down:
-            newPoint = applyOffset(newPoint, { y: px, x: 0 });
-            break;
-          case Direction.Left:
-            newPoint = applyOffset(newPoint, { y: 0, x: -px });
-            break;
-          case Direction.Right:
-            newPoint = applyOffset(newPoint, { y: 0, x: px });
-            break;
-          default:
-            break;
-        }
-        newPoints[pointToModify] = newPoint;
-      }
-      setPoints(newPoints);
+      let offset = getOffset(direction);
+      dispatch({ type: "offset", offset, corners });
     }
   }
 
   function handleChangeCorners() {
     const newCorners = new Set<number>();
     corners.forEach((c) => {
-      newCorners.add((c + 1) % points.length);
+      newCorners.add((c + 1) % 4);
     });
     setCorners(newCorners);
   }

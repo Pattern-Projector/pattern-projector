@@ -1,37 +1,33 @@
 import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
-import { applyOffset, Point } from "@/_lib/point";
-import { Dispatch, SetStateAction } from "react";
+import { KeyCode } from "@/_lib/key-code";
+import { Point } from "@/_lib/point";
+import { PointAction } from "@/_reducers/pointsReducer";
+import { Dispatch } from "react";
 
 export default function useProgArrowKeyPoints(
-  points: Point[],
-  setPoints: Dispatch<SetStateAction<Point[]>>,
+  dispatch: Dispatch<PointAction>,
   corners: Set<number>,
   active: boolean,
 ) {
-  function getNewOffset(key: string, px: number) {
-    if (corners.size) {
-      const newPoints = [...points];
-      for (const pointToModify of corners) {
-      let newPoint = points[pointToModify];
-      switch (key) {
-        case "ArrowUp":
-          newPoint = applyOffset(newPoint, { y: -px, x: 0 });
-          break;
-        case "ArrowDown":
-          newPoint = applyOffset(newPoint, { y: px, x: 0 });
-          break;
-        case "ArrowLeft":
-          newPoint = applyOffset(newPoint, { y: 0, x: -px });
-          break;
-        case "ArrowRight":
-          newPoint = applyOffset(newPoint, { y: 0, x: px });
-          break;
-        default:
-          break;
-      }
-      newPoints[pointToModify] = newPoint;
+
+  function getOffset(key: KeyCode, px: number): Point {
+    switch (key) {
+      case KeyCode.ArrowUp:
+        return { y: -px, x: 0 };
+      case KeyCode.ArrowDown:
+        return{ y: px, x: 0 };
+      case KeyCode.ArrowLeft:
+        return { y: 0, x: -px };
+      case KeyCode.ArrowRight:
+        return { y: 0, x: px };
+      default:
+        return { x: 0, y: 0 };
     }
-      setPoints(newPoints);
+  }
+
+  function getNewOffset(key: KeyCode, px: number) {
+    if (corners.size) {
+      dispatch({ type: "offset", offset: getOffset(key, px), corners });
     }
   }
 

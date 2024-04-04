@@ -22,6 +22,7 @@ import { DisplaySettings, strokeColor } from "@/_lib/display-settings";
 import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
+import { PointAction } from "@/_reducers/pointsReducer";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const cornerMargin = 96;
@@ -29,7 +30,7 @@ const cornerMargin = 96;
 export default function CalibrationCanvas({
   className,
   points,
-  setPoints,
+  dispatch,
   width,
   height,
   isCalibrating,
@@ -40,7 +41,7 @@ export default function CalibrationCanvas({
 }: {
   className: string | undefined;
   points: Point[];
-  setPoints: Dispatch<SetStateAction<Point[]>>;
+  dispatch: Dispatch<PointAction>;
   width: number;
   height: number;
   isCalibrating: boolean;
@@ -177,7 +178,7 @@ export default function CalibrationCanvas({
     }
   }, [KeyCode.Tab]);
 
-  useProgArrowKeyPoints(points, setPoints, corners, isCalibrating);
+  useProgArrowKeyPoints(dispatch, corners, isCalibrating);
 
   function handlePointerDown(e: React.PointerEvent) {
     const p = { x: e.clientX, y: e.clientY };
@@ -227,7 +228,7 @@ export default function CalibrationCanvas({
     if (dragPoint === null) return;
 
     localStorage.setItem("points", JSON.stringify(localPoints));
-    setPoints(localPoints);
+    dispatch({ type: "set", points: localPoints });
     setDragPoint(null);
   }
 
