@@ -21,7 +21,3 @@ export function getPageNumbers(pageRange: string, pageCount: number): number[] {
   }
   return pages;
 }
-
-export function validPageRange(s: string, old: string): string {
-  return s.match(/^(\d+(-\d*)?,?)*$/) ? s : old;
-}
