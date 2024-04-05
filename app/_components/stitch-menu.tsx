@@ -38,8 +38,6 @@ export default function StitchMenu({
   setShowMenu: (showMenu: boolean) => void;
 }) {
   const t = useTranslations("StitchMenu");
-  const pageRangeRef = useRef<HTMLInputElement>(null);
-  const [caret, setCaret] = useState<number>(0);
 
   function handleColumnCountChange(e: ChangeEvent<HTMLInputElement>) {
     const count = Number(allowInteger(e.target.value));
@@ -51,10 +49,8 @@ export default function StitchMenu({
   }
 
   function handlePageRangeChange(e: ChangeEvent<HTMLInputElement>) {
-    const { selectionStart, value } = e.target;
-    const range = validPageRange(value, pageRange);
-    setCaret(selectionStart || 0);
-    setPageRange(range);
+    const { value } = e.target;
+    setPageRange(value);
   }
 
   function handleEdgeInsetChange(e: ChangeEvent<HTMLInputElement>) {
@@ -73,12 +69,6 @@ export default function StitchMenu({
     }
   }
 
-  useEffect(() => {
-    if (pageRangeRef.current) {
-      pageRangeRef.current.setSelectionRange(caret, caret);
-    }
-  }, [caret, pageRange]);
-
   return (
     <menu
       className={`flex justify-between ${showMenu ? "top-16" : "-top-60"} absolute left-0 w-full z-20 transition-all duration-700 ${className} bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 p-2`}
@@ -92,7 +82,6 @@ export default function StitchMenu({
           value={columnCount}
         />
         <Input
-          inputRef={pageRangeRef}
           inputClassName="w-36"
           handleChange={handlePageRangeChange}
           label={t("pageRange")}
