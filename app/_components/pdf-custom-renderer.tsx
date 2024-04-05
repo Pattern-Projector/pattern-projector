@@ -97,11 +97,6 @@ export default function CustomRenderer(
       optionalContentConfigPromise: pdf
         ? optionalContentConfigPromise(pdf)
         : undefined,
-      background: "#00000000",
-      pageColors: {
-        background: "#00000000",
-        foreground: "#000",
-      },
     };
 
     renderContext.canvasContext.clearRect(0, 0, canvas.width, canvas.height);

@@ -6,7 +6,6 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -18,7 +17,6 @@ import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import Matrix from "ml-matrix";
-import { erosionFilter } from "@/_lib/erode";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -71,25 +69,9 @@ export default function PdfViewer({
     );
   }
 
-  const isSafari = useMemo(() => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
-  }, []);
-
-  const isFirefox = useMemo(() => {
-    return navigator.userAgent.toLowerCase().includes("firefox");
-  }, []);
-
   const customRenderer = useCallback(
-    // Safari does not support filters on canvas so the erosions must be done in the renderer
-    // Firefox runs very slowly with the filters so the erosions must be done in the renderer
-    () =>
-      CustomRenderer(
-        setLayers,
-        layers,
-        isSafari || isFirefox ? lineThickness : 0,
-      ),
-    [setLayers, layers, isSafari, isFirefox, lineThickness],
+    () => CustomRenderer(setLayers, layers, lineThickness),
+    [setLayers, layers, lineThickness],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -117,6 +99,9 @@ export default function PdfViewer({
     edgeInsets,
   ]);
 
+  const pages = getPageNumbers(pageRange, pageCount);
+  const keys = genKeys(pages);
+
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
       <div
@@ -127,10 +112,10 @@ export default function PdfViewer({
           marginBottom: `${edgeInsets.vertical}px`,
         }}
       >
-        {getPageNumbers(pageRange, pageCount).map((value, index) => {
+        {pages.map((value, index) => {
           return value == 0 ? (
             <div
-              key={index}
+              key={keys[index]}
               style={{
                 width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
                 height: `${pageHeight - Number(edgeInsets.vertical)}px`,
@@ -138,10 +123,8 @@ export default function PdfViewer({
             ></div>
           ) : (
             <div
-              key={`page_${index}_${value}`}
+              key={keys[index]}
               style={{
-                filter:
-                  isSafari || isFirefox ? "none" : erosionFilter(lineThickness),
                 mixBlendMode:
                   Number(edgeInsets.horizontal) == 0 &&
                   Number(edgeInsets.vertical) == 0
@@ -164,7 +147,7 @@ export default function PdfViewer({
                   customTextRenderer={customTextRenderer}
                   renderAnnotationLayer={false}
                   renderTextLayer={true}
-                  canvasBackground="transparent"
+                  canvasBackground="#ccc"
                   onLoadSuccess={onPageLoadSuccess}
                 />
               </div>
@@ -174,4 +157,15 @@ export default function PdfViewer({
       </div>
     </Document>
   );
+}
+
+function genKeys(pages: number[]): string[] {
+  const keys: string[] = [];
+  const values = new Map<number, number>();
+  for (const value of pages) {
+    const seen = values.get(value) ?? 0;
+    keys.push(`${value}_${seen}`);
+    values.set(value, seen + 1);
+  }
+  return keys;
 }
