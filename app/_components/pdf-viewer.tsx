@@ -142,6 +142,11 @@ export default function PdfViewer({
               style={{
                 filter:
                   isSafari || isFirefox ? "none" : erosionFilter(lineThickness),
+                mixBlendMode:
+                  Number(edgeInsets.horizontal) == 0 &&
+                  Number(edgeInsets.vertical) == 0
+                    ? "normal"
+                    : "darken",
               }}
             >
               <div
