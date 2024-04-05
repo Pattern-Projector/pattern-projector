@@ -49,7 +49,7 @@ export function themeFilter(theme: Theme): string {
     case Theme.Green:
       return "invert(1) sepia(100%) saturate(300%) hue-rotate(80deg)";
     case Theme.Light:
-      return "invert(0)";
+      return "none";
   }
 }
 
