@@ -1,15 +1,7 @@
 import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
 import { allowInteger } from "@/_lib/remove-non-digits";
-import { validPageRange } from "@/_lib/get-page-numbers";
 import Input from "@/_components/input";
 import { IconButton } from "@/_components/buttons/icon-button";
 import CloseIcon from "@/_icons/close-icon";

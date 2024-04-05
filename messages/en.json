@@ -49,11 +49,11 @@
         "title": "Invert Colors",
         "description": "When projecting, it's usually easier to see green or white lines on black. Click/tap once for green lines, twice for white lines, and three times to return to black lines."
       },
-      "moveTool" : {
+      "moveTool": {
         "title": "Show/hide move tool",
         "description": "The move tool has four arrow buttons to move the calibration grid corners/edges. It also has a next button in the middle for switching to the next corner/edge."
       },
-      "overlayOptions" : {
+      "overlayOptions": {
         "title": "Show/hide overlay options",
         "description": "The overlays grid, border, paper sheet, and flip lines can be shown or hidden. The grid match the calibration grid, border is the border of the calibration grid, paper sheet is a rectangle the size of a Letter or A4 piece of paper, and flip lines are lines that help with mirroring patterns."
       },
