@@ -127,7 +127,7 @@ export default function PdfViewer({
           marginBottom: `${edgeInsets.vertical}px`,
         }}
       >
-        {getPageNumbers(pageRange, pageCount).map((value, index, array) => {
+        {getPageNumbers(pageRange, pageCount).map((value, index) => {
           return value == 0 ? (
             <div
               key={index}

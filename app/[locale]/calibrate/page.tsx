@@ -215,8 +215,20 @@ export default function Page() {
     const w = Number(width);
     const h = Number(height);
     if (points && points.length === maxPoints) {
-      let m = getPerspectiveTransformFromPoints(points, w, h, ptDensity, true);
-      let n = getPerspectiveTransformFromPoints(points, w, h, ptDensity, false);
+      const m = getPerspectiveTransformFromPoints(
+        points,
+        w,
+        h,
+        ptDensity,
+        true,
+      );
+      const n = getPerspectiveTransformFromPoints(
+        points,
+        w,
+        h,
+        ptDensity,
+        false,
+      );
       setPerspective(m);
       setCalibrationTransform(n);
     }

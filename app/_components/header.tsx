@@ -195,7 +195,7 @@ export default function Header({
             </IconButton>
             <Tooltip description={t("invertColor")}>
               <IconButton
-                onClick={(e) => {
+                onClick={() => {
                   const currentIdx = themes().indexOf(displaySettings.theme);
                   const theme = themes()[(currentIdx + 1) % themes().length];
                   setDisplaySettings({

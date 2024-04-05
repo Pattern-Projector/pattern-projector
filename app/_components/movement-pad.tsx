@@ -46,7 +46,7 @@ export default function MovementPad({
 
   function handleMove(direction: Direction, px: number) {
     if (corners.size) {
-      let offset = getOffset(direction, px);
+      const offset = getOffset(direction, px);
       dispatch({ type: "offset", offset, corners });
     }
   }

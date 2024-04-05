@@ -1,4 +1,8 @@
-export default function OverlayBorderIcon({ ariaLabel }: { ariaLabel: string }) {
+export default function OverlayBorderIcon({
+  ariaLabel,
+}: {
+  ariaLabel: string;
+}) {
   return (
     <svg
       aria-label={ariaLabel}

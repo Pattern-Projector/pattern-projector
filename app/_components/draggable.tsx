@@ -112,7 +112,7 @@ export default function Draggable({
   }
 
   function handleOnStart(p: Point): void {
-    var pt = transformPoint(p, perspective);
+    const pt = transformPoint(p, perspective);
     setDragStart(pt);
     setTransformStart(localTransform.clone());
   }

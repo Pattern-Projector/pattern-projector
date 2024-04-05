@@ -42,9 +42,8 @@
 //M*/
 
 import { Point } from "@/_lib/point";
-import { AbstractMatrix, Matrix, solve } from 'ml-matrix';
+import { AbstractMatrix, Matrix, solve } from "ml-matrix";
 import { getPtDensity } from "./unit";
-
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
@@ -79,10 +78,7 @@ import { getPtDensity } from "./unit";
  * @param dst - Coordinates of the corresponding quadrangle vertices in the destination image starting from top left clockwise.
  * @returns A 3x3 matrix of a perspective transform.
  */
-export function getPerspectiveTransform(
-  src: Point[],
-  dst: Point[]
-): Matrix {
+export function getPerspectiveTransform(src: Point[], dst: Point[]): Matrix {
   const a: number[][] = Array.from(Array(8), () => Array(8));
   const b: number[] = new Array(8);
 
@@ -122,7 +118,7 @@ export function getPerspectiveTransform(
   const X = x.getColumn(0);
   X.push(1);
 
-  var s = Matrix.from1DArray(3, 3, X);
+  const s = Matrix.from1DArray(3, 3, X);
   return s;
 }
 
@@ -131,7 +127,7 @@ export function translatePoints(pts: Point[], dx: number, dy: number): Point[] {
 }
 
 export function rectCorners(width: number, height: number): Point[] {
-  return  [
+  return [
     { x: 0, y: 0 },
     { x: width, y: 0 },
     { x: width, y: height },
@@ -139,17 +135,25 @@ export function rectCorners(width: number, height: number): Point[] {
   ];
 }
 
-function getDstVertices(width: number, height: number, ptDensity: number): Point[] {
+function getDstVertices(
+  width: number,
+  height: number,
+  ptDensity: number,
+): Point[] {
   const dx = +width * ptDensity;
   const dy = +height * ptDensity;
   return rectCorners(dx, dy);
 }
 
-export function getCenterPoint(width: number, height: number, unitOfMeasure: string): Point {
+export function getCenterPoint(
+  width: number,
+  height: number,
+  unitOfMeasure: string,
+): Point {
   return {
     x: width * getPtDensity(unitOfMeasure) * 0.5,
     y: height * getPtDensity(unitOfMeasure) * 0.5,
-  }
+  };
 }
 
 export function getPerspectiveTransformFromPoints(
@@ -159,10 +163,16 @@ export function getPerspectiveTransformFromPoints(
   ptDensity: number,
   reverse?: boolean,
 ): Matrix {
-  if (reverse){
-    return getPerspectiveTransform(points, getDstVertices(width, height, ptDensity));
-  }else{
-    return getPerspectiveTransform(getDstVertices(width, height, ptDensity), points);
+  if (reverse) {
+    return getPerspectiveTransform(
+      points,
+      getDstVertices(width, height, ptDensity),
+    );
+  } else {
+    return getPerspectiveTransform(
+      getDstVertices(width, height, ptDensity),
+      points,
+    );
   }
 }
 
@@ -171,20 +181,17 @@ export function transformPoints(points: Point[], m: Matrix): Point[] {
 }
 
 export function transformPoint(p: Point, mm: Matrix): Point {
-  let m = mm.to1DArray();
-  var w = p.x * m[6] + p.y * m[7] + m[8];
+  const m = mm.to1DArray();
+  let w = p.x * m[6] + p.y * m[7] + m[8];
   w = 1 / w;
-  let ox = (p.x * m[0] + p.y * m[1] + m[2]) * w;
-  let oy = (p.x * m[3] + p.y * m[4] + m[5]) * w;
-  let result = { x: ox, y: oy };
+  const ox = (p.x * m[0] + p.y * m[1] + m[2]) * w;
+  const oy = (p.x * m[3] + p.y * m[4] + m[5]) * w;
+  const result = { x: ox, y: oy };
   return result;
 }
 
 export function translate(p: Point): Matrix {
-  return Matrix.from1DArray(3, 3,
-    [1, 0, p.x, 
-     0, 1, p.y, 
-     0, 0, 1]);
+  return Matrix.from1DArray(3, 3, [1, 0, p.x, 0, 1, p.y, 0, 0, 1]);
 }
 
 export function scale(s: number, sy: null | number = null): Matrix {
@@ -229,7 +236,7 @@ export function flipHorizontal(origin: Point): Matrix {
  * @returns A css transform string
  */
 export function toMatrix3d(m: Matrix): string {
-  var r = m.clone();
+  let r = m.clone();
   // Make the 3x3 into 4x4 by inserting a z component in the 3rd column.
   r.addColumn(2, AbstractMatrix.zeros(1, 3));
   r.addRow(2, AbstractMatrix.from1DArray(1, 4, [0, 0, 1, 0]));
@@ -240,14 +247,14 @@ export function toMatrix3d(m: Matrix): string {
 }
 
 export function sqrDist(a: Point, b: Point): number {
-  let dx = a.x - b.x;
-  let dy = a.y - b.y;
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
   return dx * dx + dy * dy;
 }
 
 export function minIndex(a: number[]): number {
-  var min = 0;
-  for (var i = 1; i < a.length; i++) {
+  let min = 0;
+  for (let i = 1; i < a.length; i++) {
     if (a[i] < a[min]) {
       min = i;
     }
@@ -270,7 +277,10 @@ export function sqrDistToLine(a: Point, b: Point, p: Point): number {
 
 export function interp(from: Point, to: Point, portion: number): Point {
   const rest = 1.0 - portion;
-  return { x: to.x * portion + from.x * rest, y: to.y * portion + from.y * rest };
+  return {
+    x: to.x * portion + from.x * rest,
+    y: to.y * portion + from.y * rest,
+  };
 }
 
 /* Returns true if the list of points define a concave polygon, false otherwise */
@@ -300,7 +310,8 @@ export function checkIsConcave(points: Point[]): boolean {
 }
 
 function getOrientation(p1: Point, p2: Point, p3: Point): number {
-  const crossProduct = (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+  const crossProduct =
+    (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
   if (crossProduct < 0) {
     return -1; // Clockwise orientation
   } else if (crossProduct > 0) {
@@ -310,7 +321,12 @@ function getOrientation(p1: Point, p2: Point, p3: Point): number {
   }
 }
 
-export function constrainInSpace(p: Point, anchorPoint: Point, matrix: Matrix, inverse: Matrix): Point {
+export function constrainInSpace(
+  p: Point,
+  anchorPoint: Point,
+  matrix: Matrix,
+  inverse: Matrix,
+): Point {
   const p1 = transformPoint(p, matrix);
   const p2 = transformPoint(anchorPoint, matrix);
   const c = constrained(p1, p2);

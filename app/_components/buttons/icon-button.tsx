@@ -3,7 +3,6 @@ import { MouseEventHandler, PointerEventHandler } from "react";
 
 export function IconButton({
   children,
-  color = IconButtonStateClass.DEFAULT,
   disabled,
   className,
   onClick,
@@ -14,7 +13,6 @@ export function IconButton({
   onPointerUp,
 }: {
   children: any;
-  color?: IconButtonStateClass;
   disabled?: boolean;
   className?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;

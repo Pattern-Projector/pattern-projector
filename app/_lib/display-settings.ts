@@ -1,4 +1,3 @@
-
 export interface OverlaySettings {
   disabled: boolean;
   grid: boolean;
@@ -56,14 +55,14 @@ export function themeFilter(theme: Theme): string {
 export function strokeColor(theme: Theme) {
   switch (theme) {
     case Theme.Dark:
-      return '#fff';
+      return "#fff";
     case Theme.Green:
       return "#32CD32";
     case Theme.Light:
-      return '#000';
+      return "#000";
   }
 }
 
 export function fillColor(theme: Theme) {
-  return isDarkTheme(theme) ? '#000' : '#fff';
+  return isDarkTheme(theme) ? "#000" : "#fff";
 }

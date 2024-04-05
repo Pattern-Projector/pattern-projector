@@ -67,7 +67,7 @@ export default function CalibrationCanvas({
       localPoints.length === maxPoints
     ) {
       /* All drawing is done in unitsOfMeasure, ptDensity = 1.0 */
-      let perspectiveMatrix = getPerspectiveTransformFromPoints(
+      const perspectiveMatrix = getPerspectiveTransformFromPoints(
         localPoints,
         width,
         height,
@@ -81,7 +81,7 @@ export default function CalibrationCanvas({
       if (ctx !== null) {
         ctx.canvas.width = window.innerWidth;
         ctx.canvas.height = window.innerHeight;
-        let cs = new CanvasState(
+        const cs = new CanvasState(
           ctx,
           { x: 0, y: 0 },
           localPoints,
@@ -110,7 +110,7 @@ export default function CalibrationCanvas({
   ]);
 
   function isNearCenter(p: Point): boolean {
-    let sum = localPoints.reduce(
+    const sum = localPoints.reduce(
       (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
       { x: 0, y: 0 },
     );
@@ -210,7 +210,7 @@ export default function CalibrationCanvas({
           dy = 0;
         }
       }
-      for (let corner of corners) {
+      for (const corner of corners) {
         const currentPoint = newPoints[corner];
         newPoints[corner] = {
           x: currentPoint.x + dx,

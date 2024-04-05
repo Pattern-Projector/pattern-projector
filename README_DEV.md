@@ -5,19 +5,19 @@
 - Make a directory to download the source somewhere and open a command prompt there.
 - Install yarn:
 
-    npm install --global yarn
+  npm install --global yarn
 
 - Get the Pattern Projector source code with git:
 
-    git clone https://github.com/Pattern-Projector/pattern-projector.git .
+  git clone https://github.com/Pattern-Projector/pattern-projector.git .
 
 - Install all packages required for Pattern Projector:
 
-    yarn
+  yarn
 
 - Start development webserver:
 
-    yarn dev
+  yarn dev
 
 This will start a webserver on localhost:3000 . If you edit any files, the development website on localhost will
 automatically reload.

@@ -9,13 +9,12 @@ export default function useProgArrowKeyPoints(
   corners: Set<number>,
   active: boolean,
 ) {
-
   function getOffset(key: KeyCode, px: number): Point {
     switch (key) {
       case KeyCode.ArrowUp:
         return { y: -px, x: 0 };
       case KeyCode.ArrowDown:
-        return{ y: px, x: 0 };
+        return { y: px, x: 0 };
       case KeyCode.ArrowLeft:
         return { y: 0, x: -px };
       case KeyCode.ArrowRight:

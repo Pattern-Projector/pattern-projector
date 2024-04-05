@@ -1,9 +1,17 @@
 import { CM } from "@/_lib/unit";
 import Matrix from "ml-matrix";
 import { Point } from "@/_lib/point";
-import { DisplaySettings, fillColor, strokeColor } from "@/_lib/display-settings";
 import {
-  checkIsConcave, rectCorners, transformPoint, transformPoints, translatePoints
+  DisplaySettings,
+  fillColor,
+  strokeColor,
+} from "@/_lib/display-settings";
+import {
+  checkIsConcave,
+  rectCorners,
+  transformPoint,
+  transformPoints,
+  translatePoints,
 } from "@/_lib/geometry";
 
 export class CanvasState {
@@ -56,7 +64,7 @@ export function drawPolygon(
   points: Point[],
 ): void {
   ctx.beginPath();
-  for (let p of points) {
+  for (const p of points) {
     ctx.lineTo(p.x, p.y);
   }
   ctx.closePath();
@@ -102,7 +110,8 @@ export function drawCenterLines(cs: CanvasState) {
 }
 
 export function drawPaperSheet(cs: CanvasState) {
-  const { ctx, perspective, unitOfMeasure, width, height, displaySettings } = cs;
+  const { ctx, perspective, unitOfMeasure, width, height, displaySettings } =
+    cs;
   const fontSize = 32;
 
   ctx.save();
@@ -141,7 +150,11 @@ export function drawPaperSheet(cs: CanvasState) {
   ctx.restore();
 }
 
-export function drawBorder(cs: CanvasState, lineColor: string, dashColor: string) {
+export function drawBorder(
+  cs: CanvasState,
+  lineColor: string,
+  dashColor: string,
+) {
   const ctx = cs.ctx;
   ctx.save();
   drawPolygon(ctx, cs.points);
@@ -156,7 +169,11 @@ export function drawBorder(cs: CanvasState, lineColor: string, dashColor: string
   ctx.restore();
 }
 
-export function drawGrid(cs: CanvasState, outset: number, lineDash?: number[]): void {
+export function drawGrid(
+  cs: CanvasState,
+  outset: number,
+  lineDash?: number[],
+): void {
   const ctx = cs.ctx;
   ctx.save();
   if (lineDash === undefined) {
@@ -240,5 +257,9 @@ export function drawDimensionLabels(
   const widthLabelWidth = ctx.measureText(widthText).width;
   const heightLabelHeight = ctx.measureText(heightText).actualBoundingBoxAscent;
   ctx.fillText(widthText, line[0].x - widthLabelWidth * 0.5, line[0].y - inset);
-  ctx.fillText(heightText, line[1].x + inset, line[1].y + heightLabelHeight * 0.5);
+  ctx.fillText(
+    heightText,
+    line[1].x + inset,
+    line[1].y + heightLabelHeight * 0.5,
+  );
 }

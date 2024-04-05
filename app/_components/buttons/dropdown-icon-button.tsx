@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { IconButton } from '@/_components/buttons/icon-button';
+import React, { useState, useRef, useEffect } from "react";
+import { IconButton } from "@/_components/buttons/icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { visible } from "@/_components/theme/css-functions";
 
@@ -34,18 +34,22 @@ export function DropdownIconButton<T>({
 
   const selectedOption = options.find((option) => option.value === selection);
 
-  const dropdownClasses = "absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10";
+  const dropdownClasses =
+    "absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [containerRef]);
 
@@ -54,10 +58,7 @@ export function DropdownIconButton<T>({
       className={`relative inline-block ${className || ""}`}
       ref={containerRef}
     >
-      <Tooltip
-        description={description}
-        tooltipVisible={!isOpen}
-      >
+      <Tooltip description={description} tooltipVisible={!isOpen}>
         <IconButton
           onClick={handleClick}
           aria-haspopup="true"

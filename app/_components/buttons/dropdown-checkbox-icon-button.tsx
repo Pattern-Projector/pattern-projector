@@ -98,7 +98,6 @@ export function DropdownCheckboxIconButton<T>({
         {Object.entries(optionSettings).map(([key, option]) => {
           const value = options[key as keyof T];
           const isBoolean = typeof value === "boolean";
-          const isNumber = typeof value === "number";
           const inputId = `checkbox-${key}`;
           const isDisabled = disabled && key !== disableOptionKey;
 

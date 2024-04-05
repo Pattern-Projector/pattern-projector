@@ -1,13 +1,13 @@
 import { Point, applyOffset } from "@/_lib/point";
 
- interface OffsetAction {
-  type: 'offset';
+interface OffsetAction {
+  type: "offset";
   offset: Point;
   corners: Set<number>;
 }
 
 interface SetAction {
-  type: 'set';
+  type: "set";
   points: Point[];
 }
 
@@ -15,10 +15,10 @@ export type PointAction = OffsetAction | SetAction;
 
 export default function pointsReducer(points: Point[], action: PointAction) {
   switch (action.type) {
-    case 'set': {
+    case "set": {
       return [...action.points];
     }
-    case 'offset': {
+    case "offset": {
       return points.map((p, i) => {
         if (action.corners.has(i)) {
           return applyOffset(p, action.offset);

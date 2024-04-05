@@ -78,7 +78,7 @@ export default function CustomRenderer(
             setLayers(l);
           });
         } else {
-          for (let entry of layers) {
+          for (const entry of layers) {
             const layer = entry[1];
             for (let i = 0; i < layer.ids.length; i += 1) {
               optionalContentConfig.setVisibility(layer.ids[i], layer.visible);
@@ -113,7 +113,7 @@ export default function CustomRenderer(
         if (erosions === 0) {
           return;
         }
-        let ctx = renderContext.canvasContext;
+        const ctx = renderContext.canvasContext;
         let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const erodedData = new Uint8ClampedArray(imageData.data.length);
         let output = new ImageData(

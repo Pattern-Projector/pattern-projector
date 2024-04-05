@@ -7,7 +7,7 @@ export default function useProgArrowKeyToMatrix(
   active: boolean,
   scale: number,
   applyChange: (matrix: Matrix) => void,
-  ) {
+) {
   const PIXEL_LIST = [1, 10, 20, 100];
   function moveWithArrowKey(key: string, px: number) {
     let newOffset: Point = { x: 0, y: 0 };

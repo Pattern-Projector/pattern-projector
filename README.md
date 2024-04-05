@@ -4,11 +4,11 @@ Pattern projector is a free and open source web app that helps users quickly cal
 
 ## What You’ll Need
 
-* Projector: at least 720p recommended
-* Cutting mat: ideally with grid lines at every inch
-* Tripod or wall/shelf/table mount for projector
-* Computer or tablet to connect to the projector
-* A PDF sewing pattern
+- Projector: at least 720p recommended
+- Cutting mat: ideally with grid lines at every inch
+- Tripod or wall/shelf/table mount for projector
+- Computer or tablet to connect to the projector
+- A PDF sewing pattern
 
 ## Setup
 
@@ -16,7 +16,7 @@ Place the projector above the cutting mat, pointing at the cutting mat. Try to p
 
 Connect your computer or tablet to the projector and either mirror or extend the display.
 
-Adjust the focus on the projector, until text is crisp in the centre of the projection.  If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended  by the manufacturer.
+Adjust the focus on the projector, until text is crisp in the centre of the projection. If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended by the manufacturer.
 
 If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves.
 
@@ -35,21 +35,21 @@ When the projected grid is aligned with your mat, click (or tap) “Project Patt
 
 ## Projecting a Pattern
 
-Click (or tap) “Open File” to load the  PDF document.
+Click (or tap) “Open File” to load the PDF document.
 
 Cut along the projected design.
 
 In projection mode there are several tools provided:
 
-* Drag to move: Move the PDF by dragging it around the screen.
+- Drag to move: Move the PDF by dragging it around the screen.
 
-* Invert Colours: When projecting, it’s usually easier to see white lines on black. Click “invert” to invert the colours.
+- Invert Colours: When projecting, it’s usually easier to see white lines on black. Click “invert” to invert the colours.
 
-* Flip Vertical/Horizontal: helpful to unwrap fold lines in patterns
+- Flip Vertical/Horizontal: helpful to unwrap fold lines in patterns
 
-* Rotate: to change the orientation of the pattern
+- Rotate: to change the orientation of the pattern
 
-* Fullscreen: It’s generally easier to use the software in fullscreen mode, tap or click “Fullscreen”
+- Fullscreen: It’s generally easier to use the software in fullscreen mode, tap or click “Fullscreen”
 
 ## FAQ
 
