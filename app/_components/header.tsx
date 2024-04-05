@@ -159,7 +159,7 @@ export default function Header({
   return (
     <>
       <header
-        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-700 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
+        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
@@ -416,7 +416,7 @@ export default function Header({
         </nav>
       </header>
       <IconButton
-        className={`!p-1 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} transition-all duration-700 z-30 left-1/4 focus:ring-0`}
+        className={`!p-1 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} z-30 left-1/4 focus:ring-0`}
         onClick={() => setMenuStates({ ...menuStates, nav: true })}
       >
         <ExpandMoreIcon ariaLabel={t("menuShow")} />

@@ -246,12 +246,12 @@ export default function Page() {
   return (
     <main
       ref={noZoomRefCallback}
-      className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} transition-all duration-700 w-full h-full absolute overflow-hidden touch-none`}
+      className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-full h-full absolute overflow-hidden touch-none`}
     >
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
         <FullScreen
           handle={handle}
-          className="bg-white dark:bg-black w-full h-full"
+          className="bg-white dark:bg-black transition-all duration-500 w-full h-full"
         >
           {isCalibrating && showingMovePad && (
             <MovementPad
@@ -332,7 +332,7 @@ export default function Page() {
               description={menuStates.layers ? t("layersOff") : t("layersOn")}
             >
               <IconButton
-                className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400 transition-all duration-700`}
+                className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
                 onClick={() => setMenuStates({ ...menuStates, layers: true })}
               >
                 <LayersIcon ariaLabel="layers" />
@@ -361,7 +361,7 @@ export default function Page() {
             />
           )}
           <Draggable
-            viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-700 `}
+            viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 `}
             className={`select-none ${visible(!isCalibrating)}`}
             localTransform={localTransform}
             setLocalTransform={setLocalTransform}

@@ -33,7 +33,7 @@ export function IconButton({
   }
 
   const defaultClasses =
-    "transition-all duration-100 bg-white dark:bg-black cursor-pointer focus:ring-4 focus:outline-none rounded-full p-2.5";
+    "bg-white dark:bg-black cursor-pointer focus:ring-4 focus:outline-none rounded-full p-2.5";
 
   return href ? (
     <a
