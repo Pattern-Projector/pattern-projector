@@ -1,4 +1,4 @@
-import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
+import useProgArrowKeyHandler from "@/_hooks/use-prog-arrow-key-handler";
 import { KeyCode } from "@/_lib/key-code";
 import { Point } from "@/_lib/point";
 import { PointAction } from "@/_reducers/pointsReducer";

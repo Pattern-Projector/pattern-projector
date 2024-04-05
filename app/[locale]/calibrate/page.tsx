@@ -26,7 +26,7 @@ import {
 import { IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/interfaces/layer";
 import LayerMenu from "@/_components/layer-menu";
-import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
+import useProgArrowKeyToMatrix from "@/_hooks/use-prog-arrow-key-to-matrix";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import LayersIcon from "@/_icons/layers-icon";
@@ -43,6 +43,7 @@ import {
 } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
+import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -198,8 +199,10 @@ export default function Page() {
     }
   }, []);
 
-  /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in/cm */
-  useProgArrowKeyToMatrix(!isCalibrating, 1.0 / 16.0, (matrix) => {
+  const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
+  const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
+  const scale = unitOfMeasure === IN ? quarterInchPx : halfCmPx;
+  useProgArrowKeyToMatrix(!isCalibrating, scale, (matrix) => {
     setLocalTransform(matrix.mmul(localTransform));
   });
 

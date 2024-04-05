@@ -19,7 +19,7 @@ import {
 import { minIndex, sqrDist, sqrDistToLine } from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
 import { DisplaySettings, strokeColor } from "@/_lib/display-settings";
-import useProgArrowKeyPoints from "@/_hooks/useProgArrowKeyPoints";
+import useProgArrowKeyPoints from "@/_hooks/use-prog-arrow-key-points";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { PointAction } from "@/_reducers/pointsReducer";
