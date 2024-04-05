@@ -1,26 +1,24 @@
 {
   "HomePage": {
-    "beta": "beta",
-    "pdfstitcherHref": "https://www.pdfstitcher.org/",
     "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
     "github": "See source code",
     "calibrate": "Start Calibrating",
     "choose-language": "Language",
     "welcome": {
       "title": "Welcome to Pattern Projector!",
-      "description": "Pattern projector is a free and open source web app that helps users quickly calibrate projectors for sewing patterns. This project is currently in beta, so expect large changes and new features to be added as we iterate."
+      "description": "Pattern projector is a free and open source web app that quickly calibrates projectors for sewing patterns. It also has tools for stitching together multiple page patterns, changing line thickness, inverting colors, flipping/rotating patterns, and more."
     },
     "requirements": {
       "title": "What You’ll Need",
       "projector": "Projector: at least 720p recommended",
-      "mat": "Cutting mat: ideally with grid lines at every inch or centimeter",
+      "mat": "A cutting mat with grid lines (optional)",
       "mount": "Tripod or wall/shelf/table mount for projector",
       "computer": "Computer or tablet to connect to the projector",
       "pattern": "A PDF sewing pattern"
     },
     "setup": {
       "title": "Setup",
-      "place": "Place the projector above the cutting mat, pointing at the cutting mat. Try to place the projector directly above the cutting mat and pointing directly at it.",
+      "place": "Place the projector above the cutting mat, pointing directly at the cutting mat. If you do not have a cutting mat, you can use paper or masking tape to mark out a grid/rectangle on a table or floor.",
       "connect": "Connect your computer or tablet to the projector and either mirror or extend the display so that image from computer or tablet is shown on the projector.",
       "focus": "Adjust the focus on the projector, until text is crisp in the centre of the projection. If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended by the manufacturer.",
       "keystone": "If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves."
@@ -28,10 +26,9 @@
     "calibration": {
       "title": "Calibration",
       "start": "Click (or tap) “Start Calibrating.”",
-      "input": "Input the width and height of your mat.",
       "fullscreen": "Enter full screen mode by clicking (or tapping) ",
       "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your computer or tablet. Adjust the placement of the corners until the projected grid matches your mat's grid.",
-      "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and make sure your width and height inputs match the width and height of the grid.",
+      "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and input the width and height to match the width and height of the grid.",
       "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
     },
     "project": {
@@ -40,13 +37,29 @@
       "move": "Move the PDF by clicking and dragging it around the screen.",
       "cut": "Cut along the projected design.",
       "tools": "In projection mode there are several tools provided:",
-      "showGrid": {
-        "title": "Show/hide grid",
-        "description": "When projecting, it shows/hides a faint grid to verify that your calibration is correct."
+      "fullscreen": {
+        "title": "Full screen",
+        "description": "It's generally easier to use the software in full screen mode."
+      },
+      "showMenu": {
+        "title": "Show/hide menu",
+        "description": "Show or hide the top menu."
       },
       "invert": {
         "title": "Invert Colors",
-        "description": "When projecting, it's usually easier to see white lines on black."
+        "description": "When projecting, it's usually easier to see green or white lines on black. Click/tap once for green lines, twice for white lines, and three times to return to black lines."
+      },
+      "moveTool" : {
+        "title": "Show/hide move tool",
+        "description": "The move tool has four arrow buttons to move the calibration grid corners/edges. It also has a next button in the middle for switching to the next corner/edge."
+      },
+      "overlayOptions" : {
+        "title": "Show/hide overlay options",
+        "description": "The overlays grid, border, paper sheet, and flip lines can be shown or hidden. The grid match the calibration grid, border is the border of the calibration grid, paper sheet is a rectangle the size of a Letter or A4 piece of paper, and flip lines are lines that help with mirroring patterns."
+      },
+      "lineWeight": {
+        "title": "Line weight",
+        "description": "Change the thickness of the lines in the PDF pattern."
       },
       "flip": {
         "title": "Flip Vertical/Horizontal",
@@ -60,9 +73,17 @@
         "title": "Recenter",
         "description": "Centers the pattern on the cutting mat."
       },
-      "fullscreen": {
-        "title": "Full screen",
-        "description": "It's generally easier to use the software in full screen mode."
+      "layers": {
+        "title": "Show/hide layers",
+        "description": "Show or hide layers in the PDF."
+      },
+      "stitch": {
+        "title": "Show/hide stitch menu",
+        "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
+      },
+      "measure": {
+        "title": "Start/stop measuring",
+        "description": "Measure the distance between two points on the PDF."
       }
     },
     "faq": {
@@ -94,6 +115,10 @@
         "projectorsForSewing": {
           "title": "Projectors for Sewing Facebook Group",
           "link": "https://www.facebook.com/groups/481078582801085"
+        },
+        "onePageGuide": {
+          "title": "One Page Guide to Projector Sewing",
+          "link": "https://bit.ly/onepageguidetoprojectorsewing"
         }
       }
     },

@@ -16,6 +16,12 @@ import RecenterIcon from "@/_icons/recenter-icon";
 import Tooltip from "@/_components/tooltip/tooltip";
 import LanguageSwitcher from "@/_components/language-switcher";
 import { IconButton } from "@/_components/buttons/icon-button";
+import ExpandLessIcon from "@/_icons/expand-less-icon";
+import MoveIcon from "@/_icons/move-icon";
+import LineWeightIcon from "@/_icons/line-weight-icon";
+import LayersIcon from "@/_icons/layers-icon";
+import FlexWrapIcon from "@/_icons/flex-wrap-icon";
+import SquareFootIcon from "@/_icons/square-foot";
 
 export default function Home() {
   const t = useTranslations("HomePage");
@@ -28,7 +34,6 @@ export default function Home() {
     <main className="m-4">
       <nav className="flex items-center gap-2">
         <PatternProjectorIcon ariaLabel="" />
-        <span className="font-bold">{t("beta")}</span>
         <LanguageSwitcher
           ariaLabel={t("choose-language")}
           className="ml-auto"
@@ -63,13 +68,7 @@ export default function Home() {
           <li>{t("requirements.mat")}</li>
           <li>{t("requirements.mount")}</li>
           <li>{t("requirements.computer")}</li>
-          <li>
-            {t.rich("requirements.pattern", {
-              pdfstitcher: (chunks) => (
-                <a href={t("pdfstitcherHref")}>{chunks}</a>
-              ),
-            })}
-          </li>
+          <li>{t("requirements.pattern")}</li>
         </ul>
         <h2>{t("setup.title")}</h2>
         <ol>
@@ -82,7 +81,6 @@ export default function Home() {
         <h2>{t("calibration.title")}</h2>
         <ol>
           <li>{t("calibration.start")}</li>
-          <li>{t("calibration.input")}</li>
           <li>
             {t("calibration.fullscreen")}
             <FullscreenIcon ariaLabel="" />
@@ -122,10 +120,17 @@ export default function Home() {
           <tbody>
             <tr>
               <th scope="row">
-                <GridOnIcon ariaLabel="" />
+                <FullscreenIcon ariaLabel="" />
               </th>
-              <td>{t("project.showGrid.title")}</td>
-              <td>{t("project.showGrid.description")}</td>
+              <td>{t("project.fullscreen.title")}</td>
+              <td>{t("project.fullscreen.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <ExpandLessIcon ariaLabel="" />
+              </th>
+              <td>{t("project.showMenu.title")}</td>
+              <td>{t("project.showMenu.description")}</td>
             </tr>
             <tr>
               <th scope="row">
@@ -133,6 +138,27 @@ export default function Home() {
               </th>
               <td>{t("project.invert.title")}</td>
               <td>{t("project.invert.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <MoveIcon ariaLabel="" />
+              </th>
+              <td>{t("project.moveTool.title")}</td>
+              <td>{t("project.moveTool.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <GridOnIcon ariaLabel="" />
+              </th>
+              <td>{t("project.overlayOptions.title")}</td>
+              <td>{t("project.overlayOptions.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <LineWeightIcon ariaLabel="" />
+              </th>
+              <td>{t("project.lineWeight.title")}</td>
+              <td>{t("project.lineWeight.description")}</td>
             </tr>
             <tr>
               <th scope="row">
@@ -158,10 +184,24 @@ export default function Home() {
             </tr>
             <tr>
               <th scope="row">
-                <FullscreenIcon ariaLabel="" />
+                <LayersIcon ariaLabel="" />
               </th>
-              <td>{t("project.fullscreen.title")}</td>
-              <td>{t("project.fullscreen.description")}</td>
+              <td>{t("project.layers.title")}</td>
+              <td>{t("project.layers.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <FlexWrapIcon ariaLabel="" />
+              </th>
+              <td>{t("project.stitch.title")}</td>
+              <td>{t("project.stitch.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <SquareFootIcon ariaLabel="" />
+              </th>
+              <td>{t("project.measure.title")}</td>
+              <td>{t("project.measure.description")}</td>
             </tr>
           </tbody>
         </table>
