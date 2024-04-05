@@ -129,7 +129,13 @@ export default function PdfViewer({
       >
         {getPageNumbers(pageRange, pageCount).map((value, index, array) => {
           return value == 0 ? (
-            <div key={index}></div>
+            <div
+              key={index}
+              style={{
+                width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
+                height: `${pageHeight - Number(edgeInsets.vertical)}px`,
+              }}
+            ></div>
           ) : (
             <div
               key={`page_${index}_${value}`}
