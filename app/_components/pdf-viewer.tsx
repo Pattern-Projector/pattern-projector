@@ -54,6 +54,7 @@ export default function PdfViewer({
 }) {
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
+
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     setLayers(new Map());
@@ -83,9 +84,11 @@ export default function PdfViewer({
     const columns = Math.max(Math.min(Number(columnCount), itemCount), 1);
     const rowCount = Math.ceil((itemCount || 1) / columns);
     const w =
-      pageWidth * columns - (columns - 1) * Number(edgeInsets.horizontal);
+      pageWidth * columns -
+      (columns - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.horizontal);
     const h =
-      pageHeight * rowCount - (rowCount - 1) * Number(edgeInsets.vertical);
+      pageHeight * rowCount -
+      (rowCount - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.vertical);
     setLayoutWidth(w);
     setLayoutHeight(h);
   }, [
@@ -100,7 +103,13 @@ export default function PdfViewer({
   ]);
 
   const pages = getPageNumbers(pageRange, pageCount);
-  const keys = genKeys(pages);
+  const keys = getKeys(pages);
+  const cssEdgeInsets = {
+    vertical: Number(edgeInsets.vertical) * PDF_TO_CSS_UNITS,
+    horizontal: Number(edgeInsets.horizontal) * PDF_TO_CSS_UNITS,
+  };
+  const insetWidth = `${pageWidth - cssEdgeInsets.horizontal}px`;
+  const insetHeight = `${pageHeight - cssEdgeInsets.vertical}px`;
 
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
@@ -108,37 +117,25 @@ export default function PdfViewer({
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${columnCount}, max-content)`,
-          marginRight: `${edgeInsets.horizontal}px`,
-          marginBottom: `${edgeInsets.vertical}px`,
+          marginRight: cssEdgeInsets.horizontal,
+          marginBottom: cssEdgeInsets.vertical,
+          filter: filter,
         }}
       >
         {pages.map((value, index) => {
-          return value == 0 ? (
+          return (
             <div
               key={keys[index]}
               style={{
-                width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
-                height: `${pageHeight - Number(edgeInsets.vertical)}px`,
-              }}
-            ></div>
-          ) : (
-            <div
-              key={keys[index]}
-              style={{
+                width: insetWidth,
+                height: insetHeight,
                 mixBlendMode:
-                  Number(edgeInsets.horizontal) == 0 &&
-                  Number(edgeInsets.vertical) == 0
+                  cssEdgeInsets.horizontal == 0 && cssEdgeInsets.vertical == 0
                     ? "normal"
                     : "darken",
               }}
             >
-              <div
-                style={{
-                  width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
-                  height: `${pageHeight - Number(edgeInsets.vertical)}px`,
-                  filter: filter,
-                }}
-              >
+              {value != 0 && (
                 <Page
                   scale={PDF_TO_CSS_UNITS}
                   pageNumber={value}
@@ -149,7 +146,7 @@ export default function PdfViewer({
                   canvasBackground="#ccc"
                   onLoadSuccess={onPageLoadSuccess}
                 />
-              </div>
+              )}
             </div>
           );
         })}
@@ -158,7 +155,7 @@ export default function PdfViewer({
   );
 }
 
-function genKeys(pages: number[]): string[] {
+function getKeys(pages: number[]): string[] {
   const keys: string[] = [];
   const values = new Map<number, number>();
   for (const value of pages) {
