@@ -145,7 +145,6 @@ export default function PdfViewer({
                   renderMode="custom"
                   customRenderer={customRenderer}
                   customTextRenderer={customTextRenderer}
-                  renderAnnotationLayer={false}
                   renderTextLayer={true}
                   canvasBackground="#ccc"
                   onLoadSuccess={onPageLoadSuccess}
