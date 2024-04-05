@@ -3,12 +3,12 @@ export function erosionFilter(erosions: number): string {
     return "none";
   }
   const svg = `<svg xmlns="http://www.w3.org/2000/svg">
-  <filter id="erode">
-    <feMorphology operator="erode" radius="${erosions}" />
+  <filter id="erode-${erosions}">
+    <feMorphology operator="dilate" radius="${erosions}" />
   </filter>
 </svg>`;
   const url = `data:image/svg+xml;base64,${btoa(svg)}`;
-  return `url(${url}#erode)`;
+  return `url(${url}#erode-${erosions})`;
 }
 
 export function erodeImageData(imageData: ImageData, output: ImageData) {
@@ -17,21 +17,20 @@ export function erodeImageData(imageData: ImageData, output: ImageData) {
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       let index = (y * width + x) * 4;
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         erodedData[index + i] = erodeAtIndex(
           imageData,
           x,
           y,
-          index,
+          index + i,
           width,
           height,
         );
       }
-      erodedData[index + 3] = 255;
     }
   }
 }
-
+// TODO: this is a dilate now, not an erode
 function erodeAtIndex(
   imageData: ImageData,
   x: number,
@@ -42,30 +41,27 @@ function erodeAtIndex(
 ): number {
   const { data } = imageData;
   let c = data[index];
-  if (c !== 255) {
-    return 0;
-  }
   if (x > 0) {
     let n = data[index - 4];
-    if (n < c) {
+    if (n > c) {
       c = n;
     }
   }
   if (x < width - 1) {
     let n = data[index + 4];
-    if (n < c) {
+    if (n > c) {
       c = n;
     }
   }
   if (y > 0) {
     let n = data[index - width * 4];
-    if (n < c) {
+    if (n > c) {
       c = n;
     }
   }
   if (y < height - 1) {
     let n = data[index + width * 4];
-    if (n < c) {
+    if (n > c) {
       c = n;
     }
   }

@@ -357,7 +357,6 @@ export default function Page() {
               style={{
                 transform: `${matrix3d}`,
                 transformOrigin: "0 0",
-                filter: themeFilter(displaySettings.theme),
               }}
             >
               <div className={"outline outline-8 outline-purple-600"}>
@@ -374,6 +373,7 @@ export default function Page() {
                   edgeInsets={edgeInsets}
                   pageRange={pageRange}
                   setLocalTransform={setLocalTransform}
+                  filter={themeFilter(displaySettings.theme)}
                 />
               </div>
             </div>

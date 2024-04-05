@@ -38,6 +38,7 @@ export default function PdfViewer({
   columnCount,
   edgeInsets,
   pageRange,
+  filter,
 }: {
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
@@ -51,6 +52,7 @@ export default function PdfViewer({
   columnCount: string;
   edgeInsets: EdgeInsets;
   pageRange: string;
+  filter: string;
 }) {
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
@@ -74,10 +76,20 @@ export default function PdfViewer({
     return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
   }, []);
 
+  const isFirefox = useMemo(() => {
+    return navigator.userAgent.toLowerCase().includes("firefox");
+  }, []);
+
   const customRenderer = useCallback(
     // Safari does not support filters on canvas so the erosions must be done in the renderer
-    () => CustomRenderer(setLayers, layers, isSafari ? lineThickness : 0),
-    [setLayers, layers, isSafari, lineThickness],
+    // Firefox runs very slowly with the filters so the erosions must be done in the renderer
+    () =>
+      CustomRenderer(
+        setLayers,
+        layers,
+        isSafari || isFirefox ? lineThickness : 0,
+      ),
+    [setLayers, layers, isSafari, isFirefox, lineThickness],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -117,27 +129,40 @@ export default function PdfViewer({
       >
         {getPageNumbers(pageRange, pageCount).map((value, index, array) => {
           return value == 0 ? (
-            <div key={index}></div>
+            <div
+              key={index}
+              style={{
+                width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
+                height: `${pageHeight - Number(edgeInsets.vertical)}px`,
+              }}
+            ></div>
           ) : (
             <div
               key={`page_${index}_${value}`}
               style={{
-                width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
-                height: `${pageHeight - Number(edgeInsets.vertical)}px`,
-                mixBlendMode: "multiply",
-                filter: erosionFilter(lineThickness),
+                filter:
+                  isSafari || isFirefox ? "none" : erosionFilter(lineThickness),
               }}
             >
-              <Page
-                scale={PDF_TO_CSS_UNITS}
-                pageNumber={value}
-                renderMode="custom"
-                customRenderer={customRenderer}
-                customTextRenderer={customTextRenderer}
-                renderAnnotationLayer={false}
-                renderTextLayer={true}
-                onLoadSuccess={onPageLoadSuccess}
-              />
+              <div
+                style={{
+                  width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
+                  height: `${pageHeight - Number(edgeInsets.vertical)}px`,
+                  filter: filter,
+                }}
+              >
+                <Page
+                  scale={PDF_TO_CSS_UNITS}
+                  pageNumber={value}
+                  renderMode="custom"
+                  customRenderer={customRenderer}
+                  customTextRenderer={customTextRenderer}
+                  renderAnnotationLayer={false}
+                  renderTextLayer={true}
+                  canvasBackground="transparent"
+                  onLoadSuccess={onPageLoadSuccess}
+                />
+              </div>
             </div>
           );
         })}

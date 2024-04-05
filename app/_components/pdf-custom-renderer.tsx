@@ -91,14 +91,20 @@ export default function CustomRenderer(
 
     const renderContext: RenderParameters = {
       canvasContext: canvas.getContext("2d", {
-        alpha: false,
+        alpha: true,
       }) as CanvasRenderingContext2D,
       viewport: renderViewport,
       optionalContentConfigPromise: pdf
         ? optionalContentConfigPromise(pdf)
         : undefined,
+      background: "#00000000",
+      pageColors: {
+        background: "#00000000",
+        foreground: "#000",
+      },
     };
 
+    renderContext.canvasContext.clearRect(0, 0, canvas.width, canvas.height);
     const cancellable = page.render(renderContext);
     const runningTask = cancellable;
 

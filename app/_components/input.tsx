@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement } from "react";
+import { ChangeEvent, LegacyRef, ReactElement } from "react";
 
 /**
  * Controlled labelled text input
@@ -20,6 +20,7 @@ export default function Input({
   value,
   min,
   type,
+  inputRef,
 }: {
   className?: string | undefined;
   inputClassName?: string | undefined;
@@ -31,6 +32,7 @@ export default function Input({
   value: string;
   type?: string;
   min?: string;
+  inputRef?: LegacyRef<HTMLInputElement> | undefined;
 }) {
   return (
     <div className={className}>
@@ -50,6 +52,7 @@ export default function Input({
         onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
         required
         value={value}
+        ref={inputRef}
       />
     </div>
   );

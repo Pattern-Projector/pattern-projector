@@ -7,7 +7,7 @@ export function getPageNumbers(pageRange: string, pageCount: number): number[] {
     } else {
       const [start, end] = r.split('-');
       const s = Number(start);
-      const e = Number(end);
+      const e = end === '' ? pageCount : Number(end);
       let a = Math.min(pageCount, Math.min(s, e));
       const b = Math.min(Math.max(s, e), pageCount);
       while (b >= a) {
