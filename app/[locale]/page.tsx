@@ -52,7 +52,15 @@ export default function Home() {
       </nav>
       <article className="prose lg:prose-xl m-auto">
         <h1>{t("welcome.title")}</h1>
-        <p>{t("welcome.description")}</p>
+        <p>
+          {t.rich("welcome.description", {
+            changeLogLink: (chunks) => (
+              <a href="https://github.com/Pattern-Projector/pattern-projector/blob/beta/CHANGELOG.md">
+                {chunks}
+              </a>
+            ),
+          })}
+        </p>
         <div className="aspect-w-16 aspect-h-9">
           <iframe
             src={t("youTubeSrc")}

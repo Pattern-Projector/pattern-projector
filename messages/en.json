@@ -6,7 +6,7 @@
     "choose-language": "Language",
     "welcome": {
       "title": "Welcome to Pattern Projector!",
-      "description": "Pattern projector is a free and open source web app that quickly calibrates projectors for sewing patterns. It also has tools for stitching together multiple page patterns, changing line thickness, inverting colors, flipping/rotating patterns, and more."
+      "description": "Pattern projector is a free and open source web app that quickly calibrates projectors for sewing patterns. It also has tools for stitching together multiple page patterns, changing line thickness, inverting colors, flipping/rotating patterns, and more. To read about the latest updates, check out the <changeLogLink>changelog</changeLogLink>."
     },
     "requirements": {
       "title": "What You’ll Need",
