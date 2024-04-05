@@ -4,7 +4,7 @@ export interface OverlaySettings {
   grid: boolean;
   border: boolean;
   paper: boolean;
-  fliplines: boolean;
+  flipLines: boolean;
 }
 
 export function getDefaultOverlaySettings() {
@@ -13,22 +13,57 @@ export function getDefaultOverlaySettings() {
     grid: false,
     border: true,
     paper: false,
-    fliplines: false,
+    flipLines: false,
   };
 }
 
+export enum Theme {
+  Light = "Light",
+  Dark = "Dark",
+  Green = "Green",
+}
 export interface DisplaySettings {
-  inverted: boolean;
-  isInvertedGreen: boolean;
-  isFourCorners: boolean;
+  theme: Theme;
   overlay: OverlaySettings;
 }
 
 export function getDefaultDisplaySettings() {
   return {
-    inverted: false,
-    isInvertedGreen: false,
-    isFourCorners: true,
+    theme: Theme.Light,
     overlay: getDefaultOverlaySettings(),
   };
+}
+
+export function themes() {
+  return [Theme.Light, Theme.Green, Theme.Dark];
+}
+
+export function isDarkTheme(theme: Theme) {
+  return [Theme.Dark, Theme.Green].includes(theme);
+}
+
+export function themeFilter(theme: Theme): string {
+  switch (theme) {
+    case Theme.Dark:
+      return "invert(1)";
+    case Theme.Green:
+      return "invert(1) sepia(100%) saturate(300%) hue-rotate(80deg)";
+    case Theme.Light:
+      return "none";
+  }
+}
+
+export function strokeColor(theme: Theme) {
+  switch (theme) {
+    case Theme.Dark:
+      return '#fff';
+    case Theme.Green:
+      return "#32CD32";
+    case Theme.Light:
+      return '#000';
+  }
+}
+
+export function fillColor(theme: Theme) {
+  return isDarkTheme(theme) ? '#000' : '#fff';
 }

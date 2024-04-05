@@ -1,7 +1,13 @@
 "use client";
 
-import { Matrix, inverse } from "ml-matrix";
-import { ChangeEvent, useCallback, useEffect, useState, useRef } from "react";
+import { Matrix } from "ml-matrix";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import CalibrationCanvas from "@/_components/calibration-canvas";
@@ -10,23 +16,23 @@ import Header from "@/_components/header";
 import PDFViewer from "@/_components/pdf-viewer";
 import { getPerspectiveTransformFromPoints, toMatrix3d } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
-import { Point } from "@/_lib/point";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   getDefaultDisplaySettings,
   DisplaySettings,
-  OverlaySettings,
+  isDarkTheme,
+  themeFilter,
 } from "@/_lib/display-settings";
 import { IN, getPtDensity } from "@/_lib/unit";
-import { Layer } from "@/_lib/layer";
+import { Layer } from "@/_lib/interfaces/layer";
 import LayerMenu from "@/_components/layer-menu";
-import useProgArrowKeyToMatrix from "@/_hooks/useProgArrowKeyToMatrix";
+import useProgArrowKeyToMatrix from "@/_hooks/use-prog-arrow-key-to-matrix";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import LayersIcon from "@/_icons/layers-icon";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
-import { EdgeInsets } from "@/_lib/edge-insets";
+import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
 import {
@@ -35,6 +41,9 @@ import {
   getMenuStatesFromPageCount,
   MenuStates,
 } from "@/_lib/menu-states";
+import MovementPad from "@/_components/movement-pad";
+import pointsReducer from "@/_reducers/pointsReducer";
+import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -44,11 +53,10 @@ export default function Page() {
 
   const handle = useFullScreenHandle();
 
-  const [points, setPoints] = useState<Point[]>([]);
+  const [points, dispatch] = useReducer(pointsReducer, []);
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
-  const [pointToModify, setPointToModify] = useState<number | null>(null);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
@@ -76,10 +84,11 @@ export default function Page() {
     vertical: "0",
   });
 
-  const pdfRef = useRef<HTMLDivElement | null>(null);
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
   );
+  const [showingMovePad, setShowingMovePad] = useState(false);
+  const [corners, setCorners] = useState<Set<number>>(new Set([0]));
 
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
@@ -159,9 +168,9 @@ export default function Page() {
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
-      setPoints(JSON.parse(localPoints));
+      dispatch({ type: "set", points: JSON.parse(localPoints) });
     } else {
-      setPoints(getDefaultPoints());
+      dispatch({ type: "set", points: getDefaultPoints() });
     }
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
@@ -175,29 +184,25 @@ export default function Page() {
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);
       }
+      const isTouchDevice = "ontouchstart" in window;
+      if (localSettings.showingMovePad !== undefined) {
+        setShowingMovePad(localSettings.showingMovePad);
+      } else {
+        setShowingMovePad(isTouchDevice);
+      }
 
-      const newDisplaySettings: {
-        overlay?: OverlaySettings;
-        inverted?: boolean;
-        isInvertedGreen?: boolean;
-        isFourCorners?: boolean;
-      } = {};
-
-      const defaultDS = getDefaultDisplaySettings();
-
-      newDisplaySettings.overlay = localSettings.overlay ?? defaultDS.overlay;
-      newDisplaySettings.inverted =
-        localSettings.inverted ?? defaultDS.inverted;
-      newDisplaySettings.isInvertedGreen =
-        localSettings.isInvertedGreen ?? defaultDS.isInvertedGreen;
-      newDisplaySettings.isFourCorners =
-        localSettings.isFourCorners ?? defaultDS.isFourCorners;
-      setDisplaySettings({ ...displaySettings, ...newDisplaySettings });
+      const defaults = getDefaultDisplaySettings();
+      setDisplaySettings({
+        overlay: localSettings.overlay ?? defaults.overlay,
+        theme: localSettings.theme ?? defaults.theme,
+      });
     }
   }, []);
 
-  /* Scale of 1.0 would mean 1 in/cm per key press. Here it is 1/16th in/cm */
-  useProgArrowKeyToMatrix(!isCalibrating, 1.0 / 16.0, (matrix) => {
+  const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
+  const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
+  const scale = unitOfMeasure === IN ? quarterInchPx : halfCmPx;
+  useProgArrowKeyToMatrix(!isCalibrating, scale, (matrix) => {
     setLocalTransform(matrix.mmul(localTransform));
   });
 
@@ -226,22 +231,20 @@ export default function Page() {
     });
   }, []);
 
-  function getInversionFilters(inverted: boolean, isGreen: boolean): string {
-    if (!inverted) {
-      return "none";
-    }
-    return `invert(1) ${
-      isGreen ? "sepia(100%) saturate(300%) hue-rotate(80deg)" : ""
-    }`;
-  }
-
   return (
     <main
       ref={noZoomRefCallback}
-      className={`${(displaySettings.inverted || displaySettings.isInvertedGreen) && "dark"} w-full h-full absolute overflow-hidden touch-none`}
+      className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} transition-all duration-700 w-full h-full absolute overflow-hidden touch-none`}
     >
-      <div className="bg-white dark:bg-black dark:text-white">
-        <FullScreen handle={handle}>
+      <div className="bg-white dark:bg-black dark:text-white w-full h-full">
+        <FullScreen handle={handle} className="w-full h-full">
+          {isCalibrating && showingMovePad && (
+            <MovementPad
+              corners={corners}
+              setCorners={setCorners}
+              dispatch={dispatch}
+            />
+          )}
           <div
             className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
           />
@@ -252,7 +255,9 @@ export default function Page() {
             width={width}
             handleHeightChange={handleHeightChange}
             handleWidthChange={handleWidthChange}
-            handleResetCalibration={() => setPoints(getDefaultPoints())}
+            handleResetCalibration={() =>
+              dispatch({ type: "set", points: getDefaultPoints() })
+            }
             handleFileChange={handleFileChange}
             fullScreenHandle={handle}
             unitOfMeasure={unitOfMeasure}
@@ -264,12 +269,7 @@ export default function Page() {
             setDisplaySettings={(newSettings) => {
               setDisplaySettings(newSettings);
               if (newSettings) {
-                updateLocalSettings({
-                  overlay: newSettings.overlay,
-                  inverted: newSettings.inverted,
-                  isInvertedGreen: newSettings.isInvertedGreen,
-                  isFourCorners: newSettings.isFourCorners,
-                });
+                updateLocalSettings(newSettings);
               }
             }}
             pageCount={pageCount}
@@ -283,6 +283,11 @@ export default function Page() {
             menuStates={menuStates}
             measuring={measuring}
             setMeasuring={setMeasuring}
+            showingMovePad={showingMovePad}
+            setShowingMovePad={(show) => {
+              setShowingMovePad(show);
+              updateLocalSettings({ showingMovePad: show });
+            }}
           />
 
           <StitchMenu
@@ -323,15 +328,14 @@ export default function Page() {
           <CalibrationCanvas
             className={`absolute z-10`}
             points={points}
-            setPoints={setPoints}
-            pointToModify={pointToModify}
-            setPointToModify={setPointToModify}
+            dispatch={dispatch}
             width={+width}
             height={+height}
             isCalibrating={isCalibrating}
             unitOfMeasure={unitOfMeasure}
             displaySettings={displaySettings}
-            setDisplaySettings={setDisplaySettings}
+            corners={corners}
+            setCorners={setCorners}
           />
           {measuring && (
             <MeasureCanvas
@@ -349,7 +353,6 @@ export default function Page() {
             perspective={perspective}
           >
             <div
-              ref={pdfRef}
               className={"absolute z-0"}
               style={{
                 transform: `${matrix3d}`,
@@ -370,10 +373,7 @@ export default function Page() {
                   edgeInsets={edgeInsets}
                   pageRange={pageRange}
                   setLocalTransform={setLocalTransform}
-                  filter={getInversionFilters(
-                    displaySettings.inverted,
-                    displaySettings.isInvertedGreen,
-                  )}
+                  filter={themeFilter(displaySettings.theme)}
                 />
               </div>
             </div>

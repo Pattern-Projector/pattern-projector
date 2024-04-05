@@ -1,4 +1,4 @@
-import { Layer } from "@/_lib/layer";
+import { Layer } from "@/_lib/interfaces/layer";
 
 export interface MenuStates {
   nav: boolean;

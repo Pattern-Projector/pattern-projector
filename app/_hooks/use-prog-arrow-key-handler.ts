@@ -1,8 +1,9 @@
+import { KeyCode } from "@/_lib/key-code";
 import { useCallback, useEffect, useState } from "react";
 
 const PIXEL_LIST = [2, 20, 50, 100];
 export default function useProgArrowKeyHandler(
-  handler: (key: string, px: number) => void,
+  handler: (key: KeyCode, px: number) => void,
   active: boolean,
   pixelList: number[] = PIXEL_LIST,
 ) {
@@ -12,19 +13,24 @@ export default function useProgArrowKeyHandler(
   const keydownHandler = useCallback(
     function (e: KeyboardEvent) {
       if (e.target instanceof HTMLInputElement) return;
-      if (
-        ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(e.code)
-      ) {
-        e.preventDefault();
-        if (!timeoutFunc && pixelIdx < pixelList.length - 1) {
-          setTimeoutFunc(
-            setTimeout(() => {
-              setPixelIdx(pixelIdx + 1);
-              setTimeoutFunc(null);
-            }, 600),
-          );
-        }
-        handler(e.code, pixelList[pixelIdx]);
+      switch (e.code) {
+        case KeyCode.ArrowLeft:
+        case KeyCode.ArrowUp:
+        case KeyCode.ArrowRight:
+        case KeyCode.ArrowDown:
+          e.preventDefault();
+          if (!timeoutFunc && pixelIdx < pixelList.length - 1) {
+            setTimeoutFunc(
+              setTimeout(() => {
+                setPixelIdx(pixelIdx + 1);
+                setTimeoutFunc(null);
+              }, 600),
+            );
+          }
+          handler(e.code, pixelList[pixelIdx]);
+          break;
+        default:
+          break;
       }
     },
     [timeoutFunc, pixelIdx, handler, pixelList],
@@ -47,7 +53,7 @@ export default function useProgArrowKeyHandler(
       document.addEventListener("keyup", keyupHandler);
       return () => {
         document.removeEventListener("keydown", keydownHandler);
-        document.addEventListener("keyup", keyupHandler);
+        document.removeEventListener("keyup", keyupHandler);
       };
     }
   }, [keydownHandler, keyupHandler, active]);

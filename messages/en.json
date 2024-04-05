@@ -148,12 +148,21 @@
         "stitchMenuShow": "Show stitch menu",
         "stitchMenuHide": "Hide stitch menu",
         "measureOn": "Start measuring",
-        "measureOff": "Stop measuring"
+        "measureOff": "Stop measuring",
+        "showMovement": "Show move tool",
+        "hideMovement": "Hide move tool"
       },
       "StitchMenu": {
         "columnCount": "Columns",
         "pageRange": "Pages",
         "horizontal": "Horizontal",
         "vertical": "Vertical"
+      },
+      "MovementPad": {
+        "up": "Up",
+        "down": "Down",
+        "left": "Left",
+        "right": "Right",
+        "next": "Next corner"
       }
     }

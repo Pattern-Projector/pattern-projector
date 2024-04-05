@@ -226,7 +226,7 @@ export function flipHorizontal(origin: Point): Matrix {
  * Converts 3x3 matrix returned from getPerspectiveTransform(src, dst) to a 4x4 matrix as per https://stackoverflow.com/a/4833408/3376039
  * @param src - Coordinates of quadrangle vertices in the source image starting from top left clockwise.
  * @param dst - Coordinates of the corresponding quadrangle vertices in the destination image starting from top left clockwise.
- * @returns A css transfomr string
+ * @returns A css transform string
  */
 export function toMatrix3d(m: Matrix): string {
   var r = m.clone();
@@ -239,7 +239,7 @@ export function toMatrix3d(m: Matrix): string {
   return `matrix3d(${r.to1DArray().toString()})`;
 }
 
-export function sqrdist(a: Point, b: Point): number {
+export function sqrDist(a: Point, b: Point): number {
   let dx = a.x - b.x;
   let dy = a.y - b.y;
   return dx * dx + dy * dy;
@@ -253,6 +253,19 @@ export function minIndex(a: number[]): number {
     }
   }
   return min;
+}
+
+export function sqrDistToLine(a: Point, b: Point, p: Point): number {
+  const len2 = sqrDist(a, b);
+  if (len2 === 0) {
+    return sqrDist(p, a);
+  }
+  const rise = b.y - a.y;
+  const run = b.x - a.x;
+  let t = ((p.x - a.x) * run + (p.y - a.y) * rise) / len2;
+  // constrain t to the segment between a and b
+  t = Math.max(0, Math.min(1, t));
+  return sqrDist(p, { x: a.x + t * run, y: a.y + t * rise });
 }
 
 export function interp(from: Point, to: Point, portion: number): Point {

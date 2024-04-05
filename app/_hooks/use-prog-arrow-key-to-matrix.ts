@@ -1,7 +1,6 @@
-import useProgArrowKeyHandler from "@/_hooks/useProgArrowKeyHandler";
-import { applyOffset, Point } from "@/_lib/point";
+import useProgArrowKeyHandler from "@/_hooks/use-prog-arrow-key-handler";
+import { Point } from "@/_lib/point";
 import { translate } from "@/_lib/geometry";
-import { useEffect, useMemo, useState } from "react";
 import { Matrix } from "ml-matrix";
 
 export default function useProgArrowKeyToMatrix(
@@ -12,7 +11,7 @@ export default function useProgArrowKeyToMatrix(
   const PIXEL_LIST = [1, 10, 20, 100];
   function moveWithArrowKey(key: string, px: number) {
     let newOffset: Point = { x: 0, y: 0 };
-    const dist = px*scale;
+    const dist = px * scale;
     switch (key) {
       case "ArrowUp":
         newOffset = { y: -dist, x: 0 };

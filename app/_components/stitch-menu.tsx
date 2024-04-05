@@ -1,4 +1,4 @@
-import { EdgeInsets } from "@/_lib/edge-insets";
+import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import {
   ChangeEvent,
   Dispatch,
