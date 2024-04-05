@@ -249,7 +249,10 @@ export default function Page() {
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} transition-all duration-700 w-full h-full absolute overflow-hidden touch-none`}
     >
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
-        <FullScreen handle={handle} className="w-full h-full">
+        <FullScreen
+          handle={handle}
+          className="bg-white dark:bg-black w-full h-full"
+        >
           {isCalibrating && showingMovePad && (
             <MovementPad
               corners={corners}
