@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Arrow key movement happens by 1/2 cm or 1/4 inch
-- Faster line weight adjustment in Chrome
 
 ### Removed
 
