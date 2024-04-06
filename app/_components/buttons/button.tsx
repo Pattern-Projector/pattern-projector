@@ -17,13 +17,6 @@ export function Button({
   onClick?: MouseEventHandler<HTMLButtonElement>;
   href?: string;
 }) {
-  const filledStyleList = {
-    red: "bg-red-600 text-white hover:bg-red-500",
-    gray: "text-gray-900 bg-white ring-gray-300 hover:bg-gray-50 ring-1 ring-inset",
-    purple:
-      "ring-purple-700 text-purple-800 focus:ring-purple-300 hover:bg-purple-100 ring-1 ring-inset",
-  };
-
   const filledColors = {
     red: {
       bg: "red-600",

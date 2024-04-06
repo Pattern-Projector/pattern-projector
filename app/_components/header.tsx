@@ -1,11 +1,5 @@
 import { useTranslations } from "next-intl";
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -24,10 +18,15 @@ import InvertColorIcon from "@/_icons/invert-color-icon";
 import InvertColorOffIcon from "@/_icons/invert-color-off-icon";
 import PdfIcon from "@/_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
-import { DisplaySettings } from "@/_lib/display-settings";
+import {
+  DisplaySettings,
+  isDarkTheme,
+  strokeColor,
+  themes,
+} from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
-import Matrix, { inverse } from "ml-matrix";
+import Matrix from "ml-matrix";
 import {
   translate,
   rotateMatrixDeg,
@@ -49,6 +48,7 @@ import SquareFootIcon from "@/_icons/square-foot";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
+import MoveIcon from "@/_icons/move-icon";
 
 export default function Header({
   isCalibrating,
@@ -75,6 +75,8 @@ export default function Header({
   setMeasuring,
   menuStates,
   setMenuStates,
+  showingMovePad,
+  setShowingMovePad,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -100,10 +102,10 @@ export default function Header({
   setMeasuring: Dispatch<SetStateAction<boolean>>;
   menuStates: MenuStates;
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
+  showingMovePad: boolean;
+  setShowingMovePad: Dispatch<SetStateAction<boolean>>;
 }) {
   const t = useTranslations("Header");
-
-  const [invertOpen, setInvertOpen] = useState<boolean>(false);
 
   function handleRecenter() {
     const current = transformPoint(
@@ -144,7 +146,7 @@ export default function Header({
       icon: <OverlayPaperIcon ariaLabel={t("overlayOptionPaper")} />,
       text: t("overlayOptionPaper"),
     },
-    fliplines: {
+    flipLines: {
       icon: <FlipCenterOnIcon ariaLabel={t("overlayOptionFliplines")} />,
       text: t("overlayOptionFliplines"),
     },
@@ -157,7 +159,7 @@ export default function Header({
   return (
     <>
       <header
-        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-700 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
+        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
@@ -186,41 +188,25 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <IconButton
-              className={`!p-1 border-2 border-slate-400 dark:border-white`}
+              className={`!p-1 border-2 border-black dark:border-white`}
               onClick={() => setMenuStates({ ...menuStates, nav: false })}
             >
               <ExpandLessIcon ariaLabel={t("menuHide")} />
             </IconButton>
             <Tooltip description={t("invertColor")}>
               <IconButton
-                onClick={(e) => {
-                  let newInverted;
-                  let newIsGreenInverted;
-                  if (!displaySettings.inverted) {
-                    newInverted = true;
-                    newIsGreenInverted = true;
-                  } else if (displaySettings.isInvertedGreen) {
-                    newInverted = true;
-                    newIsGreenInverted = false;
-                  } else {
-                    newInverted = false;
-                    newIsGreenInverted = false;
-                  }
+                onClick={() => {
+                  const currentIdx = themes().indexOf(displaySettings.theme);
+                  const theme = themes()[(currentIdx + 1) % themes().length];
                   setDisplaySettings({
                     ...displaySettings,
-                    inverted: newInverted,
-                    isInvertedGreen: newIsGreenInverted,
+                    theme,
                   });
-                  setInvertOpen(!displaySettings.inverted);
                 }}
               >
-                {displaySettings.inverted ? (
+                {isDarkTheme(displaySettings.theme) ? (
                   <InvertColorIcon
-                    fill={
-                      displaySettings.isInvertedGreen
-                        ? "#32CD32"
-                        : "currentColor"
-                    }
+                    fill={strokeColor(displaySettings.theme)}
                     ariaLabel={t("invertColor")}
                   />
                 ) : (
@@ -253,22 +239,22 @@ export default function Header({
               <InlineInput
                 className="relative flex flex-col"
                 inputClassName="pl-6 pr-7"
-                handleChange={handleHeightChange}
-                id="height"
-                label={t("height")}
-                labelRight={unitOfMeasure === CM ? "cm" : "in"}
-                name="height"
-                value={height}
+                handleChange={handleWidthChange}
+                id="width"
+                label={t("width")}
+                labelRight={unitOfMeasure.toLocaleLowerCase()}
+                name="width"
+                value={width}
               />
               <InlineInput
                 className="relative flex flex-col"
                 inputClassName="pl-6 pr-7"
-                handleChange={handleWidthChange}
+                handleChange={handleHeightChange}
                 id="height"
-                label={t("width")}
-                labelRight={unitOfMeasure === CM ? "cm" : "in"}
-                name="width"
-                value={width}
+                label={t("height")}
+                labelRight={unitOfMeasure.toLocaleLowerCase()}
+                name="height"
+                value={height}
               />
               <InlineSelect
                 handleChange={(e) => setUnitOfMeasure(e.target.value)}
@@ -287,6 +273,22 @@ export default function Header({
                 onClick={handleResetCalibration}
               >
                 <DeleteIcon ariaLabel={t("delete")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              description={
+                showingMovePad ? t("hideMovement") : t("showMovement")
+              }
+            >
+              <IconButton
+                className={`${visible(isCalibrating)}`}
+                onClick={() => setShowingMovePad(!showingMovePad)}
+              >
+                <MoveIcon
+                  ariaLabel={
+                    showingMovePad ? t("hideMovement") : t("showMovement")
+                  }
+                />
               </IconButton>
             </Tooltip>
           </div>
@@ -414,7 +416,7 @@ export default function Header({
         </nav>
       </header>
       <IconButton
-        className={`!p-1 border-2 border-slate-400 dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} transition-all duration-700 z-30 left-1/4 focus:ring-0`}
+        className={`!p-1 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} z-30 left-1/4 focus:ring-0`}
         onClick={() => setMenuStates({ ...menuStates, nav: true })}
       >
         <ExpandMoreIcon ariaLabel={t("menuShow")} />

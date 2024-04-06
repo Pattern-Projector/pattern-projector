@@ -32,7 +32,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   };
 
   return (
-    <div className={className}>
+    <div className={className} aria-label={ariaLabel}>
       <InlineSelect
         handleChange={(e) => handleLanguageChange(e)}
         id="change_language"

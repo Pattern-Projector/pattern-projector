@@ -6,7 +6,6 @@ import { ModalActions } from "@/_components/modal/modal-actions";
 import { Button } from "@/_components/buttons/button";
 import { ButtonColor } from "@/_components/theme/colors";
 import { ButtonStyle } from "@/_components/theme/styles";
-import type = Mocha.utils.type;
 
 export default function PdfErrorModal({
   open,

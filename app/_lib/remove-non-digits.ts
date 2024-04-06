@@ -4,7 +4,10 @@
  * @param oldString - previous string
  * @returns - a new string with only digits or decimals in the order they appear in s
  */
-export default function removeNonDigits(newString: string, oldString: string): string {
+export default function removeNonDigits(
+  newString: string,
+  oldString: string,
+): string {
   const num = newString.replace(/[^.\d]/g, "");
   const decimalCount = (num.match(/\./g) || []).length;
   if (decimalCount > 1) {

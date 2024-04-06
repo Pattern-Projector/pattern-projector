@@ -7,31 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2024-04-05
+
 ### Added
 
 - Spanish translation
-
-### Changed
-
-- Added canvas filter for erosions, with a polyfill for Safari
-- Changed the stitch menu open logic. By default, if the page count is more than one, the stitch menu will open. If the page count is one, the stitch menu will close (#134)
-- Moved menu logic into a single object
-- Changed stitch menu to be a horizontal menu instead of a vertical one
-- Updated some display visuals on buttons/transitions/colors
-
-### Removed
-
-- Removed four corners button from toolbar (#131)
-
-## [0.0.1] - 2024-03-23
-
-### Added
+- Move tool for calibrating on touch devices
+- Drag edges of calibration grid
 
 ### Fixed
 
+- Line weight works for colored lines
+- Can drag PDFs in Firefox
+
 ### Changed
+
+- Arrow key movement happens by 1/2 cm or 1/4 inch
 
 ### Removed
 
-[unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/Pattern-Projector/pattern-projector/compare/v0.0.0...v0.0.1
+- Colored corners on calibration grid
+- Press and hold calibration corners to slow down movement
+
+[unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/main...beta
+
+[1.0.0]:

@@ -64,7 +64,7 @@ export function DropdownCheckboxIconButton<T>({
     };
   }, [containerRef]);
 
-  const updateOption = (key: keyof T, value: boolean | number): void => {
+  const updateOption = (key: keyof T, value: boolean): void => {
     const updatedOptions = {
       ...options,
       [key]: value,
@@ -97,77 +97,42 @@ export function DropdownCheckboxIconButton<T>({
       >
         {Object.entries(optionSettings).map(([key, option]) => {
           const value = options[key as keyof T];
-          const isBoolean = typeof value === "boolean";
-          const isNumber = typeof value === "number";
           const inputId = `checkbox-${key}`;
           const isDisabled = disabled && key !== disableOptionKey;
-
-          if (isBoolean) {
-            return (
-              <label
-                key={String(key)}
-                htmlFor={inputId}
-                className={labelClassName}
-                role="menuitem"
-                tabIndex={isDisabled ? -1 : 0}
-                onKeyDown={(e) => {
-                  if (isDisabled) return;
-                  if (e.key === " " || e.key === "Enter") {
-                    e.preventDefault();
-                    updateOption(key as keyof T, !options[key as keyof T]);
-                  }
-                }}
-              >
-                {(option as BooleanOption).icon && (
-                  <span>{(option as BooleanOption).icon}</span>
-                )}
-                <input
-                  id={inputId}
-                  type="checkbox"
-                  checked={value as boolean}
-                  className="form-checkbox cursor-pointer accent-purple-600 h-4 w-4"
-                  onChange={() =>
-                    updateOption(key as keyof T, !options[key as keyof T])
-                  }
-                  disabled={isDisabled}
-                  tabIndex={-1}
-                />
-                <span className="select-none flex-grow">
-                  {(option as BooleanOption).text}
-                </span>
-              </label>
-            );
-          } else {
-            return (
-              <label
-                key={String(key)}
-                htmlFor={inputId}
-                className={labelClassName}
-                role="menuitem"
+          return (
+            <label
+              key={String(key)}
+              htmlFor={inputId}
+              className={labelClassName}
+              role="menuitem"
+              tabIndex={isDisabled ? -1 : 0}
+              onKeyDown={(e) => {
+                if (isDisabled) return;
+                if (e.key === " " || e.key === "Enter") {
+                  e.preventDefault();
+                  updateOption(key as keyof T, !options[key as keyof T]);
+                }
+              }}
+            >
+              {(option as BooleanOption).icon && (
+                <span>{(option as BooleanOption).icon}</span>
+              )}
+              <input
+                id={inputId}
+                type="checkbox"
+                checked={value as boolean}
+                className="form-checkbox cursor-pointer accent-purple-600 h-4 w-4"
+                onChange={() =>
+                  updateOption(key as keyof T, !options[key as keyof T])
+                }
+                disabled={isDisabled}
                 tabIndex={-1}
-              >
-                {(option as NumberOption).icon && (
-                  <span>{(option as NumberOption).icon}</span>
-                )}
-                <input
-                  id={inputId}
-                  type="number"
-                  value={value as number}
-                  min={(option as NumberOption).min}
-                  max={(option as NumberOption).max}
-                  className={`w-16 h-8 px-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 text-right dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-800 dark:focus:border-blue-800`}
-                  onChange={(e) =>
-                    updateOption(key as keyof T, parseInt(e.target.value, 10))
-                  }
-                  disabled={isDisabled}
-                  tabIndex={0}
-                />
-                <span className="select-none flex-grow">
-                  {(option as NumberOption).text}
-                </span>
-              </label>
-            );
-          }
+              />
+              <span className="select-none flex-grow">
+                {(option as BooleanOption).text}
+              </span>
+            </label>
+          );
         })}
       </div>
     </div>

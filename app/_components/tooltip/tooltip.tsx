@@ -9,10 +9,14 @@ export default function Tooltip({
   children: ReactElement;
   className?: string | undefined;
   description: string;
-  tooltipVisible?: boolean | undefined,
+  tooltipVisible?: boolean | undefined;
 }) {
   return (
-    <div className={"relative flex flex-col items-center group " + (className || "")}>
+    <div
+      className={
+        "relative flex flex-col items-center group " + (className || "")
+      }
+    >
       {children}
       {tooltipVisible !== false && (
         <div

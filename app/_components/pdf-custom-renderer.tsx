@@ -6,7 +6,7 @@ import type {
   RenderParameters,
   PDFDocumentProxy,
 } from "pdfjs-dist/types/src/display/api.js";
-import { Layer } from "@/_lib/layer";
+import { Layer } from "@/_lib/interfaces/layer";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { erodeImageData } from "@/_lib/erode";
@@ -78,7 +78,7 @@ export default function CustomRenderer(
             setLayers(l);
           });
         } else {
-          for (let entry of layers) {
+          for (const entry of layers) {
             const layer = entry[1];
             for (let i = 0; i < layer.ids.length; i += 1) {
               optionalContentConfig.setVisibility(layer.ids[i], layer.visible);
@@ -91,7 +91,7 @@ export default function CustomRenderer(
 
     const renderContext: RenderParameters = {
       canvasContext: canvas.getContext("2d", {
-        alpha: false,
+        alpha: true,
       }) as CanvasRenderingContext2D,
       viewport: renderViewport,
       optionalContentConfigPromise: pdf
@@ -99,6 +99,7 @@ export default function CustomRenderer(
         : undefined,
     };
 
+    renderContext.canvasContext.clearRect(0, 0, canvas.width, canvas.height);
     const cancellable = page.render(renderContext);
     const runningTask = cancellable;
 
@@ -107,7 +108,7 @@ export default function CustomRenderer(
         if (erosions === 0) {
           return;
         }
-        let ctx = renderContext.canvasContext;
+        const ctx = renderContext.canvasContext;
         let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const erodedData = new Uint8ClampedArray(imageData.data.length);
         let output = new ImageData(

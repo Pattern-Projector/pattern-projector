@@ -1,4 +1,8 @@
-export default function FlipCenterOffIcon({ ariaLabel }: { ariaLabel: string }) {
+export default function FlipCenterOffIcon({
+  ariaLabel,
+}: {
+  ariaLabel: string;
+}) {
   return (
     <svg
       aria-label={ariaLabel}

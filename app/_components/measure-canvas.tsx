@@ -1,4 +1,4 @@
-import { constrainInSpace, sqrdist, transformPoints } from "@/_lib/geometry";
+import { constrainInSpace, sqrDist, transformPoints } from "@/_lib/geometry";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import { Point } from "@/_lib/point";
 import Matrix from "ml-matrix";
@@ -95,7 +95,7 @@ export default function MeasureCanvas({
 
     function distance(p1: Point, p2: Point) {
       const line = transformPoints([p1, p2], perspective);
-      let d = Math.sqrt(sqrdist(line[0], line[1])) / CSS_PIXELS_PER_INCH;
+      let d = Math.sqrt(sqrDist(line[0], line[1])) / CSS_PIXELS_PER_INCH;
       if (unitOfMeasure == CM) {
         d *= 2.54;
       }

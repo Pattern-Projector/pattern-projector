@@ -6,19 +6,17 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
-import { Layer } from "@/_lib/layer";
-import { EdgeInsets } from "@/_lib/edge-insets";
+import { Layer } from "@/_lib/interfaces/layer";
+import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import Matrix from "ml-matrix";
-import { erosionFilter } from "@/_lib/erode";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -38,6 +36,7 @@ export default function PdfViewer({
   columnCount,
   edgeInsets,
   pageRange,
+  filter,
 }: {
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
@@ -51,9 +50,11 @@ export default function PdfViewer({
   columnCount: string;
   edgeInsets: EdgeInsets;
   pageRange: string;
+  filter: string;
 }) {
   const [pageWidth, setPageWidth] = useState<number>(0);
   const [pageHeight, setPageHeight] = useState<number>(0);
+
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     setLayers(new Map());
@@ -69,25 +70,9 @@ export default function PdfViewer({
     );
   }
 
-  const isSafari = useMemo(() => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
-  }, []);
-
-  const isFirefox = useMemo(() => {
-    return navigator.userAgent.toLowerCase().includes("firefox");
-  }, []);
-
   const customRenderer = useCallback(
-    // Safari does not support filters on canvas so the erosions must be done in the renderer
-    // Firefox runs very slowly with the filters so the erosions must be done in the renderer
-    () =>
-      CustomRenderer(
-        setLayers,
-        layers,
-        isSafari || isFirefox ? lineThickness : 0,
-      ),
-    [setLayers, layers, isSafari, isFirefox, lineThickness],
+    () => CustomRenderer(setLayers, layers, lineThickness),
+    [setLayers, layers, lineThickness],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -99,9 +84,11 @@ export default function PdfViewer({
     const columns = Math.max(Math.min(Number(columnCount), itemCount), 1);
     const rowCount = Math.ceil((itemCount || 1) / columns);
     const w =
-      pageWidth * columns - (columns - 1) * Number(edgeInsets.horizontal);
+      pageWidth * columns -
+      (columns - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.horizontal);
     const h =
-      pageHeight * rowCount - (rowCount - 1) * Number(edgeInsets.vertical);
+      pageHeight * rowCount -
+      (rowCount - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.vertical);
     setLayoutWidth(w);
     setLayoutHeight(h);
   }, [
@@ -115,44 +102,66 @@ export default function PdfViewer({
     edgeInsets,
   ]);
 
+  const pages = getPageNumbers(pageRange, pageCount);
+  const keys = getKeys(pages);
+  const cssEdgeInsets = {
+    vertical: Number(edgeInsets.vertical) * PDF_TO_CSS_UNITS,
+    horizontal: Number(edgeInsets.horizontal) * PDF_TO_CSS_UNITS,
+  };
+  const insetWidth = `${pageWidth - cssEdgeInsets.horizontal}px`;
+  const insetHeight = `${pageHeight - cssEdgeInsets.vertical}px`;
+
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
       <div
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${columnCount}, max-content)`,
-          marginRight: `${edgeInsets.horizontal}px`,
-          marginBottom: `${edgeInsets.vertical}px`,
+          marginRight: cssEdgeInsets.horizontal,
+          marginBottom: cssEdgeInsets.vertical,
+          filter: filter,
         }}
       >
-        {getPageNumbers(pageRange, pageCount).map((value, index, array) => {
-          return value == 0 ? (
-            <div key={index}></div>
-          ) : (
+        {pages.map((value, index) => {
+          return (
             <div
-              key={`page_${index}_${value}`}
+              key={keys[index]}
               style={{
-                width: `${pageWidth - Number(edgeInsets.horizontal)}px`,
-                height: `${pageHeight - Number(edgeInsets.vertical)}px`,
-                mixBlendMode: "multiply",
-                filter:
-                  isSafari || isFirefox ? "none" : erosionFilter(lineThickness),
+                width: insetWidth,
+                height: insetHeight,
+                mixBlendMode:
+                  cssEdgeInsets.horizontal == 0 && cssEdgeInsets.vertical == 0
+                    ? "normal"
+                    : "darken",
               }}
             >
-              <Page
-                scale={PDF_TO_CSS_UNITS}
-                pageNumber={value}
-                renderMode="custom"
-                customRenderer={customRenderer}
-                customTextRenderer={customTextRenderer}
-                renderAnnotationLayer={false}
-                renderTextLayer={true}
-                onLoadSuccess={onPageLoadSuccess}
-              />
+              {value != 0 && (
+                <Page
+                  scale={PDF_TO_CSS_UNITS}
+                  pageNumber={value}
+                  renderMode="custom"
+                  customRenderer={customRenderer}
+                  customTextRenderer={customTextRenderer}
+                  renderTextLayer={true}
+                  canvasBackground="#ccc"
+                  onLoadSuccess={onPageLoadSuccess}
+                />
+              )}
             </div>
           );
         })}
       </div>
     </Document>
   );
+}
+
+function getKeys(pages: number[]): string[] {
+  const keys: string[] = [];
+  const values = new Map<number, number>();
+  for (const value of pages) {
+    const seen = values.get(value) ?? 0;
+    keys.push(`${value}_${seen}`);
+    values.set(value, seen + 1);
+  }
+  return keys;
 }
