@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useState,
+  useMemo,
 } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
@@ -17,6 +18,7 @@ import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import Matrix from "ml-matrix";
+import { erosionFilter } from "@/_lib/erode";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -61,6 +63,18 @@ export default function PdfViewer({
     setLocalTransform(Matrix.identity(3));
   }
 
+  const isSafari = useMemo(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
+  }, []);
+
+  const isFirefox = useMemo(() => {
+    return navigator.userAgent.toLowerCase().includes("firefox");
+  }, []);
+
+  // Firefox and Safari do not support the feMorphology filter in CSS.
+  const renderErosions = isSafari || isFirefox ? lineThickness : 0;
+
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
     setPageWidth(
       PDF_TO_CSS_UNITS * pdfProxy.view[2] * (pdfProxy.userUnit || 1),
@@ -71,8 +85,8 @@ export default function PdfViewer({
   }
 
   const customRenderer = useCallback(
-    () => CustomRenderer(setLayers, layers, lineThickness),
-    [setLayers, layers, lineThickness],
+    () => CustomRenderer(setLayers, layers, renderErosions),
+    [setLayers, layers, renderErosions],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -129,6 +143,7 @@ export default function PdfViewer({
               style={{
                 width: insetWidth,
                 height: insetHeight,
+                filter: erosionFilter(lineThickness),
                 mixBlendMode:
                   cssEdgeInsets.horizontal == 0 && cssEdgeInsets.vertical == 0
                     ? "normal"

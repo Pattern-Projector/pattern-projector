@@ -1,3 +1,16 @@
+export function erosionFilter(erosions: number): string {
+  if (erosions <= 0) {
+    return "none";
+  }
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg">
+  <filter id="erode-${erosions}">
+    <feMorphology operator="erode" radius="${erosions}" />
+  </filter>
+</svg>`;
+  const url = `data:image/svg+xml;base64,${btoa(svg)}`;
+  return `url(${url}#erode-${erosions})`;
+}
+
 export function erodeImageData(imageData: ImageData, output: ImageData) {
   const { width, height } = imageData;
   const erodedData = output.data;
