@@ -149,7 +149,8 @@ export default function PdfViewer({
               style={{
                 width: insetWidth,
                 height: insetHeight,
-                filter: erosionFilter(lineThickness),
+                filter:
+                  isFirefox || isSafari ? "none" : erosionFilter(lineThickness),
                 mixBlendMode:
                   cssEdgeInsets.horizontal == 0 && cssEdgeInsets.vertical == 0
                     ? "normal"
