@@ -6,8 +6,8 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
-  useState,
   useMemo,
+  useReducer,
 } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
@@ -54,13 +54,16 @@ export default function PdfViewer({
   pageRange: string;
   filter: string;
 }) {
-  const [pageWidth, setPageWidth] = useState<number>(0);
-  const [pageHeight, setPageHeight] = useState<number>(0);
+  const [pageSizes, setPageSize] = useReducer(
+    pageSizeReducer,
+    new Map<number, { width: number; height: number }>(),
+  );
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     setLayers(new Map());
     setLocalTransform(Matrix.identity(3));
+    setPageSize({ action: "clear" });
   }
 
   const isSafari = useMemo(() => {
@@ -76,12 +79,13 @@ export default function PdfViewer({
   const renderErosions = isSafari || isFirefox ? lineThickness : 0;
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
-    setPageWidth(
-      PDF_TO_CSS_UNITS * pdfProxy.view[2] * (pdfProxy.userUnit || 1),
-    );
-    setPageHeight(
-      PDF_TO_CSS_UNITS * pdfProxy.view[3] * (pdfProxy.userUnit || 1),
-    );
+    const scale = (pdfProxy.userUnit || 1) * PDF_TO_CSS_UNITS;
+    setPageSize({
+      action: "setPage",
+      pageNumber: pdfProxy.pageNumber,
+      width: pdfProxy.view[2] * scale,
+      height: pdfProxy.view[3] * scale,
+    });
   }
 
   const customRenderer = useCallback(
@@ -94,20 +98,21 @@ export default function PdfViewer({
   }, []);
 
   useEffect(() => {
-    const itemCount = getPageNumbers(pageRange, pageCount).length;
+    const pages = getPageNumbers(pageRange, pageCount);
+    const itemCount = pages.length;
     const columns = Math.max(Math.min(Number(columnCount), itemCount), 1);
     const rowCount = Math.ceil((itemCount || 1) / columns);
+    const [tileWidth, tileHeight] = getTileSize(pages, pageSizes);
     const w =
-      pageWidth * columns -
+      tileWidth * columns -
       (columns - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.horizontal);
     const h =
-      pageHeight * rowCount -
+      tileHeight * rowCount -
       (rowCount - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.vertical);
     setLayoutWidth(w);
     setLayoutHeight(h);
   }, [
-    pageWidth,
-    pageHeight,
+    pageSizes,
     pageRange,
     columnCount,
     pageCount,
@@ -118,12 +123,13 @@ export default function PdfViewer({
 
   const pages = getPageNumbers(pageRange, pageCount);
   const keys = getKeys(pages);
+  const [tileWidth, tileHeight] = getTileSize(pages, pageSizes);
   const cssEdgeInsets = {
     vertical: Number(edgeInsets.vertical) * PDF_TO_CSS_UNITS,
     horizontal: Number(edgeInsets.horizontal) * PDF_TO_CSS_UNITS,
   };
-  const insetWidth = `${pageWidth - cssEdgeInsets.horizontal}px`;
-  const insetHeight = `${pageHeight - cssEdgeInsets.vertical}px`;
+  const insetWidth = `${tileWidth - cssEdgeInsets.horizontal}px`;
+  const insetHeight = `${tileHeight - cssEdgeInsets.vertical}px`;
 
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
@@ -179,4 +185,32 @@ function getKeys(pages: number[]): string[] {
     values.set(value, seen + 1);
   }
   return keys;
+}
+
+function pageSizeReducer(
+  state: Map<number, { width: number; height: number }>,
+  action:
+    | { action: "clear" }
+    | { action: "setPage"; pageNumber: number; width: number; height: number },
+) {
+  if (action.action === "clear") {
+    return new Map();
+  }
+  const { pageNumber, width, height } = action;
+  const newState = new Map(state);
+  newState.set(pageNumber, { width, height });
+  return newState;
+}
+
+function getTileSize(
+  pages: number[],
+  pageSizes: Map<number, { width: number; height: number }>,
+): [number, number] {
+  let tileWidth = 0;
+  let tileHeight = 0;
+  for (const page of pages) {
+    tileWidth = Math.max(tileWidth, pageSizes.get(page)?.width ?? 0);
+    tileHeight = Math.max(tileHeight, pageSizes.get(page)?.height ?? 0);
+  }
+  return [tileWidth, tileHeight];
 }
