@@ -238,23 +238,27 @@ export default function Header({
             <div className="flex gap-1">
               <InlineInput
                 className="relative flex flex-col"
-                inputClassName="pl-6 pr-7"
+                inputClassName="pl-6 pr-7 w-24"
                 handleChange={handleWidthChange}
                 id="width"
                 label={t("width")}
                 labelRight={unitOfMeasure.toLocaleLowerCase()}
                 name="width"
                 value={width}
+                type="number"
+                min="0"
               />
               <InlineInput
                 className="relative flex flex-col"
-                inputClassName="pl-6 pr-7"
+                inputClassName="pl-6 pr-7 w-24"
                 handleChange={handleHeightChange}
                 id="height"
                 label={t("height")}
                 labelRight={unitOfMeasure.toLocaleLowerCase()}
                 name="height"
                 value={height}
+                type="number"
+                min="0"
               />
               <InlineSelect
                 handleChange={(e) => setUnitOfMeasure(e.target.value)}
