@@ -8,19 +8,19 @@
         "choose-language": "Taal",
         "welcome": {
             "title": "Welkom bij Pattern Projector!",
-            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projectors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan regelmatig veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken."
+            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projectors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan regelmatig veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken. Om te weten te komen over de laatste updates,  kijk in de <changeLogLink>changelog</changeLogLink>."
         },
         "requirements": {
             "title": "Wat je nodig hebt",
             "projector": "Projector: ten minste 720p aanbevolen",
-            "mat": "Snijmat: idealiter met rasterlijnen op regelmatige afstanden",
+            "mat": "Een snijmat met rasterlijnen (optioneel)",
             "mount": "Een standaard, ophanging of bevestiging aan de muur, plafond of aan een tafel",
             "computer": "Computer of tablet om verbinding te maken met de projector",
             "pattern": "Een naaipatroon in PDF formaat"
         },
         "setup": {
             "title": "Installatie",
-            "place": "Installeer de projector boven de snijmat, en laat hem naar de mat toe schijnen. Probeer de projector direct boven de snijmat te zetten, en er recht naartoe te laten wijzen.",
+            "place": "Installeer de projector boven de snijmat, en laat hem naar de mat toe schijnen. Als je geen snijhebt hebt, kan je papier of schilderstape gebruiken om een raster of rechthoek te maken op de vloer of een tafel.",
             "connect": "Maak met je computer of tablet verbinding met de projector en zet het scherm in 'spiegel' ('mirror') of 'uitbreiden' ('extend') modus (afhankelijk van hoe deze instelling op jouw device heet) zodat het beeld van de computer identiek op de projector weergegeven wordt.",
             "focus": "Stel de focus van de projector zo in, dat tekst scherp wordt weergegeven, en in het midden van het projectiebeeld. Als je geen helder beeld kan krijgen, zorg er dan voor dat de afstand tussen de projector en de snijmat zich binnen de door de fabrikant aanbevolen afstanden bevindt.",
             "keystone": "Als je projector trapeziumcorrectie ('keystone correction') heeft, stel die dan zo in dat de projectie zo rechthoekig mogelijk is, en het beeld aan de randen zo scherp mogelijk is."
@@ -46,7 +46,7 @@
             },
             "invert": {
                 "title": "Draai kleuren om",
-                "description": "Tijdens het projecteren is het meestal het makkelijkst om witte lijnen op een zwarte achtergrond te zien. Maar met dit gereedschap kan je dat desgewensd omdraaien."
+                "description": "Tijdens het projecteren is het meestal het makkelijkst om groene of witte lijnen op een zwarte achtergrond te zien. Maar met dit gereedschap kan je dat desgewensd omdraaien. Klik of druk één keer voor groene lijnen, twee keer voor witte lijnen, en drie keer om terug te gaan naar zwarte lijnen."
             },
             "flip": {
                 "title": "Spiegel vertikaal/horizontaal",
@@ -63,6 +63,34 @@
             "fullscreen": {
                 "title": "Volledig scherm",
                 "description": "Het is meestal het makkelijkst om de software in 'Volledig scherm' modus te gebruiken."
+            },
+            "moveTool": {
+                "description": "Het verplaatsgereedschap heeft vier pijlen om de hoeken en zijkanten van het calibratierooster te verplaatsen. Het heeft ook een knop in het midden om naar de volgende hoek of zijkant te gaan.",
+                "title": "Toon/verberg verplaats gereedschap"
+            },
+            "overlayOptions": {
+                "title": "Toon/verberg overlay opties",
+                "description": "De overlays raster, rondom, blad papier en spiegellijnen kunnen getoond of verborgen worden. Het raster komt overeen met het calibratie raster, rondom is de rand van het calibratie raster, blad papier is een rechthoek zo groot als een Letter of A4 formaat blad, en spiegellijnen zijn lijnen die helpen bij het spiegelen van patronen."
+            },
+            "measure": {
+                "description": "Meet de afstand tussen twee punten op de PDF.",
+                "title": "Start/stop meten"
+            },
+            "lineWeight": {
+                "title": "Lijndikte",
+                "description": "Verandert de dikte van de lijnen in het PDF patroon."
+            },
+            "layers": {
+                "title": "Toon/verberg lagen",
+                "description": "Toont of verbergt de lagen in de PDF."
+            },
+            "stitch": {
+                "title": "Toon/verberg samenvoeg menu",
+                "description": "Toont of verbergt het samenvoeg menu, waarmee je meerder paginas van een PDF patroon samen kan voegen."
+            },
+            "showMenu": {
+                "description": "Toon of verberg het menu bovenaan.",
+                "title": "Toon/verberg menu"
             }
         },
         "faq": {
@@ -94,6 +122,10 @@
                 "projectorsForSewing": {
                     "title": "Naaien met een projector/beamer",
                     "link": "https://www.facebook.com/groups/492119878090767"
+                },
+                "onePageGuide": {
+                    "title": "Naaien met een projector uitgelegd op één pagina",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
                 }
             }
         },
@@ -153,12 +185,21 @@
         "overlayOptionPaper": "Blad papier",
         "overlayOptionFliplines": "Spiegel lijnen",
         "flipCenterOn": "Spiegel rond midden aan",
-        "flipCenterOff": "Spiegel rond midden uit"
+        "flipCenterOff": "Spiegel rond midden uit",
+        "showMovement": "Toon het verplaatsgereedschap",
+        "hideMovement": "Verberg het verplaatsgereedschap"
     },
     "StitchMenu": {
         "columnCount": "Kolommen",
         "pageRange": "Pages",
         "horizontal": "Horizontal",
         "vertical": "Vertical"
+    },
+    "MovementPad": {
+        "up": "Omhoog",
+        "down": "Naar beneden",
+        "left": "Links",
+        "right": "Rechts",
+        "next": "Volgende hoek"
     }
 }
