@@ -44,6 +44,7 @@ import {
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
+import Filters from "@/_components/filters";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -372,6 +373,7 @@ export default function Page() {
               style={{
                 transform: `${matrix3d}`,
                 transformOrigin: "0 0",
+                imageRendering: "pixelated",
               }}
             >
               <div className={"outline outline-8 outline-purple-600"}>
@@ -395,6 +397,7 @@ export default function Page() {
           </Draggable>
         </FullScreen>
       </div>
+      <Filters />
     </main>
   );
 }
