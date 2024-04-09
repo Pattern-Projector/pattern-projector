@@ -21,7 +21,7 @@
             "title": "Installation",
             "connect": "Connectez votre ordinateur ou tablette au projecteur et soit dupliquez soit étendez votre écran pour que l'image de l'ordinateur ou de la tablette s'affiche sur le projecteur.",
             "place": "Placez le projecteur au-dessus du tapis de découpe, en l'orientant directement vers le tapis de découpe. Si vous n'avez pas de tapis de découpe, vous pouvez utiliser du papier ou du masking tape pour marquer un quadrillage/rectangle sur la table ou le sol.",
-            "keystone": "Si votre projecteur a un keystone, ajustez-le pour que la projection soit autant rectangulaire que possible et que le focus proche des côtés s'améliore.",
+            "keystone": "Si votre projecteur a une correction trapézoïdale (keystone), ajustez-la pour que la projection soit autant rectangulaire que possible et que le focus proche des côtés s'améliore.",
             "focus": "Ajustez le focus sur le projecteur jusqu'à ce que le texte soit net au centre de la projection. Si vous n'arrivez pas à obtenir une image clair, assurez-vous que la distance entre le projecteur et le tapis de découpe est dans l'intervalle de fonctionnement recommandé par le fabricant."
         },
         "calibration": {
@@ -69,10 +69,10 @@
             },
             "moveTool": {
                 "title": "Afficher/masquer l'outil déplacement",
-                "description": "L'outil déplacement a quatre flèches boutons pour déplacer les coins/côtés de la grille de calibration.Il a aussi l'outil suivant au milieu pour basculer au prochain coin/côté."
+                "description": "L'outil déplacement a quatre boutons en forme de flèche pour déplacer les coins/côtés de la grille de calibration. Il a aussi un bouton suivant au milieu pour basculer au prochain coin/côté."
             },
             "overlayOptions": {
-                "title": "Afficher/masquer les options d'overlay"
+                "title": "Afficher/masquer les options de recouvrement (overlay)"
             },
             "lineWeight": {
                 "title": "Épaisseur de ligne",
@@ -87,7 +87,7 @@
                 "description": "Affiche ou masque le menu d'assemblage, qui permet d'assembler les patrons PDF multi-pages."
             },
             "measure": {
-                "title": "Commencer/arrêter une mesure",
+                "title": "Démarrer/arrêter une mesure",
                 "description": "Mesure la distance entre deux points du PDF."
             }
         },
@@ -131,7 +131,7 @@
             "translate": "Traduisez cet outil dans plus de langues.",
             "feedback": "Les retours d'expérience et demandes de fonctionnalités sont les bienvenus !",
             "develop": "Aidez à implémenter des fonctionnalités et fixer des problèmes sur <githubLink>GitHub</githubLink>.",
-            "donation": "Si vous voulez soutenir le développement de cet outil, merci d'envisager de <donateLink>m'acheter un café</donateLink>"
+            "donation": "Si vous voulez soutenir le développement de cet outil, merci d'envisager de <donateLink>m'offrir un café</donateLink>"
         },
         "contact": "Contact",
         "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr"
@@ -148,13 +148,13 @@
         "overlayModeGrid": "Quadrillage",
         "invertColor": "Inverser les couleurs",
         "flipVertical": "Renverser verticalement",
-        "layersOn": "Voir le menu des calques",
+        "layersOn": "Afficher le menu des calques",
         "layersOff": "Masquer le menu des calques",
         "recenter": "Recentrer le PDF",
         "fullscreen": "Passer en plein écran",
         "fullscreenExit": "Quitter le plein écran",
         "lineWeight": "Épaisseur des lignes",
-        "menuShow": "Voir le menu",
+        "menuShow": "Afficher le menu",
         "menuHide": "Masquer le menu",
         "measureOn": "Commencer à mesurer",
         "measureOff": "Arrêter de mesurer",
@@ -166,7 +166,7 @@
         "flipHorizontalOff": "Renversement horizontal désactivé",
         "flipHorizontal": "Renverser horizontalement",
         "info": "Page d'infos",
-        "overlayOptions": "Options de recouvrement",
+        "overlayOptions": "Options de recouvrement (overlay)",
         "overlayOptionBorder": "Bordure",
         "overlayOptionDisabled": "Désactivé",
         "overlayOptionGrid": "Quadrillage",
@@ -178,7 +178,8 @@
         "stitchMenuShow": "Afficher le menu d'assemblage",
         "overlayOptionPaper": "Feuille de papier",
         "overlayOptionFliplines": "Lignes de renversement / symétrie",
-        "hideMovement": "Masquer l'outil déplacement"
+        "hideMovement": "Masquer l'outil déplacement",
+        "showMovement": "Afficher le menu des déplacements"
     },
     "StitchMenu": {
         "columnCount": "Colonnes",
