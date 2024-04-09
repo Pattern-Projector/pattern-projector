@@ -39,7 +39,6 @@ export default function PdfViewer({
   edgeInsets,
   pageRange,
   filter,
-  scale,
 }: {
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
@@ -54,7 +53,6 @@ export default function PdfViewer({
   edgeInsets: EdgeInsets;
   pageRange: string;
   filter: string;
-  scale: number;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -91,8 +89,8 @@ export default function PdfViewer({
   }
 
   const customRenderer = useCallback(
-    () => CustomRenderer(setLayers, layers, renderErosions, scale),
-    [setLayers, layers, renderErosions, scale],
+    () => CustomRenderer(setLayers, layers, renderErosions),
+    [setLayers, layers, renderErosions],
   );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -100,14 +98,17 @@ export default function PdfViewer({
   }, []);
 
   useEffect(() => {
-    const [w, h] = getLayoutSize(
-      pageSizes,
-      pageRange,
-      pageCount,
-      columnCount,
-      edgeInsets,
-      scale,
-    );
+    const pages = getPageNumbers(pageRange, pageCount);
+    const itemCount = pages.length;
+    const columns = Math.max(Math.min(Number(columnCount), itemCount), 1);
+    const rowCount = Math.ceil((itemCount || 1) / columns);
+    const [tileWidth, tileHeight] = getTileSize(pages, pageSizes);
+    const w =
+      tileWidth * columns -
+      (columns - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.horizontal);
+    const h =
+      tileHeight * rowCount -
+      (rowCount - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.vertical);
     setLayoutWidth(w);
     setLayoutHeight(h);
   }, [
@@ -118,15 +119,17 @@ export default function PdfViewer({
     setLayoutWidth,
     setLayoutHeight,
     edgeInsets,
-    scale,
   ]);
 
   const pages = getPageNumbers(pageRange, pageCount);
   const keys = getKeys(pages);
-  const [tileWidth, tileHeight] = getTileSize(pages, pageSizes, scale);
-  const cssEdgeInsets = getCSSEdgeInsets(edgeInsets, scale);
-  const insetWidth = `${tileWidth - Number(cssEdgeInsets.horizontal)}px`;
-  const insetHeight = `${tileHeight - Number(cssEdgeInsets.vertical)}px`;
+  const [tileWidth, tileHeight] = getTileSize(pages, pageSizes);
+  const cssEdgeInsets = {
+    vertical: Number(edgeInsets.vertical) * PDF_TO_CSS_UNITS,
+    horizontal: Number(edgeInsets.horizontal) * PDF_TO_CSS_UNITS,
+  };
+  const insetWidth = `${tileWidth - cssEdgeInsets.horizontal}px`;
+  const insetHeight = `${tileHeight - cssEdgeInsets.vertical}px`;
 
   return (
     <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
@@ -134,8 +137,8 @@ export default function PdfViewer({
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${columnCount}, max-content)`,
-          paddingRight: cssEdgeInsets.horizontal + "px",
-          paddingBottom: cssEdgeInsets.vertical + "px",
+          marginRight: cssEdgeInsets.horizontal,
+          marginBottom: cssEdgeInsets.vertical,
           filter: filter,
         }}
       >
@@ -149,15 +152,14 @@ export default function PdfViewer({
                 filter:
                   isFirefox || isSafari ? "none" : erosionFilter(lineThickness),
                 mixBlendMode:
-                  Number(cssEdgeInsets.horizontal) == 0 &&
-                  Number(cssEdgeInsets.vertical) == 0
+                  cssEdgeInsets.horizontal == 0 && cssEdgeInsets.vertical == 0
                     ? "normal"
                     : "darken",
               }}
             >
               {value != 0 && (
                 <Page
-                  scale={PDF_TO_CSS_UNITS * scale}
+                  scale={PDF_TO_CSS_UNITS}
                   pageNumber={value}
                   renderMode="custom"
                   customRenderer={customRenderer}
@@ -204,7 +206,6 @@ function pageSizeReducer(
 function getTileSize(
   pages: number[],
   pageSizes: Map<number, { width: number; height: number }>,
-  scale: number,
 ): [number, number] {
   let tileWidth = 0;
   let tileHeight = 0;
@@ -212,38 +213,5 @@ function getTileSize(
     tileWidth = Math.max(tileWidth, pageSizes.get(page)?.width ?? 0);
     tileHeight = Math.max(tileHeight, pageSizes.get(page)?.height ?? 0);
   }
-  return [tileWidth * scale, tileHeight * scale];
-}
-
-function getLayoutSize(
-  pageSizes: Map<number, { width: number; height: number }>,
-  pageRange: string,
-  pageCount: number,
-  columnCount: string,
-  edgeInsets: EdgeInsets,
-  scale: number,
-): [number, number] {
-  const pages = getPageNumbers(pageRange, pageCount);
-  const [columns, rowCount] = getGridSize(pages, columnCount);
-  const [tileWidth, tileHeight] = getTileSize(pages, pageSizes, scale);
-  const insets = getCSSEdgeInsets(edgeInsets, scale);
-  const w = tileWidth * columns - (columns - 1) * Number(insets.horizontal);
-  const h = tileHeight * rowCount - (rowCount - 1) * Number(insets.vertical);
-  return [w, h];
-}
-
-function getGridSize(pages: number[], columnCount: string): [number, number] {
-  const itemCount = pages.length;
-  const columns = Math.max(Math.min(Number(columnCount), itemCount), 1);
-  const rows = Math.ceil((itemCount || 1) / columns);
-  return [columns, rows];
-}
-
-function getCSSEdgeInsets(edgeInsets: EdgeInsets, scale: number): EdgeInsets {
-  return {
-    vertical: String(Number(edgeInsets.vertical) * PDF_TO_CSS_UNITS * scale),
-    horizontal: String(
-      Number(edgeInsets.horizontal) * PDF_TO_CSS_UNITS * scale,
-    ),
-  };
+  return [tileWidth, tileHeight];
 }

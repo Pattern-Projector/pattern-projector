@@ -21,7 +21,6 @@ export default function InlineInput({
   value,
   min,
   type,
-  step,
 }: {
   className?: string | undefined;
   inputClassName?: string | undefined;
@@ -34,7 +33,6 @@ export default function InlineInput({
   value: string;
   type?: string;
   min?: string;
-  step?: string;
 }) {
   return (
     <div className={className}>
@@ -54,7 +52,6 @@ export default function InlineInput({
         onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
         required
         value={value}
-        step={step}
       />
       <label
         className="text-sm text-gray-500 dark:text-white mb-2 absolute right-2 top-0 h-full flex items-center"

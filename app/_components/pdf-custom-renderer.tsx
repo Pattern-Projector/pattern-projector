@@ -15,7 +15,6 @@ export default function CustomRenderer(
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>,
   layers: Map<string, Layer>,
   erosions: number,
-  scale: number,
 ) {
   const pageContext = usePageContext();
 
@@ -39,9 +38,9 @@ export default function CustomRenderer(
   const renderViewport = useMemo(
     () =>
       page.getViewport({
-        scale: getCanvasScale(viewport.width, viewport.height, userUnit, scale),
+        scale: getScale(viewport.width, viewport.height, userUnit),
       }),
-    [page, viewport, userUnit, scale],
+    [page, viewport, userUnit],
   );
 
   function drawPageOnCanvas() {
@@ -152,27 +151,19 @@ export default function CustomRenderer(
       width={Math.floor(renderViewport.width)}
       height={Math.floor(renderViewport.height)}
       style={{
-        width:
-          Math.floor(viewport.width * PDF_TO_CSS_UNITS * userUnit * scale) +
-          "px",
+        width: Math.floor(viewport.width * PDF_TO_CSS_UNITS * userUnit) + "px",
         height:
-          Math.floor(viewport.height * PDF_TO_CSS_UNITS * userUnit * scale) +
-          "px",
+          Math.floor(viewport.height * PDF_TO_CSS_UNITS * userUnit) + "px",
       }}
     />
   );
 }
 
-function getCanvasScale(
-  w: number,
-  h: number,
-  userUnit: number,
-  patternScale: number,
-): number {
+function getScale(w: number, h: number, userUnit: number): number {
   const dpr = window.devicePixelRatio;
-  const dpi = dpr * userUnit * PDF_TO_CSS_UNITS * patternScale;
+  const dpi = dpr * userUnit * PDF_TO_CSS_UNITS;
   const renderArea = dpi * w * dpi * h;
-  const maxArea = 5 * 16_777_216; // limit for iOS device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
+  const maxArea = 16_777_216; // limit for iOS device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
   let scale = dpi;
   if (renderArea > maxArea) {
     // scale to fit max area.

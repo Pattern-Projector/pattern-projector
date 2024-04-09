@@ -77,8 +77,6 @@ export default function Header({
   setMenuStates,
   showingMovePad,
   setShowingMovePad,
-  scale,
-  handleScaleChange,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -106,8 +104,6 @@ export default function Header({
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
   showingMovePad: boolean;
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
-  scale: number;
-  handleScaleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   const t = useTranslations("Header");
 
@@ -336,21 +332,6 @@ export default function Header({
                   value={String(lineThickness)}
                 />
               </div>
-            </Tooltip>
-            <Tooltip description={"Pattern scale"}>
-              <InlineInput
-                className="relative flex flex-col"
-                inputClassName="w-28"
-                handleChange={handleScaleChange}
-                id="scale"
-                label={"Scale:"} // TODO: i18n
-                name="scale"
-                value={(scale * 100).toFixed(0)}
-                labelRight={"%"}
-                type="number"
-                min="0"
-                step="5"
-              />
             </Tooltip>
 
             <Tooltip description={t("flipHorizontal")}>

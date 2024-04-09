@@ -83,7 +83,6 @@ export default function Page() {
     horizontal: "0",
     vertical: "0",
   });
-  const [patternScale, setPatternScale] = useState<number>(1);
 
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
@@ -120,10 +119,6 @@ export default function Page() {
   }
 
   // HANDLERS
-
-  function handleScaleChange(e: ChangeEvent<HTMLInputElement>) {
-    setPatternScale(Number(e.target.value) / 100);
-  }
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
@@ -308,8 +303,6 @@ export default function Page() {
               setShowingMovePad(show);
               updateLocalSettings({ showingMovePad: show });
             }}
-            scale={patternScale}
-            handleScaleChange={handleScaleChange}
           />
 
           <StitchMenu
@@ -396,7 +389,6 @@ export default function Page() {
                   pageRange={pageRange}
                   setLocalTransform={setLocalTransform}
                   filter={themeFilter(displaySettings.theme)}
-                  scale={patternScale}
                 />
               </div>
             </div>
