@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Speed up line weight change and movement in Firefox
+
+### Fixed
+
+- Apply line weight changes before perspective change to stop disappearing lines when moving
+
 ## [1.0.0] - 2024-04-06
 
 ### Added
