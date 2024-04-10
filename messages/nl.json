@@ -8,7 +8,7 @@
         "choose-language": "Taal",
         "welcome": {
             "title": "Welkom bij Pattern Projector!",
-            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projectors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan regelmatig veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken. Om te weten te komen over de laatste updates,  kijk in de <changeLogLink>changelog</changeLogLink>."
+            "description": "Pattern projector is een gratis en open source web app die gebruikers helpt om snel en makkelijk projectors voor naaipatronen te kalibreren. Dit project is in een testfase ('beta'), je kan regelmatig veranderingen en nieuwe functionaliteit verwachten terwijl we er aan werken. Om te weten te komen over de laatste updates, kijk in de <changeLogLink>changelog</changeLogLink>."
         },
         "requirements": {
             "title": "Wat je nodig hebt",
