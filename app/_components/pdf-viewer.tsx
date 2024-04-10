@@ -6,7 +6,6 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
-  useMemo,
   useReducer,
 } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -18,7 +17,7 @@ import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import Matrix from "ml-matrix";
-import { erosionFilter } from "@/_lib/erode";
+import RenderContext from "@/_hooks/render-context";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -66,18 +65,6 @@ export default function PdfViewer({
     setPageSize({ action: "clear" });
   }
 
-  const isSafari = useMemo(() => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
-  }, []);
-
-  const isFirefox = useMemo(() => {
-    return navigator.userAgent.toLowerCase().includes("firefox");
-  }, []);
-
-  // Firefox and Safari do not support the feMorphology filter in CSS.
-  const renderErosions = isSafari || isFirefox ? lineThickness : 0;
-
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
     const scale = (pdfProxy.userUnit || 1) * PDF_TO_CSS_UNITS;
     setPageSize({
@@ -87,11 +74,6 @@ export default function PdfViewer({
       height: pdfProxy.view[3] * scale,
     });
   }
-
-  const customRenderer = useCallback(
-    () => CustomRenderer(setLayers, layers, renderErosions),
-    [setLayers, layers, renderErosions],
-  );
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
     return `<span class="opacity-0 hover:opacity-100 hover:text-6xl" style="background-color: #FFF; color: #000;">${str}</span>`;
@@ -149,8 +131,6 @@ export default function PdfViewer({
               style={{
                 width: insetWidth,
                 height: insetHeight,
-                filter:
-                  isFirefox || isSafari ? "none" : erosionFilter(lineThickness),
                 mixBlendMode:
                   cssEdgeInsets.horizontal == 0 && cssEdgeInsets.vertical == 0
                     ? "normal"
@@ -158,16 +138,20 @@ export default function PdfViewer({
               }}
             >
               {value != 0 && (
-                <Page
-                  scale={PDF_TO_CSS_UNITS}
-                  pageNumber={value}
-                  renderMode="custom"
-                  customRenderer={customRenderer}
-                  customTextRenderer={customTextRenderer}
-                  renderTextLayer={true}
-                  canvasBackground="#ccc"
-                  onLoadSuccess={onPageLoadSuccess}
-                />
+                <RenderContext.Provider
+                  value={{ layers, setLayers, erosions: lineThickness }}
+                >
+                  <Page
+                    scale={PDF_TO_CSS_UNITS}
+                    pageNumber={value}
+                    renderMode="custom"
+                    customRenderer={CustomRenderer}
+                    customTextRenderer={customTextRenderer}
+                    renderTextLayer={true}
+                    canvasBackground="#ccc"
+                    onLoadSuccess={onPageLoadSuccess}
+                  />
+                </RenderContext.Provider>
               )}
             </div>
           );
