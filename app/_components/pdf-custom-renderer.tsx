@@ -138,7 +138,7 @@ export default function CustomRenderer() {
             renderWidth,
             renderHeight,
           );
-          if (false) {
+          if (true) {
             console.log(`eroding new ${renderErosions} times`);
             erode(input, renderErosions);
           } else {
