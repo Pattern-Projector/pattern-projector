@@ -169,6 +169,7 @@ export default function Header({
             <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
 
             <Tooltip
+              className={visible(isCalibrating)}
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
@@ -188,7 +189,7 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <IconButton
-              className={`!p-1 border-2 border-black dark:border-white`}
+              className={`!p-1 border-2 border-black dark:border-white ml-2`}
               onClick={() => setMenuStates({ ...menuStates, nav: false })}
             >
               <ExpandLessIcon ariaLabel={t("menuHide")} />
@@ -238,23 +239,27 @@ export default function Header({
             <div className="flex gap-1">
               <InlineInput
                 className="relative flex flex-col"
-                inputClassName="pl-6 pr-7"
+                inputClassName="pl-6 pr-7 w-24"
                 handleChange={handleWidthChange}
                 id="width"
                 label={t("width")}
                 labelRight={unitOfMeasure.toLocaleLowerCase()}
                 name="width"
                 value={width}
+                type="number"
+                min="0"
               />
               <InlineInput
                 className="relative flex flex-col"
-                inputClassName="pl-6 pr-7"
+                inputClassName="pl-6 pr-7 w-24"
                 handleChange={handleHeightChange}
                 id="height"
                 label={t("height")}
                 labelRight={unitOfMeasure.toLocaleLowerCase()}
                 name="height"
                 value={height}
+                type="number"
+                min="0"
               />
               <InlineSelect
                 handleChange={(e) => setUnitOfMeasure(e.target.value)}

@@ -167,6 +167,7 @@
     "recenter": "Recenter PDF",
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen",
+    "fullScreenChange": "Please make sure your calibration is correct. You must calibrate in full screen mode if you want to project in full screen.",
     "menuShow": "Show menu",
     "menuHide": "Hide menu",
     "lineWeight": "Line weight",

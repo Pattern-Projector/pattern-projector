@@ -2,13 +2,20 @@ export function erosionFilter(erosions: number): string {
   if (erosions <= 0) {
     return "none";
   }
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg">
-  <filter id="erode-${erosions}">
-    <feMorphology operator="erode" radius="${erosions}" />
-  </filter>
-</svg>`;
-  const url = `data:image/svg+xml;base64,${btoa(svg)}`;
-  return `url(${url}#erode-${erosions})`;
+  const result = [];
+  while (erosions > 0) {
+    if (erosions >= 3) {
+      result.push("url(#erode-3)");
+      erosions -= 3;
+    } else if (erosions >= 2) {
+      result.push("url(#erode-2)");
+      erosions -= 2;
+    } else {
+      result.push("url(#erode-1)");
+      erosions -= 1;
+    }
+  }
+  return result.join(" ");
 }
 
 export function erodeImageData(imageData: ImageData, output: ImageData) {

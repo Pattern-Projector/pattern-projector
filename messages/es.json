@@ -1,159 +1,200 @@
 {
-  "HomePage": {
-    "beta": "beta",
-    "pdfstitcherHref": "https://www.pdfstitcher.org/",
-    "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
-    "github": "Ver código fuente",
-    "calibrate": "Empezar a calibrar",
-    "choose-language": "Idioma",
-    "welcome": {
-      "title": "Bienvenido a Pattern Projector!",
-      "description": "Pattern Projector es una app web libre y de código abierto que ayuda a los usuarios a calibrar rápidamente su proyectores para costura. Este proyecto está actualmente en fase beta, por lo que nuevos cambios y opciones se irán añadiendo."
+    "HomePage": {
+        "beta": "beta",
+        "pdfstitcherHref": "https://www.pdfstitcher.org/",
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "github": "Ver código fuente",
+        "calibrate": "Empezar calibración",
+        "choose-language": "Idioma",
+        "welcome": {
+            "title": "¡Bienvenido a Pattern Projector!",
+            "description": "Pattern Projector es una app web libre y de código abierto que ayuda a los usuarios a calibrar rápidamente su proyectores para costura. También cuenta con una herramienta para montar patrones que estén cortados en varias páginas, y que permite cambiar el grosor de las líneas, invertir colores, girar o voltear patrones y más. Para leer acerca de las últimas actualizaciones puedes consultar el <changeLogLink>registro de cambios</changeLogLink>."
+        },
+        "requirements": {
+            "title": "Qué necesitas",
+            "projector": "Proyector: se recomienda uno de 720p mínimo",
+            "mat": "Una base de corte con cuadrícula (opcional)",
+            "mount": "Trípode o soporte de pared/estante/mesa para el proyector",
+            "computer": "Ordenador o tableta conectada al proyector",
+            "pattern": "Un patrón de costura en PDF"
+        },
+        "setup": {
+            "title": "Configuración",
+            "place": "Coloca el proyector sobre la base de corte apuntándola directamente. Si no tienes base de corte puedes utilizar papel o cinta para marcar un rectángulo o cuadrícula en tu mesa o en el suelo.",
+            "connect": "Conecta el ordenador o la tableta al proyector y duplica o extiende la pantalla para que la imagen del ordenador o la tableta se muestre en el proyector.",
+            "focus": "Ajusta el enfoque en el proyector hasta que el texto quede nítido en el centro de la proyección. Si no consigues obtener una imagen clara, asegúrate de que la distancia entre el proyector y el tapete de corte esté dentro del rango funcional recomendado por el fabricante.",
+            "keystone": "Si tu proyector tiene opción para corregir la distorsión trapezoidal (keystone), ajústala para que la proyección sea lo más rectangular posible y mejore el enfoque cerca de los bordes."
+        },
+        "calibration": {
+            "title": "Calibración",
+            "start": "Selecciona “Empezar calibración.”",
+            "input": "Introduzca el alto y el largo de su tapete de corte.",
+            "fullscreen": "Activa el modo de pantalla completa pinchando en este icono: ",
+            "drag": "Arrastra las esquinas de la cuadrícula para alinearlas con la base de corte. Mirando a la base de corte, ajusta las esquinas desde el ordenador o tableta. Ajusta la ubicación de las esquinas hasta que la cuadrícula proyectada coincida con la cuadrícula de la base de corte.",
+            "size": "No es necesario calibrar usando toda la base de corte; en su lugar, elige el área más grande en la que puedas colocar la cuadrícula de calibración y asegúrate de que los valores de alto y largo coincidan con el alto y el largo de la cuadrícula.",
+            "project": "Cuando la cuadricula proyectada esté alineada con la base de corte selecciona “Proyectar”."
+        },
+        "project": {
+            "title": "Proyectando un patrón",
+            "open": "Selecciona <pdficon></pdficon> para abrir el documento PDF.",
+            "move": "Mueve el documento pinchando y arrastrándolo por la pantalla.",
+            "cut": "Corta el patrón proyectado.",
+            "tools": "En el modo de proyección se proporcionan varias herramientas:",
+            "showGrid": {
+                "title": "Mostrar/Ocultar la cuadrícula",
+                "description": "Al proyectar, muestra/oculta una cuadrícula tenue para verificar que su calibración sea correcta."
+            },
+            "invert": {
+                "title": "Invertir colores",
+                "description": "Al proyectar, suele ser más fácil ver líneas verdes o blancas sobre fondo negro. Pincha una vez para obtener líneas verdes, dos veces para líneas blancas y tres veces para volver a líneas negras."
+            },
+            "flip": {
+                "title": "Voltear vertical/horizontalmente",
+                "description": "Útil para reflejar patrones que sólo muestran una mitad."
+            },
+            "rotate": {
+                "title": "Girar",
+                "description": "Gira la orientación del patrón 90 grados a la derecha."
+            },
+            "recenter": {
+                "title": "Volver a centrar",
+                "description": "Centra el patrón en la base de corte."
+            },
+            "fullscreen": {
+                "title": "Pantalla completa",
+                "description": "Generalmente es más fácil usar el programa en modo de pantalla completa."
+            },
+            "stitch": {
+                "description": "Muestra u oculta el menú de unión de páginas, que permite montar/fusionar patrones en PDF que estén formados por varias páginas.",
+                "title": "Mostrar/ocultar menú de unión de páginas"
+            },
+            "layers": {
+                "description": "Muestra u oculta capas del patrón PDF.",
+                "title": "Mostrar/ocultar capas"
+            },
+            "measure": {
+                "title": "Comenzar/terminar medición",
+                "description": "Mide la distancia entre dos puntos del PDF."
+            },
+            "lineWeight": {
+                "title": "Grosor de línea",
+                "description": "Cambia el grosor de las líneas del patrón en PDF."
+            },
+            "moveTool": {
+                "description": "La herramienta para mover tiene 4 botones en forma de flecha para mover las esquinas o bordes de la cuadrícula a pequeños toques. También tiene un botón en el centro para cambiar a la siguiente esquina o borde.",
+                "title": "Mostrar/ocultar herramienta mover"
+            },
+            "showMenu": {
+                "title": "Mostrar/ocultar menú superior",
+                "description": "Muestra u oculta el menú superior."
+            },
+            "overlayOptions": {
+                "description": "Las líneas de referencia, como la cuadrícula, los bordes o las líneas de volteo pueden mostrarse o esconderse. La opción \"cuadrícula\" se refiere a la cuadrícula en sí, \"borde\" se refiere a los bordes de la cuadrícula, \"hoja de papel\" es un rectángulo de tamaño carta o A4 y \"líneas de volteo\" son las líneas que se usan como eje al reflejar patrones.",
+                "title": "Mostrar/ocultar líneas de referencia"
+            }
+        },
+        "faq": {
+            "title": "FAQ",
+            "wrongSizePdf": {
+                "question": "¿El fichero PDF se proyecta demasiado pequeño o demasiado grande?",
+                "answer": "La herramienta de calibración de Pattern Projector no tiene zoom porque la escala de la proyección proviene de la información de tamaño del PDF. Los patrones de los diseñadores suelen tener la escala correcta, por lo que se podría haber introducido un cambio en la escala al abrir el patrón en Affinity Designer o Inkscape."
+            },
+            "saveAsApp": {
+                "question": "¿Quieres guardar Pattern Projector como una aplicación (APP)?",
+                "answer": "Pattern Projector es una aplicación web progresiva (PWA), por lo que se puede guardar como una aplicación. Puedes instalarlo en el escritorio usando <googleChromeLink>Chrome</googleChromeLink> o <microsoftEdgeLink>Edge</microsoftEdgeLink>.En una tableta, abrir el menú Compartir y seleccionar Agregar a la pantalla de inicio."
+            },
+            "annotationSupport": {
+                "question": "¿Existe forma de agregar anotaciones?",
+                "answer": "Todavía no, pero está previsto para próximas versiones."
+            },
+            "chromecastSupport": {
+                "question": "¿Es compatible con Chromecast?",
+                "answer": "Si bien es posible transmitir esta página web en Chrome, el retraso en la conexión puede resultar frustrante, especialmente durante la calibración. Está previsto un mejor soporte para Chromecast en próximas versiones."
+            },
+            "mobileSupport": {
+                "question": "¿Tiene soporte para teléfonos móviles y tabletas?",
+                "answer": "Es posible visitar y utilizar la página web en un teléfono inteligente, pero el tamaño limitado de la pantalla dificulta su uso. Está previsto un mejor soporte para móviles en próximas versiones."
+            }
+        },
+        "resources": {
+            "title": "Recursos adicionales",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Grupo de Facebook \"Projectors for Sewing\"",
+                    "link": "https://www.facebook.com/groups/481078582801085"
+                },
+                "onePageGuide": {
+                    "title": "Guía resumen de una página (en inglés)",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
+                }
+            }
+        },
+        "contribute": {
+            "title": "Contribuye al proyecto",
+            "donation": "Si deseas apoyar el desarrollo de esta herramienta, considera <donateLink>invitarme a un café</donateLink>",
+            "develop": "Ayuda a implementar funciones y solucionar problemas en <githubLink>GitHub</githubLink>.",
+            "translate": "Traduce esta herramienta a más idiomas.",
+            "feedback": "¡Los comentarios y solicitud de funciones son bien recibidos!"
+        },
+        "contact": "Contactar"
     },
-    "requirements": {
-      "title": "Lo que necesitaras",
-      "projector": "Proyector: se recomienda uno de 720p mínimo",
-      "mat": "Base de corte: idealmente con una cuadrícula en cm o pulgadas",
-      "mount": "Trípode o soporte de pared/estante o mesa para el proyector",
-      "computer": "Ordenador o tableta conectada al proyector",
-      "pattern": "Un patrón de costura en PDF"
+    "Header": {
+        "projecting": "Proyectando",
+        "calibrating": "Calibrando",
+        "openPDF": "Abrir PDF",
+        "height": "A:",
+        "width": "L:",
+        "project": "Proyectar",
+        "calibrate": "Calibrar",
+        "delete": "Restablecer calibración",
+        "gridOn": "Cuadrícula activada",
+        "gridOff": "Cuadrícula desactivada",
+        "overlayOptions": "Líneas de referencia",
+        "overlayOptionBorder": "Borde",
+        "overlayOptionDisabled": "Deshabilitado",
+        "overlayOptionGrid": "Cuadrícula",
+        "overlayOptionPaper": "Hoja de papel",
+        "overlayOptionFliplines": "Líneas de volteo",
+        "invertColor": "Invertir colores",
+        "invertColorOff": "Invertir colores desactivado",
+        "flipVertical": "Voltear verticalmente",
+        "flipVerticalOff": "Voltear verticalmente desactivado",
+        "flipHorizontal": "Voltear horizontalmente",
+        "flipHorizontalOff": "Voltear horizontalmente desactivado",
+        "flipCenterOn": "Voltear centro",
+        "flipCenterOff": "Voltear centro desactivado",
+        "fourCornersOn": "Resaltar todas las esquinas",
+        "fourCornersOff": "Resaltar sólo la esquina seleccionada",
+        "rotate90": "Rotar 90 grados a la derecha",
+        "arrowBack": "Retroceder 1 página",
+        "arrowForward": "Avanzar 1 página",
+        "info": "Página de inicio",
+        "layersOn": "Mostrar menú de capas",
+        "layersOff": "Ocultar menú de capas",
+        "recenter": "Volver a centrar",
+        "fullscreen": "Activar pantalla completa",
+        "fullscreenExit": "Salir de pantalla completa",
+        "menuShow": "Mostrar menú superior",
+        "menuHide": "Ocultar menú superior",
+        "lineWeight": "Grosor de línea",
+        "stitchMenuShow": "Mostrar menú de unión de páginas",
+        "stitchMenuHide": "Ocultar menú de unión de páginas",
+        "measureOn": "Empezar medición",
+        "measureOff": "Terminar medición",
+        "showMovement": "Mostrar herramienta mover",
+        "hideMovement": "Ocultar herramienta mover"
     },
-    "setup": {
-      "title": "Configuración",
-      "place": "Ponga el proyector sobre la base de corte apuntándola directamente. Intente poner el proyector directamente encima de la base de corte apuntándonla directamente.",
-      "connect": "Conecte el ordenador o la tableta al proyector y duplique o extienda la pantalla para que la imagen del ordenador o la tablet se muestre en el proyector",
-      "focus": "Ajuste el enfoque en el proyector hasta que el texto quede nítido en el centro de la proyección. Si no puede obtener una imagen clara, asegúrese de que la distancia entre el proyector y el tapete de corte esté dentro del rango funcional recomendado por el fabricante.",
-      "keystone": "Si su proyector tiene opción para corregir la distorsión trapezoidal (keystone), ajústela para que la proyección sea casi rectangular y mejore el enfoque cerca de los bordes.."
+    "StitchMenu": {
+        "columnCount": "Columnas",
+        "pageRange": "Páginas",
+        "horizontal": "Horizontal",
+        "vertical": "Vertical"
     },
-    "calibration": {
-      "title": "Calibrar",
-      "start": "Seleccione “Empezar calibración.”",
-      "input": "Introduzca el alto y el largo de su tapete de corte.",
-      "fullscreen": "Activar pantalla completa",
-      "drag": "Arrastre las esquinas de la cuadrícula para alinearlas con su base de corte. Mirando a la base de corte, ajuste las esquinas de su ordenador o tableta. Ajuste la ubicación de las esquinas hasta que la cuadrícula proyectada coincida con la cuadrícula de su base de corte.",
-      "size": "No es necesario calibrar usando toda la base de corte; en su lugar, elija el área más grande en la que pueda colocar la cuadrícula de calibración y asegúrese de que las entradas de alto y largo coincidan con el alto y el largo de la cuadrícula.",
-      "project": "Cuando la cuadricula proyectada esté alineada con su base de corte seleccione “Projectar”"
-    },
-    "project": {
-      "title": "Proyectando un patrón",
-      "open": "Seleccione <pdficon></pdficon> para abrir el documento PDF.",
-      "move": "Mueva el documento clicando y arrastrandolo por la pantalla.",
-      "cut": "Corte el patrón proyectado.",
-      "tools": "En el modo de proyección se proporcionan varias herramientas:",
-      "showGrid": {
-        "title": "Mostrar/Ocultar la cuadrícula",
-        "description": "Al proyectar, muestra/oculta una cuadrícula tenue para verificar que su calibración sea correcta."
-      },
-      "invert": {
-        "title": "Invertir colores",
-        "description": "Al proyectar, suele ser más fácil ver líneas blancas sobre negras."
-      },
-      "flip": {
-        "title": "Voltear vertical/horizontal",
-        "description": "Útil para reflejar patrones por la mitad."
-      },
-      "rotate": {
-        "title": "Rotar",
-        "description": "Cambiar la orientación del patrón 90 grados."
-      },
-      "recenter": {
-        "title": "Volver a centrar",
-        "description": "Centra el patrón en la base de corte."
-      },
-      "fullscreen": {
-        "title": "Pantalla completa",
-        "description": "Generalmente es más fácil usar el programa en modo de pantalla completa."
-      }
-    },
-    "faq": {
-      "title": "FAQ",
-      "wrongSizePdf": {
-        "question": "¿Su fichero PDF se proyecta demasiado pequeño o demasiado grande?",
-        "answer": "La herramienta de calibración del Pattern Projector no tiene zoom porque la escala de la proyección proviene de la información de tamaño en el PDF. Los patrones de los diseñadores suelen tener la escala correcta, por lo que se podría haber introducido un cambio en la escala al abrir el patrón en Affinity Designer o Inkscape.."
-      },
-      "saveAsApp": {
-        "question": "¿Quiere guardar el Pattern Projector como una aplicación (APP)?",
-        "answer": "Pattern Projector es una aplicación web progresiva (PWA), por lo que se puede guardar como una aplicación. Puede instalarlo en su escritorio usando <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>.En una tableta, abra el menú Compartir y seleccione Agregar a la pantalla de inicio."
-      },
-      "annotationSupport": {
-        "question": "¿Tiene soporte para agregar anotaciones?",
-        "answer": "Todavía no, pero está previsto para una prósima versión."
-      },
-      "chromecastSupport": {
-        "question": "¿Es compatible con Chromecast?",
-        "answer": "Si bien es posible transmitir esta página web en Chrome, el retraso en la conexión puede resultar frustrante, especialmente durante la calibración. Está previsto un mejor soporte para Chromecast en una próxima versión."
-      },
-      "mobileSupport": {
-        "question": "¿Tiene soporte para teléfonos móviles y tabletas?",
-        "answer": "Si bien es posible visitar y utilizar la página web en un teléfono inteligente, el tamaño limitado de la pantalla dificulta su uso. Está previsto un mejor soporte móvil en una próxima versión."
-      }
-    },
-    "resources": {
-      "title": "Recursos adicionales",
-      "links": {
-        "projectorsForSewing": {
-          "title": "Projectors for Sewing Facebook Group",
-          "link": "https://www.facebook.com/groups/481078582801085"
-        }
-      }
-    },
-    "contribute": {
-      "title": "Contribuya al proyecto",
-      "donation": "Si desea apoyar el desarrollo de esta herramienta, considere <donateLink>buying me a coffee</donateLink>",
-      "develop": "Ayude a implementar funciones y solucionar problemas en <githubLink>GitHub</githubLink>.",
-      "translate": "Traduzca esta herramienta a más idiomas.",
-      "feedback": "Comentarios y solicitudes de funciones serán bien recibidos!"
-    },
-    "contact": "Contactar"
-  },
-  "Header": {
-    "projecting": "Proyectando",
-    "calibrating": "Calibranado",
-    "openPDF": "Abrir PDF",
-    "height": "A:",
-    "width": "L:",
-    "project": "Proyectar",
-    "calibrate": "Calibrar",
-    "delete": "Restablecer calibración",
-    "gridOn": "Cuadrícula activada",
-    "gridOff": "Cuadrícula desactivada",
-    "overlayOptions": "Opciones de superposición",
-    "overlayOptionBorder": "Borde",
-    "overlayOptionDisabled": "Deshabilitado",
-    "overlayOptionGrid": "Cuadrícula",
-    "overlayOptionPaper": "Hoja de papel",
-    "overlayOptionFliplines": "Líneas volteo",
-    "invertColor": "Invertir colores",
-    "invertColorOff": "Invertir colores desactivado",
-    "flipVertical": "Voltear verticalmente",
-    "flipVerticalOff": "Voltear verticalmente desactivado",
-    "flipHorizontal": "Voltear horizontalmente",
-    "flipHorizontalOff": "Voltear horizontalmente desactivado",
-    "flipCenterOn": "Voltear centro",
-    "flipCenterOff": "Voltear centro desactivado",
-    "fourCornersOn": "Iluminar las esquinas",
-    "fourCornersOff": "Iluminar sólo la esquina seleccionada",
-    "rotate90": "Rotar 90 grados a la derecha",
-    "arrowBack": "Retroceder 1 página",
-    "arrowForward": "Avanzar 1 página",
-    "info": "Página de información",
-    "layersOn": "Mostrar el menú de capas",
-    "layersOff": "Ocultar del menú de capas",
-    "recenter": "Volver a centrar el PDF",
-    "fullscreen": "Activar pantalla completa",
-    "fullscreenExit": "Salir de pantalla completa",
-    "menuShow": "Mostrar menú",
-    "menuHide": "Ocultar menú",
-    "lineWeight": "Grueso de línea",
-    "stitchMenuShow": "Muestra el menú de unión",
-    "stitchMenuHide": "Oculta el menú de unión",
-    "measureOn": "Empezar a medir",
-    "measureOff": "Dejar de medir"
-  },
-  "StitchMenu": {
-    "columnCount": "Columnas",
-    "pageRange": "Páginas",
-    "horizontal": "Horizontal",
-    "vertical": "Vertical"
-  }
+    "MovementPad": {
+        "left": "Izquierda",
+        "right": "Derecha",
+        "next": "Siguiente esquina",
+        "up": "Subir",
+        "down": "Bajar"
+    }
 }

@@ -44,6 +44,7 @@ import {
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
+import Filters from "@/_components/filters";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -89,6 +90,8 @@ export default function Page() {
   );
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
+
+  const t = useTranslations("Header");
 
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
@@ -140,8 +143,22 @@ export default function Page() {
     }
   }
 
+  function handleFullScreenChange() {
+    if (!isCalibrating) {
+      alert(t("fullScreenChange"));
+
+      setDisplaySettings({
+        ...displaySettings,
+        overlay: {
+          ...displaySettings.overlay,
+          disabled: false,
+          grid: true,
+        },
+      });
+    }
+  }
+
   // EFFECTS
-  const t = useTranslations("Header");
 
   const requestWakeLock = useCallback(async () => {
     if ("wakeLock" in navigator) {
@@ -251,6 +268,7 @@ export default function Page() {
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
         <FullScreen
           handle={handle}
+          onChange={handleFullScreenChange}
           className="bg-white dark:bg-black transition-all duration-500 w-full h-full"
         >
           {isCalibrating && showingMovePad && (
@@ -372,6 +390,7 @@ export default function Page() {
               style={{
                 transform: `${matrix3d}`,
                 transformOrigin: "0 0",
+                imageRendering: "pixelated",
               }}
             >
               <div className={"outline outline-8 outline-purple-600"}>
@@ -395,6 +414,7 @@ export default function Page() {
           </Draggable>
         </FullScreen>
       </div>
+      <Filters />
     </main>
   );
 }
