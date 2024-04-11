@@ -91,6 +91,8 @@ export default function Page() {
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
 
+  const t = useTranslations("Header");
+
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
     const minX = innerWidth * 0.2;
@@ -141,8 +143,22 @@ export default function Page() {
     }
   }
 
+  function handleFullScreenChange() {
+    if (!isCalibrating) {
+      alert(t("fullScreenChange"));
+
+      setDisplaySettings({
+        ...displaySettings,
+        overlay: {
+          ...displaySettings.overlay,
+          disabled: false,
+          grid: true,
+        },
+      });
+    }
+  }
+
   // EFFECTS
-  const t = useTranslations("Header");
 
   const requestWakeLock = useCallback(async () => {
     if ("wakeLock" in navigator) {
@@ -252,6 +268,7 @@ export default function Page() {
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
         <FullScreen
           handle={handle}
+          onChange={handleFullScreenChange}
           className="bg-white dark:bg-black transition-all duration-500 w-full h-full"
         >
           {isCalibrating && showingMovePad && (
