@@ -9,7 +9,7 @@ import type {
 import { Layer } from "@/_lib/interfaces/layer";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
-import { erode, erosionFilter } from "@/_lib/erode";
+import { erode, erodeImageData, erosionFilter } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 
 export default function CustomRenderer() {
@@ -132,14 +132,23 @@ export default function CustomRenderer() {
         }
         dest.imageSmoothingEnabled = false;
         if (renderErosions > 0) {
-          const input = renderContext.canvasContext.getImageData(
+          let input = renderContext.canvasContext.getImageData(
             0,
             0,
             renderWidth,
             renderHeight,
           );
-          console.log(`eroding new ${renderErosions} times`);
-          erode(input, renderErosions);
+          if (false) {
+            console.log(`eroding new ${renderErosions} times`);
+            erode(input, renderErosions);
+          } else {
+            console.log(`eroding old ${renderErosions} times`);
+            let output = dest.getImageData(0, 0, renderWidth, renderHeight);
+            for (let i = 0; i < renderErosions; i++) {
+              erodeImageData(input, output);
+              [input, output] = [output, input];
+            }
+          }
           dest.putImageData(input, 0, 0);
         } else {
           dest.filter = filter;
