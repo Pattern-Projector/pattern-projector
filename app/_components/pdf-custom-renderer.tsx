@@ -132,22 +132,22 @@ export default function CustomRenderer() {
         }
         dest.imageSmoothingEnabled = false;
         if (renderErosions > 0) {
-          let input = renderContext.canvasContext.getImageData(
+          const input = renderContext.canvasContext.getImageData(
             0,
             0,
             renderWidth,
             renderHeight,
           );
-          if (false) {
+          if (true) {
             console.log(`eroding new ${renderErosions} times`);
             erode(input, renderErosions);
           } else {
-            console.log(`eroding old ${renderErosions} times`);
-            let output = dest.getImageData(0, 0, renderWidth, renderHeight);
-            for (let i = 0; i < renderErosions; i++) {
-              erodeImageData(input, output);
-              [input, output] = [output, input];
-            }
+            console.log(`eroding old!!!!! ${renderErosions} times`);
+            //let output = dest.getImageData(0, 0, renderWidth, renderHeight);
+            //for (let i = 0; i < renderErosions; i++) {
+            //  erodeImageData(input, output);
+            //  [input, output] = [output, input];
+            //}
           }
           dest.putImageData(input, 0, 0);
         } else {

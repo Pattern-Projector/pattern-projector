@@ -49,7 +49,7 @@ export function erode(imageData: ImageData, radius: number) {
       data[o++] = g.push(data[i++]);
       data[o++] = b.push(data[i++]);
     }
-} 
+  }
 }
 class MinWindow {
   size: number;
@@ -82,7 +82,6 @@ class MinWindow {
     this.min = 255;
   }
 }
-
 
 export function erodeImageData(imageData: ImageData, output: ImageData) {
   const { width, height } = imageData;
