@@ -120,15 +120,6 @@ export default function Header({
     setLocalTransform(translate(p).mmul(localTransform));
   }
 
-  useEffect(() => {
-    if (fullScreenHandle.active) {
-      setMenuStates({ ...menuStates, nav: false, layers: false });
-      // TODO setup button hides
-    } else {
-      setMenuStates({ ...menuStates, nav: true });
-    }
-  }, [fullScreenHandle.active]);
-
   const overlayOptions = {
     disabled: {
       icon: <GridOffIcon ariaLabel={t("overlayOptionDisabled")} />,
