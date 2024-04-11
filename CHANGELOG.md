@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Alert when full screen mode is changed when projecting
+
 ### Changed
 
 - Speed up line weight change and movement in Firefox
@@ -14,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Apply line weight changes before perspective change to stop disappearing lines when moving
+
+### Removed
+
+- Full screen button from projection page
 
 ## [1.0.0] - 2024-04-06
 
