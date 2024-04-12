@@ -45,6 +45,11 @@ import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import Filters from "@/_components/filters";
+import Modal from "@/_components/modal/modal";
+import { ModalTitle } from "@/_components/modal/modal-title";
+import { ModalText } from "@/_components/modal/modal-text";
+import { ModalActions } from "@/_components/modal/modal-actions";
+import { Button } from "@/_components/buttons/button";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -90,6 +95,7 @@ export default function Page() {
   );
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
+  const [calibrationValidated, setCalibrationValidated] = useState(true);
 
   const t = useTranslations("Header");
 
@@ -145,16 +151,8 @@ export default function Page() {
 
   function handleFullScreenChange() {
     if (!isCalibrating) {
-      alert(t("fullScreenChange"));
-
-      setDisplaySettings({
-        ...displaySettings,
-        overlay: {
-          ...displaySettings.overlay,
-          disabled: false,
-          grid: true,
-        },
-      });
+      setCalibrationValidated(false);
+      setIsCalibrating(true);
     }
   }
 
@@ -265,6 +263,15 @@ export default function Page() {
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-full h-full absolute overflow-hidden touch-none`}
     >
+      <Modal open={!calibrationValidated}>
+        <ModalTitle>{t("fullScreenChangeTitle")}</ModalTitle>
+        <ModalText>{t("fullScreenChange")}</ModalText>
+        <ModalActions>
+          <Button onClick={() => setCalibrationValidated(true)}>
+            {t("ok")}
+          </Button>
+        </ModalActions>
+      </Modal>
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
         <FullScreen
           handle={handle}
