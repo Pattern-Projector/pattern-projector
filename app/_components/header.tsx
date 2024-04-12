@@ -147,7 +147,9 @@ export default function Header({
       const expectedContext = localStorage.getItem("calibrationContext");
       if (expectedContext) {
         const expected = JSON.parse(expectedContext);
-        if (getIsInvalidatedCalibrationContextWithPointerEvent(expected, e)) {
+        if (
+          getIsInvalidatedCalibrationContextWithPointerEvent(expected, e, true)
+        ) {
           // Give user a chance to recalibrate or continue.
           setCalibrationAlert(t("calibrationAlertContinue"));
         } else {

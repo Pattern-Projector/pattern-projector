@@ -1,4 +1,5 @@
 import useProgArrowKeyHandler from "@/_hooks/use-prog-arrow-key-handler";
+import { getCalibrationContext } from "@/_lib/calibration-context";
 import { KeyCode } from "@/_lib/key-code";
 import { Point } from "@/_lib/point";
 import { PointAction } from "@/_reducers/pointsReducer";
@@ -24,14 +25,15 @@ export default function useProgArrowKeyPoints(
     }
   }
 
-  function getNewOffset(key: KeyCode, px: number) {
+  function applyOffset(key: KeyCode, px: number) {
     if (corners.size) {
       dispatch({ type: "offset", offset: getOffset(key, px), corners });
+      localStorage.setItem("calibrationContext", JSON.stringify(getCalibrationContext()));
     }
   }
 
   useProgArrowKeyHandler(
-    getNewOffset,
+    applyOffset,
     corners.size > 0 && active,
     [1, 3, 5, 10],
   );

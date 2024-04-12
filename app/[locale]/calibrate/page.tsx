@@ -46,6 +46,7 @@ import pointsReducer from "@/_reducers/pointsReducer";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import Filters from "@/_components/filters";
 import CalibrationContext, {
+  getCalibrationContext,
   getIsInvalidatedCalibrationContext,
   getIsInvalidatedCalibrationContextWithPointerEvent,
 } from "@/_lib/calibration-context";
@@ -133,23 +134,18 @@ export default function Page() {
     localStorage.setItem("canvasSettings", JSON.stringify(merged));
   }
 
-  function forgetCalibrationContext() {
-    localStorage.removeItem("calibrationContext");
-  }
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
     updateLocalSettings({ height: h });
-    forgetCalibrationContext();
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
     updateLocalSettings({ width: w });
-    forgetCalibrationContext();
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -340,14 +336,16 @@ export default function Page() {
             handleHeightChange={handleHeightChange}
             handleWidthChange={handleWidthChange}
             handleResetCalibration={() => {
-              forgetCalibrationContext();
+              localStorage.setItem(
+                "calibrationContext",
+                JSON.stringify(getCalibrationContext()),
+              );
               dispatch({ type: "set", points: getDefaultPoints() });
             }}
             handleFileChange={handleFileChange}
             fullScreenHandle={handle}
             unitOfMeasure={unitOfMeasure}
             setUnitOfMeasure={(newUnit) => {
-              forgetCalibrationContext();
               setUnitOfMeasure(newUnit);
               updateLocalSettings({ unitOfMeasure: newUnit });
             }}
