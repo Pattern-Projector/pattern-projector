@@ -11,7 +11,7 @@ export default function Modal({
   const pageClass = open ? "opacity-100" : "opacity-0";
   return (
     <div
-      className={`relative z-10 ${open ? "" : "hidden"}`}
+      className={`relative z-50 ${open ? "" : "hidden"}`}
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"

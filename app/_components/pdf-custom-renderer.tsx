@@ -59,10 +59,13 @@ export default function CustomRenderer() {
     offscreen.current.width !== renderWidth ||
     offscreen.current.height !== renderHeight
   ) {
-    console.log(
-      `Creating new offscreen canvas ${renderWidth}x${renderHeight} ${offscreen.current?.width}x${offscreen.current?.height} ${offscreen.current ? "replacing" : "initializing"}`,
-    );
-    offscreen.current = new OffscreenCanvas(renderWidth, renderHeight);
+    // Some iPad's don't support OffscreenCanvas.
+    if (!isSafari) {
+      console.log(
+        `Creating new offscreen canvas ${renderWidth}x${renderHeight} ${offscreen.current?.width}x${offscreen.current?.height} ${offscreen.current ? "replacing" : "initializing"}`,
+      );
+      offscreen.current = new OffscreenCanvas(renderWidth, renderHeight);
+    }
   }
 
   function drawPageOnCanvas() {
@@ -72,7 +75,7 @@ export default function CustomRenderer() {
 
     page.cleanup();
 
-    const canvas = offscreen.current;
+    const canvas = offscreen.current ?? canvasElement.current;
     if (!canvas) {
       return;
     }
@@ -109,42 +112,40 @@ export default function CustomRenderer() {
       return optionalContentConfig;
     }
 
+    const ctx = canvas.getContext("2d", {
+      alpha: false,
+    }) as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
+    if (!ctx) {
+      return;
+    }
     const renderContext: RenderParameters = {
-      canvasContext: canvas.getContext("2d", {
-        alpha: false,
-      }) as any,
+      canvasContext: ctx as any,
       viewport: renderViewport,
       optionalContentConfigPromise: pdf
         ? optionalContentConfigPromise(pdf)
         : undefined,
     };
 
-    renderContext.canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    renderContext.canvasContext.imageSmoothingEnabled = false;
     const cancellable = page.render(renderContext);
     const runningTask = cancellable;
 
     cancellable.promise
       .then(() => {
-        const dest = canvasElement.current?.getContext("2d");
-        if (!dest) {
-          return;
-        }
-        dest.imageSmoothingEnabled = false;
         if (renderErosions > 0) {
-          let output = dest.getImageData(0, 0, renderWidth, renderHeight);
-          let input = renderContext.canvasContext.getImageData(
-            0,
-            0,
-            renderWidth,
-            renderHeight,
-          );
+          let result = ctx.getImageData(0, 0, renderWidth, renderHeight);
+          let buffer = new ImageData(renderWidth, renderHeight);
           for (let i = 0; i < renderErosions; i++) {
-            erodeImageData(input, output);
-            [input, output] = [output, input];
+            erodeImageData(result, buffer);
+            [result, buffer] = [buffer, result];
           }
-          dest.putImageData(input, 0, 0);
-        } else {
+          ctx.putImageData(result, 0, 0);
+        } else if (offscreen.current) {
+          // draw offscreen canvas to onscreen canvas with filter.
+          const dest = canvasElement.current?.getContext("2d");
+          if (!dest) {
+            return;
+          }
+          dest.imageSmoothingEnabled = false;
           dest.filter = filter;
           dest.drawImage(canvas, 0, 0);
         }
@@ -170,6 +171,7 @@ export default function CustomRenderer() {
     renderErosions,
     renderWidth,
     renderHeight,
+    isSafari,
   ]);
 
   return (
