@@ -49,6 +49,11 @@ import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
 import MoveIcon from "@/_icons/move-icon";
+import {
+  getCalibrationContextUpdatedWithPointerEvent,
+  getIsInvalidatedCalibrationContextWithPointerEvent,
+  logDifferences,
+} from "@/_lib/calibration-context";
 
 export default function Header({
   isCalibrating,
@@ -77,6 +82,7 @@ export default function Header({
   setMenuStates,
   showingMovePad,
   setShowingMovePad,
+  setCalibrationValidated,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -104,6 +110,7 @@ export default function Header({
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
   showingMovePad: boolean;
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
+  setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
 }) {
   const t = useTranslations("Header");
 
@@ -118,6 +125,45 @@ export default function Header({
       y: center.y - current.y,
     };
     setLocalTransform(translate(p).mmul(localTransform));
+  }
+
+  function handleCalibrateProjectButtonClick(
+    e: React.PointerEvent<HTMLButtonElement>,
+  ) {
+    if (isCalibrating) {
+      const current = getCalibrationContextUpdatedWithPointerEvent(e);
+      function saveAndProject() {
+        localStorage.setItem("calibrationContext", JSON.stringify(current));
+        setCalibrationValidated(true);
+        setIsCalibrating(false);
+      }
+      const expectedContext = localStorage.getItem("calibrationContext");
+      if (expectedContext) {
+        const expected = JSON.parse(expectedContext);
+        if (getIsInvalidatedCalibrationContextWithPointerEvent(expected, e)) {
+          console.log("Calibration is invalid");
+          logDifferences(expected, current);
+          // Give user a chance to recalibrate, if they want to continue anyway.
+          if (
+            confirm(
+              "The window has changed since the last time you projected, but calibration hasn't been updated. Continue anyway?",
+            )
+          ) {
+            console.log("User chose to continue anyway");
+            saveAndProject();
+          }
+        } else {
+          console.log("existing calibration is valid");
+          saveAndProject();
+        }
+      } else {
+        console.log("Calibration is missing assume valid");
+        saveAndProject();
+      }
+    } else {
+      // go to calibration.
+      setIsCalibrating(true);
+    }
   }
 
   const overlayOptions = {
@@ -399,7 +445,7 @@ export default function Header({
             </label>
             <button
               className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-              onClick={() => setIsCalibrating(!isCalibrating)}
+              onClick={handleCalibrateProjectButtonClick}
             >
               {isCalibrating ? t("project") : t("calibrate")}
             </button>

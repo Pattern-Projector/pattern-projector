@@ -45,6 +45,13 @@ import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import Filters from "@/_components/filters";
+import CalibrationContext, {
+  getCalibrationContext,
+  getCalibrationContextUpdatedWithPointerEvent,
+  getIsInvalidatedCalibrationContext,
+  getIsInvalidatedCalibrationContextWithPointerEvent,
+  logDifferences,
+} from "@/_lib/calibration-context";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -58,6 +65,8 @@ export default function Page() {
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
+  const [calibrationValidated, setCalibrationValidated] =
+    useState<boolean>(false);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
@@ -121,18 +130,23 @@ export default function Page() {
     localStorage.setItem("canvasSettings", JSON.stringify(merged));
   }
 
+  function forgetCalibrationContext() {
+    localStorage.removeItem("calibrationContext");
+  }
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
     setHeight(h);
     updateLocalSettings({ height: h });
+    forgetCalibrationContext();
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
     setWidth(w);
     updateLocalSettings({ width: w });
+    forgetCalibrationContext();
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -185,9 +199,9 @@ export default function Page() {
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
-      dispatch({ type: "set", points: JSON.parse(localPoints) });
+      dispatch({ type: "initialize", points: JSON.parse(localPoints) });
     } else {
-      dispatch({ type: "set", points: getDefaultPoints() });
+      dispatch({ type: "initialize", points: getDefaultPoints() });
     }
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
@@ -260,8 +274,65 @@ export default function Page() {
     });
   }, []);
 
+  function handlePointerDown(e: React.PointerEvent) {
+    if (calibrationValidated) {
+      const expectedContext = localStorage.getItem("calibrationContext");
+      if (expectedContext === null) {
+        console.log(
+          "No calibration context found, but calibration is 'valid'?",
+        );
+        setCalibrationValidated(false);
+      } else {
+        const expected = JSON.parse(expectedContext) as CalibrationContext;
+        if (getIsInvalidatedCalibrationContextWithPointerEvent(expected, e)) {
+          logDifferences(
+            expected,
+            getCalibrationContextUpdatedWithPointerEvent(e),
+          );
+          setCalibrationValidated(false);
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    const projectingWithInvalidContext =
+      !isCalibrating && !calibrationValidated;
+    if (projectingWithInvalidContext) {
+      setIsCalibrating(true);
+      alert(
+        "The window has changed since projecting started, move the window back or recalibrate to continue.",
+      );
+    }
+  }, [isCalibrating, calibrationValidated]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (calibrationValidated) {
+        const calibrationContext = localStorage.getItem("calibrationContext");
+        if (calibrationContext === null) {
+          console.log(
+            "Calibration context not found, but calibration is 'valid'?",
+          );
+          setCalibrationValidated(false);
+        } else {
+          const expected = JSON.parse(calibrationContext) as CalibrationContext;
+          if (getIsInvalidatedCalibrationContext(expected)) {
+            logDifferences(expected, getCalibrationContext());
+            setCalibrationValidated(false);
+          }
+        }
+      }
+    }, 500);
+    console.log("interval set");
+    return () => {
+      clearInterval(interval);
+    };
+  }, [calibrationValidated, setCalibrationValidated]);
+
   return (
     <main
+      onPointerDown={handlePointerDown}
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-full h-full absolute overflow-hidden touch-none`}
     >
@@ -288,13 +359,15 @@ export default function Page() {
             width={width}
             handleHeightChange={handleHeightChange}
             handleWidthChange={handleWidthChange}
-            handleResetCalibration={() =>
-              dispatch({ type: "set", points: getDefaultPoints() })
-            }
+            handleResetCalibration={() => {
+              forgetCalibrationContext();
+              dispatch({ type: "set", points: getDefaultPoints() });
+            }}
             handleFileChange={handleFileChange}
             fullScreenHandle={handle}
             unitOfMeasure={unitOfMeasure}
             setUnitOfMeasure={(newUnit) => {
+              forgetCalibrationContext();
               setUnitOfMeasure(newUnit);
               updateLocalSettings({ unitOfMeasure: newUnit });
             }}
@@ -321,6 +394,7 @@ export default function Page() {
               setShowingMovePad(show);
               updateLocalSettings({ showingMovePad: show });
             }}
+            setCalibrationValidated={setCalibrationValidated}
           />
 
           <StitchMenu
