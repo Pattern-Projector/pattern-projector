@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -50,10 +50,14 @@ import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
 import MoveIcon from "@/_icons/move-icon";
 import {
-  getCalibrationContextUpdatedWithPointerEvent,
+  getCalibrationContextUpdatedWithEvent,
   getIsInvalidatedCalibrationContextWithPointerEvent,
-  logDifferences,
 } from "@/_lib/calibration-context";
+import Modal from "./modal/modal";
+import { ModalTitle } from "./modal/modal-title";
+import { ModalText } from "./modal/modal-text";
+import { ModalActions } from "./modal/modal-actions";
+import { Button } from "./buttons/button";
 
 export default function Header({
   isCalibrating,
@@ -112,6 +116,8 @@ export default function Header({
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
 }) {
+  const [calibrationAlert, setCalibrationAlert] = useState("");
+
   const t = useTranslations("Header");
 
   function handleRecenter() {
@@ -127,38 +133,28 @@ export default function Header({
     setLocalTransform(translate(p).mmul(localTransform));
   }
 
+  function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
+    const current = getCalibrationContextUpdatedWithEvent(e);
+    localStorage.setItem("calibrationContext", JSON.stringify(current));
+    setCalibrationValidated(true);
+    setIsCalibrating(false);
+  }
+
   function handleCalibrateProjectButtonClick(
     e: React.PointerEvent<HTMLButtonElement>,
   ) {
     if (isCalibrating) {
-      const current = getCalibrationContextUpdatedWithPointerEvent(e);
-      function saveAndProject() {
-        localStorage.setItem("calibrationContext", JSON.stringify(current));
-        setCalibrationValidated(true);
-        setIsCalibrating(false);
-      }
       const expectedContext = localStorage.getItem("calibrationContext");
       if (expectedContext) {
         const expected = JSON.parse(expectedContext);
         if (getIsInvalidatedCalibrationContextWithPointerEvent(expected, e)) {
-          console.log("Calibration is invalid");
-          logDifferences(expected, current);
-          // Give user a chance to recalibrate, if they want to continue anyway.
-          if (
-            confirm(
-              "The window has changed since the last time you projected, but calibration hasn't been updated. Continue anyway?",
-            )
-          ) {
-            console.log("User chose to continue anyway");
-            saveAndProject();
-          }
+          // Give user a chance to recalibrate or continue.
+          setCalibrationAlert(t("calibrationAlertContinue"));
         } else {
-          console.log("existing calibration is valid");
-          saveAndProject();
+          saveContextAndProject(e);
         }
       } else {
-        console.log("Calibration is missing assume valid");
-        saveAndProject();
+        saveContextAndProject(e);
       }
     } else {
       // go to calibration.
@@ -195,6 +191,28 @@ export default function Header({
 
   return (
     <>
+      <Modal open={calibrationAlert.length > 0}>
+        <ModalTitle>{t("calibrationAlertTitle")}</ModalTitle>
+        <ModalText>{calibrationAlert}</ModalText>
+        <ModalActions>
+          <Button
+            onClick={(e) => {
+              saveContextAndProject(e);
+              setCalibrationAlert("");
+            }}
+          >
+            {t("continue")}
+          </Button>
+          <Button
+            onClick={() => {
+              setIsCalibrating(true);
+              setCalibrationAlert("");
+            }}
+          >
+            {t("checkCalibration")}
+          </Button>
+        </ModalActions>
+      </Modal>
       <header
         className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
       >

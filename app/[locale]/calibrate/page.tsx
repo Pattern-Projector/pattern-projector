@@ -46,11 +46,8 @@ import pointsReducer from "@/_reducers/pointsReducer";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import Filters from "@/_components/filters";
 import CalibrationContext, {
-  getCalibrationContext,
-  getCalibrationContextUpdatedWithPointerEvent,
   getIsInvalidatedCalibrationContext,
   getIsInvalidatedCalibrationContextWithPointerEvent,
-  logDifferences,
 } from "@/_lib/calibration-context";
 import Modal from "@/_components/modal/modal";
 import { ModalTitle } from "@/_components/modal/modal-title";
@@ -104,7 +101,7 @@ export default function Page() {
   );
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
-  const [calibrationValidated, setCalibrationValidated] = useState(true);
+  const [calibrationAlert, setCalibrationAlert] = useState("");
 
   const t = useTranslations("Header");
 
@@ -160,13 +157,6 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
-    }
-  }
-
-  function handleFullScreenChange() {
-    if (!isCalibrating) {
-      setCalibrationValidated(false);
-      setIsCalibrating(true);
     }
   }
 
@@ -276,17 +266,10 @@ export default function Page() {
     if (calibrationValidated) {
       const expectedContext = localStorage.getItem("calibrationContext");
       if (expectedContext === null) {
-        console.log(
-          "No calibration context found, but calibration is 'valid'?",
-        );
         setCalibrationValidated(false);
       } else {
         const expected = JSON.parse(expectedContext) as CalibrationContext;
         if (getIsInvalidatedCalibrationContextWithPointerEvent(expected, e)) {
-          logDifferences(
-            expected,
-            getCalibrationContextUpdatedWithPointerEvent(e),
-          );
           setCalibrationValidated(false);
         }
       }
@@ -298,31 +281,24 @@ export default function Page() {
       !isCalibrating && !calibrationValidated;
     if (projectingWithInvalidContext) {
       setIsCalibrating(true);
-      alert(
-        "The window has changed since projecting started, move the window back or recalibrate to continue.",
-      );
+      setCalibrationAlert(t("calibrationAlert"));
     }
-  }, [isCalibrating, calibrationValidated]);
+  }, [isCalibrating, calibrationValidated, t]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (calibrationValidated) {
         const calibrationContext = localStorage.getItem("calibrationContext");
         if (calibrationContext === null) {
-          console.log(
-            "Calibration context not found, but calibration is 'valid'?",
-          );
           setCalibrationValidated(false);
         } else {
           const expected = JSON.parse(calibrationContext) as CalibrationContext;
           if (getIsInvalidatedCalibrationContext(expected)) {
-            logDifferences(expected, getCalibrationContext());
             setCalibrationValidated(false);
           }
         }
       }
     }, 500);
-    console.log("interval set");
     return () => {
       clearInterval(interval);
     };
@@ -334,19 +310,16 @@ export default function Page() {
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-full h-full absolute overflow-hidden touch-none`}
     >
-      <Modal open={!calibrationValidated}>
-        <ModalTitle>{t("fullScreenChangeTitle")}</ModalTitle>
-        <ModalText>{t("fullScreenChange")}</ModalText>
+      <Modal open={calibrationAlert.length > 0}>
+        <ModalTitle>{t("calibrationAlertTitle")}</ModalTitle>
+        <ModalText>{calibrationAlert}</ModalText>
         <ModalActions>
-          <Button onClick={() => setCalibrationValidated(true)}>
-            {t("ok")}
-          </Button>
+          <Button onClick={() => setCalibrationAlert("")}>{t("ok")}</Button>
         </ModalActions>
       </Modal>
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
         <FullScreen
           handle={handle}
-          onChange={handleFullScreenChange}
           className="bg-white dark:bg-black transition-all duration-500 w-full h-full"
         >
           {isCalibrating && showingMovePad && (
