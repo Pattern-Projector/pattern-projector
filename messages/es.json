@@ -182,7 +182,8 @@
         "measureOn": "Empezar medición",
         "measureOff": "Terminar medición",
         "showMovement": "Mostrar herramienta mover",
-        "hideMovement": "Ocultar herramienta mover"
+        "hideMovement": "Ocultar herramienta mover",
+        "fullScreenChange": "Por favor, asegúrese de que la calibración es correcta. Debe calibrar en modo de pantalla completa si desea proyectar en pantalla completa."
     },
     "StitchMenu": {
         "columnCount": "Columnas",
