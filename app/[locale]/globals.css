@@ -10,7 +10,7 @@
 
   .scrollbar::-webkit-scrollbar-track {
     border-radius: 100vh;
-    background: white;
+    background: rgb(220, 220, 220, 0.2);
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
