@@ -40,7 +40,7 @@ export default function LayerMenu({
 
   return (
     <div
-      className={`${className} ${visible ? "left-0" : "-left-60"} w-48 ${layers.size > 0 && layers.size * 40 < 200 ? "h-fit" : "h-[calc(100vh-9rem)]"}  text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-black border border-gray-200 dark:border-gray-700 border-top-0 absolute z-50 transition-all duration-700`}
+      className={`${className} ${visible ? "left-0" : "-left-60"} w-48 ${layers.size > 0 && layers.size * 40 < 200 ? "h-fit" : "h-[calc(100vh-12rem)]"}  text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-black border border-gray-200 dark:border-gray-700 border-top-0 absolute z-50 transition-all duration-700`}
     >
       <h1
         key="global"
@@ -61,7 +61,7 @@ export default function LayerMenu({
       </h1>
 
       <menu
-        className={`w-full ${layers.size > 0 && layers.size * 40 > 200 ? "h-[calc(100vh-13rem)] overflow-y-auto scrollbar" : ""}`}
+        className={`w-full ${layers.size > 0 && layers.size * 40 > 200 ? "h-[calc(100vh-15rem)] overflow-y-auto scrollbar" : ""}`}
       >
         {[...layers.entries()].map((e) => (
           <li key={e[0]} className="w-full  rounded-t-lg">
