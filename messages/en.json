@@ -186,6 +186,11 @@
     "horizontal": "Horizontal",
     "vertical": "Vertical"
   },
+  "LayerMenu": {
+    "title": "Layers",
+    "showAll": "Show all",
+    "hideAll": "Hide all"
+  },
   "MovementPad": {
     "up": "Up",
     "down": "Down",

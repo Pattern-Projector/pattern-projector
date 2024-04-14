@@ -350,7 +350,7 @@ export default function Page() {
             }
             layers={layers}
             setLayers={setLayers}
-            className={`${menuStates.stitch ? "top-32" : "top-20"} overflow-scroll`}
+            className={`${menuStates.stitch ? "top-32" : "top-20"}`}
           />
           {layers.size && !menuStates.layers ? (
             <Tooltip
