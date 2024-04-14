@@ -120,15 +120,6 @@ export default function Header({
     setLocalTransform(translate(p).mmul(localTransform));
   }
 
-  useEffect(() => {
-    if (fullScreenHandle.active) {
-      setMenuStates({ ...menuStates, nav: false, layers: false });
-      // TODO setup button hides
-    } else {
-      setMenuStates({ ...menuStates, nav: true });
-    }
-  }, [fullScreenHandle.active]);
-
   const overlayOptions = {
     disabled: {
       icon: <GridOffIcon ariaLabel={t("overlayOptionDisabled")} />,
@@ -169,6 +160,7 @@ export default function Header({
             <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
 
             <Tooltip
+              className={visible(isCalibrating)}
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
@@ -188,7 +180,7 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <IconButton
-              className={`!p-1 border-2 border-black dark:border-white`}
+              className={`!p-1 border-2 border-black dark:border-white ml-2`}
               onClick={() => setMenuStates({ ...menuStates, nav: false })}
             >
               <ExpandLessIcon ariaLabel={t("menuHide")} />
