@@ -61,7 +61,7 @@ export default function LayerMenu({
       </h1>
 
       <menu
-        className={`w-full ${layers.size > 0 && layers.size * 40 > 200 ? "h-[calc(100vh-12rem)] overflow-y-auto scrollbar" : ""}`}
+        className={`w-full ${layers.size > 0 && layers.size * 40 > 200 ? "h-[calc(100vh-13rem)] overflow-y-auto scrollbar" : ""}`}
       >
         {[...layers.entries()].map((e) => (
           <li key={e[0]} className="w-full  rounded-t-lg">
