@@ -53,16 +53,21 @@ export function getIsInvalidatedCalibrationContextWithPointerEvent(
   allowMissingClientScreen = false,
 ): boolean {
   const current = getCalibrationContextUpdatedWithEvent(e);
- if (getIsInvalidatedCalibrationContext(context)) {
+  if (getIsInvalidatedCalibrationContext(context)) {
     return true;
- }
- if (allowMissingClientScreen) {
-  if (context.clientScreenTop === null || context.clientScreenTop === undefined || current.clientScreenLeft === null || current.clientScreenLeft === undefined) {
-    return false;
   }
-}
-return (
-  context.clientScreenTop !== current.clientScreenTop ||
+  if (allowMissingClientScreen) {
+    if (
+      context.clientScreenTop === null ||
+      context.clientScreenTop === undefined ||
+      current.clientScreenLeft === null ||
+      current.clientScreenLeft === undefined
+    ) {
+      return false;
+    }
+  }
+  return (
+    context.clientScreenTop !== current.clientScreenTop ||
     context.clientScreenLeft !== current.clientScreenLeft
   );
 }

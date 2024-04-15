@@ -58,7 +58,7 @@ export function DropdownIconButton<T>({
       className={`relative inline-block ${className || ""}`}
       ref={containerRef}
     >
-      <Tooltip description={description} tooltipVisible={!isOpen}>
+      <Tooltip description={description} disabled={isOpen}>
         <IconButton
           onClick={handleClick}
           aria-haspopup="true"
