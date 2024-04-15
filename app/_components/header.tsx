@@ -234,7 +234,7 @@ export default function Header({
 
             <Tooltip
               className={visible(isCalibrating)}
-              tooltipVisible={fullScreenTooltipVisible}
+              visible={fullScreenTooltipVisible}
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
