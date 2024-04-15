@@ -9,6 +9,7 @@ import KeyboardArrowRightIcon from "@/_icons/keyboard-arrow-right";
 import { Point } from "@/_lib/point";
 import { PointAction } from "@/_reducers/pointsReducer";
 import CycleIcon from "@/_icons/cycle-icon";
+import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
 
 const PIXEL_LIST = [1, 4, 8, 16];
 const REPEAT_MS = 100;
@@ -64,10 +65,14 @@ export default function MovementPad({
     );
   }
 
-  function handleStop() {
+  function handleStop(e: React.PointerEvent) {
     if (intervalFunc) {
       clearInterval(intervalFunc);
     }
+    localStorage.setItem(
+      "calibrationContext",
+      JSON.stringify(getCalibrationContextUpdatedWithEvent(e)),
+    );
   }
 
   function handleChangeCorners() {
@@ -83,7 +88,7 @@ export default function MovementPad({
       <menu className={`grid grid-cols-3 gap-2`}>
         <IconButton
           onPointerDown={() => handleStart(Direction.Up)}
-          onPointerUp={handleStop}
+          onPointerUp={(e) => handleStop(e)}
           className={`${border} col-start-2`}
         >
           <KeyboardArrowUpIcon ariaLabel={t("up")} />
@@ -91,7 +96,7 @@ export default function MovementPad({
 
         <IconButton
           onPointerDown={() => handleStart(Direction.Left)}
-          onPointerUp={handleStop}
+          onPointerUp={(e) => handleStop(e)}
           className={`${border} col-start-1`}
         >
           <KeyboardArrowLeftIcon ariaLabel={t("left")} />
@@ -106,7 +111,7 @@ export default function MovementPad({
 
         <IconButton
           onPointerDown={() => handleStart(Direction.Right)}
-          onPointerUp={handleStop}
+          onPointerUp={(e) => handleStop(e)}
           className={`${border} col-start-3`}
         >
           <KeyboardArrowRightIcon ariaLabel={t("right")} />
@@ -114,7 +119,7 @@ export default function MovementPad({
 
         <IconButton
           onPointerDown={() => handleStart(Direction.Down)}
-          onPointerUp={handleStop}
+          onPointerUp={(e) => handleStop(e)}
           className={`${border} col-start-2`}
         >
           <KeyboardArrowDownIcon ariaLabel={t("down")} />

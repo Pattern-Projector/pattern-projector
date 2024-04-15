@@ -23,6 +23,7 @@ import useProgArrowKeyPoints from "@/_hooks/use-prog-arrow-key-points";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { PointAction } from "@/_reducers/pointsReducer";
+import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const cornerMargin = 96;
@@ -222,12 +223,16 @@ export default function CalibrationCanvas({
     }
   }
 
-  function handlePointerUp() {
+  function handlePointerUp(e: React.PointerEvent) {
     /* Nothing to do. This short circuit is required to prevent setting
      * the localStorage of the points to invalid values */
     if (dragPoint === null) return;
 
     localStorage.setItem("points", JSON.stringify(localPoints));
+    localStorage.setItem(
+      "calibrationContext",
+      JSON.stringify(getCalibrationContextUpdatedWithEvent(e)),
+    );
     dispatch({ type: "set", points: localPoints });
     setDragPoint(null);
   }
@@ -240,7 +245,7 @@ export default function CalibrationCanvas({
       onKeyDown={handleKeyDown}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
+      onPointerUp={(e) => handlePointerUp(e)}
       style={{
         pointerEvents: isCalibrating ? "auto" : "none",
       }}
