@@ -58,6 +58,7 @@ import { ModalTitle } from "./modal/modal-title";
 import { ModalText } from "./modal/modal-text";
 import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
+import { useInterval } from "@/_hooks/use-interval";
 
 export default function Header({
   isCalibrating,
@@ -117,6 +118,8 @@ export default function Header({
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
+  const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
+    useState(true);
 
   const t = useTranslations("Header");
 
@@ -191,6 +194,10 @@ export default function Header({
     setMeasuring(!measuring);
   }, [KeyCode.KeyM]);
 
+  useInterval(() => {
+    setFullScreenTooltipVisible(false);
+  }, 3000);
+
   return (
     <>
       <Modal open={calibrationAlert.length > 0}>
@@ -227,6 +234,7 @@ export default function Header({
 
             <Tooltip
               className={visible(isCalibrating)}
+              tooltipVisible={fullScreenTooltipVisible}
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
@@ -245,12 +253,14 @@ export default function Header({
                 )}
               </IconButton>
             </Tooltip>
-            <IconButton
-              className={`!p-1 border-2 border-black dark:border-white ml-2`}
-              onClick={() => setMenuStates({ ...menuStates, nav: false })}
-            >
-              <ExpandLessIcon ariaLabel={t("menuHide")} />
-            </IconButton>
+            <Tooltip description={t("menuHide")}>
+              <IconButton
+                className={`!p-1 border-2 border-black dark:border-white`}
+                onClick={() => setMenuStates({ ...menuStates, nav: false })}
+              >
+                <ExpandLessIcon ariaLabel={t("menuHide")} />
+              </IconButton>
+            </Tooltip>
             <Tooltip description={t("invertColor")}>
               <IconButton
                 onClick={() => {
@@ -478,7 +488,7 @@ export default function Header({
         </nav>
       </header>
       <IconButton
-        className={`!p-1 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} z-30 left-1/4 focus:ring-0`}
+        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} z-30 left-1/4 focus:ring-0`}
         onClick={() => setMenuStates({ ...menuStates, nav: true })}
       >
         <ExpandMoreIcon ariaLabel={t("menuShow")} />
