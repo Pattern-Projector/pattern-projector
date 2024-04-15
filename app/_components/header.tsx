@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -49,6 +49,16 @@ import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
 import MoveIcon from "@/_icons/move-icon";
+import {
+  getCalibrationContextUpdatedWithEvent,
+  getIsInvalidatedCalibrationContextWithPointerEvent,
+} from "@/_lib/calibration-context";
+import Modal from "./modal/modal";
+import { ModalTitle } from "./modal/modal-title";
+import { ModalText } from "./modal/modal-text";
+import { ModalActions } from "./modal/modal-actions";
+import { Button } from "./buttons/button";
+import { useInterval } from "@/_hooks/use-interval";
 
 export default function Header({
   isCalibrating,
@@ -77,6 +87,7 @@ export default function Header({
   setMenuStates,
   showingMovePad,
   setShowingMovePad,
+  setCalibrationValidated,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -104,7 +115,12 @@ export default function Header({
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
   showingMovePad: boolean;
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
+  setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
 }) {
+  const [calibrationAlert, setCalibrationAlert] = useState("");
+  const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
+    useState(true);
+
   const t = useTranslations("Header");
 
   function handleRecenter() {
@@ -118,6 +134,37 @@ export default function Header({
       y: center.y - current.y,
     };
     setLocalTransform(translate(p).mmul(localTransform));
+  }
+
+  function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
+    const current = getCalibrationContextUpdatedWithEvent(e);
+    localStorage.setItem("calibrationContext", JSON.stringify(current));
+    setCalibrationValidated(true);
+    setIsCalibrating(false);
+  }
+
+  function handleCalibrateProjectButtonClick(
+    e: React.PointerEvent<HTMLButtonElement>,
+  ) {
+    if (isCalibrating) {
+      const expectedContext = localStorage.getItem("calibrationContext");
+      if (expectedContext) {
+        const expected = JSON.parse(expectedContext);
+        if (
+          getIsInvalidatedCalibrationContextWithPointerEvent(expected, e, true)
+        ) {
+          // Give user a chance to recalibrate or continue.
+          setCalibrationAlert(t("calibrationAlertContinue"));
+        } else {
+          saveContextAndProject(e);
+        }
+      } else {
+        saveContextAndProject(e);
+      }
+    } else {
+      // go to calibration.
+      setIsCalibrating(true);
+    }
   }
 
   const overlayOptions = {
@@ -147,8 +194,34 @@ export default function Header({
     setMeasuring(!measuring);
   }, [KeyCode.KeyM]);
 
+  useInterval(() => {
+    setFullScreenTooltipVisible(false);
+  }, 3000);
+
   return (
     <>
+      <Modal open={calibrationAlert.length > 0}>
+        <ModalTitle>{t("calibrationAlertTitle")}</ModalTitle>
+        <ModalText>{calibrationAlert}</ModalText>
+        <ModalActions>
+          <Button
+            onClick={(e) => {
+              saveContextAndProject(e);
+              setCalibrationAlert("");
+            }}
+          >
+            {t("continue")}
+          </Button>
+          <Button
+            onClick={() => {
+              setIsCalibrating(true);
+              setCalibrationAlert("");
+            }}
+          >
+            {t("checkCalibration")}
+          </Button>
+        </ModalActions>
+      </Modal>
       <header
         className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
       >
@@ -161,6 +234,7 @@ export default function Header({
 
             <Tooltip
               className={visible(isCalibrating)}
+              visible={fullScreenTooltipVisible}
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
@@ -179,12 +253,14 @@ export default function Header({
                 )}
               </IconButton>
             </Tooltip>
-            <IconButton
-              className={`!p-1 border-2 border-black dark:border-white ml-2`}
-              onClick={() => setMenuStates({ ...menuStates, nav: false })}
-            >
-              <ExpandLessIcon ariaLabel={t("menuHide")} />
-            </IconButton>
+            <Tooltip description={t("menuHide")}>
+              <IconButton
+                className={`!p-1 border-2 border-black dark:border-white`}
+                onClick={() => setMenuStates({ ...menuStates, nav: false })}
+              >
+                <ExpandLessIcon ariaLabel={t("menuHide")} />
+              </IconButton>
+            </Tooltip>
             <Tooltip description={t("invertColor")}>
               <IconButton
                 onClick={() => {
@@ -399,7 +475,7 @@ export default function Header({
             </label>
             <button
               className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-              onClick={() => setIsCalibrating(!isCalibrating)}
+              onClick={handleCalibrateProjectButtonClick}
             >
               {isCalibrating ? t("project") : t("calibrate")}
             </button>
@@ -412,7 +488,7 @@ export default function Header({
         </nav>
       </header>
       <IconButton
-        className={`!p-1 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} z-30 left-1/4 focus:ring-0`}
+        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} z-30 left-1/4 focus:ring-0`}
         onClick={() => setMenuStates({ ...menuStates, nav: true })}
       >
         <ExpandMoreIcon ariaLabel={t("menuShow")} />

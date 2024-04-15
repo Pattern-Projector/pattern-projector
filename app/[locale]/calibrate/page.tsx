@@ -45,6 +45,11 @@ import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import Filters from "@/_components/filters";
+import CalibrationContext, {
+  getCalibrationContext,
+  getIsInvalidatedCalibrationContext,
+  getIsInvalidatedCalibrationContextWithPointerEvent,
+} from "@/_lib/calibration-context";
 import Modal from "@/_components/modal/modal";
 import { ModalTitle } from "@/_components/modal/modal-title";
 import { ModalText } from "@/_components/modal/modal-text";
@@ -63,6 +68,8 @@ export default function Page() {
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
+  const [calibrationValidated, setCalibrationValidated] =
+    useState<boolean>(false);
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
@@ -95,7 +102,7 @@ export default function Page() {
   );
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
-  const [calibrationValidated, setCalibrationValidated] = useState(true);
+  const [calibrationAlert, setCalibrationAlert] = useState("");
 
   const t = useTranslations("Header");
 
@@ -149,13 +156,6 @@ export default function Page() {
     }
   }
 
-  function handleFullScreenChange() {
-    if (!isCalibrating) {
-      setCalibrationValidated(false);
-      setIsCalibrating(true);
-    }
-  }
-
   // EFFECTS
 
   const requestWakeLock = useCallback(async () => {
@@ -183,9 +183,9 @@ export default function Page() {
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
-      dispatch({ type: "set", points: JSON.parse(localPoints) });
+      dispatch({ type: "initialize", points: JSON.parse(localPoints) });
     } else {
-      dispatch({ type: "set", points: getDefaultPoints() });
+      dispatch({ type: "initialize", points: getDefaultPoints() });
     }
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
@@ -258,24 +258,64 @@ export default function Page() {
     });
   }, []);
 
+  function handlePointerDown(e: React.PointerEvent) {
+    if (calibrationValidated) {
+      const expectedContext = localStorage.getItem("calibrationContext");
+      if (expectedContext === null) {
+        setCalibrationValidated(false);
+      } else {
+        const expected = JSON.parse(expectedContext) as CalibrationContext;
+        if (getIsInvalidatedCalibrationContextWithPointerEvent(expected, e)) {
+          setCalibrationValidated(false);
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    const projectingWithInvalidContext =
+      !isCalibrating && !calibrationValidated;
+    if (projectingWithInvalidContext) {
+      setIsCalibrating(true);
+      setCalibrationAlert(t("calibrationAlert"));
+    }
+  }, [isCalibrating, calibrationValidated, t]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (calibrationValidated) {
+        const calibrationContext = localStorage.getItem("calibrationContext");
+        if (calibrationContext === null) {
+          setCalibrationValidated(false);
+        } else {
+          const expected = JSON.parse(calibrationContext) as CalibrationContext;
+          if (getIsInvalidatedCalibrationContext(expected)) {
+            setCalibrationValidated(false);
+          }
+        }
+      }
+    }, 500);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [calibrationValidated, setCalibrationValidated]);
+
   return (
     <main
+      onPointerDown={handlePointerDown}
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-full h-full absolute overflow-hidden touch-none`}
     >
-      <Modal open={!calibrationValidated}>
-        <ModalTitle>{t("fullScreenChangeTitle")}</ModalTitle>
-        <ModalText>{t("fullScreenChange")}</ModalText>
+      <Modal open={calibrationAlert.length > 0}>
+        <ModalTitle>{t("calibrationAlertTitle")}</ModalTitle>
+        <ModalText>{calibrationAlert}</ModalText>
         <ModalActions>
-          <Button onClick={() => setCalibrationValidated(true)}>
-            {t("ok")}
-          </Button>
+          <Button onClick={() => setCalibrationAlert("")}>{t("ok")}</Button>
         </ModalActions>
       </Modal>
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
         <FullScreen
           handle={handle}
-          onChange={handleFullScreenChange}
           className="bg-white dark:bg-black transition-all duration-500 w-full h-full"
         >
           {isCalibrating && showingMovePad && (
@@ -295,9 +335,13 @@ export default function Page() {
             width={width}
             handleHeightChange={handleHeightChange}
             handleWidthChange={handleWidthChange}
-            handleResetCalibration={() =>
-              dispatch({ type: "set", points: getDefaultPoints() })
-            }
+            handleResetCalibration={() => {
+              localStorage.setItem(
+                "calibrationContext",
+                JSON.stringify(getCalibrationContext()),
+              );
+              dispatch({ type: "set", points: getDefaultPoints() });
+            }}
             handleFileChange={handleFileChange}
             fullScreenHandle={handle}
             unitOfMeasure={unitOfMeasure}
@@ -328,6 +372,7 @@ export default function Page() {
               setShowingMovePad(show);
               updateLocalSettings({ showingMovePad: show });
             }}
+            setCalibrationValidated={setCalibrationValidated}
           />
 
           <StitchMenu

@@ -1,3 +1,4 @@
+import { getCalibrationContext } from "@/_lib/calibration-context";
 import { Point, applyOffset } from "@/_lib/point";
 
 interface OffsetAction {
@@ -11,10 +12,18 @@ interface SetAction {
   points: Point[];
 }
 
-export type PointAction = OffsetAction | SetAction;
+interface InitializeAction {
+  type: "initialize";
+  points: Point[];
+}
+
+export type PointAction = OffsetAction | SetAction | InitializeAction;
 
 export default function pointsReducer(points: Point[], action: PointAction) {
   switch (action.type) {
+    case "initialize": {
+      return [...action.points];
+    }
     case "set": {
       return [...action.points];
     }
