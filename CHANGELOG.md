@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2024-04-15
+
 ### Added
 
 - Redirect to calibration page when full screen mode is changed or window is moved/resized when projecting
@@ -49,4 +51,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Press and hold calibration corners to slow down movement
 
 [unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/main...beta
+[1.0.1]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.0
