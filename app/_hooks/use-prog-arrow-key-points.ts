@@ -28,10 +28,7 @@ export default function useProgArrowKeyPoints(
   function applyOffset(key: KeyCode, px: number) {
     if (corners.size) {
       dispatch({ type: "offset", offset: getOffset(key, px), corners });
-      localStorage.setItem(
-        "calibrationContext",
-        JSON.stringify(getCalibrationContext()),
-      );
+      localStorage.setItem("calibrationContext", JSON.stringify(getCalibrationContext()));
     }
   }
 

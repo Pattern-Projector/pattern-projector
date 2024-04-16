@@ -11,14 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Redirect to calibration page when full screen mode is changed or window is moved/resized when projecting
-- Check for when calibration page size or location has changed since last projection
+- Alert when full screen mode is changed when projecting
 
 ### Changed
 
 - Speed up line weight change and movement in Firefox
-- Layer menu title and show/hide all is always visible when menu is open
-- Scroll bar is shown when the number of layers is greater than the size of the menu
 
 ### Fixed
 
@@ -26,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Full screen button from projection page (needed to ensure accurate calibration)
+- Full screen button from projection page
 
 ## [1.0.0] - 2024-04-06
 
