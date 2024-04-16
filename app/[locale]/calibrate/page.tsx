@@ -314,14 +314,14 @@ export default function Page() {
           handle={fullScreenHandle}
           className="bg-white dark:bg-black transition-all duration-500 w-full h-full"
         >
-          {showCalibrationAlert && (
-            <h2 className="flex items-center gap-4 absolute bottom-0 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded">
+          {showCalibrationAlert ? (
+            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded">
               <div className="flex">
                 <WarningIcon ariaLabel="warning" />
               </div>
               {t("calibrationAlert")}
             </h2>
-          )}
+          ) : null}
           {isCalibrating && showingMovePad && (
             <MovementPad
               corners={corners}
