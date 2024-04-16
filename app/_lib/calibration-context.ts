@@ -22,7 +22,7 @@ export function getCalibrationContext(fullScreen: boolean): CalibrationContext {
     devicePixelRatio: window.devicePixelRatio,
     clientScreenTop: null,
     clientScreenLeft: null,
-    fullScreen
+    fullScreen,
   };
 }
 

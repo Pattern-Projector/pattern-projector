@@ -32,5 +32,5 @@ export default function useProgArrowKeyToMatrix(
     applyChange(m);
   }
 
-  useProgArrowKeyHandler(moveWithArrowKey, active, PIXEL_LIST);
+  useProgArrowKeyHandler(moveWithArrowKey, active, PIXEL_LIST, false);
 }

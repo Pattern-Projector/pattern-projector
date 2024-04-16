@@ -182,7 +182,12 @@ export default function CalibrationCanvas({
     }
   }, [KeyCode.Tab]);
 
-  useProgArrowKeyPoints(dispatch, corners, isCalibrating);
+  useProgArrowKeyPoints(
+    dispatch,
+    corners,
+    isCalibrating,
+    fullScreenHandle.active,
+  );
 
   function handlePointerDown(e: React.PointerEvent) {
     const p = { x: e.clientX, y: e.clientY };
