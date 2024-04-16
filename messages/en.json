@@ -169,7 +169,7 @@
     "fullscreenExit": "Exit full screen",
     "ok": "OK",
     "calibrationAlertTitle": "Calibration Warning",
-    "calibrationAlert": "The window has changed since projecting started, move the window back, toggle full screen, or recalibrate to continue.",
+    "calibrationAlert": "The window has changed since projecting started, toggle full screen or recalibrate to fix this issue.",
     "calibrationAlertContinue": "The window has changed since the last time you projected, but calibration hasn't been updated. Continue anyway?",
     "continue": "Continue",
     "checkCalibration": "Check calibration",

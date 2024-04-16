@@ -50,11 +50,7 @@ import CalibrationContext, {
   getIsInvalidatedCalibrationContext,
   getIsInvalidatedCalibrationContextWithPointerEvent,
 } from "@/_lib/calibration-context";
-import Modal from "@/_components/modal/modal";
-import { ModalTitle } from "@/_components/modal/modal-title";
-import { ModalText } from "@/_components/modal/modal-text";
-import { ModalActions } from "@/_components/modal/modal-actions";
-import { Button } from "@/_components/buttons/button";
+import WarningIcon from "@/_icons/warning-icon";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -62,7 +58,7 @@ export default function Page() {
   const defaultHeightDimensionValue = "16";
   const maxPoints = 4; // One point per vertex in rectangle
 
-  const handle = useFullScreenHandle();
+  const fullScreenHandle = useFullScreenHandle();
 
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
@@ -102,7 +98,7 @@ export default function Page() {
   );
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
-  const [calibrationAlert, setCalibrationAlert] = useState("");
+  const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
 
   const t = useTranslations("Header");
 
@@ -265,7 +261,13 @@ export default function Page() {
         setCalibrationValidated(false);
       } else {
         const expected = JSON.parse(expectedContext) as CalibrationContext;
-        if (getIsInvalidatedCalibrationContextWithPointerEvent(expected, e)) {
+        if (
+          getIsInvalidatedCalibrationContextWithPointerEvent(
+            expected,
+            e,
+            fullScreenHandle.active,
+          )
+        ) {
           setCalibrationValidated(false);
         }
       }
@@ -275,29 +277,31 @@ export default function Page() {
   useEffect(() => {
     const projectingWithInvalidContext =
       !isCalibrating && !calibrationValidated;
-    if (projectingWithInvalidContext) {
-      setCalibrationAlert(t("calibrationAlert"));
-    }
-  }, [isCalibrating, calibrationValidated, t]);
+    setShowCalibrationAlert(projectingWithInvalidContext);
+  }, [isCalibrating, calibrationValidated]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (calibrationValidated) {
-        const calibrationContext = localStorage.getItem("calibrationContext");
-        if (calibrationContext === null) {
+      const calibrationContext = localStorage.getItem("calibrationContext");
+      if (calibrationContext === null) {
+        if (calibrationValidated) {
           setCalibrationValidated(false);
-        } else {
-          const expected = JSON.parse(calibrationContext) as CalibrationContext;
-          if (getIsInvalidatedCalibrationContext(expected)) {
-            setCalibrationValidated(false);
-          }
+        }
+      } else {
+        const expected = JSON.parse(calibrationContext) as CalibrationContext;
+        const isInvalid = getIsInvalidatedCalibrationContext(
+          expected,
+          fullScreenHandle.active,
+        );
+        if (isInvalid === calibrationValidated) {
+          setCalibrationValidated(!isInvalid);
         }
       }
     }, 500);
     return () => {
       clearInterval(interval);
     };
-  }, [calibrationValidated, setCalibrationValidated]);
+  }, [calibrationValidated, setCalibrationValidated, fullScreenHandle.active]);
 
   return (
     <main
@@ -305,23 +309,25 @@ export default function Page() {
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-full h-full absolute overflow-hidden touch-none`}
     >
-      <Modal open={calibrationAlert.length > 0}>
-        <ModalTitle>{t("calibrationAlertTitle")}</ModalTitle>
-        <ModalText>{calibrationAlert}</ModalText>
-        <ModalActions>
-          <Button onClick={() => setCalibrationAlert("")}>{t("ok")}</Button>
-        </ModalActions>
-      </Modal>
       <div className="bg-white dark:bg-black dark:text-white w-full h-full">
         <FullScreen
-          handle={handle}
+          handle={fullScreenHandle}
           className="bg-white dark:bg-black transition-all duration-500 w-full h-full"
         >
+          {showCalibrationAlert && (
+            <h2 className="flex items-center gap-4 absolute bottom-0 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded">
+              <div className="flex">
+                <WarningIcon ariaLabel="warning" />
+              </div>
+              {t("calibrationAlert")}
+            </h2>
+          )}
           {isCalibrating && showingMovePad && (
             <MovementPad
               corners={corners}
               setCorners={setCorners}
               dispatch={dispatch}
+              fullScreenHandle={fullScreenHandle}
             />
           )}
           <div
@@ -337,12 +343,12 @@ export default function Page() {
             handleResetCalibration={() => {
               localStorage.setItem(
                 "calibrationContext",
-                JSON.stringify(getCalibrationContext()),
+                JSON.stringify(getCalibrationContext(fullScreenHandle.active)),
               );
               dispatch({ type: "set", points: getDefaultPoints() });
             }}
             handleFileChange={handleFileChange}
-            fullScreenHandle={handle}
+            fullScreenHandle={fullScreenHandle}
             unitOfMeasure={unitOfMeasure}
             setUnitOfMeasure={(newUnit) => {
               setUnitOfMeasure(newUnit);
@@ -420,6 +426,7 @@ export default function Page() {
             displaySettings={displaySettings}
             corners={corners}
             setCorners={setCorners}
+            fullScreenHandle={fullScreenHandle}
           />
           {measuring && (
             <MeasureCanvas
