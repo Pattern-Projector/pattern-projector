@@ -276,7 +276,6 @@ export default function Page() {
     const projectingWithInvalidContext =
       !isCalibrating && !calibrationValidated;
     if (projectingWithInvalidContext) {
-      setIsCalibrating(true);
       setCalibrationAlert(t("calibrationAlert"));
     }
   }, [isCalibrating, calibrationValidated, t]);
