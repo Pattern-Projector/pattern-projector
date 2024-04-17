@@ -9,6 +9,7 @@ export default function useProgArrowKeyPoints(
   dispatch: Dispatch<PointAction>,
   corners: Set<number>,
   active: boolean,
+  fullScreen: boolean,
 ) {
   function getOffset(key: KeyCode, px: number): Point {
     switch (key) {
@@ -25,12 +26,12 @@ export default function useProgArrowKeyPoints(
     }
   }
 
-  function applyOffset(key: KeyCode, px: number) {
+  function applyOffset(key: KeyCode, px: number, fullScreen: boolean) {
     if (corners.size) {
       dispatch({ type: "offset", offset: getOffset(key, px), corners });
       localStorage.setItem(
         "calibrationContext",
-        JSON.stringify(getCalibrationContext()),
+        JSON.stringify(getCalibrationContext(fullScreen)),
       );
     }
   }
@@ -39,6 +40,7 @@ export default function useProgArrowKeyPoints(
     applyOffset,
     corners.size > 0 && active,
     [1, 3, 5, 10],
+    fullScreen,
   );
 
   return null;

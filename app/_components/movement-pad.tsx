@@ -10,6 +10,7 @@ import { Point } from "@/_lib/point";
 import { PointAction } from "@/_reducers/pointsReducer";
 import CycleIcon from "@/_icons/cycle-icon";
 import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
+import { FullScreenHandle } from "react-full-screen";
 
 const PIXEL_LIST = [1, 4, 8, 16];
 const REPEAT_MS = 100;
@@ -19,10 +20,12 @@ export default function MovementPad({
   corners,
   setCorners,
   dispatch,
+  fullScreenHandle,
 }: {
   corners: Set<number>;
   setCorners: (corners: Set<number>) => void;
   dispatch: Dispatch<PointAction>;
+  fullScreenHandle: FullScreenHandle;
 }) {
   const t = useTranslations("MovementPad");
   const border = "border-2 border-purple-600";
@@ -71,7 +74,9 @@ export default function MovementPad({
     }
     localStorage.setItem(
       "calibrationContext",
-      JSON.stringify(getCalibrationContextUpdatedWithEvent(e)),
+      JSON.stringify(
+        getCalibrationContextUpdatedWithEvent(e, fullScreenHandle.active),
+      ),
     );
   }
 

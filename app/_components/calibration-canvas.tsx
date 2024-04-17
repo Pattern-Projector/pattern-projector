@@ -24,6 +24,7 @@ import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { PointAction } from "@/_reducers/pointsReducer";
 import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
+import { FullScreenHandle } from "react-full-screen";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const cornerMargin = 96;
@@ -39,6 +40,7 @@ export default function CalibrationCanvas({
   displaySettings,
   corners,
   setCorners,
+  fullScreenHandle,
 }: {
   className: string | undefined;
   points: Point[];
@@ -50,6 +52,7 @@ export default function CalibrationCanvas({
   displaySettings: DisplaySettings;
   corners: Set<number>;
   setCorners: Dispatch<SetStateAction<Set<number>>>;
+  fullScreenHandle: FullScreenHandle;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [dragPoint, setDragPoint] = useState<Point | null>(null);
@@ -179,7 +182,12 @@ export default function CalibrationCanvas({
     }
   }, [KeyCode.Tab]);
 
-  useProgArrowKeyPoints(dispatch, corners, isCalibrating);
+  useProgArrowKeyPoints(
+    dispatch,
+    corners,
+    isCalibrating,
+    fullScreenHandle.active,
+  );
 
   function handlePointerDown(e: React.PointerEvent) {
     const p = { x: e.clientX, y: e.clientY };
@@ -231,7 +239,9 @@ export default function CalibrationCanvas({
     localStorage.setItem("points", JSON.stringify(localPoints));
     localStorage.setItem(
       "calibrationContext",
-      JSON.stringify(getCalibrationContextUpdatedWithEvent(e)),
+      JSON.stringify(
+        getCalibrationContextUpdatedWithEvent(e, fullScreenHandle.active),
+      ),
     );
     dispatch({ type: "set", points: localPoints });
     setDragPoint(null);

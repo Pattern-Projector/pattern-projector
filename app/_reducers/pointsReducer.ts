@@ -1,4 +1,3 @@
-import { getCalibrationContext } from "@/_lib/calibration-context";
 import { Point, applyOffset } from "@/_lib/point";
 
 interface OffsetAction {

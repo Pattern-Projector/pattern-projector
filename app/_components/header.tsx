@@ -137,7 +137,10 @@ export default function Header({
   }
 
   function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
-    const current = getCalibrationContextUpdatedWithEvent(e);
+    const current = getCalibrationContextUpdatedWithEvent(
+      e,
+      fullScreenHandle.active,
+    );
     localStorage.setItem("calibrationContext", JSON.stringify(current));
     setCalibrationValidated(true);
     setIsCalibrating(false);
@@ -151,7 +154,12 @@ export default function Header({
       if (expectedContext) {
         const expected = JSON.parse(expectedContext);
         if (
-          getIsInvalidatedCalibrationContextWithPointerEvent(expected, e, true)
+          getIsInvalidatedCalibrationContextWithPointerEvent(
+            expected,
+            e,
+            fullScreenHandle.active,
+            true,
+          )
         ) {
           // Give user a chance to recalibrate or continue.
           setCalibrationAlert(t("calibrationAlertContinue"));
@@ -233,7 +241,6 @@ export default function Header({
             <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
 
             <Tooltip
-              className={visible(isCalibrating)}
               visible={fullScreenTooltipVisible}
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")

@@ -3,9 +3,10 @@ import { useCallback, useEffect, useState } from "react";
 
 const PIXEL_LIST = [2, 20, 50, 100];
 export default function useProgArrowKeyHandler(
-  handler: (key: KeyCode, px: number) => void,
+  handler: (key: KeyCode, px: number, fullScreen: boolean) => void,
   active: boolean,
   pixelList: number[] = PIXEL_LIST,
+  fullScreen: boolean,
 ) {
   const [pixelIdx, setPixelIdx] = useState<number>(0);
   const [timeoutFunc, setTimeoutFunc] = useState<NodeJS.Timeout | null>();
@@ -27,13 +28,13 @@ export default function useProgArrowKeyHandler(
               }, 600),
             );
           }
-          handler(e.code, pixelList[pixelIdx]);
+          handler(e.code, pixelList[pixelIdx], fullScreen);
           break;
         default:
           break;
       }
     },
-    [timeoutFunc, pixelIdx, handler, pixelList],
+    [timeoutFunc, pixelIdx, handler, pixelList, fullScreen],
   );
 
   const keyupHandler = useCallback(
