@@ -58,7 +58,6 @@ import { ModalTitle } from "./modal/modal-title";
 import { ModalText } from "./modal/modal-text";
 import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
-import { useInterval } from "@/_hooks/use-interval";
 
 export default function Header({
   isCalibrating,
@@ -118,8 +117,6 @@ export default function Header({
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
-  const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
-    useState(true);
 
   const t = useTranslations("Header");
 
@@ -202,10 +199,6 @@ export default function Header({
     setMeasuring(!measuring);
   }, [KeyCode.KeyM]);
 
-  useInterval(() => {
-    setFullScreenTooltipVisible(false);
-  }, 3000);
-
   return (
     <>
       <Modal open={calibrationAlert.length > 0}>
@@ -241,7 +234,6 @@ export default function Header({
             <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
 
             <Tooltip
-              visible={fullScreenTooltipVisible}
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
