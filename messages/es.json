@@ -183,7 +183,13 @@
         "measureOff": "Terminar medición",
         "showMovement": "Mostrar herramienta mover",
         "hideMovement": "Ocultar herramienta mover",
-        "fullScreenChange": "Por favor, asegúrese de que la calibración es correcta. Debe calibrar en modo de pantalla completa si desea proyectar en pantalla completa."
+        "fullScreenChange": "Por favor, asegúrese de que la calibración es correcta. Debe calibrar en modo de pantalla completa si desea proyectar en pantalla completa.",
+        "calibrationAlertContinue": "La ventana ha cambiado desde la última vez que proyectó, pero la calibración no se ha actualizado. ¿Continuar de todos modos?",
+        "ok": "DE ACUERDO",
+        "calibrationAlertTitle": "Aviso de calibración",
+        "continue": "Continuar",
+        "checkCalibration": "Comprobar la calibración",
+        "calibrationAlert": "La ventana ha cambiado desde que comenzó la proyección, active la pantalla completa o recalibre para solucionar este problema."
     },
     "StitchMenu": {
         "columnCount": "Columnas",
@@ -197,5 +203,10 @@
         "next": "Siguiente esquina",
         "up": "Subir",
         "down": "Bajar"
+    },
+    "LayerMenu": {
+        "title": "Capas",
+        "showAll": "Mostrar todo",
+        "hideAll": "Ocultar todo"
     }
 }
