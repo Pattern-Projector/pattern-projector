@@ -258,6 +258,7 @@ export default function CalibrationCanvas({
       onPointerUp={(e) => handlePointerUp(e)}
       style={{
         pointerEvents: isCalibrating ? "auto" : "none",
+        cursor: dragPoint ? "grabbing" : "grab",
       }}
     />
   );
@@ -298,10 +299,14 @@ function draw(cs: CanvasState): void {
 }
 
 function drawCalibrationPoints(cs: CanvasState) {
-  const { ctx, points, corners, hoverCorners } = cs;
+  const { ctx, points, corners, hoverCorners, displaySettings } = cs;
   points.forEach((point, index) => {
     ctx.beginPath();
-    const radius = corners.size === 1 && corners.has(index) ? 20 : 10;
+    const oneCorner = corners.size === 1 && corners.has(index);
+    const radius = oneCorner ? 20 : 10;
+    ctx.strokeStyle = oneCorner
+      ? "rgb(147, 51, 234)"
+      : strokeColor(displaySettings.theme);
     if (hoverCorners.size === 1 && hoverCorners.has(index)) {
       ctx.setLineDash([4, 4]);
     } else {

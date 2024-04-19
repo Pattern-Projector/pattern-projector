@@ -13,8 +13,7 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
-import PDFViewer from "@/_components/pdf-viewer";
-import { getPerspectiveTransformFromPoints, toMatrix3d } from "@/_lib/geometry";
+import { getPerspectiveTransformFromPoints } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
@@ -26,7 +25,6 @@ import {
 import { IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/interfaces/layer";
 import LayerMenu from "@/_components/layer-menu";
-import useProgArrowKeyToMatrix from "@/_hooks/use-prog-arrow-key-to-matrix";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import LayersIcon from "@/_icons/layers-icon";
@@ -43,7 +41,6 @@ import {
 } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
-import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import Filters from "@/_components/filters";
 import CalibrationContext, {
   getCalibrationContext,
@@ -51,6 +48,9 @@ import CalibrationContext, {
   getIsInvalidatedCalibrationContextWithPointerEvent,
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
+import PdfViewer from "@/_components/pdf-viewer";
+import { Transform } from "stream";
+import { Transformable } from "@/_hooks/use-transform-context";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -70,11 +70,7 @@ export default function Page() {
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
-  const [matrix3d, setMatrix3d] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
-  const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3),
-  );
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
@@ -210,17 +206,6 @@ export default function Page() {
     }
   }, []);
 
-  const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
-  const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
-  const scale = unitOfMeasure === IN ? quarterInchPx : halfCmPx;
-  useProgArrowKeyToMatrix(!isCalibrating, scale, (matrix) => {
-    setLocalTransform(matrix.mmul(localTransform));
-  });
-
-  useEffect(() => {
-    setMatrix3d(toMatrix3d(calibrationTransform.mmul(localTransform)));
-  }, [localTransform, calibrationTransform]);
-
   useEffect(() => {
     const ptDensity = getPtDensity(unitOfMeasure);
     const w = Number(width);
@@ -322,6 +307,7 @@ export default function Page() {
               {t("calibrationAlert")}
             </h2>
           ) : null}
+
           {isCalibrating && showingMovePad && (
             <MovementPad
               corners={corners}
@@ -333,143 +319,136 @@ export default function Page() {
           <div
             className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
           />
-          <Header
-            isCalibrating={isCalibrating}
-            setIsCalibrating={setIsCalibrating}
-            height={height}
-            width={width}
-            handleHeightChange={handleHeightChange}
-            handleWidthChange={handleWidthChange}
-            handleResetCalibration={() => {
-              localStorage.setItem(
-                "calibrationContext",
-                JSON.stringify(getCalibrationContext(fullScreenHandle.active)),
-              );
-              dispatch({ type: "set", points: getDefaultPoints() });
-            }}
-            handleFileChange={handleFileChange}
-            fullScreenHandle={fullScreenHandle}
-            unitOfMeasure={unitOfMeasure}
-            setUnitOfMeasure={(newUnit) => {
-              setUnitOfMeasure(newUnit);
-              updateLocalSettings({ unitOfMeasure: newUnit });
-            }}
-            displaySettings={displaySettings}
-            setDisplaySettings={(newSettings) => {
-              setDisplaySettings(newSettings);
-              if (newSettings) {
-                updateLocalSettings(newSettings);
-              }
-            }}
-            pageCount={pageCount}
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
-            layoutWidth={layoutWidth}
-            layoutHeight={layoutHeight}
-            lineThickness={lineThickness}
-            setLineThickness={setLineThickness}
-            setMenuStates={setMenuStates}
-            menuStates={menuStates}
-            measuring={measuring}
-            setMeasuring={setMeasuring}
-            showingMovePad={showingMovePad}
-            setShowingMovePad={(show) => {
-              setShowingMovePad(show);
-              updateLocalSettings({ showingMovePad: show });
-            }}
-            setCalibrationValidated={setCalibrationValidated}
-          />
-
-          <StitchMenu
-            showMenu={!isCalibrating && menuStates.stitch && menuStates.nav}
-            setShowMenu={(showMenu) =>
-              setMenuStates({ ...menuStates, stitch: showMenu })
-            }
-            setColumnCount={setColumnCount}
-            setEdgeInsets={setEdgeInsets}
-            setPageRange={setPageRange}
-            columnCount={columnCount}
-            edgeInsets={edgeInsets}
-            pageRange={pageRange}
-            pageCount={pageCount}
-          />
-          <LayerMenu
-            visible={!isCalibrating && menuStates.layers}
-            setVisible={(visible) =>
-              setMenuStates({ ...menuStates, layers: visible })
-            }
-            layers={layers}
-            setLayers={setLayers}
-            className={`${menuStates.stitch ? "top-32" : "top-20"}`}
-          />
-          {layers.size && !menuStates.layers ? (
-            <Tooltip
-              description={menuStates.layers ? t("layersOff") : t("layersOn")}
-            >
-              <IconButton
-                className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
-                onClick={() => setMenuStates({ ...menuStates, layers: true })}
-              >
-                <LayersIcon ariaLabel="layers" />
-              </IconButton>
-            </Tooltip>
-          ) : null}
-
-          <CalibrationCanvas
-            className={`absolute z-10`}
-            points={points}
-            dispatch={dispatch}
-            width={+width}
-            height={+height}
-            isCalibrating={isCalibrating}
-            unitOfMeasure={unitOfMeasure}
-            displaySettings={displaySettings}
-            corners={corners}
-            setCorners={setCorners}
-            fullScreenHandle={fullScreenHandle}
-          />
-          {measuring && (
-            <MeasureCanvas
-              className={visible(!isCalibrating)}
-              perspective={perspective}
-              calibrationTransform={calibrationTransform}
-              unitOfMeasure={unitOfMeasure}
-            />
-          )}
-          <Draggable
-            viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 `}
-            className={`select-none ${visible(!isCalibrating)}`}
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
-            perspective={perspective}
-          >
-            <div
-              className={"absolute z-0"}
-              style={{
-                transform: `${matrix3d}`,
-                transformOrigin: "0 0",
-                imageRendering: "pixelated",
+          <Transformable>
+            <Header
+              isCalibrating={isCalibrating}
+              setIsCalibrating={setIsCalibrating}
+              height={height}
+              width={width}
+              handleHeightChange={handleHeightChange}
+              handleWidthChange={handleWidthChange}
+              handleResetCalibration={() => {
+                localStorage.setItem(
+                  "calibrationContext",
+                  JSON.stringify(
+                    getCalibrationContext(fullScreenHandle.active),
+                  ),
+                );
+                dispatch({ type: "set", points: getDefaultPoints() });
               }}
+              handleFileChange={handleFileChange}
+              fullScreenHandle={fullScreenHandle}
+              unitOfMeasure={unitOfMeasure}
+              setUnitOfMeasure={(newUnit) => {
+                setUnitOfMeasure(newUnit);
+                updateLocalSettings({ unitOfMeasure: newUnit });
+              }}
+              displaySettings={displaySettings}
+              setDisplaySettings={(newSettings) => {
+                setDisplaySettings(newSettings);
+                if (newSettings) {
+                  updateLocalSettings(newSettings);
+                }
+              }}
+              pageCount={pageCount}
+              layoutWidth={layoutWidth}
+              layoutHeight={layoutHeight}
+              lineThickness={lineThickness}
+              setLineThickness={setLineThickness}
+              setMenuStates={setMenuStates}
+              menuStates={menuStates}
+              measuring={measuring}
+              setMeasuring={setMeasuring}
+              showingMovePad={showingMovePad}
+              setShowingMovePad={(show) => {
+                setShowingMovePad(show);
+                updateLocalSettings({ showingMovePad: show });
+              }}
+              setCalibrationValidated={setCalibrationValidated}
+            />
+
+            <StitchMenu
+              showMenu={!isCalibrating && menuStates.stitch && menuStates.nav}
+              setShowMenu={(showMenu) =>
+                setMenuStates({ ...menuStates, stitch: showMenu })
+              }
+              setColumnCount={setColumnCount}
+              setEdgeInsets={setEdgeInsets}
+              setPageRange={setPageRange}
+              columnCount={columnCount}
+              edgeInsets={edgeInsets}
+              pageRange={pageRange}
+              pageCount={pageCount}
+            />
+
+            <LayerMenu
+              visible={!isCalibrating && menuStates.layers}
+              setVisible={(visible) =>
+                setMenuStates({ ...menuStates, layers: visible })
+              }
+              layers={layers}
+              setLayers={setLayers}
+              className={`${menuStates.stitch ? "top-32" : "top-20"}`}
+            />
+            {layers.size && !menuStates.layers ? (
+              <Tooltip
+                description={menuStates.layers ? t("layersOff") : t("layersOn")}
+              >
+                <IconButton
+                  className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
+                  onClick={() => setMenuStates({ ...menuStates, layers: true })}
+                >
+                  <LayersIcon ariaLabel="layers" />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+
+            <CalibrationCanvas
+              className={`absolute z-10`}
+              points={points}
+              dispatch={dispatch}
+              width={+width}
+              height={+height}
+              isCalibrating={isCalibrating}
+              unitOfMeasure={unitOfMeasure}
+              displaySettings={displaySettings}
+              corners={corners}
+              setCorners={setCorners}
+              fullScreenHandle={fullScreenHandle}
+            />
+
+            {measuring && (
+              <MeasureCanvas
+                className={visible(!isCalibrating)}
+                perspective={perspective}
+                calibrationTransform={calibrationTransform}
+                unitOfMeasure={unitOfMeasure}
+              />
+            )}
+
+            <Draggable
+              perspective={perspective}
+              isCalibrating={isCalibrating}
+              unitOfMeasure={unitOfMeasure}
+              calibrationTransform={calibrationTransform}
             >
-              <div className={"outline outline-8 outline-purple-600"}>
-                <PDFViewer
-                  file={file}
-                  setPageCount={setPageCount}
-                  pageCount={pageCount}
-                  setLayers={setLayers}
-                  layers={layers}
-                  setLayoutWidth={setLayoutWidth}
-                  setLayoutHeight={setLayoutHeight}
-                  lineThickness={lineThickness}
-                  columnCount={columnCount}
-                  edgeInsets={edgeInsets}
-                  pageRange={pageRange}
-                  setLocalTransform={setLocalTransform}
-                  filter={themeFilter(displaySettings.theme)}
-                />
-              </div>
-            </div>
-          </Draggable>
+              <PdfViewer
+                file={file}
+                setPageCount={setPageCount}
+                pageCount={pageCount}
+                setLayers={setLayers}
+                layers={layers}
+                setLayoutWidth={setLayoutWidth}
+                setLayoutHeight={setLayoutHeight}
+                lineThickness={lineThickness}
+                columnCount={columnCount}
+                edgeInsets={edgeInsets}
+                setEdgeInsets={setEdgeInsets}
+                pageRange={pageRange}
+                filter={themeFilter(displaySettings.theme)}
+              />
+            </Draggable>
+          </Transformable>
         </FullScreen>
       </div>
       <Filters />

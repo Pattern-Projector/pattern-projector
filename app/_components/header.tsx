@@ -1,5 +1,11 @@
 import { useTranslations } from "next-intl";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -26,15 +32,7 @@ import {
 } from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
-import Matrix from "ml-matrix";
-import {
-  translate,
-  rotateMatrixDeg,
-  flipVertical,
-  flipHorizontal,
-  getCenterPoint,
-  transformPoint,
-} from "@/_lib/geometry";
+import { getCenterPoint } from "@/_lib/geometry";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-checkbox-icon-button";
@@ -58,6 +56,8 @@ import { ModalTitle } from "./modal/modal-title";
 import { ModalText } from "./modal/modal-text";
 import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
+import { useTransformerContext } from "@/_hooks/use-transform-context";
+import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 
 export default function Header({
   isCalibrating,
@@ -74,8 +74,6 @@ export default function Header({
   displaySettings,
   setDisplaySettings,
   pageCount,
-  localTransform,
-  setLocalTransform,
   layoutWidth,
   layoutHeight,
   lineThickness,
@@ -102,8 +100,6 @@ export default function Header({
   displaySettings: DisplaySettings;
   setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
   pageCount: number;
-  localTransform: Matrix;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   layoutWidth: number;
   layoutHeight: number;
   lineThickness: number;
@@ -117,21 +113,8 @@ export default function Header({
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
-
+  const transformer = useTransformerContext();
   const t = useTranslations("Header");
-
-  function handleRecenter() {
-    const current = transformPoint(
-      { x: layoutWidth * 0.5, y: layoutHeight * 0.5 },
-      localTransform,
-    );
-    const center = getCenterPoint(+width, +height, unitOfMeasure);
-    const p = {
-      x: center.x - current.x,
-      y: center.y - current.y,
-    };
-    setLocalTransform(translate(p).mmul(localTransform));
-  }
 
   function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
     const current = getCalibrationContextUpdatedWithEvent(
@@ -194,6 +177,33 @@ export default function Header({
       text: t("overlayOptionFliplines"),
     },
   };
+
+  const lineThicknessOptions = [
+    {
+      text: "0px",
+      value: 0,
+    },
+    {
+      text: "1px",
+      value: 1,
+    },
+    {
+      text: "2px",
+      value: 2,
+    },
+    {
+      text: "3px",
+      value: 3,
+    },
+    {
+      text: "4px",
+      value: 4,
+    },
+    {
+      text: "5px",
+      value: 5,
+    },
+  ];
 
   useKeyDown(() => {
     setMeasuring(!measuring);
@@ -387,27 +397,22 @@ export default function Header({
                 />
               </IconButton>
             </Tooltip>
-            <Tooltip description={t("lineWeight")}>
-              <div className="flex">
-                <InlineInput
-                  inputClassName="!px-2"
-                  label={<LineWeightIcon ariaLabel={t("lineWeight")} />}
-                  className="align-right"
-                  min="0"
-                  type="number"
-                  handleChange={(e) => setLineThickness(e.target.valueAsNumber)}
-                  value={String(lineThickness)}
-                />
-              </div>
-            </Tooltip>
+
+            {!isCalibrating && (
+              <DropdownIconButton
+                description={t("lineWeight")}
+                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                options={lineThicknessOptions}
+                setSelection={setLineThickness}
+                selection={lineThickness}
+              />
+            )}
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
                 onClick={() =>
-                  setLocalTransform(
-                    flipHorizontal(
-                      getCenterPoint(+width, +height, unitOfMeasure),
-                    ).mmul(localTransform),
+                  transformer.flipHorizontal(
+                    getCenterPoint(+width, +height, unitOfMeasure),
                   )
                 }
               >
@@ -417,10 +422,8 @@ export default function Header({
             <Tooltip description={t("flipVertical")}>
               <IconButton
                 onClick={() =>
-                  setLocalTransform(
-                    flipVertical(
-                      getCenterPoint(+width, +height, unitOfMeasure),
-                    ).mmul(localTransform),
+                  transformer.flipVertical(
+                    getCenterPoint(+width, +height, unitOfMeasure),
                   )
                 }
               >
@@ -430,11 +433,9 @@ export default function Header({
             <Tooltip description={t("rotate90")}>
               <IconButton
                 onClick={() =>
-                  setLocalTransform(
-                    rotateMatrixDeg(
-                      90,
-                      getCenterPoint(+width, +height, unitOfMeasure),
-                    ).mmul(localTransform),
+                  transformer.rotate(
+                    getCenterPoint(+width, +height, unitOfMeasure),
+                    90,
                   )
                 }
               >
@@ -442,7 +443,15 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <Tooltip description={t("recenter")}>
-              <IconButton onClick={handleRecenter}>
+              <IconButton
+                onClick={() => {
+                  transformer.recenter(
+                    getCenterPoint(+width, +height, unitOfMeasure),
+                    layoutWidth,
+                    layoutHeight,
+                  );
+                }}
+              >
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
