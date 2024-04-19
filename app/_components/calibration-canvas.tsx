@@ -258,6 +258,7 @@ export default function CalibrationCanvas({
       onPointerUp={(e) => handlePointerUp(e)}
       style={{
         pointerEvents: isCalibrating ? "auto" : "none",
+        cursor: dragPoint ? "grabbing" : "grab",
       }}
     />
   );
