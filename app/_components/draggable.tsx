@@ -1,8 +1,6 @@
 import { Matrix } from "ml-matrix";
 import {
-  Dispatch,
   ReactNode,
-  SetStateAction,
   MouseEvent,
   useState,
   useRef,
@@ -10,23 +8,34 @@ import {
   useCallback,
 } from "react";
 
-import { toSingleAxisVector, transformPoint, translate } from "@/_lib/geometry";
+import {
+  toMatrix3d,
+  toSingleAxisVector,
+  transformPoint,
+  translate,
+} from "@/_lib/geometry";
 import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
+import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
+import { IN } from "@/_lib/unit";
+import useProgArrowKeyToMatrix from "@/_hooks/use-prog-arrow-key-to-matrix";
+import { visible } from "./theme/css-functions";
+import {
+  useTransformContext,
+  useTransformerContext,
+} from "@/_hooks/use-transform-context";
 
 export default function Draggable({
   children,
-  className,
-  viewportClassName,
-  localTransform,
-  setLocalTransform,
   perspective,
+  isCalibrating,
+  unitOfMeasure,
+  calibrationTransform,
 }: {
   children: ReactNode;
-  className: string | undefined;
-  viewportClassName: string | undefined;
-  localTransform: Matrix;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   perspective: Matrix;
+  isCalibrating: boolean;
+  unitOfMeasure: string;
+  calibrationTransform: Matrix;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
@@ -34,6 +43,20 @@ export default function Draggable({
   const [isAxisLocked, setIsAxisLocked] = useState<Boolean>(false);
   const [isIdle, setIsIdle] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [matrix3d, setMatrix3d] = useState<string>("");
+  const transform = useTransformContext();
+  const transformer = useTransformerContext();
+
+  const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
+  const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
+  const scale = unitOfMeasure === IN ? quarterInchPx : halfCmPx;
+  useProgArrowKeyToMatrix(!isCalibrating, scale, (matrix) => {
+    transformer.setLocalTransform(matrix.mmul(transform));
+  });
+
+  useEffect(() => {
+    setMatrix3d(toMatrix3d(calibrationTransform.mmul(transform)));
+  }, [transform, calibrationTransform]);
 
   const AXIS_LOCK_KEYBIND = "Shift";
   const IDLE_TIMEOUT = 1500;
@@ -107,14 +130,14 @@ export default function Draggable({
       if (isAxisLocked) {
         vec = toSingleAxisVector(vec);
       }
-      setLocalTransform(translate(vec).mmul(transformStart));
+      transformer.setLocalTransform(translate(vec).mmul(transformStart));
     }
   }
 
   function handleOnStart(p: Point): void {
     const pt = transformPoint(p, perspective);
     setDragStart(pt);
-    setTransformStart(localTransform.clone());
+    setTransformStart(transform.clone());
   }
 
   let cursorMode = `${dragStart !== null ? "grabbing" : "grab"}`;
@@ -130,7 +153,7 @@ export default function Draggable({
   return (
     <div
       tabIndex={0}
-      className={viewportClassName + " w-screen h-screen "}
+      className={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 w-screen h-screen`}
       onMouseMove={handleOnMouseMove}
       onMouseEnter={resetIdle}
       onMouseUp={handleOnEnd}
@@ -141,7 +164,7 @@ export default function Draggable({
       }}
     >
       <div
-        className={className}
+        className={`select-none ${visible(!isCalibrating)}`}
         onMouseDown={(e) => {
           handleOnStart(mouseToCanvasPoint(e));
         }}
@@ -153,7 +176,16 @@ export default function Draggable({
           cursor: cursorMode,
         }}
       >
-        {children}
+        <div
+          className={"absolute z-0"}
+          style={{
+            transform: `${matrix3d}`,
+            transformOrigin: "0 0",
+            imageRendering: "pixelated",
+          }}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );
