@@ -57,6 +57,7 @@ import { ModalText } from "./modal/modal-text";
 import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
+import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 
 export default function Header({
   isCalibrating,
@@ -176,6 +177,33 @@ export default function Header({
       text: t("overlayOptionFliplines"),
     },
   };
+
+  const lineThicknessOptions = [
+    {
+      text: "0px",
+      value: 0,
+    },
+    {
+      text: "1px",
+      value: 1,
+    },
+    {
+      text: "2px",
+      value: 2,
+    },
+    {
+      text: "3px",
+      value: 3,
+    },
+    {
+      text: "4px",
+      value: 4,
+    },
+    {
+      text: "5px",
+      value: 5,
+    },
+  ];
 
   useKeyDown(() => {
     setMeasuring(!measuring);
@@ -369,19 +397,16 @@ export default function Header({
                 />
               </IconButton>
             </Tooltip>
-            <Tooltip description={t("lineWeight")}>
-              <div className="flex">
-                <InlineInput
-                  inputClassName="!px-2"
-                  label={<LineWeightIcon ariaLabel={t("lineWeight")} />}
-                  className="align-right"
-                  min="0"
-                  type="number"
-                  handleChange={(e) => setLineThickness(e.target.valueAsNumber)}
-                  value={String(lineThickness)}
-                />
-              </div>
-            </Tooltip>
+
+            {!isCalibrating && (
+              <DropdownIconButton
+                description={t("lineWeight")}
+                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                options={lineThicknessOptions}
+                setSelection={setLineThickness}
+                selection={lineThickness}
+              />
+            )}
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton
