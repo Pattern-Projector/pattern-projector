@@ -443,6 +443,7 @@ export default function Page() {
                 lineThickness={lineThickness}
                 columnCount={columnCount}
                 edgeInsets={edgeInsets}
+                setEdgeInsets={setEdgeInsets}
                 pageRange={pageRange}
                 filter={themeFilter(displaySettings.theme)}
               />
