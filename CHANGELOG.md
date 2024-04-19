@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Warning instead of redirect when full screen mode is changed or window is moved/resized when projecting
+- Warning instead of redirect when window location or size is different when projecting versus calibrating
 
 ### Fixed
 
@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Shift to lock axis when dragging PDF (use arrow keys to move instead)
+
+### Added
+
+- Full screen button to projection page
+
 
 ## [1.0.1] - 2024-04-15
 
