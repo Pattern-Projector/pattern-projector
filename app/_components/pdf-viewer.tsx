@@ -35,6 +35,7 @@ export default function PdfViewer({
   lineThickness,
   columnCount,
   edgeInsets,
+  setEdgeInsets,
   pageRange,
   filter,
 }: {
@@ -48,6 +49,7 @@ export default function PdfViewer({
   lineThickness: number;
   columnCount: string;
   edgeInsets: EdgeInsets;
+  setEdgeInsets: Dispatch<SetStateAction<EdgeInsets>>;
   pageRange: string;
   filter: string;
 }) {
@@ -61,6 +63,7 @@ export default function PdfViewer({
     setPageCount(docProxy.numPages);
     setLayers(new Map());
     setPageSize({ action: "clear" });
+    setEdgeInsets({ vertical: "0", horizontal: "0" });
     transformer.reset();
   }
 
