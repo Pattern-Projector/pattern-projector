@@ -16,7 +16,7 @@ import { Layer } from "@/_lib/interfaces/layer";
 import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
-import RenderContext from "@/_hooks/render-context";
+import { RenderContext } from "@/_hooks/use-render-context";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(

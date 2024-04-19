@@ -8,7 +8,7 @@ export interface RenderContextType {
   setLayers: (layer: Map<string, Layer>) => void;
 }
 
-const RenderContext = createContext<RenderContextType>({
+export const RenderContext = createContext<RenderContextType>({
   layers: new Map(),
   setLayers: () => {},
   erosions: 0,
