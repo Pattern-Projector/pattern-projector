@@ -14,7 +14,6 @@ export const RenderContext = createContext<RenderContextType>({
   erosions: 0,
 });
 
-
 export default function useRenderContext() {
   return useContext(RenderContext);
 }
