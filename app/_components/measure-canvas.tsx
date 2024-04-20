@@ -1,4 +1,9 @@
-import { constrainInSpace, sqrDist, transformPoints } from "@/_lib/geometry";
+import {
+  angleDeg,
+  constrainInSpace,
+  sqrDist,
+  transformPoints,
+} from "@/_lib/geometry";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import { Point } from "@/_lib/point";
 import Matrix from "ml-matrix";
@@ -7,6 +12,9 @@ import { CM } from "@/_lib/unit";
 import { drawLine } from "@/_lib/drawing";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
+import { Button } from "./buttons/button";
+import { useTranslations } from "next-intl";
+import { useTransformerContext } from "@/_hooks/use-transform-context";
 
 export default function MeasureCanvas({
   perspective,
@@ -24,6 +32,8 @@ export default function MeasureCanvas({
   const [endPoint, setEndPoint] = useState<Point | null>(null);
   const [axisConstrained, setAxisConstrained] = useState<boolean>(false);
   const [movingPoint, setMovingPoint] = useState<Point | null>(null);
+  const transformer = useTransformerContext();
+  const t = useTranslations("MeasureCanvas");
 
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const p = { x: e.clientX, y: e.clientY };
@@ -77,25 +87,32 @@ export default function MeasureCanvas({
           if (endPoint) {
             dest = endPoint;
           }
-          drawLine(ctx, startPoint, dest, 4);
-          drawDistance(ctx, startPoint, dest);
+          drawLine(ctx, startPoint, dest, 2);
+          drawMeasurements(ctx, startPoint, dest);
         }
       }
     }
 
-    function drawDistance(ctx: CanvasRenderingContext2D, p1: Point, p2: Point) {
+    function drawMeasurements(
+      ctx: CanvasRenderingContext2D,
+      p1: Point,
+      p2: Point,
+    ) {
       ctx.font = "24px sans-serif";
       ctx.strokeStyle = "#fff";
       const o = 10;
-      const d = distance(p1, p2);
+
+      const line = transformPoints([p1, p2], perspective);
+      const d = distance(line[0], line[1]);
+      const angle = `${-angleDeg(line[0], line[1]).toFixed(2)}°`;
+      const text = `${d}, ${angle}`;
       ctx.lineWidth = 4;
-      ctx.strokeText(d, p1.x + o, p1.y + o);
-      ctx.fillText(d, p1.x + o, p1.y + o);
+      ctx.strokeText(text, p1.x + o, p1.y + o);
+      ctx.fillText(text, p1.x + o, p1.y + o);
     }
 
     function distance(p1: Point, p2: Point) {
-      const line = transformPoints([p1, p2], perspective);
-      let d = Math.sqrt(sqrDist(line[0], line[1])) / CSS_PIXELS_PER_INCH;
+      let d = Math.sqrt(sqrDist(p1, p2)) / CSS_PIXELS_PER_INCH;
       if (unitOfMeasure == CM) {
         d *= 2.54;
       }
@@ -112,14 +129,31 @@ export default function MeasureCanvas({
   ]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      onKeyDown={(e) => setAxisConstrained(e.shiftKey)}
-      onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      className={`${className} cursor-crosshair absolute inset-0 w-full h-full z-20`}
-      tabIndex={-1}
-    />
+    <>
+      <Button
+        className={`absolute z-[100]`}
+        customStyle={{
+          top: endPoint ? `${endPoint.y + 10}px` : "-20px",
+          left: endPoint ? `${endPoint.x + 10}px` : "-20px",
+        }}
+        onClick={() => {
+          if (startPoint && endPoint) {
+            const line = transformPoints([startPoint, endPoint], perspective);
+            transformer.alignGrain(line[0], line[1]);
+          }
+        }}
+      >
+        {t("alignGrain")}
+      </Button>
+      <canvas
+        ref={canvasRef}
+        onKeyDown={(e) => setAxisConstrained(e.shiftKey)}
+        onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        className={`${className} cursor-crosshair absolute inset-0 w-full h-full z-20`}
+        tabIndex={-1}
+      />
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import {
+  alignGrain,
   flipHorizontal,
   flipVertical,
   rotateMatrixDeg,
@@ -26,6 +27,12 @@ interface RecenterAction {
   layoutHeight: number;
 }
 
+interface AlignGrainAction {
+  type: "align_grain";
+  p1: Point;
+  p2: Point;
+}
+
 interface SetAction {
   type: "set";
   localTransform: Matrix;
@@ -37,6 +44,7 @@ interface ResetAction {
 
 export type LocalTransformAction =
   | FlipAction
+  | AlignGrainAction
   | SetAction
   | RotateAction
   | RecenterAction
@@ -49,6 +57,9 @@ export default function localTransformReducer(
   switch (action.type) {
     case "set": {
       return action.localTransform.clone();
+    }
+    case "align_grain": {
+      return alignGrain(action.p1, action.p2).mmul(localTransform);
     }
     case "flip_vertical": {
       return flipVertical(action.centerPoint).mmul(localTransform);

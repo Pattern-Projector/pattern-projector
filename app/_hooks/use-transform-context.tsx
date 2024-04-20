@@ -11,6 +11,7 @@ import {
 
 export interface TransformContextType {
   setLocalTransform: (localTransform: Matrix) => void;
+  alignGrain: (p1: Point, p2: Point) => void;
   flipVertical: (centerPoint: Point) => void;
   flipHorizontal: (centerPoint: Point) => void;
   rotate: (centerPoint: Point, degrees: number) => void;
@@ -24,6 +25,7 @@ export interface TransformContextType {
 
 const TransformerContext = createContext<TransformContextType>({
   setLocalTransform: () => {},
+  alignGrain: () => {},
   flipVertical: () => {},
   flipHorizontal: () => {},
   rotate: () => {},
@@ -49,6 +51,8 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
     () => ({
       setLocalTransform: (localTransform: Matrix) =>
         dispatch({ type: "set", localTransform }),
+      alignGrain: (p1: Point, p2: Point) =>
+        dispatch({ type: "align_grain", p1, p2 }),
       flipVertical: (centerPoint: Point) =>
         dispatch({ type: "flip_vertical", centerPoint }),
       flipHorizontal: (centerPoint: Point) =>

@@ -49,7 +49,6 @@ import CalibrationContext, {
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
-import { Transform } from "stream";
 import { Transformable } from "@/_hooks/use-transform-context";
 
 export default function Page() {
