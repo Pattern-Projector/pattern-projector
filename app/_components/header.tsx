@@ -85,6 +85,8 @@ export default function Header({
   showingMovePad,
   setShowingMovePad,
   setCalibrationValidated,
+  scale,
+  handleScaleChange,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -111,6 +113,8 @@ export default function Header({
   showingMovePad: boolean;
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
+  scale: number;
+  handleScaleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
@@ -398,15 +402,29 @@ export default function Header({
               </IconButton>
             </Tooltip>
 
-            {!isCalibrating && (
-              <DropdownIconButton
-                description={t("lineWeight")}
-                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
-                options={lineThicknessOptions}
-                setSelection={setLineThickness}
-                selection={lineThickness}
+            <Tooltip description={t("scale")}>
+              <InlineInput
+                className="relative flex flex-col"
+                inputClassName="w-28"
+                handleChange={handleScaleChange}
+                id="scale"
+                label={t("scale")}
+                name="scale"
+                value={(scale * 100).toFixed(0)}
+                labelRight={"%"}
+                type="number"
+                min="0"
+                step="5"
               />
-            )}
+            </Tooltip>
+
+            <DropdownIconButton
+              description={t("lineWeight")}
+              icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+              options={lineThicknessOptions}
+              setSelection={setLineThickness}
+              selection={lineThickness}
+            />
 
             <Tooltip description={t("flipHorizontal")}>
               <IconButton

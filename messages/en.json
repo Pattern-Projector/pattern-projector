@@ -181,7 +181,8 @@
     "measureOn": "Start measuring",
     "measureOff": "Stop measuring",
     "showMovement": "Show move tool",
-    "hideMovement": "Hide move tool"
+    "hideMovement": "Hide move tool",
+    "scale": "Scale:"
   },
   "StitchMenu": {
     "columnCount": "Columns",
