@@ -13,7 +13,7 @@ import { erodeImageData, erosionFilter } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 
 export default function CustomRenderer() {
-  const { layers, setLayers, erosions } = useRenderContext();
+  const { layers, setLayers, erosions, scale } = useRenderContext();
   const pageContext = usePageContext();
 
   invariant(pageContext, "Unable to find Page context.");
@@ -46,9 +46,9 @@ export default function CustomRenderer() {
   const renderViewport = useMemo(
     () =>
       page.getViewport({
-        scale: getScale(viewport.width, viewport.height, userUnit),
+        scale: getCanvasScale(viewport.width, viewport.height, userUnit, scale),
       }),
-    [page, viewport, userUnit],
+    [page, viewport, userUnit, scale],
   );
 
   const renderWidth = Math.floor(renderViewport.width);
@@ -181,19 +181,27 @@ export default function CustomRenderer() {
       width={renderWidth}
       height={renderHeight}
       style={{
-        width: Math.floor(viewport.width * PDF_TO_CSS_UNITS * userUnit) + "px",
+        width:
+          Math.floor(viewport.width * PDF_TO_CSS_UNITS * userUnit * scale) +
+          "px",
         height:
-          Math.floor(viewport.height * PDF_TO_CSS_UNITS * userUnit) + "px",
+          Math.floor(viewport.height * PDF_TO_CSS_UNITS * userUnit * scale) +
+          "px",
       }}
     />
   );
 }
 
-function getScale(w: number, h: number, userUnit: number): number {
+function getCanvasScale(
+  w: number,
+  h: number,
+  userUnit: number,
+  patternScale: number,
+): number {
   const dpr = window.devicePixelRatio;
-  const dpi = dpr * userUnit * PDF_TO_CSS_UNITS;
+  const dpi = dpr * userUnit * PDF_TO_CSS_UNITS * patternScale;
   const renderArea = dpi * w * dpi * h;
-  const maxArea = 16_777_216; // limit for iOS device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
+  const maxArea = 5 * 16_777_216; // limit for iOS device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
   let scale = dpi;
   if (renderArea > maxArea) {
     // scale to fit max area.

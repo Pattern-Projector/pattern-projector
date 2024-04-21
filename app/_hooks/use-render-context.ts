@@ -6,12 +6,14 @@ export interface RenderContextType {
   erosions: number;
   layers: Map<string, Layer>;
   setLayers: (layer: Map<string, Layer>) => void;
+  scale: number;
 }
 
 export const RenderContext = createContext<RenderContextType>({
   layers: new Map(),
   setLayers: () => {},
   erosions: 0,
+  scale: 1,
 });
 
 export default function useRenderContext() {
