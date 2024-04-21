@@ -402,21 +402,18 @@ export default function Header({
               </IconButton>
             </Tooltip>
 
-            <Tooltip description={t("scale")}>
-              <InlineInput
-                className="relative flex flex-col"
-                inputClassName="w-28"
-                handleChange={handleScaleChange}
-                id="scale"
-                label={t("scale")}
-                name="scale"
-                value={(scale * 100).toFixed(0)}
-                labelRight={"%"}
-                type="number"
-                min="0"
-                step="5"
-              />
-            </Tooltip>
+            <InlineInput
+              className="relative flex flex-col"
+              inputClassName="w-28"
+              handleChange={handleScaleChange}
+              id="scale"
+              label={t("scale")}
+              name="scale"
+              value={(scale * 100).toFixed(0)}
+              labelRight={"%"}
+              type="number"
+              min="0"
+            />
 
             <DropdownIconButton
               description={t("lineWeight")}
