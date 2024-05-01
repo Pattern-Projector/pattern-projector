@@ -59,6 +59,6 @@ Phones: While possible to visit and use the webpage on a Phone, the limited scre
 
 ## Translations
 
-Pattern Projector uses [Weblate](https://hosted.weblate.org/projects/pattern-projector/pattern-projector/) for translations. It's currently available in English, Dutch, German, and Danish.
+Pattern Projector uses [Weblate](https://hosted.weblate.org/projects/pattern-projector/pattern-projector/) for translations. It's currently available in English, Dutch, German, Danish, French, and Spanish.
 
 Feedback, code contributions, translations, and feature requests are welcome.

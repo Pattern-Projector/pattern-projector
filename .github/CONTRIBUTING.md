@@ -1,6 +1,6 @@
 # Contribution guidelines
 
-We're thrilled that you'd like to contribute.  Your help is essential for making it better.
+We're thrilled that you'd like to contribute. Your help is essential for making Pattern Projector better.
 
 ## Setup up a local development environment
 
@@ -55,5 +55,4 @@ Your PR will be picked up and reviewed before being merged into Pattern Projecto
 
 ### Doing translations
 
-- Set up the development environment as described above.
-- Look inside the 'messages' directory for translations per language. Edit or add a new one as required.
+Translations are done using [Weblate](https://hosted.weblate.org/projects/pattern-projector/pattern-projector).
