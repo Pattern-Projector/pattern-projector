@@ -200,5 +200,8 @@
     "left": "Left",
     "right": "Right",
     "next": "Next corner"
+  },
+  "MeasureCanvas": {
+    "rotateToHorizontal": "Rotate to horizontal"
   }
 }

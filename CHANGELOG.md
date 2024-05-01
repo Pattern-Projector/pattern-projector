@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Tool to align grain to horizontal
 - Full screen button to projection page
 - Cursor changes from grab to grabbing hand when dragging
 - Selected corner on calibration grid is colored

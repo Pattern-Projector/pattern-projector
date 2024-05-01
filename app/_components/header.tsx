@@ -1,11 +1,5 @@
 import { useTranslations } from "next-intl";
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";

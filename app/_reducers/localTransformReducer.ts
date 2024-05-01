@@ -1,4 +1,5 @@
 import {
+  rotateToHorizontal,
   flipHorizontal,
   flipVertical,
   rotateMatrixDeg,
@@ -26,6 +27,12 @@ interface RecenterAction {
   layoutHeight: number;
 }
 
+interface RotateToHorizontalAction {
+  type: "rotate_to_horizontal";
+  p1: Point;
+  p2: Point;
+}
+
 interface SetAction {
   type: "set";
   localTransform: Matrix;
@@ -37,6 +44,7 @@ interface ResetAction {
 
 export type LocalTransformAction =
   | FlipAction
+  | RotateToHorizontalAction
   | SetAction
   | RotateAction
   | RecenterAction
@@ -49,6 +57,9 @@ export default function localTransformReducer(
   switch (action.type) {
     case "set": {
       return action.localTransform.clone();
+    }
+    case "rotate_to_horizontal": {
+      return rotateToHorizontal(action.p1, action.p2).mmul(localTransform);
     }
     case "flip_vertical": {
       return flipVertical(action.centerPoint).mmul(localTransform);
