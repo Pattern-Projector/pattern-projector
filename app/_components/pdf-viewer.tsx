@@ -39,6 +39,7 @@ export default function PdfViewer({
   pageRange,
   filter,
   scale,
+  setScale,
 }: {
   file: any;
   setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
@@ -54,6 +55,7 @@ export default function PdfViewer({
   pageRange: string;
   filter: string;
   scale: number;
+  setScale: Dispatch<SetStateAction<number>>;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -66,6 +68,7 @@ export default function PdfViewer({
     setLayers(new Map());
     setPageSize({ action: "clear" });
     setEdgeInsets({ vertical: "0", horizontal: "0" });
+    setScale(1);
     transformer.reset();
   }
 

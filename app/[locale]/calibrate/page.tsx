@@ -49,8 +49,8 @@ import CalibrationContext, {
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
-import { Transform } from "stream";
 import { Transformable } from "@/_hooks/use-transform-context";
+import MoreToolsMenu from "@/_components/more-tools-menu";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -292,6 +292,23 @@ export default function Page() {
     };
   }, [calibrationValidated, setCalibrationValidated, fullScreenHandle.active]);
 
+  // STYLES
+
+  let stitchMenuTop = "-top-60";
+  if (!isCalibrating && menuStates.stitch && menuStates.nav) {
+    stitchMenuTop = menuStates.more ? "top-32" : "top-16";
+  }
+
+  let layerMenuTop = "top-16";
+  if (menuStates.stitch && menuStates.more) {
+    layerMenuTop = "top-48";
+  } else if (menuStates.stitch || menuStates.more) {
+    layerMenuTop = "top-32";
+  }
+
+  const moreMenuTop =
+    !isCalibrating && menuStates.more && menuStates.nav ? "top-16" : "-top-60";
+
   return (
     <main
       onPointerDown={handlePointerDown}
@@ -369,12 +386,19 @@ export default function Page() {
                 updateLocalSettings({ showingMovePad: show });
               }}
               setCalibrationValidated={setCalibrationValidated}
+            />
+
+            <MoreToolsMenu
+              className={moreMenuTop}
+              setShowMenu={(showMenu) =>
+                setMenuStates({ ...menuStates, more: showMenu })
+              }
               scale={patternScale}
               handleScaleChange={handleScaleChange}
             />
 
             <StitchMenu
-              showMenu={!isCalibrating && menuStates.stitch && menuStates.nav}
+              className={stitchMenuTop}
               setShowMenu={(showMenu) =>
                 setMenuStates({ ...menuStates, stitch: showMenu })
               }
@@ -394,14 +418,14 @@ export default function Page() {
               }
               layers={layers}
               setLayers={setLayers}
-              className={`${menuStates.stitch ? "top-32" : "top-20"}`}
+              className={layerMenuTop}
             />
             {layers.size && !menuStates.layers ? (
               <Tooltip
                 description={menuStates.layers ? t("layersOff") : t("layersOn")}
               >
                 <IconButton
-                  className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
+                  className={`${layerMenuTop} mt-2 transition-all duration-700 absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
                   onClick={() => setMenuStates({ ...menuStates, layers: true })}
                 >
                   <LayersIcon ariaLabel="layers" />
@@ -453,6 +477,7 @@ export default function Page() {
                 pageRange={pageRange}
                 filter={themeFilter(displaySettings.theme)}
                 scale={patternScale}
+                setScale={setPatternScale}
               />
             </Draggable>
           </Transformable>

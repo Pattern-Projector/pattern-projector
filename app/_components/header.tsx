@@ -1,11 +1,5 @@
 import { useTranslations } from "next-intl";
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -58,6 +52,7 @@ import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
+import MoreVerticalIcon from "@/_icons/more-vertical-icon";
 
 export default function Header({
   isCalibrating,
@@ -85,8 +80,6 @@ export default function Header({
   showingMovePad,
   setShowingMovePad,
   setCalibrationValidated,
-  scale,
-  handleScaleChange,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -113,8 +106,6 @@ export default function Header({
   showingMovePad: boolean;
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
-  scale: number;
-  handleScaleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
@@ -238,15 +229,13 @@ export default function Header({
         </ModalActions>
       </Modal>
       <header
-        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
+        className={`bg-white dark:bg-black absolute left-0 w-full z-40 border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
           aria-label="Global"
         >
           <div className="flex items-center gap-2">
-            <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
-
             <Tooltip
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
@@ -268,7 +257,7 @@ export default function Header({
             </Tooltip>
             <Tooltip description={t("menuHide")}>
               <IconButton
-                className={`!p-1 border-2 border-black dark:border-white`}
+                className={`!p-1 border-2 m-1 border-black dark:border-white`}
                 onClick={() => setMenuStates({ ...menuStates, nav: false })}
               >
                 <ExpandLessIcon ariaLabel={t("menuHide")} />
@@ -296,23 +285,38 @@ export default function Header({
               </IconButton>
             </Tooltip>
             {!isCalibrating && (
-              <DropdownCheckboxIconButton
-                description={t("overlayOptions")}
-                icon={<GridOnIcon ariaLabel={t("overlayOptions")} />}
-                disabledIcon={<GridOffIcon ariaLabel={t("overlayOptions")} />}
-                disableOptionKey="disabled"
-                options={displaySettings.overlay}
-                optionSettings={overlayOptions}
-                setSelectedOptions={(options) => {
-                  setDisplaySettings({
-                    ...displaySettings,
-                    overlay: {
-                      ...displaySettings.overlay,
-                      ...options,
-                    },
-                  });
-                }}
-              />
+              <>
+                <DropdownCheckboxIconButton
+                  description={t("overlayOptions")}
+                  icon={<GridOnIcon ariaLabel={t("overlayOptions")} />}
+                  disabledIcon={<GridOffIcon ariaLabel={t("overlayOptions")} />}
+                  disableOptionKey="disabled"
+                  options={displaySettings.overlay}
+                  optionSettings={overlayOptions}
+                  setSelectedOptions={(options) => {
+                    setDisplaySettings({
+                      ...displaySettings,
+                      overlay: {
+                        ...displaySettings.overlay,
+                        ...options,
+                      },
+                    });
+                  }}
+                />
+                <Tooltip
+                  description={
+                    menuStates.more ? t("fewerTools") : t("moreTools")
+                  }
+                >
+                  <IconButton
+                    onClick={() =>
+                      setMenuStates({ ...menuStates, more: !menuStates.more })
+                    }
+                  >
+                    <MoreVerticalIcon ariaLabel={t("moreTools")} />
+                  </IconButton>
+                </Tooltip>
+              </>
             )}
           </div>
           <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
@@ -401,19 +405,6 @@ export default function Header({
                 />
               </IconButton>
             </Tooltip>
-
-            <InlineInput
-              className="relative flex flex-col"
-              inputClassName="w-28"
-              handleChange={handleScaleChange}
-              id="scale"
-              label={t("scale")}
-              name="scale"
-              value={(scale * 100).toFixed(0)}
-              labelRight={"%"}
-              type="number"
-              min="0"
-            />
 
             <DropdownIconButton
               description={t("lineWeight")}

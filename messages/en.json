@@ -132,8 +132,6 @@
     "contact": "Contact"
   },
   "Header": {
-    "projecting": "Projecting",
-    "calibrating": "Calibrating",
     "openPDF": "Open PDF",
     "height": "H:",
     "width": "W:",
@@ -182,6 +180,10 @@
     "measureOff": "Stop measuring",
     "showMovement": "Show move tool",
     "hideMovement": "Hide move tool",
+    "moreTools": "More tools",
+    "fewerTools": "Fewer tools"
+  },
+  "MoreToolsMenu": {
     "scale": "Scale:"
   },
   "StitchMenu": {
