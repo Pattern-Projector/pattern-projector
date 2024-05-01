@@ -10,7 +10,6 @@ import { Layer } from "@/_lib/interfaces/layer";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { ErodeShader } from "@/_lib/erode";
-import { ErodeShader } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 import * as THREE from "three";
 
