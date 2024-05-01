@@ -235,7 +235,7 @@ export function angleDeg(p1: Point, p2: Point): number {
   return (Math.atan2(dy, dx) * 180) / Math.PI;
 }
 
-export function alignGrain(p1: Point, p2: Point): Matrix {
+export function rotateToHorizontal(p1: Point, p2: Point): Matrix {
   return rotateMatrixDeg(-angleDeg(p1, p2), p1);
 }
 

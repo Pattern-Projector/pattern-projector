@@ -202,6 +202,6 @@
     "next": "Next corner"
   },
   "MeasureCanvas": {
-    "alignGrain": "Rotate to horizontal"
+    "rotateToHorizontal": "Rotate to horizontal"
   }
 }

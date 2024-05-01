@@ -133,17 +133,17 @@ export default function MeasureCanvas({
       <Button
         className={`absolute z-[100]`}
         customStyle={{
-          top: endPoint ? `${endPoint.y + 10}px` : "-20px",
-          left: endPoint ? `${endPoint.x + 10}px` : "-20px",
+          top: endPoint ? `${endPoint.y + 10}px` : "-40px",
+          left: endPoint ? `${endPoint.x + 10}px` : "-40px",
         }}
         onClick={() => {
           if (startPoint && endPoint) {
             const line = transformPoints([startPoint, endPoint], perspective);
-            transformer.alignGrain(line[0], line[1]);
+            transformer.rotateToHorizontal(line[0], line[1]);
           }
         }}
       >
-        {t("alignGrain")}
+        {t("rotateToHorizontal")}
       </Button>
       <canvas
         ref={canvasRef}
