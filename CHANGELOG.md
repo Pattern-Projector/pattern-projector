@@ -7,10 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Warning instead of redirect when window location or size is different when projecting versus calibrating
+- Line weight adjustment is a dropdown instead of input box
+
+### Fixed
+
+- Menus flickering with large PDFs
+- Horizontal and vertical offsets in stitch menu are reset when a new PDF is opened
+
+### Removed
+
+- Shift to lock axis when dragging PDF (use arrow keys to move instead)
+
 ### Added
 
 - Full screen button to projection page
-- Warning when window location or size is different when projecting versus calibrating
+- Cursor changes from grab to grabbing hand when dragging
+- Selected corner on calibration grid is colored
 
 ## [1.0.1] - 2024-04-15
 

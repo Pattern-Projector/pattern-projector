@@ -351,11 +351,3 @@ export function constrained(p: Point, anchorPoint: Point) {
     }
   }
 }
-
-export function toSingleAxisVector(vec: Point): Point {
-  if (Math.abs(vec.x) > Math.abs(vec.y)) {
-    return { x: vec.x, y: 0 };
-  } else {
-    return { x: 0, y: vec.y };
-  }
-}
