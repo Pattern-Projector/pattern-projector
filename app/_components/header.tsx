@@ -52,6 +52,7 @@ import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
+import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 
 export default function Header({
   isCalibrating,
@@ -454,7 +455,7 @@ export default function Header({
                 onClick={() => setMeasuring(!measuring)}
                 className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
               >
-                <SquareFootIcon
+                <MarkAndMeasureIcon
                   ariaLabel={measuring ? t("measureOff") : t("measureOn")}
                 />
               </IconButton>

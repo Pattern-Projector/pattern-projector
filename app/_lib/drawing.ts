@@ -9,10 +9,12 @@ import {
 import {
   checkIsConcave,
   rectCorners,
+  transformLine,
   transformPoint,
   transformPoints,
   translatePoints,
 } from "@/_lib/geometry";
+import { Line } from "./interfaces/line";
 
 export class CanvasState {
   isConcave: boolean = false;
@@ -46,15 +48,12 @@ export enum OverlayMode {
 
 export function drawLine(
   ctx: CanvasRenderingContext2D,
-  p1: Point,
-  p2: Point,
-  lineWidth: number = 1,
+  line: Line,
 ): void {
   ctx.save();
   ctx.beginPath();
-  ctx.lineWidth = lineWidth;
-  ctx.moveTo(p1.x, p1.y);
-  ctx.lineTo(p2.x, p2.y);
+  ctx.moveTo(line[0].x, line[0].y);
+  ctx.lineTo(line[1].x, line[1].y);
   ctx.stroke();
   ctx.restore();
 }
@@ -96,9 +95,9 @@ export function drawCenterLines(cs: CanvasState) {
   ctx.strokeStyle = "red";
 
   function drawProjectedLine(p1: Point, p2: Point) {
-    const pts = transformPoints([p1, p2], perspective);
-    const lineWidth = 2;
-    drawLine(ctx, pts[0], pts[1], lineWidth);
+    const line = transformLine([p1, p2], perspective);
+    ctx.lineWidth = 2;
+    drawLine(ctx, line);
     ctx.stroke();
   }
 
@@ -190,14 +189,15 @@ export function drawGrid(
     if (i % majorLine === 0 || i === cs.width) {
       lineWidth = cs.majorLineWidth;
     }
-    const line = transformPoints(
+    const line = transformLine(
       [
         { x: i, y: -outset },
         { x: i, y: cs.height + outset },
       ],
       cs.perspective,
     );
-    drawLine(ctx, line[0], line[1], lineWidth);
+    ctx.lineWidth = lineWidth;
+    drawLine(ctx, line);
   }
 
   /* Horizontal lines */
@@ -207,14 +207,15 @@ export function drawGrid(
       lineWidth = cs.majorLineWidth;
     }
     const y = cs.height - i;
-    const line = transformPoints(
+    const line = transformLine(
       [
         { x: -outset, y: y },
         { x: cs.width + outset, y: y },
       ],
       cs.perspective,
     );
-    drawLine(ctx, line[0], line[1], lineWidth);
+    ctx.lineWidth = lineWidth;
+    drawLine(ctx, line);
   }
   if (cs.isCalibrating) {
     ctx.fillStyle = strokeColor(cs.displaySettings.theme);

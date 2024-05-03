@@ -11,6 +11,7 @@ export function IconButton({
   active,
   onPointerDown,
   onPointerUp,
+  style,
 }: {
   children: any;
   disabled?: boolean;
@@ -21,6 +22,7 @@ export function IconButton({
   active?: boolean;
   onPointerDown?: PointerEventHandler<HTMLButtonElement>;
   onPointerUp?: PointerEventHandler<HTMLButtonElement>;
+  style?: React.CSSProperties;
 }) {
   // Placeholder for multiple color options in the future
   // Add other options to IconButtonColor in theme/styles.ts and
@@ -52,6 +54,7 @@ export function IconButton({
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
+      style={style}
     >
       {children}
     </button>

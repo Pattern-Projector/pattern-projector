@@ -1,3 +1,4 @@
+import { Line } from "@/_lib/interfaces/line";
 import { Point } from "@/_lib/point";
 import localTransformReducer from "@/_reducers/localTransformReducer";
 import Matrix from "ml-matrix";
@@ -9,9 +10,9 @@ import {
   createContext,
 } from "react";
 
-export interface TransformContextType {
+export interface TransformerContextType {
   setLocalTransform: (localTransform: Matrix) => void;
-  rotateToHorizontal: (p1: Point, p2: Point) => void;
+  rotateToHorizontal: (line: Line) => void;
   flipVertical: (centerPoint: Point) => void;
   flipHorizontal: (centerPoint: Point) => void;
   rotate: (centerPoint: Point, degrees: number) => void;
@@ -23,7 +24,7 @@ export interface TransformContextType {
   reset: () => void;
 }
 
-const TransformerContext = createContext<TransformContextType>({
+const TransformerContext = createContext<TransformerContextType>({
   setLocalTransform: () => {},
   rotateToHorizontal: () => {},
   flipVertical: () => {},
@@ -51,8 +52,8 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
     () => ({
       setLocalTransform: (localTransform: Matrix) =>
         dispatch({ type: "set", localTransform }),
-      rotateToHorizontal: (p1: Point, p2: Point) =>
-        dispatch({ type: "rotate_to_horizontal", p1, p2 }),
+      rotateToHorizontal: (line: Line) =>
+        dispatch({ type: "rotate_to_horizontal", line }),
       flipVertical: (centerPoint: Point) =>
         dispatch({ type: "flip_vertical", centerPoint }),
       flipHorizontal: (centerPoint: Point) =>

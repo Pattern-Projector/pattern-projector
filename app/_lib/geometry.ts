@@ -44,6 +44,7 @@
 import { Point } from "@/_lib/point";
 import { AbstractMatrix, Matrix, solve } from "ml-matrix";
 import { getPtDensity } from "./unit";
+import { Line } from "./interfaces/line";
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
@@ -176,6 +177,10 @@ export function getPerspectiveTransformFromPoints(
   }
 }
 
+export function transformLine(line: Line, m: Matrix): Line {
+  return [transformPoint(line[0], m), transformPoint(line[1], m)];
+}
+
 export function transformPoints(points: Point[], m: Matrix): Point[] {
   return points.map((p) => transformPoint(p, m));
 }
@@ -235,8 +240,8 @@ export function angleDeg(p1: Point, p2: Point): number {
   return (Math.atan2(dy, dx) * 180) / Math.PI;
 }
 
-export function rotateToHorizontal(p1: Point, p2: Point): Matrix {
-  return rotateMatrixDeg(-angleDeg(p1, p2), p1);
+export function rotateToHorizontal(line: Line): Matrix {
+  return rotateMatrixDeg(-angleDeg(line[0], line[1]), line[0]);
 }
 
 /**

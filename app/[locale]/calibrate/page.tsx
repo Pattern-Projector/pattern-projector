@@ -416,14 +416,13 @@ export default function Page() {
               fullScreenHandle={fullScreenHandle}
             />
 
-            {measuring && (
-              <MeasureCanvas
-                className={visible(!isCalibrating)}
-                perspective={perspective}
-                calibrationTransform={calibrationTransform}
-                unitOfMeasure={unitOfMeasure}
-              />
-            )}
+            <MeasureCanvas
+              className={visible(!isCalibrating)}
+              perspective={perspective}
+              calibrationTransform={calibrationTransform}
+              unitOfMeasure={unitOfMeasure}
+              measuring={measuring}
+            />
 
             <Draggable
               perspective={perspective}
