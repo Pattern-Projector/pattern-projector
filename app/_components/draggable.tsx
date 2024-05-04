@@ -126,7 +126,7 @@ export default function Draggable({
           style={{
             transform: `${matrix3d}`,
             transformOrigin: "0 0",
-            imageRendering: "pixelated",
+            imageRendering: "crisp-edges",
           }}
         >
           {children}
