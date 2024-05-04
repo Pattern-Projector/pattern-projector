@@ -63,7 +63,7 @@ export default function CustomRenderer() {
   invariant(pdf, "Unable to find pdf.");
 
   const cssPixels = userUnit * PDF_TO_CSS_UNITS;
-  const dpr = 0.5; //1; // High DPI is too expensive for large documents
+  const dpr = 1; //1; // High DPI is too expensive for large documents
   const renderScale = cssPixels * dpr;
   const renderViewport = page.getViewport({
     scale: renderScale,
