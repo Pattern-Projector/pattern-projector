@@ -142,7 +142,7 @@ export default function CalibrationCanvas({
 
   function getNearbyEdge(p: Point): number[] {
     const distances = localPoints.map((a, idx) =>
-      sqrDistToLine(a, localPoints[(idx + 1) % localPoints.length], p),
+      sqrDistToLine([a, localPoints[(idx + 1) % localPoints.length]], p),
     );
     const edge = minIndex(distances);
     if (cornerMargin ** 2 > distances[edge]) {

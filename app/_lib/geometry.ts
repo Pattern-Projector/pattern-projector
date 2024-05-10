@@ -277,7 +277,8 @@ export function minIndex(a: number[]): number {
   return min;
 }
 
-export function sqrDistToLine(a: Point, b: Point, p: Point): number {
+export function sqrDistToLine(line: Line, p: Point): number {
+  const [a, b] = line;
   const len2 = sqrDist(a, b);
   if (len2 === 0) {
     return sqrDist(p, a);

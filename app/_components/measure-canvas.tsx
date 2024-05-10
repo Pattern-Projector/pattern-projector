@@ -2,6 +2,7 @@ import {
   angleDeg,
   constrainInSpace,
   sqrDist,
+  sqrDistToLine,
   transformLine,
 } from "@/_lib/geometry";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
@@ -36,6 +37,7 @@ export default function MeasureCanvas({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [startPoint, setStartPoint] = useState<Point | null>(null);
+  const [selectedLine, setSelectedLine] = useState<number>(-1);
   const [lines, setLines] = useState<Line[]>([]);
   const [axisConstrained, setAxisConstrained] = useState<boolean>(false);
   const [movingPoint, setMovingPoint] = useState<Point | null>(null);
@@ -46,6 +48,24 @@ export default function MeasureCanvas({
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const p = { x: e.clientX, y: e.clientY };
 
+    if (!startPoint && lines.length > 0) {
+      const m = calibrationTransform.mmul(transform);
+      for (let i = 0; i < lines.length; i++) {
+        const line = transformLine(lines[i], m);
+        if (sqrDistToLine(line, p) < 100) {
+          if (i == selectedLine) {
+            setSelectedLine(-1);
+            return;
+          } else {
+            setSelectedLine(i);
+            return;
+          }
+        }
+      }
+    }
+
+    if (!measuring) return;
+
     if (!startPoint) {
       setStartPoint(p);
       setMovingPoint(p);
@@ -55,13 +75,14 @@ export default function MeasureCanvas({
         : p;
       const m = inverse(transform).mmul(perspective);
       const pdfLine = transformLine([startPoint, end], m);
+      setSelectedLine(lines.length);
       setLines([...lines, pdfLine]);
       setStartPoint(null);
     }
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (startPoint) {
+    if (startPoint && measuring) {
       setMovingPoint({ x: e.clientX, y: e.clientY });
     }
   };
@@ -83,10 +104,10 @@ export default function MeasureCanvas({
           const calibrationLine = transformLine(line, m);
           drawLine(ctx, calibrationLine);
         }
-        if (lines.length > 0) {
-          const lastLine = lines.at(-1);
-          if (lastLine) {
-            drawMeasurementsAt(ctx, lastLine, transformLine(lastLine, m)[0]);
+        if (lines.length > 0 && selectedLine >= 0 && measuring) {
+          const line = lines.at(selectedLine);
+          if (line) {
+            drawMeasurementsAt(ctx, line, transformLine(line, m)[0]);
           }
         }
 
@@ -140,15 +161,17 @@ export default function MeasureCanvas({
     calibrationTransform,
     lines,
     transform,
+    selectedLine,
+    measuring,
   ]);
 
   const m = calibrationTransform.mmul(transform);
-  const lastLine = lines.at(-1);
-  const rotateLine = lastLine ? transformLine(lastLine, transform) : null;
-  const endPoint = lastLine ? transformLine(lastLine, m)[1] : null;
+  const selected = lines.at(selectedLine);
+  const rotateLine = selected ? transformLine(selected, transform) : null;
+  const endPoint = selected ? transformLine(selected, m)[1] : null;
   return (
     <>
-      <menu className={visible(measuring)}>
+      <menu className={visible(measuring && selectedLine >= 0)}>
         <IconButton
           className={`absolute z-[100] m-0 border-2 border-black dark:border-white`}
           style={{
@@ -170,8 +193,8 @@ export default function MeasureCanvas({
             left: endPoint ? `${endPoint.x + 64}px` : "-40px",
           }}
           onClick={() => {
-            if (lastLine) {
-              setLines(lines.slice(0, -1));
+            if (selectedLine >= 0) {
+              setLines(lines.toSpliced(selectedLine, 1));
             }
           }}
         >
