@@ -46,10 +46,7 @@ export enum OverlayMode {
   NONE,
 }
 
-export function drawLine(
-  ctx: CanvasRenderingContext2D,
-  line: Line,
-): void {
+export function drawLine(ctx: CanvasRenderingContext2D, line: Line): void {
   ctx.save();
   ctx.beginPath();
   ctx.moveTo(line[0].x, line[0].y);

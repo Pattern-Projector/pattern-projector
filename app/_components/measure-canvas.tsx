@@ -1,5 +1,4 @@
 import {
-  angleDeg,
   constrainInSpace,
   sqrDist,
   sqrDistToLine,
@@ -154,8 +153,7 @@ export default function MeasureCanvas({
       ctx.strokeStyle = "#fff";
       const o = 10;
       const d = distance(line[0], line[1]);
-      const angle = `${-angleDeg(line[0], line[1]).toFixed(2)}°`;
-      const text = `${d}, ${angle}`;
+      const text = `${d}`;
       ctx.lineWidth = 4;
       ctx.strokeText(text, p1.x + o, p1.y + o);
       ctx.fillText(text, p1.x + o, p1.y + o);
@@ -235,12 +233,12 @@ export default function MeasureCanvas({
         onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
+        tabIndex={0}
         className={`${measuring ? "cursor-crosshair" : ""}`}
       >
         <canvas
           ref={canvasRef}
           className={`${className} absolute inset-0 w-full h-full pointer-events-none z-10`}
-          tabIndex={-1}
         ></canvas>
         <div className={`${measuring ? "pointer-events-none" : ""}`}>
           {children}

@@ -82,8 +82,8 @@
         "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
       },
       "measure": {
-        "title": "Start/stop measuring",
-        "description": "Measure the distance between two points on the PDF."
+        "title": "Start/cancel mark and measure tool",
+        "description": "Mark lines on the PDF for rotating, measuring, or marking."
       }
     },
     "faq": {
