@@ -18,5 +18,6 @@ export default function removeNonDigits(
 }
 
 export function allowInteger(s: string): string {
-  return s.replace(/\D/g, "");
+  const digitsOnly: string = s.replace(/\D/g, "");
+  return s.charAt(0) === "-" ? `-${digitsOnly}` : digitsOnly;
 }

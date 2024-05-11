@@ -5,6 +5,7 @@ import { allowInteger } from "@/_lib/remove-non-digits";
 import Input from "@/_components/input";
 import { IconButton } from "@/_components/buttons/icon-button";
 import CloseIcon from "@/_icons/close-icon";
+import StepperInput from "@/_components/stepper-input";
 
 export default function StitchMenu({
   setColumnCount,
@@ -40,6 +41,17 @@ export default function StitchMenu({
     }
   }
 
+  function handleIncrement(
+    increment: number,
+    currVal: string,
+    setterFunc: (newValue: string) => void,
+  ) {
+    if (typeof setterFunc === "function") {
+      const numberVal = Number(allowInteger(currVal));
+      setterFunc((numberVal + increment).toString());
+    }
+  }
+
   function handlePageRangeChange(e: ChangeEvent<HTMLInputElement>) {
     const { value } = e.target;
     setPageRange(value);
@@ -48,15 +60,19 @@ export default function StitchMenu({
   function handleEdgeInsetChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     const n = value == "" ? "" : allowInteger(value);
+    updateEdgeInset(n, name);
+  }
+
+  function updateEdgeInset(edgeInset: string, name: string) {
     if (name.localeCompare("horizontal") === 0) {
       setEdgeInsets({
         ...edgeInsets,
-        horizontal: n,
+        horizontal: edgeInset,
       });
     } else if (name.localeCompare("vertical") === 0) {
       setEdgeInsets({
         ...edgeInsets,
-        vertical: n,
+        vertical: edgeInset,
       });
     }
   }
@@ -66,35 +82,55 @@ export default function StitchMenu({
       className={`flex justify-between ${showMenu ? "top-16" : "-top-60"} absolute left-0 w-full z-20 transition-all duration-700 ${className} bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 p-2`}
     >
       <div className="flex gap-2">
-        <Input
-          type="number"
+        <StepperInput
           inputClassName="w-20"
           handleChange={handleColumnCountChange}
           label={t("columnCount")}
           value={columnCount}
+          onStep={(increment: number) =>
+            handleIncrement(increment, columnCount, setColumnCount)
+          }
         />
-        <Input
-          inputClassName="w-36"
-          handleChange={handlePageRangeChange}
-          label={t("pageRange")}
-          value={pageRange}
-        />
-        <Input
-          type="number"
-          inputClassName="w-20"
-          handleChange={handleEdgeInsetChange}
-          label={t("horizontal")}
-          name="horizontal"
-          value={String(edgeInsets.horizontal || 0)}
-        />
-        <Input
-          type="number"
-          inputClassName="w-20"
-          handleChange={handleEdgeInsetChange}
-          label={t("vertical")}
-          name="vertical"
-          value={String(edgeInsets.vertical || 0)}
-        />
+        <div className="ml-3">
+          <Input
+            inputClassName="w-36"
+            handleChange={handlePageRangeChange}
+            label={t("pageRange")}
+            value={pageRange}
+          />
+        </div>
+        <div className="ml-3">
+          <StepperInput
+            inputClassName="w-20"
+            handleChange={handleEdgeInsetChange}
+            label={t("horizontal")}
+            name="horizontal"
+            value={String(edgeInsets.horizontal || 0)}
+            onStep={(increment: number) =>
+              handleIncrement(
+                increment,
+                String(edgeInsets.horizontal || 0),
+                (value: string) => updateEdgeInset(value, "horizontal"),
+              )
+            }
+          />
+        </div>
+        <div className="ml-3">
+          <StepperInput
+            inputClassName="w-20"
+            handleChange={handleEdgeInsetChange}
+            label={t("vertical")}
+            name="vertical"
+            value={String(edgeInsets.vertical || 0)}
+            onStep={(increment: number) =>
+              handleIncrement(
+                increment,
+                String(edgeInsets.vertical || 0),
+                (value: string) => updateEdgeInset(value, "vertical"),
+              )
+            }
+          />
+        </div>
       </div>
       <IconButton onClick={() => setShowMenu(false)}>
         <CloseIcon ariaLabel="close" />
