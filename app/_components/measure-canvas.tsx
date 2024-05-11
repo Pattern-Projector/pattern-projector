@@ -8,7 +8,13 @@ import {
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import { Point } from "@/_lib/point";
 import Matrix, { inverse } from "ml-matrix";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { CM } from "@/_lib/unit";
 import { drawLine } from "@/_lib/drawing";
 import { useTranslations } from "next-intl";
@@ -21,6 +27,7 @@ import { IconButton } from "./buttons/icon-button";
 import RotateToHorizontalIcon from "@/_icons/rotate-to-horizontal";
 import CloseIcon from "@/_icons/close-icon";
 import { visible } from "./theme/css-functions";
+import Tooltip from "./tooltip/tooltip";
 
 export default function MeasureCanvas({
   perspective,
@@ -28,12 +35,18 @@ export default function MeasureCanvas({
   unitOfMeasure,
   className,
   measuring,
+  setMeasuring,
+  file,
+  children,
 }: {
   perspective: Matrix;
   calibrationTransform: Matrix;
   unitOfMeasure: string;
   className?: string;
   measuring: boolean;
+  setMeasuring: Dispatch<SetStateAction<boolean>>;
+  file: File | null;
+  children: React.ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [startPoint, setStartPoint] = useState<Point | null>(null);
@@ -45,7 +58,7 @@ export default function MeasureCanvas({
   const t = useTranslations("MeasureCanvas");
   const transform = useTransformContext();
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const p = { x: e.clientX, y: e.clientY };
 
     if (!startPoint && lines.length > 0) {
@@ -62,9 +75,12 @@ export default function MeasureCanvas({
           }
         }
       }
+      setSelectedLine(-1);
     }
 
-    if (!measuring) return;
+    if (!measuring) {
+      return;
+    }
 
     if (!startPoint) {
       setStartPoint(p);
@@ -78,10 +94,11 @@ export default function MeasureCanvas({
       setSelectedLine(lines.length);
       setLines([...lines, pdfLine]);
       setStartPoint(null);
+      setMeasuring(false);
     }
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (startPoint && measuring) {
       setMovingPoint({ x: e.clientX, y: e.clientY });
     }
@@ -104,7 +121,7 @@ export default function MeasureCanvas({
           const calibrationLine = transformLine(line, m);
           drawLine(ctx, calibrationLine);
         }
-        if (lines.length > 0 && selectedLine >= 0 && measuring) {
+        if (lines.length > 0 && selectedLine >= 0) {
           const line = lines.at(selectedLine);
           if (line) {
             drawMeasurementsAt(ctx, line, transformLine(line, m)[0]);
@@ -165,51 +182,70 @@ export default function MeasureCanvas({
     measuring,
   ]);
 
+  useEffect(() => {
+    setLines([]);
+    setSelectedLine(-1);
+  }, [file]);
+
   const m = calibrationTransform.mmul(transform);
   const selected = lines.at(selectedLine);
   const rotateLine = selected ? transformLine(selected, transform) : null;
   const endPoint = selected ? transformLine(selected, m)[1] : null;
   return (
-    <>
-      <menu className={visible(measuring && selectedLine >= 0)}>
-        <IconButton
-          className={`absolute z-[100] m-0 border-2 border-black dark:border-white`}
-          style={{
-            top: endPoint ? `${endPoint.y + 10}px` : "-40px",
-            left: endPoint ? `${endPoint.x + 10}px` : "-40px",
-          }}
-          onClick={() => {
-            if (rotateLine) {
-              transformer.rotateToHorizontal(rotateLine);
-            }
-          }}
-        >
-          <RotateToHorizontalIcon ariaLabel={t("rotateToHorizontal")} />
-        </IconButton>
-        <IconButton
-          className={`absolute z-[100] m-0 border-2 border-black dark:border-white`}
-          style={{
-            top: endPoint ? `${endPoint.y + 10}px` : "-40px",
-            left: endPoint ? `${endPoint.x + 64}px` : "-40px",
-          }}
-          onClick={() => {
-            if (selectedLine >= 0) {
-              setLines(lines.toSpliced(selectedLine, 1));
-            }
-          }}
-        >
-          <CloseIcon ariaLabel={t("deleteLine")} />
-        </IconButton>
+    <div>
+      <menu
+        className={`absolute flex gap-2 ${visible(selectedLine >= 0)}`}
+        style={{
+          top: `${endPoint?.y ?? 0 + 4}px`,
+          left: `${endPoint?.x ?? 0 + 4}px`,
+        }}
+      >
+        <Tooltip description={t("rotateToHorizontal")}>
+          <IconButton
+            className={`relative z-[100] m-0 border-2 border-black dark:border-white`}
+            onClick={() => {
+              if (rotateLine) {
+                transformer.rotateToHorizontal(rotateLine);
+              }
+            }}
+          >
+            <RotateToHorizontalIcon ariaLabel={t("rotateToHorizontal")} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip description={t("deleteLine")}>
+          <IconButton
+            className={`relative z-[100] m-0 border-2 border-black dark:border-white`}
+            onClick={() => {
+              if (selectedLine >= 0) {
+                setLines(lines.toSpliced(selectedLine, 1));
+                if (selectedLine == 0) {
+                  setSelectedLine(lines.length - 2);
+                } else {
+                  setSelectedLine(selectedLine - 1);
+                }
+              }
+            }}
+          >
+            <CloseIcon ariaLabel={t("deleteLine")} />
+          </IconButton>
+        </Tooltip>
       </menu>
-      <canvas
-        ref={canvasRef}
+      <div
         onKeyDown={(e) => setAxisConstrained(e.shiftKey)}
         onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
-        className={`${className} cursor-crosshair absolute inset-0 w-full h-full z-20 ${!measuring && "pointer-events-none"}`}
-        tabIndex={-1}
-      />
-    </>
+        className={`${measuring ? "cursor-crosshair" : ""}`}
+      >
+        <canvas
+          ref={canvasRef}
+          className={`${className} absolute inset-0 w-full h-full pointer-events-none z-10`}
+          tabIndex={-1}
+        ></canvas>
+        <div className={`${measuring ? "pointer-events-none" : ""}`}>
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }

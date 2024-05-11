@@ -122,7 +122,7 @@ export default function Draggable({
         }}
       >
         <div
-          className={"absolute z-0"}
+          className={"absolute"}
           style={{
             transform: `${matrix3d}`,
             transformOrigin: "0 0",

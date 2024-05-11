@@ -422,30 +422,32 @@ export default function Page() {
               calibrationTransform={calibrationTransform}
               unitOfMeasure={unitOfMeasure}
               measuring={measuring}
-            />
-
-            <Draggable
-              perspective={perspective}
-              isCalibrating={isCalibrating}
-              unitOfMeasure={unitOfMeasure}
-              calibrationTransform={calibrationTransform}
+              setMeasuring={setMeasuring}
+              file={file}
             >
-              <PdfViewer
-                file={file}
-                setPageCount={setPageCount}
-                pageCount={pageCount}
-                setLayers={setLayers}
-                layers={layers}
-                setLayoutWidth={setLayoutWidth}
-                setLayoutHeight={setLayoutHeight}
-                lineThickness={lineThickness}
-                columnCount={columnCount}
-                edgeInsets={edgeInsets}
-                setEdgeInsets={setEdgeInsets}
-                pageRange={pageRange}
-                filter={themeFilter(displaySettings.theme)}
-              />
-            </Draggable>
+              <Draggable
+                perspective={perspective}
+                isCalibrating={isCalibrating}
+                unitOfMeasure={unitOfMeasure}
+                calibrationTransform={calibrationTransform}
+              >
+                <PdfViewer
+                  file={file}
+                  setPageCount={setPageCount}
+                  pageCount={pageCount}
+                  setLayers={setLayers}
+                  layers={layers}
+                  setLayoutWidth={setLayoutWidth}
+                  setLayoutHeight={setLayoutHeight}
+                  lineThickness={lineThickness}
+                  columnCount={columnCount}
+                  edgeInsets={edgeInsets}
+                  setEdgeInsets={setEdgeInsets}
+                  pageRange={pageRange}
+                  filter={themeFilter(displaySettings.theme)}
+                />
+              </Draggable>
+            </MeasureCanvas>
           </Transformable>
         </FullScreen>
       </div>
