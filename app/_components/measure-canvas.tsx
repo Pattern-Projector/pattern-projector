@@ -1,4 +1,5 @@
 import {
+  angleDeg,
   constrainInSpace,
   sqrDist,
   sqrDistToLine,
@@ -116,14 +117,26 @@ export default function MeasureCanvas({
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const m = calibrationTransform.mmul(transform);
-        for (const line of lines) {
-          const calibrationLine = transformLine(line, m);
-          drawLine(ctx, calibrationLine);
+        for (let i = 0; i < lines.length; i++) {
+          if (i !== selectedLine) {
+            drawLine(ctx, transformLine(lines[i], m));
+          }
         }
         if (lines.length > 0 && selectedLine >= 0) {
           const line = lines.at(selectedLine);
           if (line) {
-            drawMeasurementsAt(ctx, line, transformLine(line, m)[0]);
+            const l = transformLine(line, transform);
+            const axis = transformLine(
+              [l[0], { x: l[0].x + 96 + 48, y: l[0].y }],
+              calibrationTransform,
+            );
+            ctx.save();
+            ctx.lineWidth = 1;
+            drawLine(ctx, axis);
+            ctx.restore();
+            const tl = transformLine(line, m);
+            drawLine(ctx, tl);
+            drawMeasurementsAt(ctx, l, tl[1]);
           }
         }
 
@@ -136,9 +149,18 @@ export default function MeasureCanvas({
                 calibrationTransform,
               )
             : movingPoint;
-          const line = transformLine([startPoint, dest], perspective);
+          const screenLine: Line = [startPoint, dest];
+          const line = transformLine(screenLine, perspective);
           drawMeasurementsAt(ctx, line, startPoint);
-          drawLine(ctx, [startPoint, dest]);
+          drawLine(ctx, screenLine);
+          const axis = transformLine(
+            [line[0], { x: line[0].x + 96 + 48, y: line[0].y }],
+            calibrationTransform,
+          );
+          ctx.save();
+          ctx.lineWidth = 1;
+          drawLine(ctx, axis);
+          ctx.restore();
         }
       }
     }
@@ -152,8 +174,16 @@ export default function MeasureCanvas({
       ctx.font = "24px sans-serif";
       ctx.strokeStyle = "#fff";
       const o = 10;
+      let a = -angleDeg(line);
+      if (a < 0) {
+        a += 360;
+      }
+      let label = a.toFixed(0);
+      if (label == "360") {
+        label = "0";
+      }
       const d = distance(line[0], line[1]);
-      const text = `${d}`;
+      const text = `${d} ${label}°`;
       ctx.lineWidth = 4;
       ctx.strokeText(text, p1.x + o, p1.y + o);
       ctx.fillText(text, p1.x + o, p1.y + o);
@@ -165,7 +195,8 @@ export default function MeasureCanvas({
       if (unitOfMeasure == CM) {
         d *= 2.54;
       }
-      return `${d.toFixed(2)} ${unitOfMeasure.toLocaleLowerCase()}`;
+      const unit = unitOfMeasure == CM ? "cm" : '"';
+      return `${d.toFixed(2)}${unit}`;
     }
   }, [
     startPoint,
@@ -188,14 +219,14 @@ export default function MeasureCanvas({
   const m = calibrationTransform.mmul(transform);
   const selected = lines.at(selectedLine);
   const rotateLine = selected ? transformLine(selected, transform) : null;
-  const endPoint = selected ? transformLine(selected, m)[1] : null;
+  const point = selected ? transformLine(selected, m)[0] : null;
   return (
-    <div>
+    <div className={className}>
       <menu
-        className={`absolute flex gap-2 ${visible(selectedLine >= 0)}`}
+        className={`absolute flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
         style={{
-          top: `${endPoint?.y ?? 0 + 4}px`,
-          left: `${endPoint?.x ?? 0 + 4}px`,
+          top: `${point?.y ?? 0}px`,
+          left: `${point?.x ?? 0}px`,
         }}
       >
         <Tooltip description={t("rotateToHorizontal")}>
@@ -238,7 +269,7 @@ export default function MeasureCanvas({
       >
         <canvas
           ref={canvasRef}
-          className={`${className} absolute inset-0 w-full h-full pointer-events-none z-10`}
+          className={`absolute inset-0 w-full h-full pointer-events-none z-10`}
         ></canvas>
         <div className={`${measuring ? "pointer-events-none" : ""}`}>
           {children}

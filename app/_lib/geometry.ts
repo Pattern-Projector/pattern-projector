@@ -234,14 +234,15 @@ export function flipHorizontal(origin: Point): Matrix {
   return transformAboutPoint(scale(-1, 1), origin);
 }
 
-export function angleDeg(p1: Point, p2: Point): number {
+export function angleDeg(line: Line): number {
+  const [p1, p2] = line;
   const dx = p2.x - p1.x;
   const dy = p2.y - p1.y;
   return (Math.atan2(dy, dx) * 180) / Math.PI;
 }
 
 export function rotateToHorizontal(line: Line): Matrix {
-  return rotateMatrixDeg(-angleDeg(line[0], line[1]), line[0]);
+  return rotateMatrixDeg(-angleDeg(line), line[0]);
 }
 
 /**
