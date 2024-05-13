@@ -449,14 +449,12 @@ export default function Header({
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
-            <Tooltip description={measuring ? t("measureOff") : t("measureOn")}>
+            <Tooltip description={t("measure")}>
               <IconButton
                 onClick={() => setMeasuring(!measuring)}
                 className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
               >
-                <MarkAndMeasureIcon
-                  ariaLabel={measuring ? t("measureOff") : t("measureOn")}
-                />
+                <MarkAndMeasureIcon ariaLabel={t("measure")} />
               </IconButton>
             </Tooltip>
           </div>

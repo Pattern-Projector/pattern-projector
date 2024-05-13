@@ -178,8 +178,7 @@
     "lineWeight": "Line weight",
     "stitchMenuShow": "Show stitch menu",
     "stitchMenuHide": "Hide stitch menu",
-    "measureOn": "Start measuring",
-    "measureOff": "Stop measuring",
+    "measure": "Mark, measure, and rotate grain",
     "showMovement": "Show move tool",
     "hideMovement": "Hide move tool"
   },
