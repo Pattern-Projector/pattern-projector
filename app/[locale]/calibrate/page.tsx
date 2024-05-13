@@ -145,6 +145,14 @@ export default function Page() {
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
     }
+
+    const expectedContext = localStorage.getItem("calibrationContext");
+    if (expectedContext !== null) {
+      const expected = JSON.parse(expectedContext) as CalibrationContext;
+      if (expected.fullScreen) {
+        fullScreenHandle.enter();
+      }
+    }
   }
 
   // EFFECTS
