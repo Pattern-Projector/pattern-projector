@@ -6,12 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  CanvasState,
-  drawPolygon,
-  drawOverlays,
-  drawGrid,
-} from "@/_lib/drawing";
+import { CanvasState, drawPolygon, drawGrid } from "@/_lib/drawing";
 import {
   getPerspectiveTransformFromPoints,
   transformPoint,
@@ -281,8 +276,7 @@ function hasRightEdge(corners: Set<number>): boolean {
 }
 
 function draw(cs: CanvasState): void {
-  const { ctx, isCalibrating, displaySettings } = cs;
-
+  const { ctx, isCalibrating } = cs;
   if (isCalibrating) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     drawCalibration(cs);
@@ -290,11 +284,6 @@ function draw(cs: CanvasState): void {
     ctx.fillStyle = cs.errorFillPattern;
     drawPolygon(ctx, cs.points);
     ctx.fill();
-  } else {
-    /* Draw projection page */
-    if (!displaySettings.overlay.disabled) {
-      drawOverlays(cs);
-    }
   }
 }
 

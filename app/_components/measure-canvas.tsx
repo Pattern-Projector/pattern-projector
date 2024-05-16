@@ -16,7 +16,7 @@ import React, {
   useState,
 } from "react";
 import { CM } from "@/_lib/unit";
-import { drawLine } from "@/_lib/drawing";
+import { drawLine, drawArrow } from "@/_lib/drawing";
 import { useTranslations } from "next-intl";
 import {
   useTransformContext,
@@ -28,6 +28,10 @@ import RotateToHorizontalIcon from "@/_icons/rotate-to-horizontal";
 import CloseIcon from "@/_icons/close-icon";
 import { visible } from "./theme/css-functions";
 import Tooltip from "./tooltip/tooltip";
+import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
+import { useKeyDown } from "@/_hooks/use-key-down";
+import { KeyCode } from "@/_lib/key-code";
+import KeyboardArrowRightIcon from "@/_icons/keyboard-arrow-right";
 
 export default function MeasureCanvas({
   perspective,
@@ -104,6 +108,17 @@ export default function MeasureCanvas({
     }
   };
 
+  function handleDeleteLine() {
+    if (selectedLine >= 0) {
+      setLines(lines.toSpliced(selectedLine, 1));
+      if (selectedLine == 0) {
+        setSelectedLine(lines.length - 2);
+      } else {
+        setSelectedLine(selectedLine - 1);
+      }
+    }
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -135,7 +150,7 @@ export default function MeasureCanvas({
             drawLine(ctx, axis);
             ctx.restore();
             const tl = transformLine(line, m);
-            drawLine(ctx, tl);
+            drawArrow(ctx, tl);
             drawMeasurementsAt(ctx, l, tl[1]);
           }
         }
@@ -174,29 +189,11 @@ export default function MeasureCanvas({
       ctx.font = "24px sans-serif";
       ctx.strokeStyle = "#fff";
       const o = 10;
-      let a = -angleDeg(line);
-      if (a < 0) {
-        a += 360;
-      }
-      let label = a.toFixed(0);
-      if (label == "360") {
-        label = "0";
-      }
-      const d = distance(line[0], line[1]);
-      const text = `${d} ${label}°`;
+      const text = measurements(line, unitOfMeasure);
       ctx.lineWidth = 4;
       ctx.strokeText(text, p1.x + o, p1.y + o);
       ctx.fillText(text, p1.x + o, p1.y + o);
       ctx.restore();
-    }
-
-    function distance(p1: Point, p2: Point) {
-      let d = Math.sqrt(sqrDist(p1, p2)) / CSS_PIXELS_PER_INCH;
-      if (unitOfMeasure == CM) {
-        d *= 2.54;
-      }
-      const unit = unitOfMeasure == CM ? "cm" : '"';
-      return `${d.toFixed(2)}${unit}`;
     }
   }, [
     startPoint,
@@ -216,12 +213,33 @@ export default function MeasureCanvas({
     setSelectedLine(-1);
   }, [file]);
 
+  useKeyDown(() => {
+    handleDeleteLine();
+  }, [KeyCode.Backspace]);
+
   const m = calibrationTransform.mmul(transform);
   const selected = lines.at(selectedLine);
-  const rotateLine = selected ? transformLine(selected, transform) : null;
+  const opLine = selected ? transformLine(selected, transform) : null;
   const point = selected ? transformLine(selected, m)[0] : null;
+  const borderIconButton = "border-2 border-black dark:border-white";
   return (
     <div className={className}>
+      <div
+        onKeyDown={(e) => setAxisConstrained(e.shiftKey)}
+        onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        tabIndex={0}
+        className={`${measuring ? "cursor-crosshair" : ""} h-screen w-screen`}
+      >
+        <div className={`${measuring ? "pointer-events-none" : ""}`}>
+          {children}
+        </div>
+        <canvas
+          ref={canvasRef}
+          className={`absolute top-0 inset-0 w-full h-full pointer-events-none`}
+        ></canvas>
+      </div>
       <menu
         className={`absolute flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
         style={{
@@ -231,50 +249,72 @@ export default function MeasureCanvas({
       >
         <Tooltip description={t("rotateToHorizontal")}>
           <IconButton
-            className={`relative z-[100] m-0 border-2 border-black dark:border-white`}
+            className={borderIconButton}
             onClick={() => {
-              if (rotateLine) {
-                transformer.rotateToHorizontal(rotateLine);
+              if (opLine) {
+                transformer.rotateToHorizontal(opLine);
               }
             }}
           >
             <RotateToHorizontalIcon ariaLabel={t("rotateToHorizontal")} />
           </IconButton>
         </Tooltip>
-        <Tooltip description={t("deleteLine")}>
+        <Tooltip description={t("flipAlong")}>
           <IconButton
-            className={`relative z-[100] m-0 border-2 border-black dark:border-white`}
+            className={borderIconButton}
             onClick={() => {
-              if (selectedLine >= 0) {
-                setLines(lines.toSpliced(selectedLine, 1));
-                if (selectedLine == 0) {
-                  setSelectedLine(lines.length - 2);
-                } else {
-                  setSelectedLine(selectedLine - 1);
-                }
+              if (opLine) {
+                transformer.flipAlong(opLine);
               }
             }}
           >
+            <FlipVerticalIcon ariaLabel={t("flipAlong")} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip description={t("translate")}>
+          <IconButton
+            className={borderIconButton}
+            onClick={() => {
+              if (opLine) {
+                const p = {
+                  x: opLine[1].x - opLine[0].x,
+                  y: opLine[1].y - opLine[0].y,
+                };
+                transformer.translate(p);
+              }
+            }}
+          >
+            <KeyboardArrowRightIcon ariaLabel={t("translate")} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip description={t("deleteLine")}>
+          <IconButton className={borderIconButton} onClick={handleDeleteLine}>
             <CloseIcon ariaLabel={t("deleteLine")} />
           </IconButton>
         </Tooltip>
       </menu>
-      <div
-        onKeyDown={(e) => setAxisConstrained(e.shiftKey)}
-        onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        tabIndex={0}
-        className={`${measuring ? "cursor-crosshair" : ""}`}
-      >
-        <canvas
-          ref={canvasRef}
-          className={`absolute inset-0 w-full h-full pointer-events-none z-10`}
-        ></canvas>
-        <div className={`${measuring ? "pointer-events-none" : ""}`}>
-          {children}
-        </div>
-      </div>
     </div>
   );
+}
+
+function measurements(line: Line, unitOfMeasure: string): string {
+  let a = -angleDeg(line);
+  if (a < 0) {
+    a += 360;
+  }
+  let label = a.toFixed(0);
+  if (label == "360") {
+    label = "0";
+  }
+  const d = distance(line[0], line[1], unitOfMeasure);
+  return `${d} ${label}°`;
+}
+
+function distance(p1: Point, p2: Point, unitOfMeasure: string): string {
+  let d = Math.sqrt(sqrDist(p1, p2)) / CSS_PIXELS_PER_INCH;
+  if (unitOfMeasure == CM) {
+    d *= 2.54;
+  }
+  const unit = unitOfMeasure == CM ? "cm" : '"';
+  return `${d.toFixed(2)}${unit}`;
 }

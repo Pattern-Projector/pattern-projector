@@ -162,8 +162,6 @@
     "arrowBack": "Back 1 page",
     "arrowForward": "Forward 1 page",
     "info": "Info page",
-    "layersOn": "Show layer menu",
-    "layersOff": "Hide layer menu",
     "recenter": "Recenter PDF",
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen",
@@ -178,7 +176,7 @@
     "lineWeight": "Line weight",
     "stitchMenuShow": "Show stitch menu",
     "stitchMenuHide": "Hide stitch menu",
-    "measure": "Mark, measure, and rotate grain",
+    "measure": "Mark, measure, and transform",
     "showMovement": "Show move tool",
     "hideMovement": "Hide move tool"
   },
@@ -191,7 +189,10 @@
   "LayerMenu": {
     "title": "Layers",
     "showAll": "Show all",
-    "hideAll": "Hide all"
+    "hideAll": "Hide all",
+    "layersOn": "Show layer menu",
+    "layersOff": "Hide layer menu",
+    "noLayers": "No layers in PDF"
   },
   "MovementPad": {
     "up": "Up",
@@ -202,6 +203,8 @@
   },
   "MeasureCanvas": {
     "rotateToHorizontal": "Rotate to horizontal",
-    "deleteLine": "Delete line"
+    "deleteLine": "Delete line",
+    "flipAlong": "Flip along line",
+    "translate": "Move PDF by line length"
   }
 }

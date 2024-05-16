@@ -1,5 +1,6 @@
 import {
   rotateToHorizontal,
+  flipAlong,
   flipHorizontal,
   flipVertical,
   rotateMatrixDeg,
@@ -33,6 +34,16 @@ interface RotateToHorizontalAction {
   line: Line;
 }
 
+interface FlipAlongAction {
+  type: "flip_along";
+  line: Line;
+}
+
+interface TranslateAction {
+  type: "translate";
+  p: Point;
+}
+
 interface SetAction {
   type: "set";
   localTransform: Matrix;
@@ -45,6 +56,8 @@ interface ResetAction {
 export type LocalTransformAction =
   | FlipAction
   | RotateToHorizontalAction
+  | FlipAlongAction
+  | TranslateAction
   | SetAction
   | RotateAction
   | RecenterAction
@@ -60,6 +73,12 @@ export default function localTransformReducer(
     }
     case "rotate_to_horizontal": {
       return rotateToHorizontal(action.line).mmul(localTransform);
+    }
+    case "flip_along": {
+      return flipAlong(action.line).mmul(localTransform);
+    }
+    case "translate": {
+      return translate(action.p).mmul(localTransform);
     }
     case "flip_vertical": {
       return flipVertical(action.centerPoint).mmul(localTransform);

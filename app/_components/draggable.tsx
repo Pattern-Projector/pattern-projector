@@ -18,12 +18,14 @@ export default function Draggable({
   isCalibrating,
   unitOfMeasure,
   calibrationTransform,
+  className,
 }: {
   children: ReactNode;
   perspective: Matrix;
   isCalibrating: boolean;
   unitOfMeasure: string;
   calibrationTransform: Matrix;
+  className: string;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
@@ -104,7 +106,7 @@ export default function Draggable({
   return (
     <div
       tabIndex={0}
-      className={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 w-screen h-screen`}
+      className={`${className ?? ""} select-none absolute top-0 ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 w-screen h-screen`}
       onPointerMove={handleMove}
       onMouseEnter={resetIdle}
       onMouseUp={handleOnEnd}
@@ -126,7 +128,6 @@ export default function Draggable({
           style={{
             transform: `${matrix3d}`,
             transformOrigin: "0 0",
-            imageRendering: "pixelated",
           }}
         >
           {children}

@@ -245,6 +245,16 @@ export function rotateToHorizontal(line: Line): Matrix {
   return rotateMatrixDeg(-angleDeg(line), line[0]);
 }
 
+export function flipAlong(line: Line): Matrix {
+  const angle = angleDeg(line);
+  const a = rotateMatrixDeg(-angle, line[0]);
+  const b = translate({ x: 0, y: -line[0].y });
+  const c = scale(1, -1);
+  const d = translate({ x: 0, y: line[0].y });
+  const e = rotateMatrixDeg(angle, line[0]);
+  return e.mmul(d).mmul(c).mmul(b).mmul(a);
+}
+
 /**
  * Converts 3x3 matrix returned from getPerspectiveTransform(src, dst) to a 4x4 matrix as per https://stackoverflow.com/a/4833408/3376039
  * @param src - Coordinates of quadrangle vertices in the source image starting from top left clockwise.

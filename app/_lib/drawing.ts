@@ -55,6 +55,30 @@ export function drawLine(ctx: CanvasRenderingContext2D, line: Line): void {
   ctx.restore();
 }
 
+
+export function drawArrow(ctx: CanvasRenderingContext2D, line: Line): void {
+  const dx = line[1].x - line[0].x;
+  const dy = line[1].y - line[0].y;
+  const angle = Math.atan2(dy, dx);
+  const length = Math.hypot(dy, dx);
+  const arrowLength = 8;
+  const arrowWidth = 4;
+  ctx.save();
+  ctx.fillStyle = ctx.strokeStyle;
+  ctx.translate(line[1].x, line[1].y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-arrowLength, arrowWidth);
+  ctx.lineTo(-arrowLength, -arrowWidth);
+  ctx.closePath();
+  ctx.fill();
+  ctx.moveTo(-arrowLength, 0);
+  ctx.lineTo(-length, 0);
+  ctx.stroke();
+  ctx.restore();
+}
+
 export function drawPolygon(
   ctx: CanvasRenderingContext2D,
   points: Point[],
@@ -70,14 +94,16 @@ export function drawOverlays(cs: CanvasState) {
   const { ctx, displaySettings } = cs;
   const { grid, border, paper, flipLines } = displaySettings.overlay;
   const { theme } = displaySettings;
+  ctx.strokeStyle = strokeColor(theme);
+
   if (grid) {
-    ctx.strokeStyle = strokeColor(theme);
     drawGrid(cs, 8, [1]);
   }
   if (border) {
     drawBorder(cs, strokeColor(theme), fillColor(theme));
   }
   if (paper) {
+    ctx.strokeStyle = "black";
     drawPaperSheet(cs);
   }
   if (flipLines) {
@@ -88,7 +114,6 @@ export function drawOverlays(cs: CanvasState) {
 export function drawCenterLines(cs: CanvasState) {
   const { width, height, ctx, perspective } = cs;
   ctx.save();
-  ctx.globalCompositeOperation = "source-over";
   ctx.strokeStyle = "red";
 
   function drawProjectedLine(p1: Point, p2: Point) {
@@ -111,7 +136,6 @@ export function drawPaperSheet(cs: CanvasState) {
   const fontSize = 32;
 
   ctx.save();
-  ctx.globalCompositeOperation = "difference";
   ctx.font = `${fontSize}px monospace`;
   ctx.fillStyle = "white";
 
@@ -177,7 +201,6 @@ export function drawGrid(
   } else {
     ctx.setLineDash(lineDash);
   }
-  ctx.globalCompositeOperation = "source-over";
   const majorLine = 5;
 
   /* Vertical lines */

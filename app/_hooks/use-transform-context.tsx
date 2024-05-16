@@ -13,6 +13,7 @@ import {
 export interface TransformerContextType {
   setLocalTransform: (localTransform: Matrix) => void;
   rotateToHorizontal: (line: Line) => void;
+  flipAlong: (line: Line) => void;
   flipVertical: (centerPoint: Point) => void;
   flipHorizontal: (centerPoint: Point) => void;
   rotate: (centerPoint: Point, degrees: number) => void;
@@ -22,6 +23,7 @@ export interface TransformerContextType {
     layoutHeight: number,
   ) => void;
   reset: () => void;
+  translate: (p: Point) => void;
 }
 
 const TransformerContext = createContext<TransformerContextType>({
@@ -32,6 +34,8 @@ const TransformerContext = createContext<TransformerContextType>({
   rotate: () => {},
   recenter: () => {},
   reset: () => {},
+  flipAlong: () => {},
+  translate: () => {},
 });
 
 const TransformContext = createContext<Matrix>(Matrix.eye(3));
@@ -54,6 +58,8 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
         dispatch({ type: "set", localTransform }),
       rotateToHorizontal: (line: Line) =>
         dispatch({ type: "rotate_to_horizontal", line }),
+      flipAlong: (line: Line) => dispatch({ type: "flip_along", line }),
+      translate: (p: Point) => dispatch({ type: "translate", p }),
       flipVertical: (centerPoint: Point) =>
         dispatch({ type: "flip_vertical", centerPoint }),
       flipHorizontal: (centerPoint: Point) =>
