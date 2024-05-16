@@ -187,7 +187,13 @@
         "flipCenterOn": "Spiegel rond midden aan",
         "flipCenterOff": "Spiegel rond midden uit",
         "showMovement": "Toon het verplaatsgereedschap",
-        "hideMovement": "Verberg het verplaatsgereedschap"
+        "hideMovement": "Verberg het verplaatsgereedschap",
+        "ok": "OK",
+        "calibrationAlertTitle": "Kalibratie waarschuwing",
+        "calibrationAlert": "Het venster is veranderd sinds het projecteren begonnen is, verander de \"schermvullend\" instelling of kalibreer opnieuw om dit op te lossen.",
+        "calibrationAlertContinue": "Het venster is veranderd sinds de laatste keer dat je geprojecteerd hebt, maar de kalibratie is niet bijgewerkt. Toch doorgaan?",
+        "continue": "Doorgaan",
+        "checkCalibration": "Kalibratie nakijken"
     },
     "StitchMenu": {
         "columnCount": "Kolommen",
@@ -201,5 +207,13 @@
         "left": "Links",
         "right": "Rechts",
         "next": "Volgende hoek"
+    },
+    "MeasureCanvas": {
+        "rotateToHorizontal": "Draai naar horizontaal"
+    },
+    "LayerMenu": {
+        "title": "Lagen",
+        "showAll": "Toon alles",
+        "hideAll": "Verberg alles"
     }
 }
