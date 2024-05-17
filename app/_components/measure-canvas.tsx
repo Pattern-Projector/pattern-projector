@@ -33,6 +33,7 @@ import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import KeyboardArrowRightIcon from "@/_icons/keyboard-arrow-right";
+import DeleteIcon from "@/_icons/delete-icon";
 
 export default function MeasureCanvas({
   perspective,
@@ -344,7 +345,7 @@ export default function MeasureCanvas({
         </Tooltip>
         <Tooltip description={t("deleteLine")}>
           <IconButton className={borderIconButton} onClick={handleDeleteLine}>
-            <CloseIcon ariaLabel={t("deleteLine")} />
+            <DeleteIcon ariaLabel={t("deleteLine")} />
           </IconButton>
         </Tooltip>
       </menu>
