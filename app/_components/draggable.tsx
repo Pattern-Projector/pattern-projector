@@ -75,6 +75,11 @@ export default function Draggable({
       if (dragStart === null) {
         return;
       }
+      if (e.buttons === 0 && dragStart !== null) {
+        // If the mouse button is released, end the drag.
+        handleOnEnd();
+        return;
+      }
     }
 
     if (transformStart !== null && dragStart !== null) {
