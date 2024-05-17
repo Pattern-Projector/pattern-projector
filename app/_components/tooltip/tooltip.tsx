@@ -15,9 +15,7 @@ export default function Tooltip({
 }) {
   return (
     <div
-      className={
-        "relative flex flex-col items-center group " + (className || "")
-      }
+      className={`${className ?? ""} relative flex flex-col items-center group `}
     >
       {children}
       {!disabled && (
@@ -25,7 +23,7 @@ export default function Tooltip({
           className={`absolute top-7 flex-col items-center mt-6 group-hover:flex ${visible ? "flex" : "hidden"}`}
         >
           <div className="w-3 h-3 -mb-2 rotate-45 bg-gray-800"></div>
-          <span className="relative z-10 p-2 text-xs leading-4 text-white bg-gray-800 rounded text-center">
+          <span className="relative p-2 text-xs leading-4 text-white bg-gray-800 rounded text-center">
             {description}
           </span>
         </div>

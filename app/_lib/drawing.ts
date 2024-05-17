@@ -9,10 +9,12 @@ import {
 import {
   checkIsConcave,
   rectCorners,
+  transformLine,
   transformPoint,
   transformPoints,
   translatePoints,
 } from "@/_lib/geometry";
+import { Line } from "./interfaces/line";
 
 export class CanvasState {
   isConcave: boolean = false;
@@ -44,17 +46,40 @@ export enum OverlayMode {
   NONE,
 }
 
-export function drawLine(
-  ctx: CanvasRenderingContext2D,
-  p1: Point,
-  p2: Point,
-  lineWidth: number = 1,
-): void {
+export function drawLine(ctx: CanvasRenderingContext2D, line: Line): void {
   ctx.save();
   ctx.beginPath();
-  ctx.lineWidth = lineWidth;
-  ctx.moveTo(p1.x, p1.y);
-  ctx.lineTo(p2.x, p2.y);
+  ctx.moveTo(line[0].x, line[0].y);
+  ctx.lineTo(line[1].x, line[1].y);
+  ctx.stroke();
+  ctx.restore();
+}
+
+export function drawCircle(ctx: CanvasRenderingContext2D, p: Point, radius: number) {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
+  ctx.stroke();
+}
+
+export function drawArrow(ctx: CanvasRenderingContext2D, line: Line): void {
+  const dx = line[1].x - line[0].x;
+  const dy = line[1].y - line[0].y;
+  const angle = Math.atan2(dy, dx);
+  const length = Math.hypot(dy, dx);
+  const arrowLength = 8;
+  const arrowWidth = 4;
+  ctx.save();
+  ctx.fillStyle = ctx.strokeStyle;
+  ctx.translate(line[1].x, line[1].y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-arrowLength, arrowWidth);
+  ctx.lineTo(-arrowLength, -arrowWidth);
+  ctx.closePath();
+  ctx.fill();
+  ctx.moveTo(-arrowLength, 0);
+  ctx.lineTo(-length, 0);
   ctx.stroke();
   ctx.restore();
 }
@@ -74,14 +99,16 @@ export function drawOverlays(cs: CanvasState) {
   const { ctx, displaySettings } = cs;
   const { grid, border, paper, flipLines } = displaySettings.overlay;
   const { theme } = displaySettings;
+  ctx.strokeStyle = strokeColor(theme);
+
   if (grid) {
-    ctx.strokeStyle = strokeColor(theme);
     drawGrid(cs, 8, [1]);
   }
   if (border) {
     drawBorder(cs, strokeColor(theme), fillColor(theme));
   }
   if (paper) {
+    ctx.strokeStyle = "black";
     drawPaperSheet(cs);
   }
   if (flipLines) {
@@ -92,13 +119,12 @@ export function drawOverlays(cs: CanvasState) {
 export function drawCenterLines(cs: CanvasState) {
   const { width, height, ctx, perspective } = cs;
   ctx.save();
-  ctx.globalCompositeOperation = "source-over";
   ctx.strokeStyle = "red";
 
   function drawProjectedLine(p1: Point, p2: Point) {
-    const pts = transformPoints([p1, p2], perspective);
-    const lineWidth = 2;
-    drawLine(ctx, pts[0], pts[1], lineWidth);
+    const line = transformLine([p1, p2], perspective);
+    ctx.lineWidth = 2;
+    drawLine(ctx, line);
     ctx.stroke();
   }
 
@@ -115,7 +141,6 @@ export function drawPaperSheet(cs: CanvasState) {
   const fontSize = 32;
 
   ctx.save();
-  ctx.globalCompositeOperation = "difference";
   ctx.font = `${fontSize}px monospace`;
   ctx.fillStyle = "white";
 
@@ -181,7 +206,6 @@ export function drawGrid(
   } else {
     ctx.setLineDash(lineDash);
   }
-  ctx.globalCompositeOperation = "source-over";
   const majorLine = 5;
 
   /* Vertical lines */
@@ -190,14 +214,15 @@ export function drawGrid(
     if (i % majorLine === 0 || i === cs.width) {
       lineWidth = cs.majorLineWidth;
     }
-    const line = transformPoints(
+    const line = transformLine(
       [
         { x: i, y: -outset },
         { x: i, y: cs.height + outset },
       ],
       cs.perspective,
     );
-    drawLine(ctx, line[0], line[1], lineWidth);
+    ctx.lineWidth = lineWidth;
+    drawLine(ctx, line);
   }
 
   /* Horizontal lines */
@@ -207,14 +232,15 @@ export function drawGrid(
       lineWidth = cs.majorLineWidth;
     }
     const y = cs.height - i;
-    const line = transformPoints(
+    const line = transformLine(
       [
         { x: -outset, y: y },
         { x: cs.width + outset, y: y },
       ],
       cs.perspective,
     );
-    drawLine(ctx, line[0], line[1], lineWidth);
+    ctx.lineWidth = lineWidth;
+    drawLine(ctx, line);
   }
   if (cs.isCalibrating) {
     ctx.fillStyle = strokeColor(cs.displaySettings.theme);

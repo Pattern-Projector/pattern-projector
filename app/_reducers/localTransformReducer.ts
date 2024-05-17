@@ -1,11 +1,13 @@
 import {
   rotateToHorizontal,
+  flipAlong,
   flipHorizontal,
   flipVertical,
   rotateMatrixDeg,
   transformPoint,
   translate,
 } from "@/_lib/geometry";
+import { Line } from "@/_lib/interfaces/line";
 import { Point } from "@/_lib/point";
 import Matrix from "ml-matrix";
 
@@ -29,8 +31,17 @@ interface RecenterAction {
 
 interface RotateToHorizontalAction {
   type: "rotate_to_horizontal";
-  p1: Point;
-  p2: Point;
+  line: Line;
+}
+
+interface FlipAlongAction {
+  type: "flip_along";
+  line: Line;
+}
+
+interface TranslateAction {
+  type: "translate";
+  p: Point;
 }
 
 interface SetAction {
@@ -45,6 +56,8 @@ interface ResetAction {
 export type LocalTransformAction =
   | FlipAction
   | RotateToHorizontalAction
+  | FlipAlongAction
+  | TranslateAction
   | SetAction
   | RotateAction
   | RecenterAction
@@ -59,7 +72,13 @@ export default function localTransformReducer(
       return action.localTransform.clone();
     }
     case "rotate_to_horizontal": {
-      return rotateToHorizontal(action.p1, action.p2).mmul(localTransform);
+      return rotateToHorizontal(action.line).mmul(localTransform);
+    }
+    case "flip_along": {
+      return flipAlong(action.line).mmul(localTransform);
+    }
+    case "translate": {
+      return translate(action.p).mmul(localTransform);
     }
     case "flip_vertical": {
       return flipVertical(action.centerPoint).mmul(localTransform);

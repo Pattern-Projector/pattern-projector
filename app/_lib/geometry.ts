@@ -44,6 +44,7 @@
 import { Point } from "@/_lib/point";
 import { AbstractMatrix, Matrix, solve } from "ml-matrix";
 import { getPtDensity } from "./unit";
+import { Line } from "./interfaces/line";
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
@@ -176,6 +177,10 @@ export function getPerspectiveTransformFromPoints(
   }
 }
 
+export function transformLine(line: Line, m: Matrix): Line {
+  return [transformPoint(line[0], m), transformPoint(line[1], m)];
+}
+
 export function transformPoints(points: Point[], m: Matrix): Point[] {
   return points.map((p) => transformPoint(p, m));
 }
@@ -229,14 +234,25 @@ export function flipHorizontal(origin: Point): Matrix {
   return transformAboutPoint(scale(-1, 1), origin);
 }
 
-export function angleDeg(p1: Point, p2: Point): number {
+export function angleDeg(line: Line): number {
+  const [p1, p2] = line;
   const dx = p2.x - p1.x;
   const dy = p2.y - p1.y;
   return (Math.atan2(dy, dx) * 180) / Math.PI;
 }
 
-export function rotateToHorizontal(p1: Point, p2: Point): Matrix {
-  return rotateMatrixDeg(-angleDeg(p1, p2), p1);
+export function rotateToHorizontal(line: Line): Matrix {
+  return rotateMatrixDeg(-angleDeg(line), line[0]);
+}
+
+export function flipAlong(line: Line): Matrix {
+  const angle = angleDeg(line);
+  const a = rotateMatrixDeg(-angle, line[0]);
+  const b = translate({ x: 0, y: -line[0].y });
+  const c = scale(1, -1);
+  const d = translate({ x: 0, y: line[0].y });
+  const e = rotateMatrixDeg(angle, line[0]);
+  return e.mmul(d).mmul(c).mmul(b).mmul(a);
 }
 
 /**
@@ -272,7 +288,8 @@ export function minIndex(a: number[]): number {
   return min;
 }
 
-export function sqrDistToLine(a: Point, b: Point, p: Point): number {
+export function sqrDistToLine(line: Line, p: Point): number {
+  const [a, b] = line;
   const len2 = sqrDist(a, b);
   if (len2 === 0) {
     return sqrDist(p, a);
