@@ -171,7 +171,7 @@ export default function MeasureCanvas({
         ctx.canvas.width = window.innerWidth;
         ctx.canvas.height = window.innerHeight;
         ctx.strokeStyle = "#9333ea";
-        ctx.fillStyle = "#1E40AF";
+
         ctx.lineWidth = 4;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -234,6 +234,7 @@ export default function MeasureCanvas({
       ctx.save();
       ctx.font = "24px sans-serif";
       ctx.strokeStyle = "#fff";
+      ctx.fillStyle = "#000";
       const o = 10;
       const text = measurements(line, unitOfMeasure);
       ctx.lineWidth = 4;
