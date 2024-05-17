@@ -45,10 +45,15 @@ export default function StitchMenu({
     increment: number,
     currVal: string,
     setterFunc: (newValue: string) => void,
+    allowNegative: boolean = false,
   ) {
     if (typeof setterFunc === "function") {
-      const numberVal = Number(allowInteger(currVal));
-      setterFunc((numberVal + increment).toString());
+      const numberVal = Number(allowInteger(currVal, allowNegative));
+      let newVal = numberVal + increment;
+      if (newVal < 0 && !allowNegative) {
+        newVal = 0;
+      }
+      setterFunc(newVal.toString());
     }
   }
 
@@ -59,7 +64,7 @@ export default function StitchMenu({
 
   function handleEdgeInsetChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    const n = value == "" ? "" : allowInteger(value);
+    const n = value == "" ? "" : allowInteger(value, true);
     updateEdgeInset(n, name);
   }
 
@@ -83,7 +88,7 @@ export default function StitchMenu({
     >
       <div className="flex gap-2">
         <StepperInput
-          inputClassName="w-20"
+          inputClassName="w-24"
           handleChange={handleColumnCountChange}
           label={t("columnCount")}
           value={columnCount}
@@ -91,7 +96,7 @@ export default function StitchMenu({
             handleIncrement(increment, columnCount, setColumnCount)
           }
         />
-        <div className="ml-3">
+        <div className="ml-1">
           <Input
             inputClassName="w-36"
             handleChange={handlePageRangeChange}
@@ -99,9 +104,9 @@ export default function StitchMenu({
             value={pageRange}
           />
         </div>
-        <div className="ml-3">
+        <div className="ml-1">
           <StepperInput
-            inputClassName="w-20"
+            inputClassName="w-24"
             handleChange={handleEdgeInsetChange}
             label={t("horizontal")}
             name="horizontal"
@@ -111,13 +116,14 @@ export default function StitchMenu({
                 increment,
                 String(edgeInsets.horizontal || 0),
                 (value: string) => updateEdgeInset(value, "horizontal"),
+                true,
               )
             }
           />
         </div>
-        <div className="ml-3">
+        <div className="ml-1">
           <StepperInput
-            inputClassName="w-20"
+            inputClassName="w-24"
             handleChange={handleEdgeInsetChange}
             label={t("vertical")}
             name="vertical"
@@ -127,6 +133,7 @@ export default function StitchMenu({
                 increment,
                 String(edgeInsets.vertical || 0),
                 (value: string) => updateEdgeInset(value, "vertical"),
+                true,
               )
             }
           />

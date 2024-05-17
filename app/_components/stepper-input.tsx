@@ -50,7 +50,7 @@ export default function StepperInput({
         <button
           type="button"
           name={name}
-          className="absolute top-0 left-0 h-full flex items-center"
+          className="absolute top-0 left-1 h-full flex items-center"
           onClick={() => onStep(-1)}
         >
           <StepDownIcon ariaLabel="test" />
@@ -58,7 +58,7 @@ export default function StepperInput({
         <input
           min={min}
           type={type ? type : "text"}
-          className={`${inputClassName} text-center p-2.5 text-gray-900 text-sm focus:outline-none dark:bg-black dark:placeholder-gray-400 dark:text-white`}
+          className={`${inputClassName} bg-gray-50 text-center p-2.5 border border-gray-300 dark:border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none dark:bg-black dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-800 dark:focus:border-blue-800`}
           id={id}
           data-test-id={inputTestId}
           name={name}
@@ -70,7 +70,7 @@ export default function StepperInput({
         <button
           type="button"
           name={name}
-          className="absolute top-0 right-0 h-full flex items-center"
+          className="absolute top-0 right-1 h-full flex items-center"
           onClick={() => onStep(1)}
         >
           <StepUpIcon ariaLabel="test" />
