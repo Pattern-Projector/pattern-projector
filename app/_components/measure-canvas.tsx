@@ -281,6 +281,11 @@ export default function MeasureCanvas({
                   y: opLine[1].y - opLine[0].y,
                 };
                 transformer.translate(p);
+                if (selected) {
+                  const newLines = lines.slice();
+                  newLines[selectedLine] = [selected[1], selected[0]];
+                  setLines(newLines);
+                }
               }
             }}
           >
