@@ -57,6 +57,7 @@ export default function MeasureCanvas({
   const [startPoint, setStartPoint] = useState<Point | null>(null);
   const [selectedLine, setSelectedLine] = useState<number>(-1);
   const [selectedEnd, setSelectedEnd] = useState<number>(0);
+  const dragOffset = useRef<Point | null>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [axisConstrained, setAxisConstrained] = useState<boolean>(false);
   const [movingPoint, setMovingPoint] = useState<Point | null>(null);
@@ -73,10 +74,12 @@ export default function MeasureCanvas({
         const line = transformLine(lines[i], m);
         if (selectedLine == i) {
           if (sqrDist(p, line[0]) < 1000) {
+            dragOffset.current = { x: p.x - line[0].x, y: p.y - line[0].y };
             setSelectedEnd(0);
             return;
           }
           if (sqrDist(p, line[1]) < 1000) {
+            dragOffset.current = { x: p.x - line[1].x, y: p.y - line[1].y };
             setSelectedEnd(1);
             return;
           }
@@ -127,10 +130,14 @@ export default function MeasureCanvas({
       return;
     }
 
-    if (selectedLine >= 0 && selectedEnd >= 0) {
+    if (selectedLine >= 0 && selectedEnd >= 0 && dragOffset.current) {
       const line = lines[selectedLine];
       const m = inverse(transform).mmul(perspective);
-      const pt = transformPoint(p, m);
+      const op = {
+        x: p.x - dragOffset.current.x,
+        y: p.y - dragOffset.current.y,
+      };
+      const pt = transformPoint(op, m);
       if (selectedEnd == 0) {
         const newLine: Line = [pt, line[1]];
         setLines(lines.toSpliced(selectedLine, 1, newLine));
