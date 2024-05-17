@@ -4,6 +4,7 @@ import {
   sqrDist,
   sqrDistToLine,
   transformLine,
+  transformPoint,
 } from "@/_lib/geometry";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import { Point } from "@/_lib/point";
@@ -16,7 +17,7 @@ import React, {
   useState,
 } from "react";
 import { CM } from "@/_lib/unit";
-import { drawLine, drawArrow } from "@/_lib/drawing";
+import { drawLine, drawArrow, drawCircle } from "@/_lib/drawing";
 import { useTranslations } from "next-intl";
 import {
   useTransformContext,
@@ -55,6 +56,7 @@ export default function MeasureCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [startPoint, setStartPoint] = useState<Point | null>(null);
   const [selectedLine, setSelectedLine] = useState<number>(-1);
+  const [selectedEnd, setSelectedEnd] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([]);
   const [axisConstrained, setAxisConstrained] = useState<boolean>(false);
   const [movingPoint, setMovingPoint] = useState<Point | null>(null);
@@ -69,6 +71,16 @@ export default function MeasureCanvas({
       const m = calibrationTransform.mmul(transform);
       for (let i = 0; i < lines.length; i++) {
         const line = transformLine(lines[i], m);
+        if (selectedLine == i) {
+          if (sqrDist(p, line[0]) < 1000) {
+            setSelectedEnd(0);
+            return;
+          }
+          if (sqrDist(p, line[1]) < 1000) {
+            setSelectedEnd(1);
+            return;
+          }
+        }
         if (sqrDistToLine(line, p) < 100) {
           if (i == selectedLine) {
             setSelectedLine(-1);
@@ -103,9 +115,34 @@ export default function MeasureCanvas({
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const p = { x: e.clientX, y: e.clientY };
+
     if (startPoint && measuring) {
-      setMovingPoint({ x: e.clientX, y: e.clientY });
+      setMovingPoint(p);
     }
+
+    if (e.buttons === 0 && selectedEnd >= 0) {
+      // If the mouse button is released, end the drag.
+      setSelectedEnd(-1);
+      return;
+    }
+
+    if (selectedLine >= 0 && selectedEnd >= 0) {
+      const line = lines[selectedLine];
+      const m = inverse(transform).mmul(perspective);
+      const pt = transformPoint(p, m);
+      if (selectedEnd == 0) {
+        const newLine: Line = [pt, line[1]];
+        setLines(lines.toSpliced(selectedLine, 1, newLine));
+      } else {
+        const newLine: Line = [line[0], pt];
+        setLines(lines.toSpliced(selectedLine, 1, newLine));
+      }
+    }
+  };
+
+  const handlePointerUp = () => {
+    setSelectedEnd(-1);
   };
 
   function handleDeleteLine() {
@@ -151,6 +188,8 @@ export default function MeasureCanvas({
             ctx.restore();
             const tl = transformLine(line, m);
             drawArrow(ctx, tl);
+            drawCircle(ctx, tl[0], 30);
+            drawCircle(ctx, tl[1], 30);
             drawMeasurementsAt(ctx, l, tl[1]);
           }
         }
@@ -229,10 +268,13 @@ export default function MeasureCanvas({
         onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
         tabIndex={0}
         className={`${measuring ? "cursor-crosshair" : ""} h-screen w-screen`}
       >
-        <div className={`${measuring ? "pointer-events-none" : ""}`}>
+        <div
+          className={`${measuring || selectedEnd >= 0 ? "pointer-events-none" : ""}`}
+        >
           {children}
         </div>
         <canvas

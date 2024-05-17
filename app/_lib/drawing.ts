@@ -55,6 +55,11 @@ export function drawLine(ctx: CanvasRenderingContext2D, line: Line): void {
   ctx.restore();
 }
 
+export function drawCircle(ctx: CanvasRenderingContext2D, p: Point, radius: number) {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
+  ctx.stroke();
+}
 
 export function drawArrow(ctx: CanvasRenderingContext2D, line: Line): void {
   const dx = line[1].x - line[0].x;
