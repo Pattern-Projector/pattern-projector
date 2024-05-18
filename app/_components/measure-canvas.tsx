@@ -26,7 +26,6 @@ import {
 import { Line } from "@/_lib/interfaces/line";
 import { IconButton } from "./buttons/icon-button";
 import RotateToHorizontalIcon from "@/_icons/rotate-to-horizontal";
-import CloseIcon from "@/_icons/close-icon";
 import { visible } from "./theme/css-functions";
 import Tooltip from "./tooltip/tooltip";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
