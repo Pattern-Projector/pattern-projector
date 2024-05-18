@@ -439,23 +439,25 @@ export default function Page() {
                 }}
                 setCalibrationValidated={setCalibrationValidated}
               />
-              <StitchMenu
-                className={`${!isCalibrating && menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
-                setShowMenu={(showMenu) =>
-                  setMenuStates({ ...menuStates, stitch: showMenu })
-                }
-                dispatchStitchSettings={dispatchStitchSettings}
-                stitchSettings={stitchSettings}
-                pageCount={pageCount}
-              />
-              <LayerMenu
-                visible={!isCalibrating && menuStates.layers}
-                setVisible={(visible) =>
-                  setMenuStates({ ...menuStates, layers: visible })
-                }
-                layers={layers}
-                setLayers={setLayers}
-              />
+              <menu className={`${visible(!isCalibrating && file !== null)}`}>
+                <StitchMenu
+                  className={`${menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
+                  setShowMenu={(showMenu) =>
+                    setMenuStates({ ...menuStates, stitch: showMenu })
+                  }
+                  dispatchStitchSettings={dispatchStitchSettings}
+                  stitchSettings={stitchSettings}
+                  pageCount={pageCount}
+                />
+                <LayerMenu
+                  visible={menuStates.layers}
+                  setVisible={(visible) =>
+                    setMenuStates({ ...menuStates, layers: visible })
+                  }
+                  layers={layers}
+                  setLayers={setLayers}
+                />
+              </menu>
             </menu>
           </Transformable>
         </FullScreen>
