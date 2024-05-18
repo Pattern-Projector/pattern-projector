@@ -13,11 +13,11 @@ import { Document, Page, pdfjs } from "react-pdf";
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
 import { Layer } from "@/_lib/interfaces/layer";
-import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import Matrix from "ml-matrix";
 import RenderContext from "@/_hooks/render-context";
+import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -34,9 +34,7 @@ export default function PdfViewer({
   pageCount,
   layers,
   lineThickness,
-  columnCount,
-  edgeInsets,
-  pageRange,
+  stitchSettings,
   filter,
 }: {
   file: any;
@@ -48,9 +46,7 @@ export default function PdfViewer({
   pageCount: number;
   layers: Map<string, Layer>;
   lineThickness: number;
-  columnCount: string;
-  edgeInsets: EdgeInsets;
-  pageRange: string;
+  stitchSettings: StitchSettings;
   filter: string;
 }) {
   const [pageSizes, setPageSize] = useReducer(
@@ -80,35 +76,30 @@ export default function PdfViewer({
   }, []);
 
   useEffect(() => {
-    const pages = getPageNumbers(pageRange, pageCount);
+    const pages = getPageNumbers(stitchSettings.pageRange, pageCount);
     const itemCount = pages.length;
-    const columns = Math.max(Math.min(Number(columnCount), itemCount), 1);
+    const columns = Math.max(
+      Math.min(stitchSettings.columnCount, itemCount),
+      1,
+    );
     const rowCount = Math.ceil((itemCount || 1) / columns);
     const [tileWidth, tileHeight] = getTileSize(pages, pageSizes);
     const w =
       tileWidth * columns -
-      (columns - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.horizontal);
+      (columns - 1) * PDF_TO_CSS_UNITS * stitchSettings.edgeInsets.horizontal;
     const h =
       tileHeight * rowCount -
-      (rowCount - 1) * PDF_TO_CSS_UNITS * Number(edgeInsets.vertical);
+      (rowCount - 1) * PDF_TO_CSS_UNITS * stitchSettings.edgeInsets.vertical;
     setLayoutWidth(w);
     setLayoutHeight(h);
-  }, [
-    pageSizes,
-    pageRange,
-    columnCount,
-    pageCount,
-    setLayoutWidth,
-    setLayoutHeight,
-    edgeInsets,
-  ]);
+  }, [pageSizes, stitchSettings, setLayoutWidth, setLayoutHeight, pageCount]);
 
-  const pages = getPageNumbers(pageRange, pageCount);
+  const pages = getPageNumbers(stitchSettings.pageRange, pageCount);
   const keys = getKeys(pages);
   const [tileWidth, tileHeight] = getTileSize(pages, pageSizes);
   const cssEdgeInsets = {
-    vertical: Number(edgeInsets.vertical) * PDF_TO_CSS_UNITS,
-    horizontal: Number(edgeInsets.horizontal) * PDF_TO_CSS_UNITS,
+    vertical: stitchSettings.edgeInsets.vertical * PDF_TO_CSS_UNITS,
+    horizontal: stitchSettings.edgeInsets.horizontal * PDF_TO_CSS_UNITS,
   };
   const insetWidth = `${tileWidth - cssEdgeInsets.horizontal}px`;
   const insetHeight = `${tileHeight - cssEdgeInsets.vertical}px`;
@@ -118,7 +109,7 @@ export default function PdfViewer({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${columnCount}, max-content)`,
+          gridTemplateColumns: `repeat(${stitchSettings.columnCount}, max-content)`,
           marginRight: cssEdgeInsets.horizontal,
           marginBottom: cssEdgeInsets.vertical,
           filter: filter,

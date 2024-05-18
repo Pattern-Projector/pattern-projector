@@ -1,4 +1,4 @@
-import { ChangeEvent, LegacyRef, ReactElement } from "react";
+import { ChangeEvent, LegacyRef, ReactElement, useState } from "react";
 import StepDownIcon from "@/_icons/step-down-icon";
 import StepUpIcon from "@/_icons/step-up-icon";
 
@@ -38,6 +38,26 @@ export default function StepperInput({
   inputRef?: LegacyRef<HTMLInputElement> | undefined;
   onStep: (increment: number) => void;
 }) {
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+  function handleStep(step: number) {
+    onStep(step);
+    let fires = 0;
+    const id = setInterval(() => {
+      if (++fires > 3) {
+        onStep(step);
+      }
+    }, 100);
+    setIntervalId(id);
+  }
+
+  function handleButtonRelease() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+  }
+
   return (
     <div className={`flex items-center ${className}`}>
       <label
@@ -51,7 +71,9 @@ export default function StepperInput({
           type="button"
           name={name}
           className="absolute top-0 left-1 h-full flex items-center"
-          onClick={() => onStep(-1)}
+          onPointerDown={() => handleStep(-1)}
+          onPointerUp={handleButtonRelease}
+          onPointerLeave={handleButtonRelease}
         >
           <StepDownIcon ariaLabel="test" />
         </button>
@@ -71,7 +93,9 @@ export default function StepperInput({
           type="button"
           name={name}
           className="absolute top-0 right-1 h-full flex items-center"
-          onClick={() => onStep(1)}
+          onPointerDown={() => handleStep(1)}
+          onPointerUp={handleButtonRelease}
+          onPointerLeave={handleButtonRelease}
         >
           <StepUpIcon ariaLabel="test" />
         </button>

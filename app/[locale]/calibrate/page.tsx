@@ -32,7 +32,6 @@ import { IconButton } from "@/_components/buttons/icon-button";
 import LayersIcon from "@/_icons/layers-icon";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
-import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
 import {
@@ -51,16 +50,27 @@ import CalibrationContext, {
   getIsInvalidatedCalibrationContextWithPointerEvent,
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
+import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
+import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "16";
+  const defaultStitchSettings = {
+    columnCount: 0,
+    edgeInsets: { horizontal: 0, vertical: 0 },
+    pageRange: "",
+  } as StitchSettings;
   const maxPoints = 4; // One point per vertex in rectangle
 
   const fullScreenHandle = useFullScreenHandle();
 
   const [points, dispatch] = useReducer(pointsReducer, []);
+  const [stitchSettings, dispatchStitchSettings] = useReducer(
+    stitchSettingsReducer,
+    defaultStitchSettings,
+  );
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
@@ -85,13 +95,6 @@ export default function Page() {
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
-
-  const [pageRange, setPageRange] = useState<string>("");
-  const [columnCount, setColumnCount] = useState<string>("");
-  const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
-    horizontal: "0",
-    vertical: "0",
-  });
 
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
@@ -167,8 +170,16 @@ export default function Page() {
   });
 
   useEffect(() => {
-    setColumnCount(String(pageCount));
-    setPageRange(`1-${pageCount}`);
+    const pageRange = `1-${pageCount}`;
+    dispatchStitchSettings({
+      type: "set-page-range",
+      pageRange,
+    });
+    dispatchStitchSettings({
+      type: "set-column-count",
+      columnCount: 1,
+      pageCount,
+    });
     setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
   }, [pageCount]);
 
@@ -385,12 +396,8 @@ export default function Page() {
             setShowMenu={(showMenu) =>
               setMenuStates({ ...menuStates, stitch: showMenu })
             }
-            setColumnCount={setColumnCount}
-            setEdgeInsets={setEdgeInsets}
-            setPageRange={setPageRange}
-            columnCount={columnCount}
-            edgeInsets={edgeInsets}
-            pageRange={pageRange}
+            dispatchStitchSettings={dispatchStitchSettings}
+            stitchSettings={stitchSettings}
             pageCount={pageCount}
           />
           <LayerMenu
@@ -461,9 +468,7 @@ export default function Page() {
                   setLayoutWidth={setLayoutWidth}
                   setLayoutHeight={setLayoutHeight}
                   lineThickness={lineThickness}
-                  columnCount={columnCount}
-                  edgeInsets={edgeInsets}
-                  pageRange={pageRange}
+                  stitchSettings={stitchSettings}
                   setLocalTransform={setLocalTransform}
                   filter={themeFilter(displaySettings.theme)}
                 />
