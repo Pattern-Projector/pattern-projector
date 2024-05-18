@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Full screen button to projection page
 - Warning when window location or size is different when projecting versus calibrating
+- Stepper buttons for incrementing and decrementing columns and horizontal/vertical inputs in the stitch menu
 
 ## [1.0.1] - 2024-04-15
 
