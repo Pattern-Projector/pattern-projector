@@ -151,6 +151,26 @@ export default function Header({
     }
   }
 
+  const handleRotate90 = () => {
+    transformer.rotate(getCenterPoint(+width, +height, unitOfMeasure), 90);
+  };
+
+  const handleFlipHorizontal = () => {
+    transformer.flipHorizontal(getCenterPoint(+width, +height, unitOfMeasure));
+  };
+
+  const handleFlipVertical = () => {
+    transformer.flipVertical(getCenterPoint(+width, +height, unitOfMeasure));
+  };
+
+  const handleRecenter = () => {
+    transformer.recenter(
+      getCenterPoint(+width, +height, unitOfMeasure),
+      layoutWidth,
+      layoutHeight,
+    );
+  };
+
   const overlayOptions = {
     disabled: {
       icon: <GridOffIcon ariaLabel={t("overlayOptionDisabled")} />,
@@ -200,6 +220,22 @@ export default function Header({
       value: 5,
     },
   ];
+
+  useKeyDown(() => {
+    handleFlipHorizontal();
+  }, [KeyCode.KeyH]);
+
+  useKeyDown(() => {
+    handleFlipVertical();
+  }, [KeyCode.KeyV]);
+
+  useKeyDown(() => {
+    handleRecenter();
+  }, [KeyCode.KeyC]);
+
+  useKeyDown(() => {
+    handleRotate90();
+  }, [KeyCode.KeyR]);
 
   useKeyDown(() => {
     setMeasuring(!measuring);
@@ -406,36 +442,17 @@ export default function Header({
             )}
 
             <Tooltip description={t("flipHorizontal")}>
-              <IconButton
-                onClick={() =>
-                  transformer.flipHorizontal(
-                    getCenterPoint(+width, +height, unitOfMeasure),
-                  )
-                }
-              >
+              <IconButton onClick={handleFlipHorizontal}>
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
-              <IconButton
-                onClick={() =>
-                  transformer.flipVertical(
-                    getCenterPoint(+width, +height, unitOfMeasure),
-                  )
-                }
-              >
+              <IconButton onClick={handleFlipVertical}>
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>
-              <IconButton
-                onClick={() =>
-                  transformer.rotate(
-                    getCenterPoint(+width, +height, unitOfMeasure),
-                    90,
-                  )
-                }
-              >
+              <IconButton onClick={handleRotate90}>
                 <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
               </IconButton>
             </Tooltip>
