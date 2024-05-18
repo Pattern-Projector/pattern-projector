@@ -315,13 +315,13 @@ export default function Page() {
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
-      <div className="bg-white dark:bg-black dark:text-white w-screen h-screen">
+      <div className="bg-white dark:bg-black dark:text-white w-screen h-screen ">
         <FullScreen
           handle={fullScreenHandle}
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
           {showCalibrationAlert ? (
-            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded">
+            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
               <div className="flex">
                 <WarningIcon ariaLabel="warning" />
               </div>
