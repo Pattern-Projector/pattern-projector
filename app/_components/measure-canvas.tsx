@@ -26,14 +26,12 @@ import {
 import { Line } from "@/_lib/interfaces/line";
 import { IconButton } from "./buttons/icon-button";
 import RotateToHorizontalIcon from "@/_icons/rotate-to-horizontal";
-import CloseIcon from "@/_icons/close-icon";
 import { visible } from "./theme/css-functions";
 import Tooltip from "./tooltip/tooltip";
 import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
-import { useKeyDown } from "@/_hooks/use-key-down";
-import { KeyCode } from "@/_lib/key-code";
 import KeyboardArrowRightIcon from "@/_icons/keyboard-arrow-right";
 import DeleteIcon from "@/_icons/delete-icon";
+import { KeyCode } from "@/_lib/key-code";
 
 export default function MeasureCanvas({
   perspective,
@@ -153,6 +151,13 @@ export default function MeasureCanvas({
     setSelectedEnd(-1);
   };
 
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.code === KeyCode.Backspace && selectedLine >= 0) {
+      handleDeleteLine();
+    }
+    setAxisConstrained(e.shiftKey);
+  }
+
   function handleDeleteLine() {
     if (selectedLine >= 0) {
       setLines(lines.toSpliced(selectedLine, 1));
@@ -261,10 +266,6 @@ export default function MeasureCanvas({
     setSelectedLine(-1);
   }, [file]);
 
-  useKeyDown(() => {
-    handleDeleteLine();
-  }, [KeyCode.Backspace]);
-
   const m = calibrationTransform.mmul(transform);
   const selected = lines.at(selectedLine);
   const opLine = selected ? transformLine(selected, transform) : null;
@@ -273,7 +274,7 @@ export default function MeasureCanvas({
   return (
     <div className={className}>
       <div
-        onKeyDown={(e) => setAxisConstrained(e.shiftKey)}
+        onKeyDown={handleKeyDown}
         onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}

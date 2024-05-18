@@ -55,7 +55,11 @@ export function drawLine(ctx: CanvasRenderingContext2D, line: Line): void {
   ctx.restore();
 }
 
-export function drawCircle(ctx: CanvasRenderingContext2D, p: Point, radius: number) {
+export function drawCircle(
+  ctx: CanvasRenderingContext2D,
+  p: Point,
+  radius: number,
+) {
   ctx.beginPath();
   ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
   ctx.stroke();

@@ -79,6 +79,7 @@ export default function Header({
   showingMovePad,
   setShowingMovePad,
   setCalibrationValidated,
+  fullScreenTooltipVisible,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -105,6 +106,7 @@ export default function Header({
   showingMovePad: boolean;
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
+  fullScreenTooltipVisible: boolean;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
@@ -148,6 +150,26 @@ export default function Header({
       setIsCalibrating(true);
     }
   }
+
+  const handleRotate90 = () => {
+    transformer.rotate(getCenterPoint(+width, +height, unitOfMeasure), 90);
+  };
+
+  const handleFlipHorizontal = () => {
+    transformer.flipHorizontal(getCenterPoint(+width, +height, unitOfMeasure));
+  };
+
+  const handleFlipVertical = () => {
+    transformer.flipVertical(getCenterPoint(+width, +height, unitOfMeasure));
+  };
+
+  const handleRecenter = () => {
+    transformer.recenter(
+      getCenterPoint(+width, +height, unitOfMeasure),
+      layoutWidth,
+      layoutHeight,
+    );
+  };
 
   const overlayOptions = {
     disabled: {
@@ -200,6 +222,22 @@ export default function Header({
   ];
 
   useKeyDown(() => {
+    handleFlipHorizontal();
+  }, [KeyCode.KeyH]);
+
+  useKeyDown(() => {
+    handleFlipVertical();
+  }, [KeyCode.KeyV]);
+
+  useKeyDown(() => {
+    handleRecenter();
+  }, [KeyCode.KeyC]);
+
+  useKeyDown(() => {
+    handleRotate90();
+  }, [KeyCode.KeyR]);
+
+  useKeyDown(() => {
     setMeasuring(!measuring);
   }, [KeyCode.KeyM]);
 
@@ -228,7 +266,7 @@ export default function Header({
         </ModalActions>
       </Modal>
       <header
-        className={`bg-white dark:bg-black left-0 w-full border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "translate-y-0" : "-translate-y-16"}`}
+        className={`relative z-10 bg-white dark:bg-black left-0 w-full border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "translate-y-0" : "-translate-y-16"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
@@ -241,6 +279,7 @@ export default function Header({
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
+              visible={fullScreenTooltipVisible}
             >
               <IconButton
                 onClick={
@@ -403,36 +442,17 @@ export default function Header({
             )}
 
             <Tooltip description={t("flipHorizontal")}>
-              <IconButton
-                onClick={() =>
-                  transformer.flipHorizontal(
-                    getCenterPoint(+width, +height, unitOfMeasure),
-                  )
-                }
-              >
+              <IconButton onClick={handleFlipHorizontal}>
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
-              <IconButton
-                onClick={() =>
-                  transformer.flipVertical(
-                    getCenterPoint(+width, +height, unitOfMeasure),
-                  )
-                }
-              >
+              <IconButton onClick={handleFlipVertical}>
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>
-              <IconButton
-                onClick={() =>
-                  transformer.rotate(
-                    getCenterPoint(+width, +height, unitOfMeasure),
-                    90,
-                  )
-                }
-              >
+              <IconButton onClick={handleRotate90}>
                 <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
               </IconButton>
             </Tooltip>

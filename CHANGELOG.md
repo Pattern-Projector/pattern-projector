@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Warning instead of redirect when window location or size is different when projecting versus calibrating
 - Line weight adjustment is a dropdown instead of input box
+- Calibration warning descriptions
 
 ### Fixed
 
 - Menus flickering with large PDFs
 - Horizontal and vertical offsets in stitch menu are reset when a new PDF is opened
+- Line weight is reset when new PDF is opened
 
 ### Removed
 
@@ -23,10 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Tool to align grain to horizontal and mark lines on PDF
-- Full screen button to projection page
+- Keyboard shortcuts for frequently used tools
+- Tool to rotate to horizontal, mark lines on PDF, flip about the line, move based on the line's length, and drag end of measurement line
 - Cursor changes from grab to grabbing hand when dragging
 - Selected corner on calibration grid is colored
+- Stepper buttons for incrementing and decrementing columns and horizontal/vertical inputs in the stitch menu
+- Disabled layer menu icon when no layers in PDF
 
 ## [1.0.1] - 2024-04-15
 

@@ -82,8 +82,8 @@
         "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
       },
       "measure": {
-        "title": "Start/cancel mark and measure tool",
-        "description": "Mark lines on the PDF for rotating, measuring, or marking."
+        "title": "Start mark, measure, and transform tool",
+        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking."
       }
     },
     "faq": {
@@ -99,10 +99,6 @@
       "annotationSupport": {
         "question": "Do you have support for adding annotations?",
         "answer": "Not yet, but it's planned for an upcoming release."
-      },
-      "chromecastSupport": {
-        "question": "Do you support Chromecast?",
-        "answer": "While it's possible to cast this webpage in Chrome, the lag in the connection can be frustrating, especially when calibrating. Better support for Chromecast is planned in an upcoming release."
       },
       "mobileSupport": {
         "question": "Do you have support mobile phones and tablets?",
@@ -150,39 +146,37 @@
     "overlayOptionFliplines": "Flip Lines",
     "invertColor": "Invert colors",
     "invertColorOff": "Invert colors off",
-    "flipVertical": "Flip vertically",
-    "flipVerticalOff": "Flip vertically off",
-    "flipHorizontal": "Flip horizontally",
-    "flipHorizontalOff": "Flip horizontally off",
+    "flipVertical": "Flip vertically (v)",
+    "flipHorizontal": "Flip horizontally (h)",
     "flipCenterOn": "Flip across center",
     "flipCenterOff": "Flip across center off",
     "fourCornersOn": "Highlight all corners",
     "fourCornersOff": "Only highlight selected corner",
-    "rotate90": "Rotate 90 degrees clockwise",
+    "rotate90": "Rotate 90 degrees clockwise (r)",
     "arrowBack": "Back 1 page",
     "arrowForward": "Forward 1 page",
     "info": "Info page",
-    "recenter": "Recenter PDF",
+    "recenter": "Center PDF (c)",
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen",
     "ok": "OK",
     "calibrationAlertTitle": "Calibration Warning",
-    "calibrationAlert": "The window has changed since projecting started, toggle full screen or recalibrate to fix this issue.",
-    "calibrationAlertContinue": "The window has changed since the last time you projected, but calibration hasn't been updated. Continue anyway?",
-    "continue": "Continue",
+    "calibrationAlert": "The window size has changed since projecting started, press the full screen button or recalibrate to fix this issue.",
+    "calibrationAlertContinue": "The window size can't change after calibration. To project in full screen, calibrate in full screen. If you want to change the window size, recalibrate.",
+    "continue": "Save window size and continue",
     "checkCalibration": "Check calibration",
     "menuShow": "Show menu",
     "menuHide": "Hide menu",
     "lineWeight": "Line weight",
     "stitchMenuShow": "Show stitch menu",
     "stitchMenuHide": "Hide stitch menu",
-    "measure": "Mark, measure, and transform",
+    "measure": "Mark, measure, and transform (m)",
     "showMovement": "Show move tool",
     "hideMovement": "Hide move tool"
   },
   "StitchMenu": {
     "columnCount": "Columns",
-    "pageRange": "Pages",
+    "pageRange": "Stitch Pages",
     "horizontal": "Horizontal",
     "vertical": "Vertical"
   },

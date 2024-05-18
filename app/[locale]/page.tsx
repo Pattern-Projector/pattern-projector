@@ -251,10 +251,6 @@ export default function Home() {
             {t("faq.annotationSupport.answer")}
           </li>
           <li>
-            <div>{t("faq.chromecastSupport.question")}</div>
-            {t("faq.chromecastSupport.answer")}
-          </li>
-          <li>
             <div>{t("faq.mobileSupport.question")}</div>
             {t("faq.mobileSupport.answer")}
           </li>

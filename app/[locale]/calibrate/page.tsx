@@ -26,11 +26,7 @@ import { IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/interfaces/layer";
 import LayerMenu from "@/_components/layer-menu";
 import { visible } from "@/_components/theme/css-functions";
-import { IconButton } from "@/_components/buttons/icon-button";
-import LayersIcon from "@/_icons/layers-icon";
-import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
-import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
 import {
@@ -51,16 +47,30 @@ import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
 import { Transformable } from "@/_hooks/use-transform-context";
 import OverlayCanvas from "@/_components/overlay-canvas";
+import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
+import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
+import Tooltip from "@/_components/tooltip/tooltip";
+import { IconButton } from "@/_components/buttons/icon-button";
+import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "16";
+  const defaultStitchSettings = {
+    columnCount: 0,
+    edgeInsets: { horizontal: 0, vertical: 0 },
+    pageRange: "",
+  } as StitchSettings;
   const maxPoints = 4; // One point per vertex in rectangle
 
   const fullScreenHandle = useFullScreenHandle();
 
   const [points, dispatch] = useReducer(pointsReducer, []);
+  const [stitchSettings, dispatchStitchSettings] = useReducer(
+    stitchSettingsReducer,
+    defaultStitchSettings,
+  );
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
@@ -82,19 +92,14 @@ export default function Page() {
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
 
-  const [pageRange, setPageRange] = useState<string>("");
-  const [columnCount, setColumnCount] = useState<string>("");
-  const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
-    horizontal: "0",
-    vertical: "0",
-  });
-
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
   );
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
   const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
+  const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
+    useState(true);
 
   const t = useTranslations("Header");
 
@@ -146,6 +151,10 @@ export default function Page() {
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
       setLineThickness(0);
+      dispatchStitchSettings({
+        type: "set-edge-insets",
+        edgeInsets: { horizontal: 0, vertical: 0 },
+      });
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -172,8 +181,16 @@ export default function Page() {
   });
 
   useEffect(() => {
-    setColumnCount(String(pageCount));
-    setPageRange(`1-${pageCount}`);
+    const pageRange = `1-${pageCount}`;
+    dispatchStitchSettings({
+      type: "set-page-range",
+      pageRange,
+    });
+    dispatchStitchSettings({
+      type: "set-column-count",
+      columnCount: 1,
+      pageCount,
+    });
     setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
   }, [pageCount]);
 
@@ -249,6 +266,10 @@ export default function Page() {
   }, []);
 
   function handlePointerDown(e: React.PointerEvent) {
+    if (fullScreenTooltipVisible) {
+      setFullScreenTooltipVisible(false);
+    }
+
     if (calibrationValidated) {
       const expectedContext = localStorage.getItem("calibrationContext");
       if (expectedContext === null) {
@@ -303,17 +324,38 @@ export default function Page() {
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
-      <div className="bg-white dark:bg-black dark:text-white w-screen h-screen">
+      <div className="bg-white dark:bg-black dark:text-white w-screen h-screen ">
         <FullScreen
           handle={fullScreenHandle}
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
           {showCalibrationAlert ? (
-            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded">
+            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
               <div className="flex">
                 <WarningIcon ariaLabel="warning" />
               </div>
               {t("calibrationAlert")}
+              <Tooltip
+                description={
+                  fullScreenHandle.active
+                    ? t("fullscreenExit")
+                    : t("fullscreen")
+                }
+              >
+                <IconButton
+                  onClick={
+                    fullScreenHandle.active
+                      ? fullScreenHandle.exit
+                      : fullScreenHandle.enter
+                  }
+                >
+                  {fullScreenHandle.active ? (
+                    <FullscreenExitIcon ariaLabel={t("fullscreen")} />
+                  ) : (
+                    <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
+                  )}
+                </IconButton>
+              </Tooltip>
             </h2>
           ) : null}
           {isCalibrating && (
@@ -366,10 +408,7 @@ export default function Page() {
                   setLayoutWidth={setLayoutWidth}
                   setLayoutHeight={setLayoutHeight}
                   lineThickness={lineThickness}
-                  columnCount={columnCount}
-                  edgeInsets={edgeInsets}
-                  setEdgeInsets={setEdgeInsets}
-                  pageRange={pageRange}
+                  stitchSettings={stitchSettings}
                   filter={themeFilter(displaySettings.theme)}
                 />
               </Draggable>
@@ -429,29 +468,27 @@ export default function Page() {
                   updateLocalSettings({ showingMovePad: show });
                 }}
                 setCalibrationValidated={setCalibrationValidated}
+                fullScreenTooltipVisible={fullScreenTooltipVisible}
               />
-              <StitchMenu
-                className={`${!isCalibrating && menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
-                setShowMenu={(showMenu) =>
-                  setMenuStates({ ...menuStates, stitch: showMenu })
-                }
-                setColumnCount={setColumnCount}
-                setEdgeInsets={setEdgeInsets}
-                setPageRange={setPageRange}
-                columnCount={columnCount}
-                edgeInsets={edgeInsets}
-                pageRange={pageRange}
-                pageCount={pageCount}
-              />
-
-              <LayerMenu
-                visible={!isCalibrating && menuStates.layers}
-                setVisible={(visible) =>
-                  setMenuStates({ ...menuStates, layers: visible })
-                }
-                layers={layers}
-                setLayers={setLayers}
-              />
+              <menu className={`${visible(!isCalibrating && file !== null)}`}>
+                <StitchMenu
+                  className={`${menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
+                  setShowMenu={(showMenu) =>
+                    setMenuStates({ ...menuStates, stitch: showMenu })
+                  }
+                  dispatchStitchSettings={dispatchStitchSettings}
+                  stitchSettings={stitchSettings}
+                  pageCount={pageCount}
+                />
+                <LayerMenu
+                  visible={menuStates.layers}
+                  setVisible={(visible) =>
+                    setMenuStates({ ...menuStates, layers: visible })
+                  }
+                  layers={layers}
+                  setLayers={setLayers}
+                />
+              </menu>
             </menu>
           </Transformable>
         </FullScreen>
