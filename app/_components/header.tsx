@@ -79,6 +79,7 @@ export default function Header({
   showingMovePad,
   setShowingMovePad,
   setCalibrationValidated,
+  fullScreenTooltipVisible,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -105,6 +106,7 @@ export default function Header({
   showingMovePad: boolean;
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
+  fullScreenTooltipVisible: boolean;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
@@ -241,6 +243,7 @@ export default function Header({
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
+              visible={fullScreenTooltipVisible}
             >
               <IconButton
                 onClick={

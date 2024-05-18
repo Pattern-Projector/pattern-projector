@@ -49,6 +49,9 @@ import { Transformable } from "@/_hooks/use-transform-context";
 import OverlayCanvas from "@/_components/overlay-canvas";
 import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
+import Tooltip from "@/_components/tooltip/tooltip";
+import { IconButton } from "@/_components/buttons/icon-button";
+import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -95,6 +98,8 @@ export default function Page() {
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
   const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
+  const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
+    useState(true);
 
   const t = useTranslations("Header");
 
@@ -261,6 +266,10 @@ export default function Page() {
   }, []);
 
   function handlePointerDown(e: React.PointerEvent) {
+    if (fullScreenTooltipVisible) {
+      setFullScreenTooltipVisible(false);
+    }
+
     if (calibrationValidated) {
       const expectedContext = localStorage.getItem("calibrationContext");
       if (expectedContext === null) {
@@ -326,6 +335,27 @@ export default function Page() {
                 <WarningIcon ariaLabel="warning" />
               </div>
               {t("calibrationAlert")}
+              <Tooltip
+                description={
+                  fullScreenHandle.active
+                    ? t("fullscreenExit")
+                    : t("fullscreen")
+                }
+              >
+                <IconButton
+                  onClick={
+                    fullScreenHandle.active
+                      ? fullScreenHandle.exit
+                      : fullScreenHandle.enter
+                  }
+                >
+                  {fullScreenHandle.active ? (
+                    <FullscreenExitIcon ariaLabel={t("fullscreen")} />
+                  ) : (
+                    <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
+                  )}
+                </IconButton>
+              </Tooltip>
             </h2>
           ) : null}
           {isCalibrating && (
@@ -438,6 +468,7 @@ export default function Page() {
                   updateLocalSettings({ showingMovePad: show });
                 }}
                 setCalibrationValidated={setCalibrationValidated}
+                fullScreenTooltipVisible={fullScreenTooltipVisible}
               />
               <menu className={`${visible(!isCalibrating && file !== null)}`}>
                 <StitchMenu
