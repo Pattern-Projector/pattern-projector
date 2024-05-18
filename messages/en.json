@@ -82,8 +82,8 @@
         "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
       },
       "measure": {
-        "title": "Start/cancel mark and measure tool",
-        "description": "Mark lines on the PDF for rotating, measuring, or marking."
+        "title": "Start mark, measure, and transform tool",
+        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking."
       }
     },
     "faq": {
@@ -99,10 +99,6 @@
       "annotationSupport": {
         "question": "Do you have support for adding annotations?",
         "answer": "Not yet, but it's planned for an upcoming release."
-      },
-      "chromecastSupport": {
-        "question": "Do you support Chromecast?",
-        "answer": "While it's possible to cast this webpage in Chrome, the lag in the connection can be frustrating, especially when calibrating. Better support for Chromecast is planned in an upcoming release."
       },
       "mobileSupport": {
         "question": "Do you have support mobile phones and tablets?",
