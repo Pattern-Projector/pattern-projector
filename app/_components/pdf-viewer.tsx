@@ -15,8 +15,8 @@ import CustomRenderer from "@/_components/pdf-custom-renderer";
 import { Layer } from "@/_lib/interfaces/layer";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
-import Matrix from "ml-matrix";
-import RenderContext from "@/_hooks/render-context";
+import { RenderContext } from "@/_hooks/use-render-context";
+import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -30,7 +30,6 @@ export default function PdfViewer({
   setPageCount,
   setLayoutWidth,
   setLayoutHeight,
-  setLocalTransform,
   pageCount,
   layers,
   lineThickness,
@@ -42,7 +41,6 @@ export default function PdfViewer({
   setPageCount: Dispatch<SetStateAction<number>>;
   setLayoutWidth: Dispatch<SetStateAction<number>>;
   setLayoutHeight: Dispatch<SetStateAction<number>>;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   pageCount: number;
   layers: Map<string, Layer>;
   lineThickness: number;
@@ -53,12 +51,13 @@ export default function PdfViewer({
     pageSizeReducer,
     new Map<number, { width: number; height: number }>(),
   );
+  const transformer = useTransformerContext();
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     setPageCount(docProxy.numPages);
     setLayers(new Map());
-    setLocalTransform(Matrix.identity(3));
     setPageSize({ action: "clear" });
+    transformer.reset();
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {

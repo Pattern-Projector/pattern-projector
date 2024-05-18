@@ -229,6 +229,16 @@ export function flipHorizontal(origin: Point): Matrix {
   return transformAboutPoint(scale(-1, 1), origin);
 }
 
+export function angleDeg(p1: Point, p2: Point): number {
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  return (Math.atan2(dy, dx) * 180) / Math.PI;
+}
+
+export function rotateToHorizontal(p1: Point, p2: Point): Matrix {
+  return rotateMatrixDeg(-angleDeg(p1, p2), p1);
+}
+
 /**
  * Converts 3x3 matrix returned from getPerspectiveTransform(src, dst) to a 4x4 matrix as per https://stackoverflow.com/a/4833408/3376039
  * @param src - Coordinates of quadrangle vertices in the source image starting from top left clockwise.
@@ -349,13 +359,5 @@ export function constrained(p: Point, anchorPoint: Point) {
     } else {
       return { x: anchorPoint.x + ((p.x - anchorPoint.x) / dx) * dy, y: p.y };
     }
-  }
-}
-
-export function toSingleAxisVector(vec: Point): Point {
-  if (Math.abs(vec.x) > Math.abs(vec.y)) {
-    return { x: vec.x, y: 0 };
-  } else {
-    return { x: 0, y: vec.y };
   }
 }

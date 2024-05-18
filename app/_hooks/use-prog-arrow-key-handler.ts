@@ -1,7 +1,7 @@
 import { KeyCode } from "@/_lib/key-code";
 import { useCallback, useEffect, useState } from "react";
 
-const PIXEL_LIST = [2, 20, 50, 100];
+const PIXEL_LIST = [1, 10, 20, 40];
 export default function useProgArrowKeyHandler(
   handler: (key: KeyCode, px: number, fullScreen: boolean) => void,
   active: boolean,
