@@ -66,7 +66,7 @@ export default function StepperInput({
       >
         {label}
       </label>
-      <div className="relative items-center">
+      <div className="relative items-center z-0">
         <button
           type="button"
           name={name}
