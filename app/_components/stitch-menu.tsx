@@ -13,14 +13,12 @@ export default function StitchMenu({
   stitchSettings,
   pageCount,
   className,
-  showMenu,
   setShowMenu,
 }: {
   dispatchStitchSettings: Dispatch<StitchSettingsAction>;
   stitchSettings: StitchSettings;
   pageCount: number;
   className?: string;
-  showMenu: boolean;
   setShowMenu: (showMenu: boolean) => void;
 }) {
   const t = useTranslations("StitchMenu");
@@ -39,7 +37,7 @@ export default function StitchMenu({
 
   return (
     <menu
-      className={`flex justify-between ${showMenu ? "top-16" : "-top-60"} absolute left-0 w-full z-30 transition-all duration-700 ${className} bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 p-2`}
+      className={`${className ?? ""} flex justify-between left-0 w-full transition-all duration-700 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 p-2`}
     >
       <div className="flex gap-2">
         <div className="ml-1">

@@ -82,8 +82,8 @@
         "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
       },
       "measure": {
-        "title": "Start/stop measuring",
-        "description": "Measure the distance between two points on the PDF."
+        "title": "Start/cancel mark and measure tool",
+        "description": "Mark lines on the PDF for rotating, measuring, or marking."
       }
     },
     "faq": {
@@ -162,8 +162,6 @@
     "arrowBack": "Back 1 page",
     "arrowForward": "Forward 1 page",
     "info": "Info page",
-    "layersOn": "Show layer menu",
-    "layersOff": "Hide layer menu",
     "recenter": "Recenter PDF",
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen",
@@ -178,8 +176,7 @@
     "lineWeight": "Line weight",
     "stitchMenuShow": "Show stitch menu",
     "stitchMenuHide": "Hide stitch menu",
-    "measureOn": "Start measuring",
-    "measureOff": "Stop measuring",
+    "measure": "Mark, measure, and transform",
     "showMovement": "Show move tool",
     "hideMovement": "Hide move tool"
   },
@@ -192,7 +189,10 @@
   "LayerMenu": {
     "title": "Layers",
     "showAll": "Show all",
-    "hideAll": "Hide all"
+    "hideAll": "Hide all",
+    "layersOn": "Show layer menu",
+    "layersOff": "Hide layer menu",
+    "noLayers": "No layers in PDF"
   },
   "MovementPad": {
     "up": "Up",
@@ -202,6 +202,9 @@
     "next": "Next corner"
   },
   "MeasureCanvas": {
-    "rotateToHorizontal": "Rotate to horizontal"
+    "rotateToHorizontal": "Rotate to horizontal",
+    "deleteLine": "Delete line",
+    "flipAlong": "Flip along line",
+    "translate": "Move PDF by line length"
   }
 }

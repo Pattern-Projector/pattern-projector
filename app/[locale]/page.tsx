@@ -21,7 +21,7 @@ import MoveIcon from "@/_icons/move-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import LayersIcon from "@/_icons/layers-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
-import SquareFootIcon from "@/_icons/square-foot";
+import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 
 export default function Home() {
   const t = useTranslations("HomePage");
@@ -206,7 +206,7 @@ export default function Home() {
             </tr>
             <tr>
               <th scope="row">
-                <SquareFootIcon ariaLabel="" />
+                <MarkAndMeasureIcon ariaLabel="" />
               </th>
               <td>{t("project.measure.title")}</td>
               <td>{t("project.measure.description")}</td>

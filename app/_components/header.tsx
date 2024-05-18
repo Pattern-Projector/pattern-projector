@@ -36,7 +36,6 @@ import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
-import SquareFootIcon from "@/_icons/square-foot";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
@@ -52,6 +51,7 @@ import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
+import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 
 export default function Header({
   isCalibrating,
@@ -228,7 +228,7 @@ export default function Header({
         </ModalActions>
       </Modal>
       <header
-        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
+        className={`bg-white dark:bg-black left-0 w-full border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "translate-y-0" : "-translate-y-16"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
@@ -449,18 +449,16 @@ export default function Header({
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
-            <Tooltip description={measuring ? t("measureOff") : t("measureOn")}>
+            <Tooltip description={t("measure")}>
               <IconButton
                 onClick={() => setMeasuring(!measuring)}
                 className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
               >
-                <SquareFootIcon
-                  ariaLabel={measuring ? t("measureOff") : t("measureOn")}
-                />
+                <MarkAndMeasureIcon ariaLabel={t("measure")} />
               </IconButton>
             </Tooltip>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <label
               className={`${visible(
                 !isCalibrating,
@@ -490,7 +488,7 @@ export default function Header({
         </nav>
       </header>
       <IconButton
-        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} z-30 left-1/4 focus:ring-0`}
+        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
         onClick={() => setMenuStates({ ...menuStates, nav: true })}
       >
         <ExpandMoreIcon ariaLabel={t("menuShow")} />

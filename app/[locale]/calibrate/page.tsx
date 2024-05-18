@@ -49,6 +49,7 @@ import CalibrationContext, {
 import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
 import { Transformable } from "@/_hooks/use-transform-context";
+import OverlayCanvas from "@/_components/overlay-canvas";
 import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 
@@ -147,6 +148,7 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
+      setLineThickness(0);
       dispatchStitchSettings({
         type: "set-edge-insets",
         edgeInsets: { horizontal: 0, vertical: 0 },
@@ -329,100 +331,9 @@ export default function Page() {
               {t("calibrationAlert")}
             </h2>
           ) : null}
-
-          {isCalibrating && showingMovePad && (
-            <MovementPad
-              corners={corners}
-              setCorners={setCorners}
-              dispatch={dispatch}
-              fullScreenHandle={fullScreenHandle}
-            />
-          )}
-          <div
-            className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
-          />
-          <Transformable>
-            <Header
-              isCalibrating={isCalibrating}
-              setIsCalibrating={setIsCalibrating}
-              height={height}
-              width={width}
-              handleHeightChange={handleHeightChange}
-              handleWidthChange={handleWidthChange}
-              handleResetCalibration={() => {
-                localStorage.setItem(
-                  "calibrationContext",
-                  JSON.stringify(
-                    getCalibrationContext(fullScreenHandle.active),
-                  ),
-                );
-                dispatch({ type: "set", points: getDefaultPoints() });
-              }}
-              handleFileChange={handleFileChange}
-              fullScreenHandle={fullScreenHandle}
-              unitOfMeasure={unitOfMeasure}
-              setUnitOfMeasure={(newUnit) => {
-                setUnitOfMeasure(newUnit);
-                updateLocalSettings({ unitOfMeasure: newUnit });
-              }}
-              displaySettings={displaySettings}
-              setDisplaySettings={(newSettings) => {
-                setDisplaySettings(newSettings);
-                if (newSettings) {
-                  updateLocalSettings(newSettings);
-                }
-              }}
-              pageCount={pageCount}
-              layoutWidth={layoutWidth}
-              layoutHeight={layoutHeight}
-              lineThickness={lineThickness}
-              setLineThickness={setLineThickness}
-              setMenuStates={setMenuStates}
-              menuStates={menuStates}
-              measuring={measuring}
-              setMeasuring={setMeasuring}
-              showingMovePad={showingMovePad}
-              setShowingMovePad={(show) => {
-                setShowingMovePad(show);
-                updateLocalSettings({ showingMovePad: show });
-              }}
-              setCalibrationValidated={setCalibrationValidated}
-            />
-
-            <StitchMenu
-              showMenu={!isCalibrating && menuStates.stitch && menuStates.nav}
-              setShowMenu={(showMenu) =>
-                setMenuStates({ ...menuStates, stitch: showMenu })
-              }
-              dispatchStitchSettings={dispatchStitchSettings}
-              stitchSettings={stitchSettings}
-              pageCount={pageCount}
-            />
-
-            <LayerMenu
-              visible={!isCalibrating && menuStates.layers}
-              setVisible={(visible) =>
-                setMenuStates({ ...menuStates, layers: visible })
-              }
-              layers={layers}
-              setLayers={setLayers}
-              className={`${menuStates.stitch ? "top-32" : "top-20"}`}
-            />
-            {layers.size && !menuStates.layers ? (
-              <Tooltip
-                description={menuStates.layers ? t("layersOff") : t("layersOn")}
-              >
-                <IconButton
-                  className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
-                  onClick={() => setMenuStates({ ...menuStates, layers: true })}
-                >
-                  <LayersIcon ariaLabel="layers" />
-                </IconButton>
-              </Tooltip>
-            ) : null}
-
+          {isCalibrating && (
             <CalibrationCanvas
-              className={`absolute z-10`}
+              className={`absolute ${visible(isCalibrating)}`}
               points={points}
               dispatch={dispatch}
               width={+width}
@@ -434,35 +345,121 @@ export default function Page() {
               setCorners={setCorners}
               fullScreenHandle={fullScreenHandle}
             />
+          )}
+          {isCalibrating && showingMovePad && (
+            <MovementPad
+              corners={corners}
+              setCorners={setCorners}
+              dispatch={dispatch}
+              fullScreenHandle={fullScreenHandle}
+            />
+          )}
 
-            {measuring && (
-              <MeasureCanvas
-                className={visible(!isCalibrating)}
-                perspective={perspective}
-                calibrationTransform={calibrationTransform}
-                unitOfMeasure={unitOfMeasure}
-              />
-            )}
-
-            <Draggable
+          <Transformable>
+            <MeasureCanvas
+              className={visible(!isCalibrating)}
               perspective={perspective}
-              isCalibrating={isCalibrating}
-              unitOfMeasure={unitOfMeasure}
               calibrationTransform={calibrationTransform}
+              unitOfMeasure={unitOfMeasure}
+              measuring={measuring}
+              setMeasuring={setMeasuring}
+              file={file}
             >
-              <PdfViewer
-                file={file}
-                setPageCount={setPageCount}
-                pageCount={pageCount}
-                setLayers={setLayers}
-                layers={layers}
-                setLayoutWidth={setLayoutWidth}
-                setLayoutHeight={setLayoutHeight}
-                lineThickness={lineThickness}
-                stitchSettings={stitchSettings}
-                filter={themeFilter(displaySettings.theme)}
+              <Draggable
+                className={`absolute`}
+                perspective={perspective}
+                isCalibrating={isCalibrating}
+                unitOfMeasure={unitOfMeasure}
+                calibrationTransform={calibrationTransform}
+              >
+                <PdfViewer
+                  file={file}
+                  setPageCount={setPageCount}
+                  pageCount={pageCount}
+                  setLayers={setLayers}
+                  layers={layers}
+                  setLayoutWidth={setLayoutWidth}
+                  setLayoutHeight={setLayoutHeight}
+                  lineThickness={lineThickness}
+                  stitchSettings={stitchSettings}
+                  filter={themeFilter(displaySettings.theme)}
+                />
+              </Draggable>
+              <OverlayCanvas
+                className="absolute top-0 pointer-events-none"
+                points={points}
+                width={+width}
+                height={+height}
+                unitOfMeasure={unitOfMeasure}
+                displaySettings={displaySettings}
               />
-            </Draggable>
+            </MeasureCanvas>
+
+            <menu className={`absolute top-0 w-screen`}>
+              <Header
+                isCalibrating={isCalibrating}
+                setIsCalibrating={setIsCalibrating}
+                height={height}
+                width={width}
+                handleHeightChange={handleHeightChange}
+                handleWidthChange={handleWidthChange}
+                handleResetCalibration={() => {
+                  localStorage.setItem(
+                    "calibrationContext",
+                    JSON.stringify(
+                      getCalibrationContext(fullScreenHandle.active),
+                    ),
+                  );
+                  dispatch({ type: "set", points: getDefaultPoints() });
+                }}
+                handleFileChange={handleFileChange}
+                fullScreenHandle={fullScreenHandle}
+                unitOfMeasure={unitOfMeasure}
+                setUnitOfMeasure={(newUnit) => {
+                  setUnitOfMeasure(newUnit);
+                  updateLocalSettings({ unitOfMeasure: newUnit });
+                }}
+                displaySettings={displaySettings}
+                setDisplaySettings={(newSettings) => {
+                  setDisplaySettings(newSettings);
+                  if (newSettings) {
+                    updateLocalSettings(newSettings);
+                  }
+                }}
+                pageCount={pageCount}
+                layoutWidth={layoutWidth}
+                layoutHeight={layoutHeight}
+                lineThickness={lineThickness}
+                setLineThickness={setLineThickness}
+                setMenuStates={setMenuStates}
+                menuStates={menuStates}
+                measuring={measuring}
+                setMeasuring={setMeasuring}
+                showingMovePad={showingMovePad}
+                setShowingMovePad={(show) => {
+                  setShowingMovePad(show);
+                  updateLocalSettings({ showingMovePad: show });
+                }}
+                setCalibrationValidated={setCalibrationValidated}
+              />
+              <StitchMenu
+                className={`${!isCalibrating && menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
+                setShowMenu={(showMenu) =>
+                  setMenuStates({ ...menuStates, stitch: showMenu })
+                }
+                dispatchStitchSettings={dispatchStitchSettings}
+                stitchSettings={stitchSettings}
+                pageCount={pageCount}
+              />
+              <LayerMenu
+                visible={!isCalibrating && menuStates.layers}
+                setVisible={(visible) =>
+                  setMenuStates({ ...menuStates, layers: visible })
+                }
+                layers={layers}
+                setLayers={setLayers}
+              />
+            </menu>
           </Transformable>
         </FullScreen>
       </div>
