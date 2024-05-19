@@ -151,19 +151,19 @@
         "gridOff": "Raster aus",
         "invertColor": "Farbumkehrung ein",
         "invertColorOff": "Farbumkehrung aus",
-        "flipVertical": "Spiegel vertikal",
+        "flipVertical": "Spiegel vertikal (V)",
         "flipVerticalOff": "Spiegel vertikal aus",
-        "flipHorizontal": "Spiegel horizontal",
+        "flipHorizontal": "Spiegel horizontal (h)",
         "flipHorizontalOff": "Spiegel horizontal aus",
         "fourCornersOn": "Eckpunkte einblenden",
         "fourCornersOff": "Eckpunkte ausblenden",
-        "rotate90": "Drehe 90 Grad im Uhrzeigersinn",
+        "rotate90": "Drehe 90 Grad im Uhrzeigersinn (r)",
         "arrowBack": "Zurück 1 Seite",
         "arrowForward": "Vorwärts 1 Seite",
         "info": "Info Seite",
         "layersOn": "Blende Ebenenmenü ein",
         "layersOff": "Blende Ebenenmenü aus",
-        "recenter": "PDF zentrieren",
+        "recenter": "PDF zentrieren (c)",
         "fullscreen": "Vollbild ein",
         "fullscreenExit": "Vollbild aus",
         "lineWeight": "Linienstärke",
@@ -183,12 +183,44 @@
         "overlayOptionDisabled": "Deaktiviert",
         "overlayOptionGrid": "Raster",
         "overlayOptionPaper": "Papierseite",
-        "overlayOptionFliplines": "Drehe Linien"
+        "overlayOptionFliplines": "Drehe Linien",
+        "flipCenterOn": "Über die Mitte drehen",
+        "measure": "Markieren, messen und transformieren (m)",
+        "ok": "Ok",
+        "flipCenterOff": "Nicht über die Mitte drehen",
+        "calibrationAlertTitle": "Kalibrierung Warnung",
+        "calibrationAlert": "Die Fenstergröße hat sich seit Beginn der Projektion geändert. Drücken Sie die Vollbildtaste oder kalibrieren Sie neu, um dieses Problem zu beheben.",
+        "calibrationAlertContinue": "Die Fenstergröße kann nach der Kalibrierung nicht mehr geändert werden. Um im Vollbildmodus zu projizieren, kalibrieren Sie im Vollbildmodus. Wenn Sie die Fenstergröße ändern möchten, kalibrieren Sie erneut.",
+        "continue": "Fenstergröße speichern und fortfahren",
+        "checkCalibration": "Kalibrierung prüfen",
+        "showMovement": "Werkzeug zum Verschieben anzeigen",
+        "hideMovement": "Werkzeug zum Verschieben ausblenden"
     },
     "StitchMenu": {
         "columnCount": "Spalten",
-        "pageRange": "Seiten",
+        "pageRange": "Stichseiten",
         "horizontal": "Horizontal",
         "vertical": "Vertikal"
+    },
+    "MeasureCanvas": {
+        "rotateToHorizontal": "Rotiere horizontal",
+        "deleteLine": "Lösche Linie",
+        "flipAlong": "Drehe an der Linie entlang",
+        "translate": "PDF nach Zeilenlänge verschieben"
+    },
+    "LayerMenu": {
+        "layersOn": "Zeige Ebenenmenü",
+        "layersOff": "Verstecke Ebenenmenü",
+        "noLayers": "Keine Ebenen in der PDF",
+        "title": "Ebenen",
+        "showAll": "Zeige alle",
+        "hideAll": "Verstecke alle"
+    },
+    "MovementPad": {
+        "left": "Links",
+        "right": "Rechts",
+        "down": "Runter",
+        "next": "Nächste Ecke",
+        "up": "Hoch"
     }
 }
