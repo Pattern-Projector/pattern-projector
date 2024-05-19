@@ -1,156 +1,194 @@
 {
-  "HomePage": {
-    "beta": "beta",
-    "pdfstitcherHref": "https://www.pdfstitcher.org/",
-    "youTubeSrc": "https://www.youtube.com/embed/m9RTLznEfRM?si=ELCJUrF4bx0OKJMf",
-    "github": "Siehe Quellcode",
-    "calibrate": "Starte Kalibrierung",
-    "choose-language": "Sprache",
-    "welcome": {
-      "title": "Willkommen bei Pattern Projector!",
-      "description": "Pattern projector ist eine kostenlose und quelloffene Web-Applikation, die Benutzern hilft, Beamer für Schnittmuster schnell zu kalibrieren. Dieses Projekt befindet sich derzeit in der Beta-Phase. Es wird noch große Änderungen und neue Funktionen geben, die wir im Laufe der Zeit hinzufügen werden."
+    "HomePage": {
+        "beta": "beta",
+        "pdfstitcherHref": "https://www.pdfstitcher.org/",
+        "youTubeSrc": "https://www.youtube.com/embed/m9RTLznEfRM?si=ELCJUrF4bx0OKJMf",
+        "github": "Siehe Quellcode",
+        "calibrate": "Starte Kalibrierung",
+        "choose-language": "Sprache",
+        "welcome": {
+            "title": "Willkommen bei Pattern Projector!",
+            "description": "Pattern Projector ist eine kostenlose und quelloffene Webanwendung, die Beamer für Schnittmuster schnell kalibriert. Sie bietet außerdem Werkzeuge zum Zusammenkleben von mehrseitigen Schnittmustern, zum Ändern der Linienstärke, zum Farbumkehren, zum Drehen und Spiegeln von Mustern und mehr. Die neuesten Updates finden Sie im <changeLogLink>Changelog</changeLogLink>."
+        },
+        "requirements": {
+            "title": "Was du benötigst",
+            "projector": "Beamer: mindestens 720p empfohlen",
+            "mat": "Eine Schneidematte mit Rasterlinien (optional)",
+            "mount": "Ständer oder Wand/Regal/Tischhalterung für den Beamer",
+            "computer": "Computer oder Tablet um es mit dem Beamer zu verbinden",
+            "pattern": "Ein PDF-Schnittmuster"
+        },
+        "setup": {
+            "title": "Setup",
+            "place": "Stellen/Hängen Sie den Beamer über der Schneidematte auf, so dass er direkt auf die Schneidematte zeigt. Wenn Sie keine Schneidematte haben, können Sie mit Papier oder Kreppband ein Raster/Rechteck auf einem Tisch oder dem Boden markieren.",
+            "connect": "Schließe deinen Computer oder Tablet an den Beamer an und dupliziere oder erweitere deine Anzeige.",
+            "focus": "Stelle den Focus bei deinem Beamer ein, bis der Text in der Mitte der Projektion scharf ist. Wenn du das Bild nicht scharf bekommst, versichere dich, dass die Entfernung zwischen Beamer und Schneidematte der Herstellerangabe entspricht.",
+            "keystone": "Wenn dein Beamer Keystones hat, dann versuche es so nah wie möglich am vorgesehenen Rechteck auszurichten."
+        },
+        "calibration": {
+            "title": "Kalibrierung",
+            "start": "Klicke auf “Starte Kalibrierung.”",
+            "input": "Füge die Weite und Höhe deiner Schneidematte ein.",
+            "fullscreen": "Gehe auf Vollbildmodus, indem du auf das Ikon klickst ",
+            "drag": "Ziehe die Ecken des Rasters auf die Ecken deiner Schneidematte. Mit Blick auf die Matte, justiere die Ecken am PC oder Tablet. Justiere es solange, bis die Ecken und Linien mit deiner Schneidematte übereinstimmen.",
+            "size": "Sie müssen nicht die gesamte Matte kalibrieren. Wählen Sie stattdessen den größten Bereich, in den das Kalibrierungsgitter passt, und geben Sie die Breite und Höhe entsprechend der Breite und Höhe des Gitters ein.",
+            "project": "Wenn das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf \"Beamen\"."
+        },
+        "project": {
+            "title": "Projiziere ein Schnittmuster",
+            "open": "Klicke auf <pdficon></pdficon> um das PDF-Dokument zu öffnen.",
+            "move": "Bewege die PDF durch Klicken und Ziehen über den Bildschirm.",
+            "cut": "Schneide die Schnittteile an der Projektion aus.",
+            "tools": "Im Projektionsmodus sind verschiedene Tools enthalten:",
+            "showGrid": {
+                "title": "Ein-/Ausblenden des Rasters",
+                "description": "Beim Beamen kann das abgeschwächte Raster ein-/ausgeblendet, um zu sehen, ob die Kalibrierung korrekt ist."
+            },
+            "invert": {
+                "title": "Farbumkehrung",
+                "description": "Bei der Projektion ist es normalerweise einfacher, grüne oder weiße Linien auf schwarzem Grund zu sehen. Klicken/Tippen Sie einmal für grüne Linien, zweimal für weiße Linien und dreimal, um zu schwarzen Linien zurückzukehren."
+            },
+            "flip": {
+                "title": "Spiegel Vertikal/Horizontal",
+                "description": "Hilfreich um Stoffbruch oder gegengleiche Schnitteile zu spiegeln."
+            },
+            "rotate": {
+                "title": "Drehen",
+                "description": "Dreht das Schnittmuster um 90 Grad."
+            },
+            "recenter": {
+                "title": "PDF zentrieren",
+                "description": "Zentriert das Schnittmuster auf der Projektionsfläche"
+            },
+            "fullscreen": {
+                "title": "Vollbild",
+                "description": "Es ist generell einfacher, die Software im Vollbildmodus zu verwenden."
+            },
+            "measure": {
+                "description": "Markieren Sie Linien in der PDF-Datei zum Drehen, Spiegeln, Verschieben, Messen oder Markieren.",
+                "title": "Werkzeug zum Markieren, Messen und Transformieren starten"
+            },
+            "showMenu": {
+                "title": "Zeige/Verstecke Menü",
+                "description": "Das obere Menü ein- oder ausblenden."
+            },
+            "moveTool": {
+                "title": "Werkzeug zum Verschieben ein-/ausblenden",
+                "description": "Das Verschiebewerkzeug verfügt über vier Pfeiltasten zum Verschieben der Ecken/Kanten des Kalibrierungsgitters. In der Mitte befindet sich außerdem eine Schaltfläche \"Weiter\", mit der Sie zur nächsten Ecke/Kante wechseln können."
+            },
+            "overlayOptions": {
+                "title": "Überlagerungsoptionen ein-/ausblenden",
+                "description": "Die Overlays Raster, Rand, Papierbogen und Flip-Linien können ein- oder ausgeblendet werden. Das Raster entspricht dem Kalibrierungsraster, der Rand ist die Umrandung des Kalibrierungsrasters, das Papierblatt ist ein Rechteck in der Größe eines DIN-A4-Blattes, und die Umkehrlinien sind Linien, die bei der Spiegelung von Mustern helfen."
+            },
+            "lineWeight": {
+                "title": "Liniendicke",
+                "description": "Ändern Sie die Dicke der Linien im PDF-Muster."
+            },
+            "layers": {
+                "title": "Ebenen ein-/ausblenden",
+                "description": "Ebenen in der PDF-Datei ein- oder ausblenden."
+            },
+            "stitch": {
+                "title": "Stichmenü anzeigen/verbergen",
+                "description": "Blenden Sie das Stichmenü ein oder aus, mit dem Sie mehrseitige PDF-Designs zusammenheften können."
+            }
+        },
+        "faq": {
+            "title": "FAQ",
+            "wrongSizePdf": {
+                "question": "Wird die PDF zu groß oder zu klein projiziert?",
+                "answer": "Die Kalibrierung hat keinen Zoom, da der Maßstab der Projektion von den Größenangaben in der PDF-Datei stammt. Stellen Sie sicher, dass das Schnittmuster den richtigen Maßstab hat. Eine gute Möglichkeit um zu überprüfen, ob der Maßstab des Schnittmusters stimmt, ist die Projektion eines <inchGridLink>ein Zoll</inchGridLink> oder <cmGridLink>ein Zentimeter</cmGridLink> Rasters, um zu sehen, ob es mit der Schneidematte übereinstimmt."
+            },
+            "saveAsApp": {
+                "question": "Möchtest du Pattern Projector als App speichern?",
+                "answer": "Pattern Projector ist eine Progressive Web App (PWA), somit kann es als APP gespeichert werden. Auf dem PC kannst du es installieren, indem du <googleChromeLink>Chrome</googleChromeLink> oder <microsoftEdgeLink>Edge</microsoftEdgeLink> verwendet. Auf dem Tablet, öffne das Menü und füge diese Seite auf dem Hauptbildschirm hinzu."
+            },
+            "annotationSupport": {
+                "question": "Hast du einen Support für weitere Anmerkungen?",
+                "answer": "Noch nicht, aber es ist in einem der kommenden Updates geplant."
+            },
+            "chromecastSupport": {
+                "question": "Unterstützt du Chromecast?",
+                "answer": "Es ist möglich die Webseite mit Chrome zu benutzen, allerdings kann es zu Ausfällen in der Verbindung kommen. Dies kann frustierend sein, gerade beim Kalibrieren. Eine bessere Unterstützung für Chromecast ist für ein kommendes Update geplant."
+            },
+            "mobileSupport": {
+                "question": "Unterstützt du Tablets oder Handys?",
+                "answer": "Es ist möglich die Webseite auf dem Handy zu öffnen und zu benutzen, allerdings wird die begrenzte Bildschirmgröße die Benutzung erschweren. Besserer Support dafür ist geplant und wird in kommenden Updates umgesetzt."
+            }
+        },
+        "resources": {
+            "title": "Zusätzliche Informationen",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Nähen mit Beamer",
+                    "link": "https://www.facebook.com/groups/naehenmitbeamer/"
+                },
+                "onePageGuide": {
+                    "title": "Einseitige Anleitung zum Nähen mit Beamer",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
+                }
+            }
+        },
+        "contribute": {
+            "title": "Unterstütze dieses Projekt",
+            "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>kaufe mir einen Kaffee</donateLink> unterstützen",
+            "develop": "Hilfe um neue Featuers zu implementieren oder Fehler zu beheben auf <githubLink>GitHub</githubLink>.",
+            "translate": "Übersetzung dieses Projekts in mehrere Sprachen.",
+            "feedback": "Feedback und Verbesserungsvorschläge sind herzlich Willkommen!"
+        },
+        "contact": "Kontakt"
     },
-    "requirements": {
-      "title": "Was du benötigst",
-      "projector": "Beamer: mindestens 720p empfohlen",
-      "mat": "Schneidematte: idealerweise mit Rasterlininen",
-      "mount": "Ständer oder Wand/Regal/Tischhalterung für den Beamer",
-      "computer": "Computer oder Tablet um es mit dem Beamer zu verbinden",
-      "pattern": "Ein PDF-Schnittmuster"
+    "Header": {
+        "projecting": "Beamen",
+        "calibrating": "Kalibrierung",
+        "openPDF": "Öffne PDF",
+        "height": "H:",
+        "width": "B:",
+        "project": "Beamen",
+        "calibrate": "Kalibrieren",
+        "delete": "Kalibrierung zurücksetzen",
+        "gridOn": "Raster ein",
+        "gridOff": "Raster aus",
+        "invertColor": "Farbumkehrung ein",
+        "invertColorOff": "Farbumkehrung aus",
+        "flipVertical": "Spiegel vertikal",
+        "flipVerticalOff": "Spiegel vertikal aus",
+        "flipHorizontal": "Spiegel horizontal",
+        "flipHorizontalOff": "Spiegel horizontal aus",
+        "fourCornersOn": "Eckpunkte einblenden",
+        "fourCornersOff": "Eckpunkte ausblenden",
+        "rotate90": "Drehe 90 Grad im Uhrzeigersinn",
+        "arrowBack": "Zurück 1 Seite",
+        "arrowForward": "Vorwärts 1 Seite",
+        "info": "Info Seite",
+        "layersOn": "Blende Ebenenmenü ein",
+        "layersOff": "Blende Ebenenmenü aus",
+        "recenter": "PDF zentrieren",
+        "fullscreen": "Vollbild ein",
+        "fullscreenExit": "Vollbild aus",
+        "lineWeight": "Linienstärke",
+        "stitchMenuShow": "Zeige Linienmenü",
+        "stitchMenuHide": "Verstecke Linienmenü",
+        "overlayModeOff": "Aus",
+        "overlayModeGrid": "Raster",
+        "overlayModePaper": "Papierbogen",
+        "measureOff": "Messung beenden",
+        "overlayMode": "Overlay-Modus",
+        "overlayModeBorder": "Umrandung",
+        "menuShow": "Zeige Menü",
+        "menuHide": "Verstecke Menü",
+        "measureOn": "Messung beginnen",
+        "overlayOptions": "Overlay Optionen",
+        "overlayOptionBorder": "Ränder",
+        "overlayOptionDisabled": "Deaktiviert",
+        "overlayOptionGrid": "Raster",
+        "overlayOptionPaper": "Papierseite",
+        "overlayOptionFliplines": "Drehe Linien"
     },
-    "setup": {
-      "title": "Setup",
-      "place": "Stelle den Beamer über oder hinter der Schneidematte auf, so dass er auf die Schneidematte projiziert.",
-      "connect": "Schließe deinen Computer oder Tablet an den Beamer an und dupliziere oder erweitere deine Anzeige.",
-      "focus": "Stelle den Focus bei deinem Beamer ein, bis der Text in der Mitte der Projektion scharf ist. Wenn du das Bild nicht scharf bekommst, versichere dich, dass die Entfernung zwischen Beamer und Schneidematte der Herstellerangabe entspricht.",
-      "keystone": "Wenn dein Beamer Keystones hat, dann versuche es so nah wie möglich am vorgesehenen Rechteck auszurichten."
-    },
-    "calibration": {
-      "title": "Kalibrierung",
-      "start": "Klicke auf “Starte Kalibrierung.”",
-      "input": "Füge die Weite und Höhe deiner Schneidematte ein.",
-      "fullscreen": "Gehe auf Vollbildmodus, indem du auf das Ikon klickst ",
-      "drag": "Ziehe die Ecken des Rasters auf die Ecken deiner Schneidematte. Mit Blick auf die Matte, justiere die Ecken am PC oder Tablet. Justiere es solange, bis die Ecken und Linien mit deiner Schneidematte übereinstimmen.",
-      "size": "Es muss nicht die gesamte Matte kalibriert werden, sondern nur der größte Bereich, in den das Kalibrierungsgitter passt. Stelle dabei sicher, dass die Breiten- und Höhenangaben mit denen des Gitters übereinstimmen.",
-      "project": "Wenn das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf \"Beamen\"."
-    },
-    "project": {
-      "title": "Projiziere ein Schnittmuster",
-      "open": "Klicke auf <pdficon></pdficon> um das PDF-Dokument zu öffnen.",
-      "move": "Bewege die PDF durch Klicken und Ziehen über den Bildschirm.",
-      "cut": "Schneide die Schnittteile an der Projektion aus.",
-      "tools": "Im Projektionsmodus sind verschiedene Tools enthalten:",
-      "showGrid": {
-        "title": "Ein-/Ausblenden des Rasters",
-        "description": "Beim Beamen kann das abgeschwächte Raster ein-/ausgeblendet, um zu sehen, ob die Kalibrierung korrekt ist."
-      },
-      "invert": {
-        "title": "Farbumkehrung",
-        "description": "Beim Beamen ist es einfacher weiße Linien auf schwarzem Hintergrund zu sehen."
-      },
-      "flip": {
-        "title": "Spiegel Vertikal/Horizontal",
-        "description": "Hilfreich um Stoffbruch oder gegengleiche Schnitteile zu spiegeln."
-      },
-      "rotate": {
-        "title": "Drehen",
-        "description": "Dreht das Schnittmuster um 90 Grad."
-      },
-      "recenter": {
-        "title": "PDF zentrieren",
-        "description": "Zentriert das Schnittmuster auf der Projektionsfläche"
-      },
-      "fullscreen": {
-        "title": "Vollbild",
-        "description": "Es ist generell einfacher, die Software im Vollbildmodus zu verwenden."
-      }
-    },
-    "faq": {
-      "title": "FAQ",
-      "wrongSizePdf": {
-        "question": "Wird die PDF zu groß oder zu klein projiziert?",
-        "answer": "Die Kalibrierung hat keinen Zoom, da der Maßstab der Projektion von den Größenangaben in der PDF-Datei stammt. Stellen Sie sicher, dass das Schnittmuster den richtigen Maßstab hat. Eine gute Möglichkeit um zu überprüfen, ob der Maßstab des Schnittmusters stimmt, ist die Projektion eines <inchGridLink>ein Zoll</inchGridLink> oder <cmGridLink>ein Zentimeter</cmGridLink> Rasters, um zu sehen, ob es mit der Schneidematte übereinstimmt."
-      },
-      "saveAsApp": {
-        "question": "Möchtest du Pattern Projector als App speichern?",
-        "answer": "Pattern Projector ist eine Progressive Web App (PWA), somit kann es als APP gespeichert werden. Auf dem PC kannst du es installieren, indem du <googleChromeLink>Chrome</googleChromeLink> oder <microsoftEdgeLink>Edge</microsoftEdgeLink> verwendet. Auf dem Tablet, öffne das Menü und füge diese Seite auf dem Hauptbildschirm hinzu."
-      },
-      "annotationSupport": {
-        "question": "Hast du einen Support für weitere Anmerkungen?",
-        "answer": "Noch nicht, aber es ist in einem der kommenden Updates geplant."
-      },
-      "chromecastSupport": {
-        "question": "Unterstützt du Chromecast?",
-        "answer": "Es ist möglich die Webseite mit Chrome zu benutzen, allerdings kann es zu Ausfällen in der Verbindung kommen. Dies kann frustierend sein, gerade beim Kalibrieren. Eine bessere Unterstützung für Chromecast ist für ein kommendes Update geplant."
-      },
-      "mobileSupport": {
-        "question": "Unterstützt du Tablets oder Handys?",
-        "answer": "Es ist möglich die Webseite auf dem Handy zu öffnen und zu benutzen, allerdings wird die begrenzte Bildschirmgröße die Benutzung erschweren. Besserer Support dafür ist geplant und wird in kommenden Updates umgesetzt."
-      }
-    },
-    "resources": {
-      "title": "Zusätzliche Informationen",
-      "links": {
-        "projectorsForSewing": {
-          "title": "Nähen mit Beamer",
-          "link": "https://www.facebook.com/groups/naehenmitbeamer/"
-        }
-      }
-    },
-    "contribute": {
-      "title": "Unterstütze dieses Projekt",
-      "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>kaufe mir einen Kaffee</donateLink> unterstützen",
-      "develop": "Hilfe um neue Featuers zu implementieren oder Fehler zu beheben auf <githubLink>GitHub</githubLink>.",
-      "translate": "Übersetzung dieses Projekts in mehrere Sprachen.",
-      "feedback": "Feedback und Verbesserungsvorschläge sind herzlich Willkommen!"
-    },
-    "contact": "Kontakt"
-  },
-  "Header": {
-    "projecting": "Beamen",
-    "calibrating": "Kalibrierung",
-    "openPDF": "Öffne PDF",
-    "height": "H:",
-    "width": "B:",
-    "project": "Beamen",
-    "calibrate": "Kalibrieren",
-    "delete": "Kalibrierung zurücksetzen",
-    "gridOn": "Raster ein",
-    "gridOff": "Raster aus",
-    "invertColor": "Farbumkehrung ein",
-    "invertColorOff": "Farbumkehrung aus",
-    "flipVertical": "Spiegel vertikal",
-    "flipVerticalOff": "Spiegel vertikal aus",
-    "flipHorizontal": "Spiegel horizontal",
-    "flipHorizontalOff": "Spiegel horizontal aus",
-    "fourCornersOn": "Eckpunkte einblenden",
-    "fourCornersOff": "Eckpunkte ausblenden",
-    "rotate90": "Drehe 90 Grad im Uhrzeigersinn",
-    "arrowBack": "Zurück 1 Seite",
-    "arrowForward": "Vorwärts 1 Seite",
-    "info": "Info Seite",
-    "layersOn": "Blende Ebenenmenü ein",
-    "layersOff": "Blende Ebenenmenü aus",
-    "recenter": "PDF zentrieren",
-    "fullscreen": "Vollbild ein",
-    "fullscreenExit": "Vollbild aus",
-    "lineWeight": "Linienstärke",
-    "stitchMenuShow": "Zeige Linienmenü",
-    "stitchMenuHide": "Verstecke Linienmenü",
-    "overlayModeOff": "Aus",
-    "overlayModeGrid": "Raster",
-    "overlayModePaper": "Papierbogen",
-    "measureOff": "Messung beenden",
-    "overlayMode": "Overlay-Modus",
-    "overlayModeBorder": "Umrandung",
-    "menuShow": "Zeige Menü",
-    "menuHide": "Verstecke Menü",
-    "measureOn": "Messung beginnen"
-  },
-  "StitchMenu": {
-    "columnCount": "Spalten",
-    "pageRange": "Seiten",
-    "horizontal": "Horizontal",
-    "vertical": "Vertikal"
-  }
+    "StitchMenu": {
+        "columnCount": "Spalten",
+        "pageRange": "Seiten",
+        "horizontal": "Horizontal",
+        "vertical": "Vertikal"
+    }
 }
