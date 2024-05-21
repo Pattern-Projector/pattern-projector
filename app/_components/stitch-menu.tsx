@@ -52,7 +52,7 @@ export default function StitchMenu({
           value={stitchSettings.pageRange}
         />
         <StepperInput
-          inputClassName="w-24"
+          inputClassName="w-12"
           handleChange={(e) =>
             dispatchStitchSettings({
               type: "set-column-count",
@@ -77,7 +77,7 @@ export default function StitchMenu({
           }
         />
         <StepperInput
-          inputClassName="w-24"
+          inputClassName="w-12"
           handleChange={handleEdgeInsetChange}
           label={t("horizontal")}
           name="horizontal"
@@ -95,7 +95,7 @@ export default function StitchMenu({
         />
 
         <StepperInput
-          inputClassName="w-24"
+          inputClassName="w-12"
           handleChange={handleEdgeInsetChange}
           label={t("vertical")}
           name="vertical"
