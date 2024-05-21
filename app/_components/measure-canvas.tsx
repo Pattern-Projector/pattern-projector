@@ -63,27 +63,34 @@ export default function MeasureCanvas({
   const transformer = useTransformerContext();
   const t = useTranslations("MeasureCanvas");
   const transform = useTransformContext();
+  const disablePointer = measuring || selectedEnd >= 0;
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
     const p = { x: e.clientX, y: e.clientY };
 
+    // Possibly select a line.
     if (!startPoint && lines.length > 0) {
       const m = calibrationTransform.mmul(transform);
       for (let i = 0; i < lines.length; i++) {
         const line = transformLine(lines[i], m);
         if (selectedLine == i) {
-          if (sqrDist(p, line[0]) < 1000) {
+          if (sqrDist(p, line[0]) < 2000) {
             dragOffset.current = { x: p.x - line[0].x, y: p.y - line[0].y };
             setSelectedEnd(0);
+            e.stopPropagation();
             return;
           }
-          if (sqrDist(p, line[1]) < 1000) {
+          if (sqrDist(p, line[1]) < 2000) {
             dragOffset.current = { x: p.x - line[1].x, y: p.y - line[1].y };
             setSelectedEnd(1);
+            e.stopPropagation();
             return;
           }
         }
-        if (sqrDistToLine(line, p) < 100) {
+
+        if (sqrDistToLine(line, p) < 600) {
+          e.stopPropagation();
           if (i == selectedLine) {
             setSelectedLine(-1);
             return;
@@ -93,43 +100,43 @@ export default function MeasureCanvas({
           }
         }
       }
+
       setSelectedLine(-1);
+      setSelectedEnd(-1);
     }
 
     if (!measuring) {
       return;
     }
 
+    e.stopPropagation();
     if (!startPoint) {
+      // Begin a new line.
       setStartPoint(p);
       setMovingPoint(p);
-    } else {
-      const end = axisConstrained
-        ? constrainInSpace(p, startPoint, perspective, calibrationTransform)
-        : p;
-      const m = inverse(transform).mmul(perspective);
-      const pdfLine = transformLine([startPoint, end], m);
-      setSelectedLine(lines.length);
-      setLines([...lines, pdfLine]);
-      setStartPoint(null);
-      setMeasuring(false);
     }
+
+    e.stopPropagation();
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const p = { x: e.clientX, y: e.clientY };
+    e.preventDefault();
 
+    const p = { x: e.clientX, y: e.clientY };
     if (startPoint && measuring) {
+      e.stopPropagation();
       setMovingPoint(p);
     }
 
     if (e.buttons === 0 && selectedEnd >= 0) {
+      e.stopPropagation();
       // If the mouse button is released, end the drag.
       setSelectedEnd(-1);
       return;
     }
 
     if (selectedLine >= 0 && selectedEnd >= 0 && dragOffset.current) {
+      e.stopPropagation();
       const line = lines[selectedLine];
       const m = inverse(transform).mmul(perspective);
       const op = {
@@ -144,11 +151,27 @@ export default function MeasureCanvas({
         const newLine: Line = [line[0], pt];
         setLines(lines.toSpliced(selectedLine, 1, newLine));
       }
+      e.stopPropagation();
     }
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
     setSelectedEnd(-1);
+    if (!startPoint || !measuring) {
+      return;
+    }
+    const p = { x: e.clientX, y: e.clientY };
+    // finish the line.
+    const end = axisConstrained
+      ? constrainInSpace(p, startPoint, perspective, calibrationTransform)
+      : p;
+    const m = inverse(transform).mmul(perspective);
+    const pdfLine = transformLine([startPoint, end], m);
+    setSelectedLine(lines.length);
+    setLines([...lines, pdfLine]);
+    setStartPoint(null);
+    setMeasuring(false);
   };
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -276,15 +299,13 @@ export default function MeasureCanvas({
       <div
         onKeyDown={handleKeyDown}
         onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
+        onPointerDownCapture={handlePointerDown}
+        onPointerMoveCapture={handlePointerMove}
+        onPointerUpCapture={handlePointerUp}
         tabIndex={0}
         className={`${measuring ? "cursor-crosshair" : ""} h-screen w-screen`}
       >
-        <div
-          className={`${measuring || selectedEnd >= 0 ? "pointer-events-none" : ""}`}
-        >
+        <div className={`${disablePointer ? "pointer-events-none" : ""}`}>
           {children}
         </div>
         <canvas
@@ -295,8 +316,8 @@ export default function MeasureCanvas({
       <menu
         className={`absolute flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
         style={{
-          top: `${point?.y ?? 0}px`,
-          left: `${point?.x ?? 0}px`,
+          top: `${(point?.y ?? 0) + 10}px`,
+          left: `${(point?.x ?? 0) + 24}px`,
         }}
       >
         <Tooltip description={t("rotateToHorizontal")}>

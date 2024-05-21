@@ -278,6 +278,10 @@ export function sqrDist(a: Point, b: Point): number {
   return dx * dx + dy * dy;
 }
 
+export function dist(a: Point, b: Point): number {
+  return Math.sqrt(sqrDist(a, b));
+}
+
 export function minIndex(a: number[]): number {
   let min = 0;
   for (let i = 1; i < a.length; i++) {
@@ -286,6 +290,10 @@ export function minIndex(a: number[]): number {
     }
   }
   return min;
+}
+
+export function distToLine(line: Line, p: Point): number {
+  return Math.sqrt(sqrDistToLine(line, p));
 }
 
 export function sqrDistToLine(line: Line, p: Point): number {
