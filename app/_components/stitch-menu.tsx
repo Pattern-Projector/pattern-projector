@@ -49,7 +49,7 @@ export default function StitchMenu({
     URL.revokeObjectURL(url);
   }
 
-  function handleSaveChange(e: React.MouseEvent<HTMLButtonElement>) {
+  function handleSaveChange() {
     if (file === null) return;
 
     // Try saving stitched PDF, prompting for password if necessary.
@@ -61,7 +61,7 @@ export default function StitchMenu({
         // User cancelled, do nothing
         if (response === null) return;
         saveStitchedPDF(file, stitchSettings, pageCount, response).then(
-          stitchFileSuccess
+          stitchFileSuccess,
         );
       } else {
         console.error(e);
