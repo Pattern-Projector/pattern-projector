@@ -460,6 +460,7 @@ export default function Header({
             <Tooltip description={t("recenter")}>
               <IconButton
                 onClick={() => {
+                  transformer.reset();
                   transformer.recenter(
                     getCenterPoint(+width, +height, unitOfMeasure),
                     layoutWidth,

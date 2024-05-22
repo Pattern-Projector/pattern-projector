@@ -13,7 +13,10 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
-import { getPerspectiveTransformFromPoints } from "@/_lib/geometry";
+import {
+  getCenterPoint,
+  getPerspectiveTransformFromPoints,
+} from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
@@ -391,6 +394,7 @@ export default function Page() {
               measuring={measuring}
               setMeasuring={setMeasuring}
               file={file}
+              gridCenter={getCenterPoint(+width, +height, unitOfMeasure)}
             >
               <Draggable
                 className={`absolute`}
