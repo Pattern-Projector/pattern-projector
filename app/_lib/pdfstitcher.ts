@@ -5,7 +5,7 @@ import { getPageNumbers } from "./get-page-numbers";
 function trimmedPageSize(
   inDoc: PDFDocument,
   pages: number[],
-  settings: StitchSettings
+  settings: StitchSettings,
 ) {
   /**
    * Computes the size for each trimmed page.
@@ -25,12 +25,12 @@ export async function saveStitchedPDF(
   file: File,
   settings: StitchSettings,
   pageCount: number,
-  password: string = ""
+  password: string = "",
 ) {
   // Grab the bytes from the file object and try to load the PDF
   // Error handling is done in the calling function.
   const pdfBytes = await file.arrayBuffer();
-  let inDoc = await PDFDocument.load(pdfBytes, {
+  const inDoc = await PDFDocument.load(pdfBytes, {
     ignoreEncryption: true,
     password,
   });
@@ -51,7 +51,12 @@ export async function saveStitchedPDF(
   const margin = Math.max(trim.horizontal, trim.vertical, 72);
   const outDoc = await PDFDocument.create();
   const outPage = outDoc.addPage([outWidth, outHeight]);
-  outPage.setMediaBox(-margin, -margin, outWidth + margin * 2, outHeight + margin * 2)
+  outPage.setMediaBox(
+    -margin,
+    -margin,
+    outWidth + margin * 2,
+    outHeight + margin * 2,
+  );
 
   // Loop through the pages and copy them to the output document
   let x = 0;
@@ -59,7 +64,7 @@ export async function saveStitchedPDF(
   for (const p of pages) {
     if (p > 0) {
       const xobject = await outDoc.embedPage(inDoc.getPage(p - 1));
-      outPage.drawPage(xobject, {x: x, y: y});
+      outPage.drawPage(xobject, { x: x, y: y });
     }
     // Adjust the position for the next page
     x += pageSize.width;
@@ -70,5 +75,5 @@ export async function saveStitchedPDF(
   }
 
   // Save the stitched document
-  return await outDoc.save()
+  return await outDoc.save();
 }
