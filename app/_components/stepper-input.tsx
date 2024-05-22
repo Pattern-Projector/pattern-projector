@@ -1,4 +1,4 @@
-import { ChangeEvent, LegacyRef, ReactElement, useState } from "react";
+import { ChangeEvent, ReactElement, useState } from "react";
 import StepDownIcon from "@/_icons/step-down-icon";
 import StepUpIcon from "@/_icons/step-up-icon";
 
@@ -12,30 +12,18 @@ import StepUpIcon from "@/_icons/step-up-icon";
  * @param value - Input value
  */
 export default function StepperInput({
-  className,
   inputClassName,
   handleChange,
-  id,
-  inputTestId,
   label,
   name,
   value,
-  min,
-  type,
-  inputRef,
   onStep,
 }: {
-  className?: string | undefined;
   inputClassName?: string | undefined;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  id?: string;
-  inputTestId?: string;
   label?: string | ReactElement;
   name?: string;
   value: string;
-  type?: string;
-  min?: string;
-  inputRef?: LegacyRef<HTMLInputElement> | undefined;
   onStep: (increment: number) => void;
 }) {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);

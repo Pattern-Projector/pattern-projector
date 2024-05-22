@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Install app button
 - Keyboard shortcuts for frequently used tools
 - Tool to rotate to horizontal, mark lines on PDF, flip about the line, move based on the line's length, and drag end of measurement line
 - Cursor changes from grab to grabbing hand when dragging

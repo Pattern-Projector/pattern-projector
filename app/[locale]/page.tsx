@@ -1,3 +1,6 @@
+"use client";
+
+import dynamic from "next/dynamic";
 import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
 
@@ -13,7 +16,6 @@ import PatternProjectorIcon from "../_icons/pattern-projector-icon";
 import PdfIcon from "../_icons/pdf-icon";
 import Rotate90DegreesCWIcon from "../_icons/rotate-90-degrees-cw-icon";
 import RecenterIcon from "@/_icons/recenter-icon";
-import Tooltip from "@/_components/tooltip/tooltip";
 import LanguageSwitcher from "@/_components/language-switcher";
 import { IconButton } from "@/_components/buttons/icon-button";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
@@ -23,6 +25,11 @@ import LayersIcon from "@/_icons/layers-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 
+const DynamicInstallButton = dynamic(
+  () => import("@/_components/buttons/install-button"),
+  { ssr: false },
+);
+
 export default function Home() {
   const t = useTranslations("HomePage");
   const messages = useMessages() as IntlMessages;
@@ -31,24 +38,20 @@ export default function Home() {
   );
 
   return (
-    <main className="m-4">
-      <nav className="flex items-center gap-2">
+    <main className="m-4 bg-white">
+      <nav className="flex items-center justify-between">
         <PatternProjectorIcon ariaLabel="" />
-        <LanguageSwitcher
-          ariaLabel={t("choose-language")}
-          className="ml-auto"
-        />
-        <Tooltip description={t("github")}>
-          <IconButton href="https://github.com/Pattern-Projector/pattern-projector">
-            <GithubIcon ariaLabel={t("github")} />
-          </IconButton>
-        </Tooltip>
-        <Link
-          className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-          href="/calibrate"
-        >
-          {t("calibrate")}
-        </Link>
+
+        <menu className="flex items-center gap-2">
+          <DynamicInstallButton />
+          <Link
+            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+            href="/calibrate"
+          >
+            {t("calibrate")}
+          </Link>
+          <LanguageSwitcher ariaLabel={t("choose-language")} />
+        </menu>
       </nav>
       <article className="prose lg:prose-xl m-auto">
         <h1>{t("welcome.title")}</h1>
@@ -284,7 +287,15 @@ export default function Home() {
             ),
           })}
         </p>
-        <p>{t("contribute.translate")}</p>
+        <p>
+          {t.rich("contribute.translate", {
+            weblateLink: (chunk) => (
+              <a href="https://hosted.weblate.org/projects/pattern-projector/pattern-projector/">
+                {chunk}
+              </a>
+            ),
+          })}
+        </p>
         <p>{t("contribute.feedback")}</p>
       </article>
       <footer className="bg-white rounded-lg shadow m-4">
@@ -296,6 +307,9 @@ export default function Home() {
             </a>
           </span>
 
+          <IconButton href="https://github.com/Pattern-Projector/pattern-projector">
+            <GithubIcon ariaLabel={t("github")} />
+          </IconButton>
           <a
             href="mailto:courtney@patternprojector.com"
             className="hover:underline"
