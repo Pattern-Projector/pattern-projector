@@ -73,8 +73,8 @@
                 "title": "Mostrar/ocultar capas"
             },
             "measure": {
-                "title": "Comenzar/terminar medición",
-                "description": "Mide la distancia entre dos puntos del PDF."
+                "title": "Herramienta inicial para marcar, medir y transformar",
+                "description": "Marque líneas en el archivo PDF para rotar, voltear, mover, medir o marcar."
             },
             "lineWeight": {
                 "title": "Grosor de línea",
@@ -187,7 +187,7 @@
         "calibrationAlertContinue": "La ventana ha cambiado desde la última vez que proyectó, pero la calibración no se ha actualizado. ¿Continuar de todos modos?",
         "ok": "DE ACUERDO",
         "calibrationAlertTitle": "Aviso de calibración",
-        "continue": "Continuar",
+        "continue": "Guardar el tamaño de la ventana y continuar",
         "checkCalibration": "Comprobar la calibración",
         "calibrationAlert": "La ventana ha cambiado desde que comenzó la proyección, active la pantalla completa o recalibre para solucionar este problema."
     },
@@ -211,5 +211,9 @@
     },
     "MeasureCanvas": {
         "rotateToHorizontal": "Girar en horizontal"
+    },
+    "InstallButton": {
+        "title": "Instalar aplicación",
+        "description": "Para obtener la mejor experiencia, instale el Proyector de patrones usando <chromeLink> Google Chrome</chromeLink> ."
     }
 }
