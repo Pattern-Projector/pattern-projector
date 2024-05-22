@@ -32,6 +32,7 @@ export default function MeasureCanvas({
   measuring,
   setMeasuring,
   file,
+  gridCenter,
   children,
 }: {
   perspective: Matrix;
@@ -41,6 +42,7 @@ export default function MeasureCanvas({
   measuring: boolean;
   setMeasuring: Dispatch<SetStateAction<boolean>>;
   file: File | null;
+  gridCenter: Point;
   children: React.ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -152,10 +154,13 @@ export default function MeasureCanvas({
     }
     const p = { x: e.clientX, y: e.clientY };
     // finish the line.
-    const end = axisConstrained
+    let end = axisConstrained
       ? constrainInSpace(p, startPoint, perspective, calibrationTransform)
       : p;
     const m = inverse(transform).mmul(perspective);
+    if (sqrDist(startPoint, end) < 100) {
+      end = { x: startPoint.x + CSS_PIXELS_PER_INCH, y: startPoint.y };
+    }
     const pdfLine = transformLine([startPoint, end], m);
     setSelectedLine(lines.length);
     setLines([...lines, pdfLine]);
@@ -299,9 +304,11 @@ export default function MeasureCanvas({
       </div>
       <LineMenu
         selectedLine={selectedLine}
+        setSelectedLine={setSelectedLine}
         lines={lines}
         setLines={setLines}
         handleDeleteLine={handleDeleteLine}
+        gridCenter={gridCenter}
       />
     </div>
   );

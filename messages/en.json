@@ -70,8 +70,8 @@
         "description": "Change the orientation of the pattern by 90 degrees."
       },
       "recenter": {
-        "title": "Recenter",
-        "description": "Centers the pattern on the cutting mat."
+        "title": "Center and Reset",
+        "description": "Centers the pattern on the cutting mat and resets the rotation/flipping."
       },
       "layers": {
         "title": "Show/hide layers",
@@ -163,7 +163,7 @@
     "arrowBack": "Back 1 page",
     "arrowForward": "Forward 1 page",
     "info": "Info page",
-    "recenter": "Center PDF (C)",
+    "recenter": "Center and Reset (C)",
     "fullscreen": "Enter full screen",
     "fullscreenExit": "Exit full screen",
     "ok": "OK",
@@ -203,7 +203,9 @@
     "next": "Next corner"
   },
   "MeasureCanvas": {
-    "rotateToHorizontal": "Rotate to horizontal",
+    "rotateToHorizontal": "Align to center",
+    "rotateAndCenterPrevious": "Bring previous line to center",
+    "rotateAndCenterNext": "Bring next line to center",
     "deleteLine": "Delete line",
     "flipAlong": "Flip along line",
     "translate": "Move PDF by line length"
