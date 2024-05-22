@@ -15,8 +15,8 @@ function trimmedPageSize(
   const firstPage = inDoc.getPage(firstRealPage);
 
   const pageSize = firstPage.getTrimBox() || firstPage.getMediaBox();
-  const width = pageSize.width - settings.edgeInsets.horizontal * 2;
-  const height = pageSize.height - settings.edgeInsets.vertical * 2;
+  const width = pageSize.width - settings.edgeInsets.horizontal;
+  const height = pageSize.height - settings.edgeInsets.vertical;
 
   return { width: width, height: height };
 }
@@ -47,20 +47,18 @@ export async function saveStitchedPDF(
   const outHeight = pageSize.height * rows;
 
   // Create a new page to hold the stitched pages
+  // Add at least a 1" margin because of weirdness.
+  const margin = Math.max(trim.horizontal, trim.vertical, 72);
   const outDoc = await PDFDocument.create();
   const outPage = outDoc.addPage([outWidth, outHeight]);
+  outPage.setMediaBox(-margin, -margin, outWidth + margin * 2, outHeight + margin * 2)
 
   // Loop through the pages and copy them to the output document
   let x = 0;
-  let y = outHeight - pageSize.height;
+  let y = outHeight - pageSize.height - margin;
   for (const p of pages) {
     if (p > 0) {
-      const xobject = await outDoc.embedPage(inDoc.getPage(p - 1), {
-        left: trim.horizontal,
-        bottom: trim.vertical,
-        right: pageSize.width + trim.horizontal,
-        top: pageSize.height + trim.vertical,
-      });
+      const xobject = await outDoc.embedPage(inDoc.getPage(p - 1));
       outPage.drawPage(xobject, {x: x, y: y});
     }
     // Adjust the position for the next page
