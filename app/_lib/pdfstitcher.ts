@@ -30,7 +30,7 @@ export async function saveStitchedPDF(
   // Grab the bytes from the file object and try to load the PDF
   // Error handling is done in the calling function.
   const pdfBytes = await file.arrayBuffer();
-  const inDoc = await PDFDocument.load(pdfBytes, {
+  const doc = await PDFDocument.load(pdfBytes, {
     ignoreEncryption: true,
     password,
   });
@@ -42,15 +42,14 @@ export async function saveStitchedPDF(
   const trim = settings.edgeInsets;
 
   // Compute the size of the output document
-  const pageSize = trimmedPageSize(inDoc, pages, settings);
+  const pageSize = trimmedPageSize(doc, pages, settings);
   const outWidth = pageSize.width * cols;
   const outHeight = pageSize.height * rows;
 
   // Create a new page to hold the stitched pages
   // Add at least a 1" margin because of weirdness.
   const margin = Math.max(trim.horizontal, trim.vertical, 72);
-  const outDoc = await PDFDocument.create();
-  const outPage = outDoc.addPage([outWidth, outHeight]);
+  const outPage = doc.addPage([outWidth, outHeight]);
   outPage.setMediaBox(
     -margin,
     -margin,
@@ -63,7 +62,7 @@ export async function saveStitchedPDF(
   let y = outHeight - pageSize.height - margin;
   for (const p of pages) {
     if (p > 0) {
-      const xobject = await outDoc.embedPage(inDoc.getPage(p - 1));
+      const xobject = await doc.embedPage(doc.getPage(p - 1));
       outPage.drawPage(xobject, { x: x, y: y });
     }
     // Adjust the position for the next page
@@ -74,6 +73,11 @@ export async function saveStitchedPDF(
     }
   }
 
+  // remove all the original pages except the last one
+  while (doc.getPageCount() > 1) {
+    doc.removePage(0);
+  }
+
   // Save the stitched document
-  return await outDoc.save();
+  return await doc.save();
 }
