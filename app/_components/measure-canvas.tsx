@@ -301,7 +301,6 @@ export default function MeasureCanvas({
         selectedLine={selectedLine}
         lines={lines}
         setLines={setLines}
-        calibrationTransform={calibrationTransform}
         handleDeleteLine={handleDeleteLine}
       />
     </div>

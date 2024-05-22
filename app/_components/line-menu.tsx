@@ -13,39 +13,31 @@ import {
 import { transformLine } from "@/_lib/geometry";
 import { Line } from "@/_lib/interfaces/line";
 import { Dispatch, SetStateAction } from "react";
-import Matrix from "ml-matrix";
 
 export default function LineMenu({
   selectedLine,
   lines,
   setLines,
-  calibrationTransform,
   handleDeleteLine,
 }: {
   selectedLine: number;
   lines: Line[];
   setLines: Dispatch<SetStateAction<Line[]>>;
-  calibrationTransform: Matrix;
   handleDeleteLine: () => void;
 }) {
   const t = useTranslations("MeasureCanvas");
   const transformer = useTransformerContext();
   const transform = useTransformContext();
 
-  const m = calibrationTransform.mmul(transform);
   const selected = lines.at(selectedLine);
   const opLine = selected ? transformLine(selected, transform) : null;
-  const point = selected ? transformLine(selected, m)[0] : null;
   const borderIconButton = "border-2 border-black dark:border-white";
   return (
+    // center menu items horizontally
     <menu
-      className={`absolute flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
-      style={{
-        top: `${(point?.y ?? 0) + 10}px`,
-        left: `${(point?.x ?? 0) + 24}px`,
-      }}
+      className={`absolute justify-center left-0 right-0 bottom-0 flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
     >
-      <Tooltip description={t("rotateToHorizontal")}>
+      <Tooltip description={t("rotateToHorizontal")} top={true}>
         <IconButton
           className={borderIconButton}
           onClick={() => {
@@ -57,7 +49,7 @@ export default function LineMenu({
           <RotateToHorizontalIcon ariaLabel={t("rotateToHorizontal")} />
         </IconButton>
       </Tooltip>
-      <Tooltip description={t("flipAlong")}>
+      <Tooltip description={t("flipAlong")} top={true}>
         <IconButton
           className={borderIconButton}
           onClick={() => {
@@ -69,7 +61,7 @@ export default function LineMenu({
           <FlipVerticalIcon ariaLabel={t("flipAlong")} />
         </IconButton>
       </Tooltip>
-      <Tooltip description={t("translate")}>
+      <Tooltip description={t("translate")} top={true}>
         <IconButton
           className={borderIconButton}
           onClick={() => {
@@ -90,7 +82,7 @@ export default function LineMenu({
           <KeyboardArrowRightIcon ariaLabel={t("translate")} />
         </IconButton>
       </Tooltip>
-      <Tooltip description={t("deleteLine")}>
+      <Tooltip description={t("deleteLine")} top={true}>
         <IconButton className={borderIconButton} onClick={handleDeleteLine}>
           <DeleteIcon ariaLabel={t("deleteLine")} />
         </IconButton>
