@@ -39,18 +39,30 @@ export default function StitchMenu({
     dispatchStitchSettings({ type: "set-edge-insets", edgeInsets });
   }
 
+  function stitchFileSuccess(pdfBytes: Uint8Array) {
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file?.name.replace(".pdf", "-stitched.pdf") ?? "stitched.pdf";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function handleSaveChange(e: React.MouseEvent<HTMLButtonElement>) {
     if (file === null) return;
 
     // Try saving stitched PDF, prompting for password if necessary.
     try {
-      saveStitchedPDF(file, stitchSettings, pageCount);
+      saveStitchedPDF(file, stitchSettings, pageCount).then(stitchFileSuccess);
     } catch (e: Error | any) {
       if (e instanceof Error && e.message === "Invalid password") {
         const response = prompt(t("encryptedPDF"));
         // User cancelled, do nothing
         if (response === null) return;
-        saveStitchedPDF(file, stitchSettings, pageCount, response);
+        saveStitchedPDF(file, stitchSettings, pageCount, response).then(
+          stitchFileSuccess
+        );
       } else {
         console.error(e);
       }
