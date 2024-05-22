@@ -11,6 +11,7 @@ export function DropdownIconButton<T>({
   description,
   options,
   className,
+  dropdownClassName,
 }: {
   icon: React.ReactNode;
   selection: T;
@@ -21,6 +22,7 @@ export function DropdownIconButton<T>({
     value: T;
   }[];
   className?: string;
+  dropdownClassName?: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,7 +37,7 @@ export function DropdownIconButton<T>({
   };
 
   const dropdownClasses =
-    "absolute flex flex-col -left-5 mt-2 w-fit bg-white dark:bg-gray-800 rounded-md shadow-lg z-10";
+    "absolute mt-2 bg-white dark:bg-gray-800 rounded-md shadow-lg";
 
   useEffect(() => {
     const handleClickOutside = (event: PointerEvent) => {
@@ -68,7 +70,7 @@ export function DropdownIconButton<T>({
         </IconButton>
       </Tooltip>
       <div
-        className={`${dropdownClasses} ${visible(isOpen)}`}
+        className={`${dropdownClassName} ${dropdownClasses} ${visible(isOpen)}`}
         tabIndex={-1}
         role="menu"
       >
@@ -76,7 +78,7 @@ export function DropdownIconButton<T>({
           <button
             key={String(option.value)}
             id={`option-${index}`}
-            className={`flex justify-end w-full gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 rounded-md`}
+            className={`grid grid-cols-[20px_1fr] gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 rounded-md`}
             onClick={() => handleOptionClick(option.value)}
             role="menuitem"
             tabIndex={0}

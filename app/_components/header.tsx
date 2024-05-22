@@ -433,6 +433,7 @@ export default function Header({
 
             {!isCalibrating && (
               <DropdownIconButton
+                dropdownClassName="w-fit -left-5"
                 description={t("lineWeight")}
                 icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
                 options={lineThicknessOptions}
