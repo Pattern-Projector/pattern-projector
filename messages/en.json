@@ -185,7 +185,9 @@
     "columnCount": "Columns",
     "pageRange": "Stitch Pages",
     "horizontal": "Horizontal",
-    "vertical": "Vertical"
+    "vertical": "Vertical",
+    "save": "Save PDF",
+    "encryptedPDF": "This PDF is encrypted. Please enter the password to save the stitched PDF."
   },
   "LayerMenu": {
     "title": "Layers",
