@@ -1,9 +1,4 @@
-import {
-  PDFDocument,
-  PDFName,
-  PDFObjectCopier,
-  PDFObject,
-} from "@cantoo/pdf-lib";
+import { PDFDocument, PDFName, PDFObjectCopier } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
 
