@@ -57,8 +57,8 @@
                 "description": "Draai het patroon 90 graden."
             },
             "recenter": {
-                "title": "Centreer PDF opnieuw",
-                "description": "Plaatst het patroon in het midden van de snijmat."
+                "title": "Centreer PDF opnieuw en reset",
+                "description": "Plaatst het patroon in het midden van de snijmat en reset draaien/spiegelen."
             },
             "fullscreen": {
                 "title": "Volledig scherm",
@@ -73,8 +73,8 @@
                 "description": "De overlays raster, rondom, blad papier en spiegellijnen kunnen getoond of verborgen worden. Het raster komt overeen met het calibratie raster, rondom is de rand van het calibratie raster, blad papier is een rechthoek zo groot als een Letter of A4 formaat blad, en spiegellijnen zijn lijnen die helpen bij het spiegelen van patronen."
             },
             "measure": {
-                "description": "Meet de afstand tussen twee punten op de PDF.",
-                "title": "Start/stop meten"
+                "description": "Markeer lijnen op de PDF voor draaien, spiegelen, verplaatsen, meten of markeren.",
+                "title": "Lijn gereedschap"
             },
             "lineWeight": {
                 "title": "Lijndikte",
@@ -131,9 +131,9 @@
         },
         "contribute": {
             "title": "Help dit project",
-            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink>",
+            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink>!",
             "develop": "Help verbeteringen toe te voegen en problemen op te lossen op <githubLink>GitHub</githubLink>.",
-            "translate": "Vertaal deze software in meer talen.",
+            "translate": "Vertaal deze software in meer talen met <weblateLink>Weblate</weblateLink>.",
             "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom (in het Engels)!"
         },
         "contact": "Contact"
@@ -151,11 +151,11 @@
         "gridOff": "Raster uit",
         "invertColor": "Draai kleuren om",
         "invertColorOff": "Kleuren omdraaien uit",
-        "flipVertical": "Spiegel vertikaal",
+        "flipVertical": "Spiegel vertikaal (V)",
         "flipVerticalOff": "Spiegel vertikaal uit",
-        "flipHorizontal": "Spiegel horizontaal",
+        "flipHorizontal": "Spiegel horizontaal (H)",
         "flipHorizontalOff": "Spiegel horizontaal uit",
-        "rotate90": "Draai 90 graden met de klok mee",
+        "rotate90": "Draai 90 graden met de klok mee (R)",
         "fourCornersOn": "Alle hoeken markeren",
         "fourCornersOff": "Alleen geselecteerde hoek markeren",
         "arrowBack": "1 pagina terug",
@@ -163,7 +163,7 @@
         "info": "Informatie pagina",
         "layersOn": "Toon lagen menu",
         "layersOff": "Verberg lagen menu",
-        "recenter": "Centreer PDF opnieuw",
+        "recenter": "Centreer PDF opnieuw (C)",
         "fullscreen": "Start 'volledig scherm'",
         "fullscreenExit": "Verlaat 'volledig scherm'",
         "lineWeight": "Lijndikte",
@@ -190,14 +190,15 @@
         "hideMovement": "Verberg het verplaatsgereedschap",
         "ok": "OK",
         "calibrationAlertTitle": "Kalibratie waarschuwing",
-        "calibrationAlert": "Het venster is veranderd sinds het projecteren begonnen is, verander de \"schermvullend\" instelling of kalibreer opnieuw om dit op te lossen.",
-        "calibrationAlertContinue": "Het venster is veranderd sinds de laatste keer dat je geprojecteerd hebt, maar de kalibratie is niet bijgewerkt. Toch doorgaan?",
-        "continue": "Doorgaan",
-        "checkCalibration": "Kalibratie nakijken"
+        "calibrationAlert": "De venstergrootte is veranderd sinds het projecteren begonnen is, verander de \"schermvullend\" instelling of kalibreer opnieuw om dit op te lossen.",
+        "calibrationAlertContinue": "De venstergrootte kan niet meer veranderd worden na de kalibratie. Om in volledig venster te projekteren, kalibreer in volledig venster. Als je de venstergrootte wil veranderen, kalibreer dan opnieuw.",
+        "continue": "Sla venstergrootte op en ga door",
+        "checkCalibration": "Kalibratie nakijken",
+        "measure": "Lijn gereedschap (L)"
     },
     "StitchMenu": {
         "columnCount": "Kolommen",
-        "pageRange": "Pages",
+        "pageRange": "Paginas aan elkaar plakken",
         "horizontal": "Horizontal",
         "vertical": "Vertical"
     },
@@ -209,11 +210,26 @@
         "next": "Volgende hoek"
     },
     "MeasureCanvas": {
-        "rotateToHorizontal": "Draai naar horizontaal"
+        "rotateToHorizontal": "Lijn uit op midden",
+        "translate": "Verplaats de PDF met de lengte van de lijn",
+        "deleteLine": "Verwijder lijn",
+        "flipAlong": "Spiegel langs lijn",
+        "rotateAndCenterPrevious": "Breng de vorige lijn naar het midden",
+        "rotateAndCenterNext": "Breng de volgende lijn naar het midden"
     },
     "LayerMenu": {
         "title": "Lagen",
         "showAll": "Toon alles",
-        "hideAll": "Verberg alles"
+        "hideAll": "Verberg alles",
+        "layersOn": "Toon lagen menu",
+        "layersOff": "Verberg lagen menu",
+        "noLayers": "Geen lagen in de PDF"
+    },
+    "InstallButton": {
+        "title": "Installeer App",
+        "ok": "OK",
+        "description": "Installeer Pattern Projector met <chromeLink>Google Chrome</chromeLink> voor de beste ervaring.",
+        "descriptionAndroid": "Download de app met de 'meer' knop <moreIcon></moreIcon> in het browsermenu en dan <addToHomeScreenIcon></addToHomeScreenIcon> ‘Zet in beginscherm’ (Add to home screen).",
+        "descriptionIOS": "Dowload de app met de 'delen' knop <shareIcon></shareIcon> in het browsermenu, en dan met de <addToHomeScreenIcon></addToHomeScreenIcon> ‘Zet in beginscherm’ (Add to home screen) <addBoxIcon></addBoxIcon> knop."
     }
 }
