@@ -53,6 +53,12 @@ interface ResetAction {
   type: "reset";
 }
 
+interface AlignToCenterAction {
+  type: "align_to_center";
+  gridCenter: Point;
+  line: Line;
+}
+
 export type LocalTransformAction =
   | FlipAction
   | RotateToHorizontalAction
@@ -61,7 +67,8 @@ export type LocalTransformAction =
   | SetAction
   | RotateAction
   | RecenterAction
-  | ResetAction;
+  | ResetAction
+  | AlignToCenterAction;
 
 export default function localTransformReducer(
   localTransform: Matrix,
@@ -103,5 +110,11 @@ export default function localTransformReducer(
     case "reset": {
       return Matrix.identity(3);
     }
+    case "align_to_center": {
+      return translate({
+        x: action.gridCenter.x - action.line[0].x,
+        y: action.gridCenter.y - action.line[0].y,
+      }).mmul(rotateToHorizontal(action.line).mmul(localTransform));
+      }
   }
 }

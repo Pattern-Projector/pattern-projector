@@ -7,7 +7,7 @@ enum ButtonColor {
 enum IconButtonStateClass {
   DEFAULT = "",
   ACTIVE = "text-purple-700",
-  DISABLED = "text-gray-400",
+  DISABLED = "text-gray-400 dark:text-gray-600 cursor-not-allowed",
 }
 
 enum CornerColorHex {
