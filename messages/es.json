@@ -131,9 +131,9 @@
         },
         "contribute": {
             "title": "Contribuye al proyecto",
-            "donation": "Si deseas apoyar el desarrollo de esta herramienta, considera <donateLink>invitarme a un café</donateLink>",
+            "donation": "Si desea apoyar el desarrollo de esta herramienta, ¡considere <donateLink>invitarme a un café</donateLink>!",
             "develop": "Ayuda a implementar funciones y solucionar problemas en <githubLink>GitHub</githubLink>.",
-            "translate": "Traduce esta herramienta a más idiomas.",
+            "translate": "Traduzca esta herramienta a más idiomas usando <weblateLink>Weblate</weblateLink>.",
             "feedback": "¡Los comentarios y solicitud de funciones son bien recibidos!"
         },
         "contact": "Contactar"
@@ -157,21 +157,21 @@
         "overlayOptionFliplines": "Líneas de volteo",
         "invertColor": "Invertir colores",
         "invertColorOff": "Invertir colores desactivado",
-        "flipVertical": "Voltear verticalmente",
+        "flipVertical": "Girar verticalmente (v)",
         "flipVerticalOff": "Voltear verticalmente desactivado",
-        "flipHorizontal": "Voltear horizontalmente",
+        "flipHorizontal": "Girar horizontalmente (h)",
         "flipHorizontalOff": "Voltear horizontalmente desactivado",
         "flipCenterOn": "Voltear centro",
         "flipCenterOff": "Voltear centro desactivado",
         "fourCornersOn": "Resaltar todas las esquinas",
         "fourCornersOff": "Resaltar sólo la esquina seleccionada",
-        "rotate90": "Rotar 90 grados a la derecha",
+        "rotate90": "Girar 90 grados en el sentido de las agujas del reloj (r)",
         "arrowBack": "Retroceder 1 página",
         "arrowForward": "Avanzar 1 página",
         "info": "Página de inicio",
         "layersOn": "Mostrar menú de capas",
         "layersOff": "Ocultar menú de capas",
-        "recenter": "Volver a centrar",
+        "recenter": "Centrar PDF (c)",
         "fullscreen": "Activar pantalla completa",
         "fullscreenExit": "Salir de pantalla completa",
         "menuShow": "Mostrar menú superior",
@@ -184,12 +184,13 @@
         "showMovement": "Mostrar herramienta mover",
         "hideMovement": "Ocultar herramienta mover",
         "fullScreenChange": "Por favor, asegúrese de que la calibración es correcta. Debe calibrar en modo de pantalla completa si desea proyectar en pantalla completa.",
-        "calibrationAlertContinue": "La ventana ha cambiado desde la última vez que proyectó, pero la calibración no se ha actualizado. ¿Continuar de todos modos?",
+        "calibrationAlertContinue": "El tamaño de la ventana no puede cambiar después de la calibración. Para proyectar en pantalla completa, calibre en pantalla completa. Si desea cambiar el tamaño de la ventana, recalibre.",
         "ok": "DE ACUERDO",
         "calibrationAlertTitle": "Aviso de calibración",
         "continue": "Guardar el tamaño de la ventana y continuar",
         "checkCalibration": "Comprobar la calibración",
-        "calibrationAlert": "La ventana ha cambiado desde que comenzó la proyección, active la pantalla completa o recalibre para solucionar este problema."
+        "calibrationAlert": "El tamaño de la ventana ha cambiado desde que comenzó la proyección, pulse el botón de pantalla completa o recalibre para solucionar este problema.",
+        "measure": "Marcar, medir y transformar (m)"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
@@ -207,13 +208,22 @@
     "LayerMenu": {
         "title": "Capas",
         "showAll": "Mostrar todo",
-        "hideAll": "Ocultar todo"
+        "hideAll": "Ocultar todo",
+        "layersOff": "Ocultar el menú de la capa",
+        "layersOn": "Mostrar menú de la capa",
+        "noLayers": "Sin capas en PDF"
     },
     "MeasureCanvas": {
-        "rotateToHorizontal": "Girar en horizontal"
+        "rotateToHorizontal": "Girar en horizontal",
+        "deleteLine": "Borrar linea",
+        "flipAlong": "Girar a lo largo de la línea",
+        "translate": "Mover PDF por la longitud de la línea"
     },
     "InstallButton": {
         "title": "Instalar aplicación",
-        "description": "Para obtener la mejor experiencia, instale el Proyector de patrones usando <chromeLink> Google Chrome</chromeLink> ."
+        "description": "Para obtener la mejor experiencia, instale el Proyector de patrones usando <chromeLink> Google Chrome</chromeLink> .",
+        "descriptionAndroid": "Descargue la aplicación tocando el botón <moreIcon></moreIcon> más en el menú del navegador y luego <addToHomeScreenIcon></addToHomeScreenIcon> Agregar a la pantalla de inicio.",
+        "descriptionIOS": "Descarga la aplicación tocando el botón compartir <shareIcon></shareIcon> en el menú del navegador y luego Agregar a la pantalla de inicio <addBoxIcon></addBoxIcon> .",
+        "ok": "De acuerdo"
     }
 }
