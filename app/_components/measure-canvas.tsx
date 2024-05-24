@@ -51,13 +51,12 @@ export default function MeasureCanvas({
   const dragOffset = useRef<Point | null>(null);
 
   const [selectedLine, setSelectedLine] = useState<number>(-1);
-  const [selectedEnd, setSelectedEnd] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([]); // pattern space coordinates.
   const [axisConstrained, setAxisConstrained] = useState<boolean>(false);
 
   const transform = useTransformContext();
 
-  const disablePointer = measuring || selectedEnd >= 0;
+  const disablePointer = measuring || dragOffset.current;
 
   const endCircleRadius = 24;
   const lineTouchRadius = 48;
@@ -89,8 +88,7 @@ export default function MeasureCanvas({
         }
         if (minEnd >= 0) {
           if (minEnd == 0) {
-            // Swap the ends.
-            setSelectedEnd(1);
+            // Swap to always drag the end.
             setLines(lines.toSpliced(i, 1, [patternLine[1], patternLine[0]]));
           }
           e.stopPropagation();
@@ -108,7 +106,7 @@ export default function MeasureCanvas({
 
     // Nothing selected.
     setSelectedLine(-1);
-    setSelectedEnd(-1);
+    dragOffset.current = null;
 
     if (!measuring) {
       return;
@@ -118,7 +116,6 @@ export default function MeasureCanvas({
     const pattern = transformPoint(client, inverse(patternToClient));
     setLines([...lines, [pattern, pattern]]);
     setSelectedLine(lines.length);
-    setSelectedEnd(1);
     dragOffset.current = {
       x: 0,
       y: 0,
@@ -128,15 +125,15 @@ export default function MeasureCanvas({
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (e.buttons === 0 && selectedEnd >= 0) {
+    if (e.buttons === 0 && dragOffset.current) {
       e.stopPropagation();
       // If the mouse button is released, end the drag.
-      setSelectedEnd(-1);
+      dragOffset.current = null;
       return;
     }
 
     // Dragging an end of a line?
-    if (selectedLine >= 0 && selectedEnd >= 0 && dragOffset.current) {
+    if (selectedLine >= 0 && dragOffset.current) {
       e.stopPropagation();
       const client = { x: e.clientX, y: e.clientY };
       const clientDestination = {
@@ -149,15 +146,13 @@ export default function MeasureCanvas({
         clientToPattern,
       );
       const patternLine = lines[selectedLine];
-      patternLine[selectedEnd] = patternDestination;
+      patternLine[1] = patternDestination;
       setLines(lines.toSpliced(selectedLine, 1, patternLine));
     }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setSelectedEnd(-1);
-
     if (!dragOffset.current) {
       return;
     }
@@ -167,14 +162,12 @@ export default function MeasureCanvas({
       y: e.clientY + dragOffset.current.y,
     };
 
-    if (selectedEnd < 0) {
-      return;
-    }
+    dragOffset.current = null;
 
     e.stopPropagation();
     // finish the line.
     const patternLine = lines[selectedLine];
-    const patternAnchor = patternLine[1 - selectedEnd];
+    const patternAnchor = patternLine[0];
     const matAnchor = transformPoint(patternAnchor, transform);
     const destMat = transformPoint(client, perspective);
     let matFinal = destMat;
@@ -187,7 +180,7 @@ export default function MeasureCanvas({
     }
     const patternFinal = transformPoint(matFinal, inverse(transform));
     setMeasuring(false);
-    patternLine[selectedEnd] = patternFinal;
+    patternLine[1] = patternFinal;
     setLines(lines.toSpliced(selectedLine, 1, patternLine));
   };
 
@@ -235,21 +228,14 @@ export default function MeasureCanvas({
         if (lines.length > 0 && selectedLine >= 0) {
           const patternLine = lines[selectedLine];
           const matLine = transformLine(patternLine, transform);
-          if (axisConstrained && selectedEnd >= 0) {
-            matLine[selectedEnd] = constrained(
-              matLine[selectedEnd],
-              matLine[1 - selectedEnd],
-            );
+          if (axisConstrained && dragOffset.current) {
+            matLine[1] = constrained(matLine[1], matLine[0]);
           }
           const clientLine = transformLine(matLine, calibrationTransform);
           drawArrow(ctx, clientLine);
           drawCircle(ctx, clientLine[0], endCircleRadius);
           drawCircle(ctx, clientLine[1], endCircleRadius);
-          drawMeasurementsAt(
-            ctx,
-            matLine,
-            clientLine[selectedEnd < 0 ? 1 : selectedEnd],
-          );
+          drawMeasurementsAt(ctx, matLine, clientLine[1]);
         }
       }
     }
@@ -278,7 +264,6 @@ export default function MeasureCanvas({
     lines,
     transform,
     selectedLine,
-    selectedEnd,
     measuring,
   ]);
 
