@@ -115,6 +115,6 @@ export default function localTransformReducer(
         x: action.gridCenter.x - action.line[0].x,
         y: action.gridCenter.y - action.line[0].y,
       }).mmul(rotateToHorizontal(action.line).mmul(localTransform));
-      }
+    }
   }
 }

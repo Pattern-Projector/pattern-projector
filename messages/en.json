@@ -208,6 +208,8 @@
     "rotateAndCenterNext": "Bring next line to center",
     "deleteLine": "Delete line",
     "flipAlong": "Flip along line",
-    "translate": "Move PDF by line length"
+    "translate": "Move PDF by line length",
+    "line": "line",
+    "lines": "lines"
   }
 }

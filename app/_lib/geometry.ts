@@ -356,18 +356,6 @@ function getOrientation(p1: Point, p2: Point, p3: Point): number {
   }
 }
 
-export function constrainInSpace(
-  p: Point,
-  anchorPoint: Point,
-  matrix: Matrix,
-  inverse: Matrix,
-): Point {
-  const p1 = transformPoint(p, matrix);
-  const p2 = transformPoint(anchorPoint, matrix);
-  const c = constrained(p1, p2);
-  return transformPoint(c, inverse);
-}
-
 export function constrained(p: Point, anchorPoint: Point) {
   const dx = Math.abs(anchorPoint.x - p.x);
   const dy = Math.abs(anchorPoint.y - p.y);

@@ -41,8 +41,12 @@ export default function LineMenu({
   return (
     // center menu items horizontally
     <menu
-      className={`absolute justify-center left-0 right-0 bottom-0 flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
+      className={`absolute justify-center items-center left-0 right-0 bottom-0 flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
     >
+      <div className="flex flex-col items-center">
+        <span>{lines.length}</span>
+        <span>{lines.length === 1 ? t("line") : t("lines")}</span>
+      </div>
       <Tooltip description={t("deleteLine")} top={true}>
         <IconButton border={true} onClick={handleDeleteLine}>
           <DeleteIcon ariaLabel={t("deleteLine")} />
@@ -65,9 +69,8 @@ export default function LineMenu({
       <Tooltip description={t("rotateAndCenterPrevious")} top={true}>
         <IconButton
           border={true}
-          disabled={lines.length <= 1}
           onClick={() => {
-            if (lines.length > 1) {
+            if (lines.length > 0) {
               const prevLine =
                 selectedLine <= 0 ? lines.length - 1 : selectedLine - 1;
               setSelectedLine(prevLine);
@@ -83,10 +86,9 @@ export default function LineMenu({
 
       <Tooltip description={t("rotateAndCenterNext")} top={true}>
         <IconButton
-          disabled={lines.length <= 1}
           border={true}
           onClick={() => {
-            if (lines.length > 1) {
+            if (lines.length > 0) {
               const nextLine =
                 selectedLine + 1 >= lines.length ? 0 : selectedLine + 1;
               setSelectedLine(nextLine);
