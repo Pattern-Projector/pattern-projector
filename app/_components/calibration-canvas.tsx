@@ -169,13 +169,17 @@ export default function CalibrationCanvas({
     [corners, setCorners],
   );
 
-  useKeyDown(() => {
-    if (corners.size === 4 || corners.size === 0) {
-      setCorners(new Set([0]));
-    } else {
-      setCorners(new Set(Array.from(corners).map((c) => (c + 1) % 4)));
-    }
-  }, [KeyCode.Tab]);
+  useKeyDown(
+    (e: KeyboardEvent) => {
+      if (corners.size === 4 || corners.size === 0) {
+        setCorners(new Set([0]));
+      } else {
+        const inc = e.shiftKey ? 3 : 1;
+        setCorners(new Set(Array.from(corners).map((c) => (c + inc) % 4)));
+      }
+    },
+    [KeyCode.Tab],
+  );
 
   useProgArrowKeyPoints(
     dispatch,
