@@ -196,10 +196,6 @@ export default function MeasureCanvas({
   }
 
   useKeyDown(() => {
-    handleDeleteLine();
-  }, [KeyCode.Backspace]);
-
-  useKeyDown(() => {
     setAxisConstrained(true);
   }, [KeyCode.ShiftLeft, KeyCode.ShiftRight]);
 
