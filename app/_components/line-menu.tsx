@@ -24,6 +24,7 @@ export default function LineMenu({
   setLines,
   handleDeleteLine,
   gridCenter,
+  setMeasuring,
 }: {
   selectedLine: number;
   setSelectedLine: Dispatch<SetStateAction<number>>;
@@ -31,6 +32,7 @@ export default function LineMenu({
   setLines: Dispatch<SetStateAction<Line[]>>;
   handleDeleteLine: () => void;
   gridCenter: Point;
+  setMeasuring: Dispatch<SetStateAction<boolean>>;
 }) {
   const t = useTranslations("MeasureCanvas");
   const transformer = useTransformerContext();
@@ -48,7 +50,13 @@ export default function LineMenu({
         <span>{lines.length === 1 ? t("line") : t("lines")}</span>
       </div>
       <Tooltip description={t("deleteLine")} top={true}>
-        <IconButton border={true} onClick={handleDeleteLine}>
+        <IconButton
+          border={true}
+          onClick={() => {
+            handleDeleteLine();
+            setMeasuring(false);
+          }}
+        >
           <DeleteIcon ariaLabel={t("deleteLine")} />
         </IconButton>
       </Tooltip>
@@ -60,6 +68,7 @@ export default function LineMenu({
             if (opLine) {
               transformer.alignToCenter(gridCenter, opLine);
             }
+            setMeasuring(false);
           }}
         >
           <RotateToHorizontalIcon ariaLabel={t("rotateToHorizontal")} />
@@ -77,6 +86,7 @@ export default function LineMenu({
               const prev = lines[prevLine];
               const opPrev = transformLine(prev, transform);
               transformer.alignToCenter(gridCenter, opPrev);
+              setMeasuring(false);
             }
           }}
         >
@@ -95,6 +105,7 @@ export default function LineMenu({
               const prev = lines[nextLine];
               const opPrev = transformLine(prev, transform);
               transformer.alignToCenter(gridCenter, opPrev);
+              setMeasuring(false);
             }
           }}
         >
@@ -109,6 +120,7 @@ export default function LineMenu({
             if (opLine) {
               transformer.flipAlong(opLine);
             }
+            setMeasuring(false);
           }}
         >
           <FlipHorizontalIcon ariaLabel={t("flipAlong")} />
@@ -131,6 +143,7 @@ export default function LineMenu({
                 setLines(newLines);
               }
             }
+            setMeasuring(false);
           }}
         >
           <ShiftIcon ariaLabel={t("translate")} />
