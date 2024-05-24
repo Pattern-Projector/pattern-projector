@@ -36,7 +36,7 @@
       "open": "Click (or tap) <pdficon></pdficon> to open the PDF document.",
       "move": "Move the PDF by clicking and dragging it around the screen.",
       "cut": "Cut along the projected design.",
-      "tools": "In projection mode there are several tools provided:",
+      "tools": "In projection mode there are several tools provided. Some have keyboard shortcuts, which are denoted in parentheses.",
       "fullscreen": {
         "title": "Full screen",
         "description": "It's generally easier to use the software in full screen mode."
@@ -62,15 +62,15 @@
         "description": "Change the thickness of the lines in the PDF pattern."
       },
       "flip": {
-        "title": "Flip Vertical/Horizontal",
+        "title": "Flip Vertical (V)/Horizontal (H)",
         "description": "Helpful when mirroring patterns in half."
       },
       "rotate": {
-        "title": "Rotate",
+        "title": "Rotate (R)",
         "description": "Change the orientation of the pattern by 90 degrees."
       },
       "recenter": {
-        "title": "Center and Reset",
+        "title": "Center and Reset (C)",
         "description": "Centers the pattern on the cutting mat and resets the rotation/flipping."
       },
       "layers": {
@@ -82,7 +82,7 @@
         "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
       },
       "measure": {
-        "title": "Line tool",
+        "title": "Line tool (L)",
         "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking."
       }
     },
@@ -93,7 +93,6 @@
         "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Patterns from designers usually have the correct scale, so a change in scale could have been introduced when opening the pattern in Affinity Designer or Inkscape."
       },
       "saveAsApp": {
-        "question": "Do you want to save Pattern Projector as an app?",
         "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
       },
       "annotationSupport": {

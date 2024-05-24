@@ -91,6 +91,20 @@ export default function Home() {
 
         <h2>{t("calibration.title")}</h2>
         <ol>
+          <li>
+            {t.rich("faq.saveAsApp.answer", {
+              googleChromeLink: (chunks) => (
+                <a href="https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DDesktop">
+                  {chunks}
+                </a>
+              ),
+              microsoftEdgeLink: (chunks) => (
+                <a href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/ux#installing-a-pwa">
+                  {chunks}
+                </a>
+              ),
+            })}
+          </li>
           <li>{t("calibration.start")}</li>
           <li>
             {t("calibration.fullscreen")}
@@ -195,6 +209,13 @@ export default function Home() {
             </tr>
             <tr>
               <th scope="row">
+                <MarkAndMeasureIcon ariaLabel="" />
+              </th>
+              <td>{t("project.measure.title")}</td>
+              <td>{t("project.measure.description")}</td>
+            </tr>
+            <tr>
+              <th scope="row">
                 <LayersIcon ariaLabel="" />
               </th>
               <td>{t("project.layers.title")}</td>
@@ -207,16 +228,8 @@ export default function Home() {
               <td>{t("project.stitch.title")}</td>
               <td>{t("project.stitch.description")}</td>
             </tr>
-            <tr>
-              <th scope="row">
-                <MarkAndMeasureIcon ariaLabel="" />
-              </th>
-              <td>{t("project.measure.title")}</td>
-              <td>{t("project.measure.description")}</td>
-            </tr>
           </tbody>
         </table>
-
         <h2>{t("faq.title")}</h2>
         <ul>
           <li>
@@ -229,21 +242,6 @@ export default function Home() {
               ),
               cmGridLink: (chunks) => (
                 <a href="https://mathbits.com/MathBits/StudentResources/GraphPaper/CentimeterFullPage.pdf">
-                  {chunks}
-                </a>
-              ),
-            })}
-          </li>
-          <li>
-            <div>{t("faq.saveAsApp.question")}</div>
-            {t.rich("faq.saveAsApp.answer", {
-              googleChromeLink: (chunks) => (
-                <a href="https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DDesktop">
-                  {chunks}
-                </a>
-              ),
-              microsoftEdgeLink: (chunks) => (
-                <a href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/ux#installing-a-pwa">
                   {chunks}
                 </a>
               ),
@@ -317,6 +315,18 @@ export default function Home() {
             {t("contact")}
           </a>
         </div>
+        <script
+          data-name="BMC-Widget"
+          data-cfasync="false"
+          src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+          data-id="patternprojector"
+          data-description="Support me on Buy me a coffee!"
+          data-message="If you would like to support the development of Pattern Projector, please consider buying me a coffee!"
+          data-color="#BD5FFF"
+          data-position="Right"
+          data-x_margin="18"
+          data-y_margin="18"
+        ></script>
       </footer>
     </main>
   );
