@@ -56,15 +56,17 @@ import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 
+const defaultStitchSettings = {
+  columnCount: 1,
+  edgeInsets: { horizontal: 0, vertical: 0 },
+  pageRange: "1-",
+} as StitchSettings;
+
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "16";
-  const defaultStitchSettings = {
-    columnCount: 0,
-    edgeInsets: { horizontal: 0, vertical: 0 },
-    pageRange: "",
-  } as StitchSettings;
+
   const maxPoints = 4; // One point per vertex in rectangle
 
   const fullScreenHandle = useFullScreenHandle();
@@ -154,10 +156,6 @@ export default function Page() {
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
       setLineThickness(0);
-      dispatchStitchSettings({
-        type: "set-edge-insets",
-        edgeInsets: { horizontal: 0, vertical: 0 },
-      });
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -184,18 +182,36 @@ export default function Page() {
   });
 
   useEffect(() => {
-    const pageRange = `1-${pageCount}`;
-    dispatchStitchSettings({
-      type: "set-page-range",
-      pageRange,
-    });
-    dispatchStitchSettings({
-      type: "set-column-count",
-      columnCount: 1,
-      pageCount,
-    });
+    if (stitchSettings.pageRange.endsWith("-") && pageCount > 0) {
+      dispatchStitchSettings({
+        type: "set-page-range",
+        pageRange: stitchSettings.pageRange + pageCount,
+      });
+    }
     setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
-  }, [pageCount]);
+  }, [pageCount, stitchSettings]);
+
+  useEffect(() => {
+    // If the file changes, get stitch settings for that file from localStorage
+    if (!file) {
+      return;
+    }
+    setPageCount(0); // Reset page count while loading
+    const key = `stitchSettings:${file.name ?? "default"}`;
+    const stitchSettingsString = localStorage.getItem(key);
+    if (stitchSettingsString !== null) {
+      const stitchSettings = JSON.parse(stitchSettingsString);
+      dispatchStitchSettings({ type: "set", stitchSettings });
+      return;
+    }
+    dispatchStitchSettings({
+      type: "set",
+      stitchSettings: {
+        ...defaultStitchSettings,
+        key,
+      },
+    });
+  }, [file]);
 
   useEffect(() => {
     setMenuStates((m) => getMenuStatesFromLayers(m, layers));
