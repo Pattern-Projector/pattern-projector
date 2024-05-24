@@ -195,6 +195,12 @@ export default function MeasureCanvas({
     }
   }
 
+  useEffect(() => {
+    if (measuring && selectedLine < 0 && lines.length > 0) {
+      setSelectedLine(0);
+    }
+  }, [measuring, lines.length, selectedLine]);
+
   useKeyDown(() => {
     setAxisConstrained(true);
   }, [KeyCode.ShiftLeft, KeyCode.ShiftRight]);
@@ -291,6 +297,7 @@ export default function MeasureCanvas({
         setLines={setLines}
         handleDeleteLine={handleDeleteLine}
         gridCenter={gridCenter}
+        setMeasuring={setMeasuring}
       />
     </div>
   );
