@@ -39,7 +39,7 @@
             "open": "Selecciona <pdficon></pdficon> para abrir el documento PDF.",
             "move": "Mueve el documento pinchando y arrastrándolo por la pantalla.",
             "cut": "Corta el patrón proyectado.",
-            "tools": "En el modo de proyección se proporcionan varias herramientas:",
+            "tools": "En el modo de proyección se proporcionan varias herramientas. Algunos tienen atajos de teclado, que se indican entre paréntesis.",
             "showGrid": {
                 "title": "Mostrar/Ocultar la cuadrícula",
                 "description": "Al proyectar, muestra/oculta una cuadrícula tenue para verificar que su calibración sea correcta."
@@ -49,15 +49,15 @@
                 "description": "Al proyectar, suele ser más fácil ver líneas verdes o blancas sobre fondo negro. Pincha una vez para obtener líneas verdes, dos veces para líneas blancas y tres veces para volver a líneas negras."
             },
             "flip": {
-                "title": "Voltear vertical/horizontalmente",
+                "title": "Girar vertical (V)/Horizontalmente (H)",
                 "description": "Útil para reflejar patrones que sólo muestran una mitad."
             },
             "rotate": {
-                "title": "Girar",
+                "title": "Girar (R)",
                 "description": "Gira la orientación del patrón 90 grados a la derecha."
             },
             "recenter": {
-                "title": "Centrar y restablecer",
+                "title": "Centrar y restablecer (C)",
                 "description": "Centra el patrón en la base de corte y restablece la rotación/inversión."
             },
             "fullscreen": {
@@ -73,7 +73,7 @@
                 "title": "Mostrar/ocultar capas"
             },
             "measure": {
-                "title": "Herramienta de línea",
+                "title": "Herramienta de línea (L)",
                 "description": "Marque líneas en el archivo PDF para rotar, voltear, mover, medir o marcar."
             },
             "lineWeight": {
