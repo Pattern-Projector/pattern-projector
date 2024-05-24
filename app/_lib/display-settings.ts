@@ -10,7 +10,7 @@ export function getDefaultOverlaySettings() {
   return {
     disabled: false,
     grid: false,
-    border: true,
+    border: false,
     paper: false,
     flipLines: false,
   };
