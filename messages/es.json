@@ -57,8 +57,8 @@
                 "description": "Gira la orientación del patrón 90 grados a la derecha."
             },
             "recenter": {
-                "title": "Volver a centrar",
-                "description": "Centra el patrón en la base de corte."
+                "title": "Centrar y restablecer",
+                "description": "Centra el patrón en la base de corte y restablece la rotación/inversión."
             },
             "fullscreen": {
                 "title": "Pantalla completa",
@@ -73,7 +73,7 @@
                 "title": "Mostrar/ocultar capas"
             },
             "measure": {
-                "title": "Herramienta inicial para marcar, medir y transformar",
+                "title": "Herramienta de línea",
                 "description": "Marque líneas en el archivo PDF para rotar, voltear, mover, medir o marcar."
             },
             "lineWeight": {
@@ -157,21 +157,21 @@
         "overlayOptionFliplines": "Líneas de volteo",
         "invertColor": "Invertir colores",
         "invertColorOff": "Invertir colores desactivado",
-        "flipVertical": "Girar verticalmente (v)",
+        "flipVertical": "Girar verticalmente (V)",
         "flipVerticalOff": "Voltear verticalmente desactivado",
-        "flipHorizontal": "Girar horizontalmente (h)",
+        "flipHorizontal": "Girar horizontalmente (H)",
         "flipHorizontalOff": "Voltear horizontalmente desactivado",
         "flipCenterOn": "Voltear centro",
         "flipCenterOff": "Voltear centro desactivado",
         "fourCornersOn": "Resaltar todas las esquinas",
         "fourCornersOff": "Resaltar sólo la esquina seleccionada",
-        "rotate90": "Girar 90 grados en el sentido de las agujas del reloj (r)",
+        "rotate90": "Girar 90 grados en el sentido de las agujas del reloj (R)",
         "arrowBack": "Retroceder 1 página",
         "arrowForward": "Avanzar 1 página",
         "info": "Página de inicio",
         "layersOn": "Mostrar menú de capas",
         "layersOff": "Ocultar menú de capas",
-        "recenter": "Centrar PDF (c)",
+        "recenter": "Centrar y reiniciar (C)",
         "fullscreen": "Activar pantalla completa",
         "fullscreenExit": "Salir de pantalla completa",
         "menuShow": "Mostrar menú superior",
@@ -190,11 +190,11 @@
         "continue": "Guardar el tamaño de la ventana y continuar",
         "checkCalibration": "Comprobar la calibración",
         "calibrationAlert": "El tamaño de la ventana ha cambiado desde que comenzó la proyección, pulse el botón de pantalla completa o recalibre para solucionar este problema.",
-        "measure": "Marcar, medir y transformar (m)"
+        "measure": "Herramienta de línea (L)"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
-        "pageRange": "Páginas",
+        "pageRange": "Páginas de puntos",
         "horizontal": "Horizontal",
         "vertical": "Vertical"
     },
@@ -214,10 +214,14 @@
         "noLayers": "Sin capas en PDF"
     },
     "MeasureCanvas": {
-        "rotateToHorizontal": "Girar en horizontal",
+        "rotateToHorizontal": "Centrar",
         "deleteLine": "Borrar linea",
         "flipAlong": "Girar a lo largo de la línea",
-        "translate": "Mover PDF por la longitud de la línea"
+        "translate": "Mover PDF por la longitud de la línea",
+        "rotateAndCenterNext": "Centrar la siguiente línea",
+        "lines": "líneas",
+        "rotateAndCenterPrevious": "Centrar la línea anterior",
+        "line": "línea"
     },
     "InstallButton": {
         "title": "Instalar aplicación",
