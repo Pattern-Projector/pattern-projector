@@ -11,4 +11,6 @@ export enum KeyCode {
   Escape = "Escape",
   Tab = "Tab",
   Backspace = "Backspace",
+  ShiftLeft = "ShiftLeft",
+  ShiftRight = "ShiftRight",
 }
