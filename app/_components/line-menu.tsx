@@ -16,6 +16,7 @@ import { Point } from "@/_lib/point";
 import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import KeyboardArrowLeftIcon from "@/_icons/keyboard-arrow-left";
 import ShiftIcon from "@/_icons/shift-icon";
+import { subtract } from "@/_lib/point";
 
 export default function LineMenu({
   selectedLine,
@@ -38,8 +39,41 @@ export default function LineMenu({
   const transformer = useTransformerContext();
   const transform = useTransformContext();
 
-  const selected = lines.at(selectedLine);
-  const opLine = selected ? transformLine(selected, transform) : null;
+  const selected = selectedLine >= 0 ? lines[selectedLine] : undefined;
+  const matLine = selectedLine >= 0 ? getMatLine(selectedLine) : undefined;
+
+  function getMatLine(i: number): Line {
+    return transformLine(lines[i], transform);
+  }
+
+  function Action({
+    description,
+    Icon,
+    onClick,
+  }: {
+    description: string;
+    Icon: (props: { ariaLabel: string }) => JSX.Element;
+    onClick: () => void;
+  }) {
+    return (
+      <Tooltip description={description} top={true}>
+        <IconButton
+          border={true}
+          onClick={() => {
+            onClick();
+            setMeasuring(false);
+          }}
+        >
+          <Icon ariaLabel={description} />
+        </IconButton>
+      </Tooltip>
+    );
+  }
+
+  const grainLine: Line = [
+    gridCenter,
+    { x: gridCenter.x + 1, y: gridCenter.y },
+  ];
   return (
     // center menu items horizontally
     <menu
@@ -49,106 +83,67 @@ export default function LineMenu({
         <span>{lines.length}</span>
         <span>{lines.length === 1 ? t("line") : t("lines")}</span>
       </div>
-      <Tooltip description={t("deleteLine")} top={true}>
-        <IconButton
-          border={true}
-          onClick={() => {
-            handleDeleteLine();
-            setMeasuring(false);
-          }}
-        >
-          <DeleteIcon ariaLabel={t("deleteLine")} />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip description={t("rotateToHorizontal")} top={true}>
-        <IconButton
-          border={true}
-          onClick={() => {
-            if (opLine) {
-              transformer.alignToCenter(gridCenter, opLine);
+      <Action
+        description={t("deleteLine")}
+        Icon={DeleteIcon}
+        onClick={handleDeleteLine}
+      />
+      <Action
+        description={t("rotateToHorizontal")}
+        Icon={RotateToHorizontalIcon}
+        onClick={() => {
+          if (matLine) {
+            transformer.align(matLine, grainLine);
+          }
+        }}
+      />
+      <Action
+        description={t("rotateAndCenterPrevious")}
+        Icon={KeyboardArrowLeftIcon}
+        onClick={() => {
+          if (lines.length > 0) {
+            const previous =
+              selectedLine <= 0 ? lines.length - 1 : selectedLine - 1;
+            setSelectedLine(previous);
+            transformer.align(getMatLine(previous), grainLine);
+          }
+        }}
+      />
+      <Action
+        description={t("rotateAndCenterNext")}
+        Icon={KeyboardArrowRightIcon}
+        onClick={() => {
+          if (lines.length > 0) {
+            const next =
+              selectedLine + 1 >= lines.length ? 0 : selectedLine + 1;
+            setSelectedLine(next);
+            transformer.align(getMatLine(next), grainLine);
+          }
+        }}
+      />
+      <Action
+        description={t("flipAlong")}
+        Icon={FlipHorizontalIcon}
+        onClick={() => {
+          if (matLine) {
+            transformer.flipAlong(matLine);
+          }
+        }}
+      />
+      <Action
+        description={t("translate")}
+        Icon={ShiftIcon}
+        onClick={() => {
+          if (matLine) {
+            transformer.translate(subtract(matLine[1], matLine[0]));
+            if (selected) {
+              const newLines = lines.slice();
+              newLines[selectedLine] = [selected[1], selected[0]];
+              setLines(newLines);
             }
-            setMeasuring(false);
-          }}
-        >
-          <RotateToHorizontalIcon ariaLabel={t("rotateToHorizontal")} />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip description={t("rotateAndCenterPrevious")} top={true}>
-        <IconButton
-          border={true}
-          onClick={() => {
-            if (lines.length > 0) {
-              const prevLine =
-                selectedLine <= 0 ? lines.length - 1 : selectedLine - 1;
-              setSelectedLine(prevLine);
-              const prev = lines[prevLine];
-              const opPrev = transformLine(prev, transform);
-              transformer.alignToCenter(gridCenter, opPrev);
-              setMeasuring(false);
-            }
-          }}
-        >
-          <KeyboardArrowLeftIcon ariaLabel={t("rotateToHorizontal")} />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip description={t("rotateAndCenterNext")} top={true}>
-        <IconButton
-          border={true}
-          onClick={() => {
-            if (lines.length > 0) {
-              const nextLine =
-                selectedLine + 1 >= lines.length ? 0 : selectedLine + 1;
-              setSelectedLine(nextLine);
-              const prev = lines[nextLine];
-              const opPrev = transformLine(prev, transform);
-              transformer.alignToCenter(gridCenter, opPrev);
-              setMeasuring(false);
-            }
-          }}
-        >
-          <KeyboardArrowRightIcon ariaLabel={t("rotateToHorizontal")} />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip description={t("flipAlong")} top={true}>
-        <IconButton
-          border={true}
-          onClick={() => {
-            if (opLine) {
-              transformer.flipAlong(opLine);
-            }
-            setMeasuring(false);
-          }}
-        >
-          <FlipHorizontalIcon ariaLabel={t("flipAlong")} />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip description={t("translate")} top={true}>
-        <IconButton
-          border={true}
-          onClick={() => {
-            if (opLine) {
-              const p = {
-                x: opLine[1].x - opLine[0].x,
-                y: opLine[1].y - opLine[0].y,
-              };
-              transformer.translate(p);
-              if (selected) {
-                const newLines = lines.slice();
-                newLines[selectedLine] = [selected[1], selected[0]];
-                setLines(newLines);
-              }
-            }
-            setMeasuring(false);
-          }}
-        >
-          <ShiftIcon ariaLabel={t("translate")} />
-        </IconButton>
-      </Tooltip>
+          }
+        }}
+      />
     </menu>
   );
 }
