@@ -51,15 +51,18 @@ export default function stitchSettingsReducer(
   stitchSettings: StitchSettings,
   action: StitchSettingsAction,
 ): StitchSettings {
-    const newStitchSettings = reduceStitchSettings(stitchSettings, action);
-    localStorage.setItem(newStitchSettings.key, JSON.stringify(newStitchSettings));
-    return newStitchSettings;
-  }
+  const newStitchSettings = reduceStitchSettings(stitchSettings, action);
+  localStorage.setItem(
+    newStitchSettings.key,
+    JSON.stringify(newStitchSettings),
+  );
+  return newStitchSettings;
+}
 
 function reduceStitchSettings(
-    stitchSettings: StitchSettings,
-    action: StitchSettingsAction,
-  ): StitchSettings {
+  stitchSettings: StitchSettings,
+  action: StitchSettingsAction,
+): StitchSettings {
   switch (action.type) {
     case "set":
       return action.stitchSettings;

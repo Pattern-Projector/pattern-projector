@@ -93,6 +93,7 @@ export default function CalibrationCanvas({
           unitOfMeasure,
           strokeColor(displaySettings.theme),
           displaySettings,
+          false,
         );
         draw(cs);
       }

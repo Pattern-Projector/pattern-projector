@@ -102,7 +102,8 @@ export function drawPolygon(
 
 export function drawOverlays(cs: CanvasState) {
   const { ctx, displaySettings } = cs;
-  const { grid, border, paper, flipLines, flippedPattern } = displaySettings.overlay;
+  const { grid, border, paper, flipLines, flippedPattern } =
+    displaySettings.overlay;
   const { theme } = displaySettings;
   ctx.strokeStyle = strokeColor(theme);
 

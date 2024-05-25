@@ -24,7 +24,7 @@ export interface TransformerContextType {
   ) => void;
   reset: () => void;
   translate: (p: Point) => void;
-  alignToCenter: (gridCenter: Point, line: Line) => void;
+  align: (line: Line, to: Line) => void;
 }
 
 const TransformerContext = createContext<TransformerContextType>({
@@ -37,7 +37,7 @@ const TransformerContext = createContext<TransformerContextType>({
   reset: () => {},
   flipAlong: () => {},
   translate: () => {},
-  alignToCenter: () => {},
+  align: () => {},
 });
 
 const TransformContext = createContext<Matrix>(Matrix.eye(3));
@@ -75,8 +75,7 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
       ) =>
         dispatch({ type: "recenter", centerPoint, layoutWidth, layoutHeight }),
       reset: () => dispatch({ type: "reset" }),
-      alignToCenter: (gridCenter: Point, line: Line) =>
-        dispatch({ type: "align_to_center", gridCenter, line }),
+      align: (line: Line, to: Line) => dispatch({ type: "align", line, to }),
     }),
     [dispatch],
   );

@@ -16,3 +16,7 @@ export interface Point {
 export function applyOffset(point: Point, offset: Point): Point {
   return { x: point.x + offset.x, y: point.y + offset.y };
 }
+
+export function subtract(a: Point, b: Point): Point {
+  return { x: a.x - b.x, y: a.y - b.y };
+}
