@@ -102,11 +102,15 @@ export function drawPolygon(
 
 export function drawOverlays(cs: CanvasState) {
   const { ctx, displaySettings } = cs;
-  const { grid, border, paper, flipLines, flippedPattern } =
+  const { grid, border, paper, flipLines, flippedPattern, disabled } =
     displaySettings.overlay;
   const { theme } = displaySettings;
-  ctx.strokeStyle = strokeColor(theme);
 
+  if (disabled) {
+    return;
+  }
+
+  ctx.strokeStyle = strokeColor(theme);
   if (grid) {
     drawGrid(cs, 8, [1]);
   }
