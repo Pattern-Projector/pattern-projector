@@ -182,6 +182,13 @@ export default function Page() {
   });
 
   useEffect(() => {
+    const element = document.getElementById("bmc-wbtn");
+    if (element) {
+      element.style.display = "none";
+    }
+  }, []);
+
+  useEffect(() => {
     if (stitchSettings.pageRange.endsWith("-") && pageCount > 0) {
       dispatchStitchSettings({
         type: "set-page-range",
