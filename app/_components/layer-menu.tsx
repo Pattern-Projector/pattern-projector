@@ -90,7 +90,7 @@ export default function LayerMenu({
       {!visible ? (
         <Tooltip
           description={layers.size > 0 ? t("layersOn") : t("noLayers")}
-          className="m-2 w-10 absolute z-10"
+          className="m-2 w-10 !absolute z-10"
         >
           <IconButton
             border={true}
