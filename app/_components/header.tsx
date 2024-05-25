@@ -52,6 +52,7 @@ import { Button } from "./buttons/button";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
+import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
 
 export default function Header({
   isCalibrating,
@@ -191,6 +192,10 @@ export default function Header({
     flipLines: {
       icon: <FlipCenterOnIcon ariaLabel={t("overlayOptionFliplines")} />,
       text: t("overlayOptionFliplines"),
+    },
+    flippedPattern: {
+      icon: <FlippedPatternIcon ariaLabel={t("overlayOptionFlippedPattern")} />,
+      text: t("overlayOptionFlippedPattern"),
     },
   };
 

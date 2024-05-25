@@ -150,6 +150,7 @@
     "overlayOptionGrid": "Grid",
     "overlayOptionPaper": "Paper Sheet",
     "overlayOptionFliplines": "Flip Lines",
+    "overlayOptionFlippedPattern": "Wrong side",
     "invertColor": "Invert colors",
     "invertColorOff": "Invert colors off",
     "flipVertical": "Flip vertically (V)",
