@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2024-05-25
+
 ### Changed
 
-- Warning instead of redirect when window location or size is different when projecting versus calibrating
 - Line weight adjustment is a dropdown instead of input box
-- Calibration warning descriptions
+- Reset stitch menu horizontal/vertical on new file open
+- Border overlay turned off by default
+- Automatically go back into full screen when PDF is opened
+- Calibration warnings more descriptive with button to return to full screen
 
 ### Fixed
 
@@ -25,13 +29,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Line tool to rotate to horizontal, mark lines on PDF, flip about the line, move based on the line's length, move between lines, and drag end of measurement line
+- Save stitch settings by file to browser/device
+- Wrong side overlay that shows dots when pattern is flipped
 - Install app button
 - Keyboard shortcuts for frequently used tools
-- Tool to rotate to horizontal, mark lines on PDF, flip about the line, move based on the line's length, and drag end of measurement line
-- Cursor changes from grab to grabbing hand when dragging
-- Selected corner on calibration grid is colored
 - Stepper buttons for incrementing and decrementing columns and horizontal/vertical inputs in the stitch menu
 - Disabled layer menu icon when no layers in PDF
+- Shit-Tab to move counterclockwise around calibration grid
+- Buy me a coffee widget to landing page
+- Cursor changes from grab to grabbing hand when dragging
+- Selected corner on calibration grid is colored
 
 ## [1.0.1] - 2024-04-15
 
@@ -77,5 +85,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Press and hold calibration corners to slow down movement
 
 [unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/main...beta
+[1.0.2]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.2
 [1.0.1]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.0
