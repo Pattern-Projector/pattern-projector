@@ -161,7 +161,8 @@
             },
             "previousNext": {
                 "title": "Traer la línea anterior/siguiente al centro",
-                "description": "Mueve el PDF para que la línea anterior/siguiente dibujada sea horizontal y esté centrada en el tapete."
+                "description": "Mueve el PDF para que la línea anterior/siguiente dibujada sea horizontal y esté centrada en el tapete.",
+                "use": "Para moverse entre las piezas del patrón al cortar: dibuje una línea en la línea de veta de cada pieza del patrón, luego muévase a través de las piezas del patrón usando estos botones. Elimine líneas a medida que avanza por las piezas del patrón para realizar un seguimiento de qué piezas quedan por cortar."
             },
             "description": "La herramienta línea se puede utilizar para medir distancias, marcar líneas, rotar, voltear y mover el PDF. Haga clic (o toque) el botón de la herramienta línea, luego haga clic (o toque) en el PDF y arrastre para dibujar una línea. Una vez dibujada una línea, aparecerá un menú en la parte inferior de la pantalla con las siguientes opciones:"
         },
@@ -279,7 +280,7 @@
     "InstallButton": {
         "title": "Instalar aplicación",
         "description": "Para obtener la mejor experiencia, instale el Proyector de patrones usando <chromeLink> Google Chrome</chromeLink> .",
-        "descriptionAndroid": "Descargue la aplicación tocando el botón <moreIcon></moreIcon> más en el menú del navegador y luego <addToHomeScreenIcon></addToHomeScreenIcon> Agregar a la pantalla de inicio.",
+        "descriptionAndroid": "Para disfrutar de la mejor experiencia en Android, utiliza Firefox. Descarga la aplicación pulsando el botón más <moreIcon></moreIcon> en el menú del navegador y luego <addToHomeScreenIcon></addToHomeScreenIcon> Añadir a la pantalla de inicio.",
         "descriptionIOS": "Descarga la aplicación tocando el botón compartir <shareIcon></shareIcon> en el menú del navegador y luego Agregar a la pantalla de inicio <addBoxIcon></addBoxIcon> .",
         "ok": "De acuerdo"
     }
