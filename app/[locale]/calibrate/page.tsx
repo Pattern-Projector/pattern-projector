@@ -159,7 +159,7 @@ export default function Page() {
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
-    if (!navigator.userAgent.includes("Safari") && expectedContext !== null) {
+    if (expectedContext !== null) {
       const expected = JSON.parse(expectedContext) as CalibrationContext;
       if (expected.fullScreen) {
         fullScreenHandle.enter();

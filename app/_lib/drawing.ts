@@ -304,7 +304,6 @@ export function drawDimensionLabels(
 }
 
 function drawFlippedPattern(cs: CanvasState) {
-  console.log("drawFlippedPattern");
   const { ctx } = cs;
   ctx.save();
   ctx.fillStyle = "red";
