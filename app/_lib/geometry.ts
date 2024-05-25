@@ -374,3 +374,7 @@ export function constrained(p: Point, anchorPoint: Point) {
     }
   }
 }
+
+export function isFlipped(m: Matrix): boolean {
+  return m.get(1, 1) * m.get(0, 0) < 0;
+}

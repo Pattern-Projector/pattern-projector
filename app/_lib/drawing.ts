@@ -34,6 +34,7 @@ export class CanvasState {
     public unitOfMeasure: string,
     public errorFillPattern: CanvasFillStrokeStyles["fillStyle"],
     public displaySettings: DisplaySettings,
+    public isFlipped: boolean,
   ) {
     this.isConcave = checkIsConcave(this.points);
   }
@@ -101,7 +102,7 @@ export function drawPolygon(
 
 export function drawOverlays(cs: CanvasState) {
   const { ctx, displaySettings } = cs;
-  const { grid, border, paper, flipLines } = displaySettings.overlay;
+  const { grid, border, paper, flipLines, flippedPattern } = displaySettings.overlay;
   const { theme } = displaySettings;
   ctx.strokeStyle = strokeColor(theme);
 
@@ -117,6 +118,9 @@ export function drawOverlays(cs: CanvasState) {
   }
   if (flipLines) {
     drawCenterLines(cs);
+  }
+  if (flippedPattern && cs.isFlipped) {
+    drawFlippedPattern(cs);
   }
 }
 
@@ -292,4 +296,22 @@ export function drawDimensionLabels(
     line[1].x + inset,
     line[1].y + heightLabelHeight * 0.5,
   );
+}
+
+function drawFlippedPattern(cs: CanvasState) {
+  console.log("drawFlippedPattern");
+  const { ctx } = cs;
+  ctx.save();
+  ctx.fillStyle = "#ff00008f";
+  // draw a grid of dots
+  const dotSize = 2;
+  const spacing = 72;
+  for (let y = 0; y < ctx.canvas.height; y += spacing) {
+    for (let x = 0; x < ctx.canvas.width; x += spacing) {
+      ctx.beginPath();
+      ctx.arc(x, y, dotSize, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
 }
