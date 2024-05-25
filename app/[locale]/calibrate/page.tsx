@@ -189,14 +189,8 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (stitchSettings.pageRange.endsWith("-") && pageCount > 0) {
-      dispatchStitchSettings({
-        type: "set-page-range",
-        pageRange: stitchSettings.pageRange + pageCount,
-      });
-    }
     setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
-  }, [pageCount, stitchSettings]);
+  }, [pageCount]);
 
   useEffect(() => {
     // If the file changes, get stitch settings for that file from localStorage
@@ -437,6 +431,7 @@ export default function Page() {
                   lineThickness={lineThickness}
                   stitchSettings={stitchSettings}
                   filter={themeFilter(displaySettings.theme)}
+                  dispatchStitchSettings={dispatchStitchSettings}
                 />
               </Draggable>
               <OverlayCanvas
