@@ -307,7 +307,7 @@ function drawFlippedPattern(cs: CanvasState) {
   console.log("drawFlippedPattern");
   const { ctx } = cs;
   ctx.save();
-  ctx.fillStyle = "#ff00008f";
+  ctx.fillStyle = "red";
   // draw a grid of dots
   const dotSize = 2;
   const spacing = 72;
