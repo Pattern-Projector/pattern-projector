@@ -190,7 +190,8 @@
         "continue": "Guardar el tamaño de la ventana y continuar",
         "checkCalibration": "Comprobar la calibración",
         "calibrationAlert": "El tamaño de la ventana ha cambiado desde que comenzó la proyección, pulse el botón de pantalla completa o recalibre para solucionar este problema.",
-        "measure": "Herramienta de línea (L)"
+        "measure": "Herramienta de línea (L)",
+        "overlayOptionFlippedPattern": "Lado erróneo"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
