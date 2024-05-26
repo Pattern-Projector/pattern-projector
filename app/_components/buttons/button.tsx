@@ -1,6 +1,6 @@
 import { ButtonColor } from "@/_components/theme/colors";
 import { ButtonStyle } from "@/_components/theme/styles";
-import { MouseEventHandler } from "react";
+import { CSSProperties, MouseEventHandler } from "react";
 
 export function Button({
   children,
@@ -9,6 +9,7 @@ export function Button({
   className,
   onClick,
   href,
+  customStyle,
 }: {
   children: any;
   color?: ButtonColor;
@@ -16,6 +17,7 @@ export function Button({
   className?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   href?: string;
+  customStyle?: CSSProperties | undefined;
 }) {
   const filledColors = {
     red: {
@@ -76,6 +78,7 @@ export function Button({
       type="button"
       className={`${defaultClasses} ${styleClasses} ${className || ""}`}
       onClick={onClick}
+      style={customStyle}
     >
       {children}
     </button>

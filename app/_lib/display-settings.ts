@@ -4,15 +4,17 @@ export interface OverlaySettings {
   border: boolean;
   paper: boolean;
   flipLines: boolean;
+  flippedPattern: boolean;
 }
 
 export function getDefaultOverlaySettings() {
   return {
     disabled: false,
     grid: false,
-    border: true,
+    border: false,
     paper: false,
     flipLines: false,
+    flippedPattern: true,
   };
 }
 

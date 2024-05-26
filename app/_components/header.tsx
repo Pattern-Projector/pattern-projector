@@ -26,15 +26,7 @@ import {
 } from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
-import Matrix from "ml-matrix";
-import {
-  translate,
-  rotateMatrixDeg,
-  flipVertical,
-  flipHorizontal,
-  getCenterPoint,
-  transformPoint,
-} from "@/_lib/geometry";
+import { getCenterPoint } from "@/_lib/geometry";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-checkbox-icon-button";
@@ -44,7 +36,6 @@ import ExpandLessIcon from "@/_icons/expand-less-icon";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
-import SquareFootIcon from "@/_icons/square-foot";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
@@ -58,6 +49,10 @@ import { ModalTitle } from "./modal/modal-title";
 import { ModalText } from "./modal/modal-text";
 import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
+import { useTransformerContext } from "@/_hooks/use-transform-context";
+import { DropdownIconButton } from "./buttons/dropdown-icon-button";
+import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
+import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
 
 export default function Header({
   isCalibrating,
@@ -74,8 +69,6 @@ export default function Header({
   displaySettings,
   setDisplaySettings,
   pageCount,
-  localTransform,
-  setLocalTransform,
   layoutWidth,
   layoutHeight,
   lineThickness,
@@ -87,6 +80,7 @@ export default function Header({
   showingMovePad,
   setShowingMovePad,
   setCalibrationValidated,
+  fullScreenTooltipVisible,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -102,8 +96,6 @@ export default function Header({
   displaySettings: DisplaySettings;
   setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
   pageCount: number;
-  localTransform: Matrix;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   layoutWidth: number;
   layoutHeight: number;
   lineThickness: number;
@@ -115,23 +107,11 @@ export default function Header({
   showingMovePad: boolean;
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
+  fullScreenTooltipVisible: boolean;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
-
+  const transformer = useTransformerContext();
   const t = useTranslations("Header");
-
-  function handleRecenter() {
-    const current = transformPoint(
-      { x: layoutWidth * 0.5, y: layoutHeight * 0.5 },
-      localTransform,
-    );
-    const center = getCenterPoint(+width, +height, unitOfMeasure);
-    const p = {
-      x: center.x - current.x,
-      y: center.y - current.y,
-    };
-    setLocalTransform(translate(p).mmul(localTransform));
-  }
 
   function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
     const current = getCalibrationContextUpdatedWithEvent(
@@ -172,6 +152,26 @@ export default function Header({
     }
   }
 
+  const handleRotate90 = () => {
+    transformer.rotate(getCenterPoint(+width, +height, unitOfMeasure), 90);
+  };
+
+  const handleFlipHorizontal = () => {
+    transformer.flipHorizontal(getCenterPoint(+width, +height, unitOfMeasure));
+  };
+
+  const handleFlipVertical = () => {
+    transformer.flipVertical(getCenterPoint(+width, +height, unitOfMeasure));
+  };
+
+  const handleRecenter = () => {
+    transformer.recenter(
+      getCenterPoint(+width, +height, unitOfMeasure),
+      layoutWidth,
+      layoutHeight,
+    );
+  };
+
   const overlayOptions = {
     disabled: {
       icon: <GridOffIcon ariaLabel={t("overlayOptionDisabled")} />,
@@ -193,7 +193,54 @@ export default function Header({
       icon: <FlipCenterOnIcon ariaLabel={t("overlayOptionFliplines")} />,
       text: t("overlayOptionFliplines"),
     },
+    flippedPattern: {
+      icon: <FlippedPatternIcon ariaLabel={t("overlayOptionFlippedPattern")} />,
+      text: t("overlayOptionFlippedPattern"),
+    },
   };
+
+  const lineThicknessOptions = [
+    {
+      text: "0px",
+      value: 0,
+    },
+    {
+      text: "1px",
+      value: 1,
+    },
+    {
+      text: "2px",
+      value: 2,
+    },
+    {
+      text: "3px",
+      value: 3,
+    },
+    {
+      text: "4px",
+      value: 4,
+    },
+    {
+      text: "5px",
+      value: 5,
+    },
+  ];
+
+  useKeyDown(() => {
+    handleFlipHorizontal();
+  }, [KeyCode.KeyH]);
+
+  useKeyDown(() => {
+    handleFlipVertical();
+  }, [KeyCode.KeyV]);
+
+  useKeyDown(() => {
+    handleRecenter();
+  }, [KeyCode.KeyC]);
+
+  useKeyDown(() => {
+    handleRotate90();
+  }, [KeyCode.KeyR]);
 
   useKeyDown(() => {
     setMeasuring(!measuring);
@@ -224,7 +271,7 @@ export default function Header({
         </ModalActions>
       </Modal>
       <header
-        className={`bg-white dark:bg-black absolute left-0 w-full z-30 border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "top-0" : "-top-20"}`}
+        className={`relative z-10 bg-white dark:bg-black left-0 w-full border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "translate-y-0" : "-translate-y-16"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
@@ -237,6 +284,7 @@ export default function Header({
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
+              visible={fullScreenTooltipVisible}
             >
               <IconButton
                 onClick={
@@ -387,77 +435,57 @@ export default function Header({
                 />
               </IconButton>
             </Tooltip>
-            <Tooltip description={t("lineWeight")}>
-              <div className="flex">
-                <InlineInput
-                  inputClassName="!px-2"
-                  label={<LineWeightIcon ariaLabel={t("lineWeight")} />}
-                  className="align-right"
-                  min="0"
-                  type="number"
-                  handleChange={(e) => setLineThickness(e.target.valueAsNumber)}
-                  value={String(lineThickness)}
-                />
-              </div>
-            </Tooltip>
+
+            {!isCalibrating && (
+              <DropdownIconButton
+                dropdownClassName="w-fit -left-5"
+                description={t("lineWeight")}
+                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                options={lineThicknessOptions}
+                setSelection={setLineThickness}
+                selection={lineThickness}
+              />
+            )}
 
             <Tooltip description={t("flipHorizontal")}>
-              <IconButton
-                onClick={() =>
-                  setLocalTransform(
-                    flipHorizontal(
-                      getCenterPoint(+width, +height, unitOfMeasure),
-                    ).mmul(localTransform),
-                  )
-                }
-              >
+              <IconButton onClick={handleFlipHorizontal}>
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
-              <IconButton
-                onClick={() =>
-                  setLocalTransform(
-                    flipVertical(
-                      getCenterPoint(+width, +height, unitOfMeasure),
-                    ).mmul(localTransform),
-                  )
-                }
-              >
+              <IconButton onClick={handleFlipVertical}>
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>
-              <IconButton
-                onClick={() =>
-                  setLocalTransform(
-                    rotateMatrixDeg(
-                      90,
-                      getCenterPoint(+width, +height, unitOfMeasure),
-                    ).mmul(localTransform),
-                  )
-                }
-              >
+              <IconButton onClick={handleRotate90}>
                 <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("recenter")}>
-              <IconButton onClick={handleRecenter}>
+              <IconButton
+                onClick={() => {
+                  transformer.reset();
+                  transformer.recenter(
+                    getCenterPoint(+width, +height, unitOfMeasure),
+                    layoutWidth,
+                    layoutHeight,
+                  );
+                }}
+              >
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
-            <Tooltip description={measuring ? t("measureOff") : t("measureOn")}>
+            <Tooltip description={t("measure")}>
               <IconButton
                 onClick={() => setMeasuring(!measuring)}
                 className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
               >
-                <SquareFootIcon
-                  ariaLabel={measuring ? t("measureOff") : t("measureOn")}
-                />
+                <MarkAndMeasureIcon ariaLabel={t("measure")} />
               </IconButton>
             </Tooltip>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <label
               className={`${visible(
                 !isCalibrating,
@@ -487,7 +515,7 @@ export default function Header({
         </nav>
       </header>
       <IconButton
-        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} z-30 left-1/4 focus:ring-0`}
+        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
         onClick={() => setMenuStates({ ...menuStates, nav: true })}
       >
         <ExpandMoreIcon ariaLabel={t("menuShow")} />

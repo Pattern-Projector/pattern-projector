@@ -1,23 +1,16 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import InlineSelect from "@/_components/inline-select";
+import { DropdownIconButton } from "./buttons/dropdown-icon-button";
+import LanguageIcon from "@/_icons/language-icon";
 
-interface LanguageSwitcherProps {
-  ariaLabel?: string;
-  className?: string;
-}
-
-const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
-  ariaLabel,
-  className,
-}) => {
+export default function LanguageSwitcher({ ariaLabel }: { ariaLabel: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const locale = pathname.substr(1, 2);
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    router.push(e.target.value);
+  const handleLanguageChange = (value: string) => {
+    router.push(value);
   };
 
   // Unicode escape sequences for flag emojis
@@ -32,19 +25,16 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   };
 
   return (
-    <div className={className} aria-label={ariaLabel}>
-      <InlineSelect
-        handleChange={(e) => handleLanguageChange(e)}
-        id="change_language"
-        name="change_language"
-        value={locale}
-        options={Object.entries(locale_data).map(([key, { flag, name }]) => ({
-          value: key,
-          label: flag + " " + name,
-        }))}
-      />
-    </div>
+    <DropdownIconButton
+      dropdownClassName="w-[160px] right-0 p-0"
+      description={ariaLabel}
+      icon={<LanguageIcon ariaLabel={ariaLabel} />}
+      options={Object.entries(locale_data).map(([key, { flag, name }]) => ({
+        value: key,
+        text: flag + " " + name,
+      }))}
+      setSelection={handleLanguageChange}
+      selection={locale}
+    />
   );
-};
-
-export default LanguageSwitcher;
+}

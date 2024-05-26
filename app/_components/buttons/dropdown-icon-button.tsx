@@ -2,23 +2,27 @@ import React, { useState, useRef, useEffect } from "react";
 import { IconButton } from "@/_components/buttons/icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { visible } from "@/_components/theme/css-functions";
+import CheckIcon from "@/_icons/check-icon";
 
 export function DropdownIconButton<T>({
+  icon,
   selection,
   setSelection,
   description,
   options,
   className,
+  dropdownClassName,
 }: {
+  icon: React.ReactNode;
   selection: T;
   setSelection: (value: T) => void;
   description: string;
   options: {
-    icon: React.ReactNode;
     text: string;
     value: T;
   }[];
   className?: string;
+  dropdownClassName?: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,13 +36,11 @@ export function DropdownIconButton<T>({
     setIsOpen(false);
   };
 
-  const selectedOption = options.find((option) => option.value === selection);
-
   const dropdownClasses =
-    "absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10";
+    "absolute mt-2 bg-white dark:bg-gray-800 rounded-md shadow-lg";
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: PointerEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
@@ -47,9 +49,9 @@ export function DropdownIconButton<T>({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("pointerdown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("pointerdown", handleClickOutside);
     };
   }, [containerRef]);
 
@@ -64,11 +66,11 @@ export function DropdownIconButton<T>({
           aria-haspopup="true"
           aria-expanded={isOpen}
         >
-          {selectedOption?.icon}
+          {icon}
         </IconButton>
       </Tooltip>
       <div
-        className={`${dropdownClasses} ${visible(isOpen)}`}
+        className={`${dropdownClassName} ${dropdownClasses} ${visible(isOpen)}`}
         tabIndex={-1}
         role="menu"
       >
@@ -76,12 +78,14 @@ export function DropdownIconButton<T>({
           <button
             key={String(option.value)}
             id={`option-${index}`}
-            className={`flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 rounded-md`}
+            className={`grid grid-cols-[20px_1fr] gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 rounded-md`}
             onClick={() => handleOptionClick(option.value)}
             role="menuitem"
             tabIndex={0}
           >
-            <span className="mr-2">{option.icon}</span>
+            <span>
+              {selection == option.value && <CheckIcon ariaLabel="Selected" />}
+            </span>
             <span>{option.text}</span>
           </button>
         ))}

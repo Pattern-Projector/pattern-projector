@@ -41,9 +41,10 @@
 //
 //M*/
 
-import { Point } from "@/_lib/point";
+import { Point, subtract } from "@/_lib/point";
 import { AbstractMatrix, Matrix, solve } from "ml-matrix";
 import { getPtDensity } from "./unit";
+import { Line } from "./interfaces/line";
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
@@ -176,6 +177,10 @@ export function getPerspectiveTransformFromPoints(
   }
 }
 
+export function transformLine(line: Line, m: Matrix): Line {
+  return [transformPoint(line[0], m), transformPoint(line[1], m)];
+}
+
 export function transformPoints(points: Point[], m: Matrix): Point[] {
   return points.map((p) => transformPoint(p, m));
 }
@@ -209,6 +214,16 @@ export function rotate(angle: number): Matrix {
   ]);
 }
 
+export function align(line: Line, to: Line): Matrix {
+  const toOrigin = translate({ x: -line[0].x, y: -line[0].y });
+  const rotateTo = rotate(angle(to) - angle(line));
+  return translate(to[0]).mmul(rotateTo).mmul(toOrigin);
+}
+
+export function move(from: Point, to: Point): Matrix {
+  return translate(subtract(to, from));
+}
+
 export function transformAboutPoint(matrix: Matrix, point: Point): Matrix {
   const translationToOrigin = translate({ x: -point.x, y: -point.y });
   const translationBack = translate(point);
@@ -227,6 +242,30 @@ export function flipVertical(origin: Point): Matrix {
 
 export function flipHorizontal(origin: Point): Matrix {
   return transformAboutPoint(scale(-1, 1), origin);
+}
+
+export function angleDeg(line: Line): number {
+  return angle(line) * (180 / Math.PI);
+}
+
+export function angle(line: Line): number {
+  const [p1, p2] = line;
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  return Math.atan2(dy, dx);
+}
+export function rotateToHorizontal(line: Line): Matrix {
+  return rotateMatrixDeg(-angleDeg(line), line[0]);
+}
+
+export function flipAlong(line: Line): Matrix {
+  const angle = angleDeg(line);
+  const a = rotateMatrixDeg(-angle, line[0]);
+  const b = translate({ x: 0, y: -line[0].y });
+  const c = scale(1, -1);
+  const d = translate({ x: 0, y: line[0].y });
+  const e = rotateMatrixDeg(angle, line[0]);
+  return e.mmul(d).mmul(c).mmul(b).mmul(a);
 }
 
 /**
@@ -252,6 +291,10 @@ export function sqrDist(a: Point, b: Point): number {
   return dx * dx + dy * dy;
 }
 
+export function dist(a: Point, b: Point): number {
+  return Math.sqrt(sqrDist(a, b));
+}
+
 export function minIndex(a: number[]): number {
   let min = 0;
   for (let i = 1; i < a.length; i++) {
@@ -262,7 +305,12 @@ export function minIndex(a: number[]): number {
   return min;
 }
 
-export function sqrDistToLine(a: Point, b: Point, p: Point): number {
+export function distToLine(line: Line, p: Point): number {
+  return Math.sqrt(sqrDistToLine(line, p));
+}
+
+export function sqrDistToLine(line: Line, p: Point): number {
+  const [a, b] = line;
   const len2 = sqrDist(a, b);
   if (len2 === 0) {
     return sqrDist(p, a);
@@ -321,18 +369,6 @@ function getOrientation(p1: Point, p2: Point, p3: Point): number {
   }
 }
 
-export function constrainInSpace(
-  p: Point,
-  anchorPoint: Point,
-  matrix: Matrix,
-  inverse: Matrix,
-): Point {
-  const p1 = transformPoint(p, matrix);
-  const p2 = transformPoint(anchorPoint, matrix);
-  const c = constrained(p1, p2);
-  return transformPoint(c, inverse);
-}
-
 export function constrained(p: Point, anchorPoint: Point) {
   const dx = Math.abs(anchorPoint.x - p.x);
   const dy = Math.abs(anchorPoint.y - p.y);
@@ -352,10 +388,6 @@ export function constrained(p: Point, anchorPoint: Point) {
   }
 }
 
-export function toSingleAxisVector(vec: Point): Point {
-  if (Math.abs(vec.x) > Math.abs(vec.y)) {
-    return { x: vec.x, y: 0 };
-  } else {
-    return { x: 0, y: vec.y };
-  }
+export function isFlipped(m: Matrix): boolean {
+  return m.get(1, 1) * m.get(0, 0) < 0;
 }

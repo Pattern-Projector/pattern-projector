@@ -1,4 +1,4 @@
 export interface EdgeInsets {
-  horizontal: string;
-  vertical: string;
+  horizontal: number;
+  vertical: number;
 }

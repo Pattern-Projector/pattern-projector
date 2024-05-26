@@ -8,19 +8,19 @@
         "choose-language": "Sprache",
         "welcome": {
             "title": "Willkommen bei Pattern Projector!",
-            "description": "Pattern projector ist eine kostenlose und quelloffene Web-Applikation, die Benutzern hilft, Beamer für Schnittmuster schnell zu kalibrieren. Dieses Projekt befindet sich derzeit in der Beta-Phase. Es wird noch große Änderungen und neue Funktionen geben, die wir im Laufe der Zeit hinzufügen werden."
+            "description": "Pattern Projector ist eine kostenlose und quelloffene Webanwendung, die Beamer für Schnittmuster schnell kalibriert. Sie bietet außerdem Werkzeuge zum Zusammenkleben von mehrseitigen Schnittmustern, zum Ändern der Linienstärke, zum Farbumkehren, zum Drehen und Spiegeln von Mustern und mehr. Die neuesten Updates finden Sie im <changeLogLink>Changelog</changeLogLink>."
         },
         "requirements": {
             "title": "Was du benötigst",
             "projector": "Beamer: mindestens 720p empfohlen",
-            "mat": "Schneidematte: idealerweise mit Rasterlininen",
+            "mat": "Eine Schneidematte mit Rasterlinien (optional)",
             "mount": "Ständer oder Wand/Regal/Tischhalterung für den Beamer",
             "computer": "Computer oder Tablet um es mit dem Beamer zu verbinden",
             "pattern": "Ein PDF-Schnittmuster"
         },
         "setup": {
             "title": "Setup",
-            "place": "Stelle den Beamer über oder hinter der Schneidematte auf, so dass er auf die Schneidematte projiziert.",
+            "place": "Stellen/Hängen Sie den Beamer über der Schneidematte auf, so dass er direkt auf die Schneidematte zeigt. Wenn Sie keine Schneidematte haben, können Sie mit Papier oder Kreppband ein Raster/Rechteck auf einem Tisch oder dem Boden markieren.",
             "connect": "Schließe deinen Computer oder Tablet an den Beamer an und dupliziere oder erweitere deine Anzeige.",
             "focus": "Stelle den Focus bei deinem Beamer ein, bis der Text in der Mitte der Projektion scharf ist. Wenn du das Bild nicht scharf bekommst, versichere dich, dass die Entfernung zwischen Beamer und Schneidematte der Herstellerangabe entspricht.",
             "keystone": "Wenn dein Beamer Keystones hat, dann versuche es so nah wie möglich am vorgesehenen Rechteck auszurichten."
@@ -31,7 +31,7 @@
             "input": "Füge die Weite und Höhe deiner Schneidematte ein.",
             "fullscreen": "Gehe auf Vollbildmodus, indem du auf das Ikon klickst ",
             "drag": "Ziehe die Ecken des Rasters auf die Ecken deiner Schneidematte. Mit Blick auf die Matte, justiere die Ecken am PC oder Tablet. Justiere es solange, bis die Ecken und Linien mit deiner Schneidematte übereinstimmen.",
-            "size": "Es muss nicht die gesamte Matte kalibriert werden, sondern nur der größte Bereich, in den das Kalibrierungsgitter passt. Stelle dabei sicher, dass die Breiten- und Höhenangaben mit denen des Gitters übereinstimmen.",
+            "size": "Sie müssen nicht die gesamte Matte kalibrieren. Wählen Sie stattdessen den größten Bereich, in den das Kalibrierungsgitter passt, und geben Sie die Breite und Höhe entsprechend der Breite und Höhe des Gitters ein.",
             "project": "Wenn das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf \"Beamen\"."
         },
         "project": {
@@ -46,7 +46,7 @@
             },
             "invert": {
                 "title": "Farbumkehrung",
-                "description": "Beim Beamen ist es einfacher weiße Linien auf schwarzem Hintergrund zu sehen."
+                "description": "Bei der Projektion ist es normalerweise einfacher, grüne oder weiße Linien auf schwarzem Grund zu sehen. Klicken/Tippen Sie einmal für grüne Linien, zweimal für weiße Linien und dreimal, um zu schwarzen Linien zurückzukehren."
             },
             "flip": {
                 "title": "Spiegel Vertikal/Horizontal",
@@ -63,6 +63,34 @@
             "fullscreen": {
                 "title": "Vollbild",
                 "description": "Es ist generell einfacher, die Software im Vollbildmodus zu verwenden."
+            },
+            "measure": {
+                "description": "Markieren Sie Linien in der PDF-Datei zum Drehen, Spiegeln, Verschieben, Messen oder Markieren.",
+                "title": "Werkzeug zum Markieren, Messen und Transformieren starten"
+            },
+            "showMenu": {
+                "title": "Zeige/Verstecke Menü",
+                "description": "Das obere Menü ein- oder ausblenden."
+            },
+            "moveTool": {
+                "title": "Werkzeug zum Verschieben ein-/ausblenden",
+                "description": "Das Verschiebewerkzeug verfügt über vier Pfeiltasten zum Verschieben der Ecken/Kanten des Kalibrierungsgitters. In der Mitte befindet sich außerdem eine Schaltfläche \"Weiter\", mit der Sie zur nächsten Ecke/Kante wechseln können."
+            },
+            "overlayOptions": {
+                "title": "Überlagerungsoptionen ein-/ausblenden",
+                "description": "Die Overlays Raster, Rand, Papierbogen und Flip-Linien können ein- oder ausgeblendet werden. Das Raster entspricht dem Kalibrierungsraster, der Rand ist die Umrandung des Kalibrierungsrasters, das Papierblatt ist ein Rechteck in der Größe eines DIN-A4-Blattes, und die Umkehrlinien sind Linien, die bei der Spiegelung von Mustern helfen."
+            },
+            "lineWeight": {
+                "title": "Liniendicke",
+                "description": "Ändern Sie die Dicke der Linien im PDF-Muster."
+            },
+            "layers": {
+                "title": "Ebenen ein-/ausblenden",
+                "description": "Ebenen in der PDF-Datei ein- oder ausblenden."
+            },
+            "stitch": {
+                "title": "Stichmenü anzeigen/verbergen",
+                "description": "Blenden Sie das Stichmenü ein oder aus, mit dem Sie mehrseitige PDF-Designs zusammenheften können."
             }
         },
         "faq": {
@@ -94,6 +122,10 @@
                 "projectorsForSewing": {
                     "title": "Nähen mit Beamer",
                     "link": "https://www.facebook.com/groups/naehenmitbeamer/"
+                },
+                "onePageGuide": {
+                    "title": "Einseitige Anleitung zum Nähen mit Beamer",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
                 }
             }
         },
@@ -119,19 +151,19 @@
         "gridOff": "Raster aus",
         "invertColor": "Farbumkehrung ein",
         "invertColorOff": "Farbumkehrung aus",
-        "flipVertical": "Spiegel vertikal",
+        "flipVertical": "Spiegel vertikal (V)",
         "flipVerticalOff": "Spiegel vertikal aus",
-        "flipHorizontal": "Spiegel horizontal",
+        "flipHorizontal": "Spiegel horizontal (h)",
         "flipHorizontalOff": "Spiegel horizontal aus",
         "fourCornersOn": "Eckpunkte einblenden",
         "fourCornersOff": "Eckpunkte ausblenden",
-        "rotate90": "Drehe 90 Grad im Uhrzeigersinn",
+        "rotate90": "Drehe 90 Grad im Uhrzeigersinn (r)",
         "arrowBack": "Zurück 1 Seite",
         "arrowForward": "Vorwärts 1 Seite",
         "info": "Info Seite",
         "layersOn": "Blende Ebenenmenü ein",
         "layersOff": "Blende Ebenenmenü aus",
-        "recenter": "PDF zentrieren",
+        "recenter": "PDF zentrieren (c)",
         "fullscreen": "Vollbild ein",
         "fullscreenExit": "Vollbild aus",
         "lineWeight": "Linienstärke",
@@ -145,12 +177,50 @@
         "overlayModeBorder": "Umrandung",
         "menuShow": "Zeige Menü",
         "menuHide": "Verstecke Menü",
-        "measureOn": "Messung beginnen"
+        "measureOn": "Messung beginnen",
+        "overlayOptions": "Overlay Optionen",
+        "overlayOptionBorder": "Ränder",
+        "overlayOptionDisabled": "Deaktiviert",
+        "overlayOptionGrid": "Raster",
+        "overlayOptionPaper": "Papierseite",
+        "overlayOptionFliplines": "Drehe Linien",
+        "flipCenterOn": "Über die Mitte drehen",
+        "measure": "Markieren, messen und transformieren (m)",
+        "ok": "Ok",
+        "flipCenterOff": "Nicht über die Mitte drehen",
+        "calibrationAlertTitle": "Kalibrierung Warnung",
+        "calibrationAlert": "Die Fenstergröße hat sich seit Beginn der Projektion geändert. Drücken Sie die Vollbildtaste oder kalibrieren Sie neu, um dieses Problem zu beheben.",
+        "calibrationAlertContinue": "Die Fenstergröße kann nach der Kalibrierung nicht mehr geändert werden. Um im Vollbildmodus zu projizieren, kalibrieren Sie im Vollbildmodus. Wenn Sie die Fenstergröße ändern möchten, kalibrieren Sie erneut.",
+        "continue": "Fenstergröße speichern und fortfahren",
+        "checkCalibration": "Kalibrierung prüfen",
+        "showMovement": "Werkzeug zum Verschieben anzeigen",
+        "hideMovement": "Werkzeug zum Verschieben ausblenden"
     },
     "StitchMenu": {
         "columnCount": "Spalten",
-        "pageRange": "Seiten",
+        "pageRange": "Stichseiten",
         "horizontal": "Horizontal",
         "vertical": "Vertikal"
+    },
+    "MeasureCanvas": {
+        "rotateToHorizontal": "Rotiere horizontal",
+        "deleteLine": "Lösche Linie",
+        "flipAlong": "Drehe an der Linie entlang",
+        "translate": "PDF nach Zeilenlänge verschieben"
+    },
+    "LayerMenu": {
+        "layersOn": "Zeige Ebenenmenü",
+        "layersOff": "Verstecke Ebenenmenü",
+        "noLayers": "Keine Ebenen in der PDF",
+        "title": "Ebenen",
+        "showAll": "Zeige alle",
+        "hideAll": "Verstecke alle"
+    },
+    "MovementPad": {
+        "left": "Links",
+        "right": "Rechts",
+        "down": "Runter",
+        "next": "Nächste Ecke",
+        "up": "Hoch"
     }
 }

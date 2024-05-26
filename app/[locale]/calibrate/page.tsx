@@ -13,8 +13,10 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
-import PDFViewer from "@/_components/pdf-viewer";
-import { getPerspectiveTransformFromPoints, toMatrix3d } from "@/_lib/geometry";
+import {
+  getCenterPoint,
+  getPerspectiveTransformFromPoints,
+} from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
@@ -26,13 +28,8 @@ import {
 import { IN, getPtDensity } from "@/_lib/unit";
 import { Layer } from "@/_lib/interfaces/layer";
 import LayerMenu from "@/_components/layer-menu";
-import useProgArrowKeyToMatrix from "@/_hooks/use-prog-arrow-key-to-matrix";
 import { visible } from "@/_components/theme/css-functions";
-import { IconButton } from "@/_components/buttons/icon-button";
-import LayersIcon from "@/_icons/layers-icon";
-import Tooltip from "@/_components/tooltip/tooltip";
 import { useTranslations } from "next-intl";
-import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
 import {
@@ -43,7 +40,6 @@ import {
 } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
-import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import Filters from "@/_components/filters";
 import CalibrationContext, {
   getCalibrationContext,
@@ -51,16 +47,35 @@ import CalibrationContext, {
   getIsInvalidatedCalibrationContextWithPointerEvent,
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
+import PdfViewer from "@/_components/pdf-viewer";
+import { Transformable } from "@/_hooks/use-transform-context";
+import OverlayCanvas from "@/_components/overlay-canvas";
+import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
+import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
+import Tooltip from "@/_components/tooltip/tooltip";
+import { IconButton } from "@/_components/buttons/icon-button";
+import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
+
+const defaultStitchSettings = {
+  columnCount: 1,
+  edgeInsets: { horizontal: 0, vertical: 0 },
+  pageRange: "1-",
+} as StitchSettings;
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "16";
+
   const maxPoints = 4; // One point per vertex in rectangle
 
   const fullScreenHandle = useFullScreenHandle();
 
   const [points, dispatch] = useReducer(pointsReducer, []);
+  const [stitchSettings, dispatchStitchSettings] = useReducer(
+    stitchSettingsReducer,
+    defaultStitchSettings,
+  );
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
@@ -70,11 +85,7 @@ export default function Page() {
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
-  const [matrix3d, setMatrix3d] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
-  const [localTransform, setLocalTransform] = useState<Matrix>(
-    Matrix.identity(3, 3),
-  );
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
@@ -86,19 +97,14 @@ export default function Page() {
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
 
-  const [pageRange, setPageRange] = useState<string>("");
-  const [columnCount, setColumnCount] = useState<string>("");
-  const [edgeInsets, setEdgeInsets] = useState<EdgeInsets>({
-    horizontal: "0",
-    vertical: "0",
-  });
-
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
   );
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
   const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
+  const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
+    useState(true);
 
   const t = useTranslations("Header");
 
@@ -149,6 +155,15 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
+      setLineThickness(0);
+    }
+
+    const expectedContext = localStorage.getItem("calibrationContext");
+    if (expectedContext !== null) {
+      const expected = JSON.parse(expectedContext) as CalibrationContext;
+      if (expected.fullScreen) {
+        fullScreenHandle.enter();
+      }
     }
   }
 
@@ -167,10 +182,37 @@ export default function Page() {
   });
 
   useEffect(() => {
-    setColumnCount(String(pageCount));
-    setPageRange(`1-${pageCount}`);
+    const element = document.getElementById("bmc-wbtn");
+    if (element) {
+      element.style.display = "none";
+    }
+  }, []);
+
+  useEffect(() => {
     setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
   }, [pageCount]);
+
+  useEffect(() => {
+    // If the file changes, get stitch settings for that file from localStorage
+    if (!file) {
+      return;
+    }
+    setPageCount(0); // Reset page count while loading
+    const key = `stitchSettings:${file.name ?? "default"}`;
+    const stitchSettingsString = localStorage.getItem(key);
+    if (stitchSettingsString !== null) {
+      const stitchSettings = JSON.parse(stitchSettingsString);
+      dispatchStitchSettings({ type: "set", stitchSettings });
+      return;
+    }
+    dispatchStitchSettings({
+      type: "set",
+      stitchSettings: {
+        ...defaultStitchSettings,
+        key,
+      },
+    });
+  }, [file]);
 
   useEffect(() => {
     setMenuStates((m) => getMenuStatesFromLayers(m, layers));
@@ -210,17 +252,6 @@ export default function Page() {
     }
   }, []);
 
-  const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
-  const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
-  const scale = unitOfMeasure === IN ? quarterInchPx : halfCmPx;
-  useProgArrowKeyToMatrix(!isCalibrating, scale, (matrix) => {
-    setLocalTransform(matrix.mmul(localTransform));
-  });
-
-  useEffect(() => {
-    setMatrix3d(toMatrix3d(calibrationTransform.mmul(localTransform)));
-  }, [localTransform, calibrationTransform]);
-
   useEffect(() => {
     const ptDensity = getPtDensity(unitOfMeasure);
     const w = Number(width);
@@ -255,6 +286,10 @@ export default function Page() {
   }, []);
 
   function handlePointerDown(e: React.PointerEvent) {
+    if (fullScreenTooltipVisible) {
+      setFullScreenTooltipVisible(false);
+    }
+
     if (calibrationValidated) {
       const expectedContext = localStorage.getItem("calibrationContext");
       if (expectedContext === null) {
@@ -309,19 +344,55 @@ export default function Page() {
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
-      <div className="bg-white dark:bg-black dark:text-white w-screen h-screen">
+      <div className="bg-white dark:bg-black dark:text-white w-screen h-screen ">
         <FullScreen
           handle={fullScreenHandle}
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
           {showCalibrationAlert ? (
-            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded">
+            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
               <div className="flex">
                 <WarningIcon ariaLabel="warning" />
               </div>
               {t("calibrationAlert")}
+              <Tooltip
+                description={
+                  fullScreenHandle.active
+                    ? t("fullscreenExit")
+                    : t("fullscreen")
+                }
+              >
+                <IconButton
+                  onClick={
+                    fullScreenHandle.active
+                      ? fullScreenHandle.exit
+                      : fullScreenHandle.enter
+                  }
+                >
+                  {fullScreenHandle.active ? (
+                    <FullscreenExitIcon ariaLabel={t("fullscreen")} />
+                  ) : (
+                    <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
+                  )}
+                </IconButton>
+              </Tooltip>
             </h2>
           ) : null}
+          {isCalibrating && (
+            <CalibrationCanvas
+              className={`absolute ${visible(isCalibrating)}`}
+              points={points}
+              dispatch={dispatch}
+              width={+width}
+              height={+height}
+              isCalibrating={isCalibrating}
+              unitOfMeasure={unitOfMeasure}
+              displaySettings={displaySettings}
+              corners={corners}
+              setCorners={setCorners}
+              fullScreenHandle={fullScreenHandle}
+            />
+          )}
           {isCalibrating && showingMovePad && (
             <MovementPad
               corners={corners}
@@ -330,129 +401,26 @@ export default function Page() {
               fullScreenHandle={fullScreenHandle}
             />
           )}
-          <div
-            className={`z-20 absolute opacity-100 transition-opacity ease-in-out duration-1000 `}
-          />
-          <Header
-            isCalibrating={isCalibrating}
-            setIsCalibrating={setIsCalibrating}
-            height={height}
-            width={width}
-            handleHeightChange={handleHeightChange}
-            handleWidthChange={handleWidthChange}
-            handleResetCalibration={() => {
-              localStorage.setItem(
-                "calibrationContext",
-                JSON.stringify(getCalibrationContext(fullScreenHandle.active)),
-              );
-              dispatch({ type: "set", points: getDefaultPoints() });
-            }}
-            handleFileChange={handleFileChange}
-            fullScreenHandle={fullScreenHandle}
-            unitOfMeasure={unitOfMeasure}
-            setUnitOfMeasure={(newUnit) => {
-              setUnitOfMeasure(newUnit);
-              updateLocalSettings({ unitOfMeasure: newUnit });
-            }}
-            displaySettings={displaySettings}
-            setDisplaySettings={(newSettings) => {
-              setDisplaySettings(newSettings);
-              if (newSettings) {
-                updateLocalSettings(newSettings);
-              }
-            }}
-            pageCount={pageCount}
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
-            layoutWidth={layoutWidth}
-            layoutHeight={layoutHeight}
-            lineThickness={lineThickness}
-            setLineThickness={setLineThickness}
-            setMenuStates={setMenuStates}
-            menuStates={menuStates}
-            measuring={measuring}
-            setMeasuring={setMeasuring}
-            showingMovePad={showingMovePad}
-            setShowingMovePad={(show) => {
-              setShowingMovePad(show);
-              updateLocalSettings({ showingMovePad: show });
-            }}
-            setCalibrationValidated={setCalibrationValidated}
-          />
 
-          <StitchMenu
-            showMenu={!isCalibrating && menuStates.stitch && menuStates.nav}
-            setShowMenu={(showMenu) =>
-              setMenuStates({ ...menuStates, stitch: showMenu })
-            }
-            setColumnCount={setColumnCount}
-            setEdgeInsets={setEdgeInsets}
-            setPageRange={setPageRange}
-            columnCount={columnCount}
-            edgeInsets={edgeInsets}
-            pageRange={pageRange}
-            pageCount={pageCount}
-          />
-          <LayerMenu
-            visible={!isCalibrating && menuStates.layers}
-            setVisible={(visible) =>
-              setMenuStates({ ...menuStates, layers: visible })
-            }
-            layers={layers}
-            setLayers={setLayers}
-            className={`${menuStates.stitch ? "top-32" : "top-20"}`}
-          />
-          {layers.size && !menuStates.layers ? (
-            <Tooltip
-              description={menuStates.layers ? t("layersOff") : t("layersOn")}
-            >
-              <IconButton
-                className={`${menuStates.stitch ? "top-36" : "top-20"} absolute left-2 z-30 px-1.5 py-1.5 border-2 border-slate-400`}
-                onClick={() => setMenuStates({ ...menuStates, layers: true })}
-              >
-                <LayersIcon ariaLabel="layers" />
-              </IconButton>
-            </Tooltip>
-          ) : null}
-
-          <CalibrationCanvas
-            className={`absolute z-10`}
-            points={points}
-            dispatch={dispatch}
-            width={+width}
-            height={+height}
-            isCalibrating={isCalibrating}
-            unitOfMeasure={unitOfMeasure}
-            displaySettings={displaySettings}
-            corners={corners}
-            setCorners={setCorners}
-            fullScreenHandle={fullScreenHandle}
-          />
-          {measuring && (
+          <Transformable>
             <MeasureCanvas
               className={visible(!isCalibrating)}
               perspective={perspective}
               calibrationTransform={calibrationTransform}
               unitOfMeasure={unitOfMeasure}
-            />
-          )}
-          <Draggable
-            viewportClassName={`select-none ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 `}
-            className={`select-none ${visible(!isCalibrating)}`}
-            localTransform={localTransform}
-            setLocalTransform={setLocalTransform}
-            perspective={perspective}
-          >
-            <div
-              className={"absolute z-0"}
-              style={{
-                transform: `${matrix3d}`,
-                transformOrigin: "0 0",
-                imageRendering: "pixelated",
-              }}
+              measuring={measuring}
+              setMeasuring={setMeasuring}
+              file={file}
+              gridCenter={getCenterPoint(+width, +height, unitOfMeasure)}
             >
-              <div className={"outline outline-8 outline-purple-600"}>
-                <PDFViewer
+              <Draggable
+                className={`absolute`}
+                perspective={perspective}
+                isCalibrating={isCalibrating}
+                unitOfMeasure={unitOfMeasure}
+                calibrationTransform={calibrationTransform}
+              >
+                <PdfViewer
                   file={file}
                   setPageCount={setPageCount}
                   pageCount={pageCount}
@@ -461,15 +429,90 @@ export default function Page() {
                   setLayoutWidth={setLayoutWidth}
                   setLayoutHeight={setLayoutHeight}
                   lineThickness={lineThickness}
-                  columnCount={columnCount}
-                  edgeInsets={edgeInsets}
-                  pageRange={pageRange}
-                  setLocalTransform={setLocalTransform}
+                  stitchSettings={stitchSettings}
                   filter={themeFilter(displaySettings.theme)}
+                  dispatchStitchSettings={dispatchStitchSettings}
                 />
-              </div>
-            </div>
-          </Draggable>
+              </Draggable>
+              <OverlayCanvas
+                className="absolute top-0 pointer-events-none"
+                points={points}
+                width={+width}
+                height={+height}
+                unitOfMeasure={unitOfMeasure}
+                displaySettings={displaySettings}
+              />
+            </MeasureCanvas>
+
+            <menu className={`absolute top-0 w-screen`}>
+              <Header
+                isCalibrating={isCalibrating}
+                setIsCalibrating={setIsCalibrating}
+                height={height}
+                width={width}
+                handleHeightChange={handleHeightChange}
+                handleWidthChange={handleWidthChange}
+                handleResetCalibration={() => {
+                  localStorage.setItem(
+                    "calibrationContext",
+                    JSON.stringify(
+                      getCalibrationContext(fullScreenHandle.active),
+                    ),
+                  );
+                  dispatch({ type: "set", points: getDefaultPoints() });
+                }}
+                handleFileChange={handleFileChange}
+                fullScreenHandle={fullScreenHandle}
+                unitOfMeasure={unitOfMeasure}
+                setUnitOfMeasure={(newUnit) => {
+                  setUnitOfMeasure(newUnit);
+                  updateLocalSettings({ unitOfMeasure: newUnit });
+                }}
+                displaySettings={displaySettings}
+                setDisplaySettings={(newSettings) => {
+                  setDisplaySettings(newSettings);
+                  if (newSettings) {
+                    updateLocalSettings(newSettings);
+                  }
+                }}
+                pageCount={pageCount}
+                layoutWidth={layoutWidth}
+                layoutHeight={layoutHeight}
+                lineThickness={lineThickness}
+                setLineThickness={setLineThickness}
+                setMenuStates={setMenuStates}
+                menuStates={menuStates}
+                measuring={measuring}
+                setMeasuring={setMeasuring}
+                showingMovePad={showingMovePad}
+                setShowingMovePad={(show) => {
+                  setShowingMovePad(show);
+                  updateLocalSettings({ showingMovePad: show });
+                }}
+                setCalibrationValidated={setCalibrationValidated}
+                fullScreenTooltipVisible={fullScreenTooltipVisible}
+              />
+              <menu className={`${visible(!isCalibrating && file !== null)}`}>
+                <StitchMenu
+                  className={`${menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
+                  setShowMenu={(showMenu) =>
+                    setMenuStates({ ...menuStates, stitch: showMenu })
+                  }
+                  dispatchStitchSettings={dispatchStitchSettings}
+                  stitchSettings={stitchSettings}
+                  pageCount={pageCount}
+                />
+                <LayerMenu
+                  visible={menuStates.layers}
+                  setVisible={(visible) =>
+                    setMenuStates({ ...menuStates, layers: visible })
+                  }
+                  layers={layers}
+                  setLayers={setLayers}
+                />
+              </menu>
+            </menu>
+          </Transformable>
         </FullScreen>
       </div>
       <Filters />

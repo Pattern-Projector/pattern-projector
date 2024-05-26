@@ -1,70 +1,55 @@
 import { Matrix } from "ml-matrix";
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  MouseEvent,
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-} from "react";
+import { ReactNode, useState, useRef, useEffect } from "react";
 
-import { toSingleAxisVector, transformPoint, translate } from "@/_lib/geometry";
-import { mouseToCanvasPoint, Point, touchToCanvasPoint } from "@/_lib/point";
+import { toMatrix3d, transformPoint, translate } from "@/_lib/geometry";
+import { Point } from "@/_lib/point";
+import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
+import { IN } from "@/_lib/unit";
+import useProgArrowKeyToMatrix from "@/_hooks/use-prog-arrow-key-to-matrix";
+import { visible } from "./theme/css-functions";
+import {
+  useTransformContext,
+  useTransformerContext,
+} from "@/_hooks/use-transform-context";
 
 export default function Draggable({
   children,
-  className,
-  viewportClassName,
-  localTransform,
-  setLocalTransform,
   perspective,
+  isCalibrating,
+  unitOfMeasure,
+  calibrationTransform,
+  className,
 }: {
   children: ReactNode;
-  className: string | undefined;
-  viewportClassName: string | undefined;
-  localTransform: Matrix;
-  setLocalTransform: Dispatch<SetStateAction<Matrix>>;
   perspective: Matrix;
+  isCalibrating: boolean;
+  unitOfMeasure: string;
+  calibrationTransform: Matrix;
+  className: string;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
-  const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
-  const [isAxisLocked, setIsAxisLocked] = useState<Boolean>(false);
   const [isIdle, setIsIdle] = useState(false);
+  const [matrix3d, setMatrix3d] = useState<string>("");
+
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const AXIS_LOCK_KEYBIND = "Shift";
-  const IDLE_TIMEOUT = 1500;
+  const transform = useTransformContext();
+  const transformer = useTransformerContext();
 
-  const handleKeyDown = useCallback(
-    function (e: React.KeyboardEvent) {
-      if (e.key === AXIS_LOCK_KEYBIND) {
-        e.preventDefault();
-        setIsAxisLocked(true);
-      }
-    },
-    [setIsAxisLocked],
-  );
+  const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
+  const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
+  const scale = unitOfMeasure === IN ? quarterInchPx : halfCmPx;
 
-  const handleKeyUp = useCallback(
-    function (e: React.KeyboardEvent) {
-      if (e.key === AXIS_LOCK_KEYBIND) {
-        e.preventDefault();
-        setIsAxisLocked(false);
-      }
-    },
-    [setIsAxisLocked],
-  );
+  useProgArrowKeyToMatrix(!isCalibrating, scale, (matrix) => {
+    transformer.setLocalTransform(matrix.mmul(transform));
+  });
 
-  /* This effect causes the position of the div to update instantly if
-   isAxisLocked changes, rather than needing the mouse to move first */
   useEffect(() => {
-    if (dragStart !== null && isAxisLocked && currentMousePos !== null) {
-      handleMove(currentMousePos);
-    }
-  }, [dragStart, isAxisLocked, currentMousePos]);
+    setMatrix3d(toMatrix3d(calibrationTransform.mmul(transform)));
+  }, [transform, calibrationTransform]);
+
+  const IDLE_TIMEOUT = 1500;
 
   function resetIdle() {
     setIsIdle(false);
@@ -81,40 +66,36 @@ export default function Draggable({
     setTransformStart(null);
   }
 
-  function handleOnMouseMove(e: MouseEvent<HTMLDivElement>): void {
-    resetIdle();
-    /* If we aren't currently dragging, ignore the mouse move event */
-    if (dragStart === null) {
-      return;
+  function handleMove(e: React.PointerEvent) {
+    const p = { x: e.clientX, y: e.clientY };
+
+    if (e.pointerType === "mouse") {
+      resetIdle();
+      /* If we aren't currently dragging, ignore the mouse move event */
+      if (dragStart === null) {
+        return;
+      }
+      if (e.buttons === 0 && dragStart !== null) {
+        // If the mouse button is released, end the drag.
+        handleOnEnd();
+        return;
+      }
     }
 
-    const newMousePos = mouseToCanvasPoint(e);
-    setCurrentMousePos(newMousePos);
-
-    if ((e.buttons & 1) === 0 && dragStart !== null) {
-      handleOnEnd();
-      return;
-    }
-    handleMove(newMousePos);
-  }
-
-  function handleMove(p: Point) {
     if (transformStart !== null && dragStart !== null) {
       const dest = transformPoint(p, perspective);
       const tx = dest.x - dragStart.x;
       const ty = dest.y - dragStart.y;
-      let vec = { x: tx, y: ty };
-      if (isAxisLocked) {
-        vec = toSingleAxisVector(vec);
-      }
-      setLocalTransform(translate(vec).mmul(transformStart));
+      const vec = { x: tx, y: ty };
+      transformer.setLocalTransform(translate(vec).mmul(transformStart));
     }
   }
 
-  function handleOnStart(p: Point): void {
+  function handleOnStart(e: React.PointerEvent): void {
+    const p = { x: e.clientX, y: e.clientY };
     const pt = transformPoint(p, perspective);
     setDragStart(pt);
-    setTransformStart(localTransform.clone());
+    setTransformStart(transform.clone());
   }
 
   let cursorMode = `${dragStart !== null ? "grabbing" : "grab"}`;
@@ -130,30 +111,32 @@ export default function Draggable({
   return (
     <div
       tabIndex={0}
-      className={viewportClassName + " w-screen h-screen "}
-      onMouseMove={handleOnMouseMove}
+      className={`${className ?? ""} select-none absolute top-0 ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 w-screen h-screen`}
+      onPointerMove={handleMove}
       onMouseEnter={resetIdle}
       onMouseUp={handleOnEnd}
-      onKeyUp={handleKeyUp}
-      onKeyDown={handleKeyDown}
       style={{
         cursor: viewportCursorMode,
       }}
     >
       <div
-        className={className}
-        onMouseDown={(e) => {
-          handleOnStart(mouseToCanvasPoint(e));
-        }}
-        onTouchMove={(e) => handleMove(touchToCanvasPoint(e))}
-        onTouchStart={(e) => handleOnStart(touchToCanvasPoint(e))}
-        onTouchEnd={handleOnEnd}
-        onMouseUp={handleOnEnd}
+        className={`select-none ${visible(!isCalibrating)}`}
+        onPointerMove={handleMove}
+        onPointerDown={handleOnStart}
+        onPointerUp={handleOnEnd}
         style={{
           cursor: cursorMode,
         }}
       >
-        {children}
+        <div
+          className={"absolute"}
+          style={{
+            transform: `${matrix3d}`,
+            transformOrigin: "0 0",
+          }}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

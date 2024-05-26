@@ -6,12 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  CanvasState,
-  drawPolygon,
-  drawOverlays,
-  drawGrid,
-} from "@/_lib/drawing";
+import { CanvasState, drawPolygon, drawGrid } from "@/_lib/drawing";
 import {
   getPerspectiveTransformFromPoints,
   transformPoint,
@@ -98,6 +93,7 @@ export default function CalibrationCanvas({
           unitOfMeasure,
           strokeColor(displaySettings.theme),
           displaySettings,
+          false,
         );
         draw(cs);
       }
@@ -142,7 +138,7 @@ export default function CalibrationCanvas({
 
   function getNearbyEdge(p: Point): number[] {
     const distances = localPoints.map((a, idx) =>
-      sqrDistToLine(a, localPoints[(idx + 1) % localPoints.length], p),
+      sqrDistToLine([a, localPoints[(idx + 1) % localPoints.length]], p),
     );
     const edge = minIndex(distances);
     if (cornerMargin ** 2 > distances[edge]) {
@@ -174,13 +170,17 @@ export default function CalibrationCanvas({
     [corners, setCorners],
   );
 
-  useKeyDown(() => {
-    if (corners.size === 4 || corners.size === 0) {
-      setCorners(new Set([0]));
-    } else {
-      setCorners(new Set(Array.from(corners).map((c) => (c + 1) % 4)));
-    }
-  }, [KeyCode.Tab]);
+  useKeyDown(
+    (e: KeyboardEvent) => {
+      if (corners.size === 4 || corners.size === 0) {
+        setCorners(new Set([0]));
+      } else {
+        const inc = e.shiftKey ? 3 : 1;
+        setCorners(new Set(Array.from(corners).map((c) => (c + inc) % 4)));
+      }
+    },
+    [KeyCode.Tab],
+  );
 
   useProgArrowKeyPoints(
     dispatch,
@@ -258,6 +258,7 @@ export default function CalibrationCanvas({
       onPointerUp={(e) => handlePointerUp(e)}
       style={{
         pointerEvents: isCalibrating ? "auto" : "none",
+        cursor: dragPoint ? "grabbing" : "grab",
       }}
     />
   );
@@ -280,8 +281,7 @@ function hasRightEdge(corners: Set<number>): boolean {
 }
 
 function draw(cs: CanvasState): void {
-  const { ctx, isCalibrating, displaySettings } = cs;
-
+  const { ctx, isCalibrating } = cs;
   if (isCalibrating) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     drawCalibration(cs);
@@ -289,19 +289,18 @@ function draw(cs: CanvasState): void {
     ctx.fillStyle = cs.errorFillPattern;
     drawPolygon(ctx, cs.points);
     ctx.fill();
-  } else {
-    /* Draw projection page */
-    if (!displaySettings.overlay.disabled) {
-      drawOverlays(cs);
-    }
   }
 }
 
 function drawCalibrationPoints(cs: CanvasState) {
-  const { ctx, points, corners, hoverCorners } = cs;
+  const { ctx, points, corners, hoverCorners, displaySettings } = cs;
   points.forEach((point, index) => {
     ctx.beginPath();
-    const radius = corners.size === 1 && corners.has(index) ? 20 : 10;
+    const oneCorner = corners.size === 1 && corners.has(index);
+    const radius = oneCorner ? 20 : 10;
+    ctx.strokeStyle = oneCorner
+      ? "rgb(147, 51, 234)"
+      : strokeColor(displaySettings.theme);
     if (hoverCorners.size === 1 && hoverCorners.has(index)) {
       ctx.setLineDash([4, 4]);
     } else {

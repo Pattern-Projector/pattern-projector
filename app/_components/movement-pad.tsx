@@ -92,6 +92,7 @@ export default function MovementPad({
     <div className="absolute top-[calc(50vh-80px)] right-8 z-50">
       <menu className={`grid grid-cols-3 gap-2`}>
         <IconButton
+          style={{ WebkitUserSelect: "none", userSelect: "none" }}
           onPointerDown={() => handleStart(Direction.Up)}
           onPointerUp={(e) => handleStop(e)}
           className={`${border} col-start-2`}
@@ -100,6 +101,7 @@ export default function MovementPad({
         </IconButton>
 
         <IconButton
+          style={{ WebkitUserSelect: "none", userSelect: "none" }}
           onPointerDown={() => handleStart(Direction.Left)}
           onPointerUp={(e) => handleStop(e)}
           className={`${border} col-start-1`}
@@ -108,6 +110,7 @@ export default function MovementPad({
         </IconButton>
 
         <IconButton
+          style={{ WebkitUserSelect: "none", userSelect: "none" }}
           onClick={handleChangeCorners}
           className={`${border} col-start-2`}
         >
@@ -115,6 +118,7 @@ export default function MovementPad({
         </IconButton>
 
         <IconButton
+          style={{ WebkitUserSelect: "none", userSelect: "none" }}
           onPointerDown={() => handleStart(Direction.Right)}
           onPointerUp={(e) => handleStop(e)}
           className={`${border} col-start-3`}
@@ -123,6 +127,7 @@ export default function MovementPad({
         </IconButton>
 
         <IconButton
+          style={{ WebkitUserSelect: "none", userSelect: "none" }}
           onPointerDown={() => handleStart(Direction.Down)}
           onPointerUp={(e) => handleStop(e)}
           className={`${border} col-start-2`}

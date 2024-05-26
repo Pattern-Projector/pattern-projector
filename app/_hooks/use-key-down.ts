@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { KeyCode } from "@/_lib/key-code";
 
 export const useKeyDown = (
-  callback: (T?: any) => void,
+  callback: (e: KeyboardEvent) => void,
   keyCodes: KeyCode[],
 ) => {
   const onKeyDown = useCallback(
@@ -11,7 +11,7 @@ export const useKeyDown = (
 
       if (keyDown) {
         e.preventDefault();
-        callback();
+        callback(e);
       }
     },
     [keyCodes, callback],
