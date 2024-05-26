@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Keyboard shortcuts for frequently used tools
 - Stepper buttons for incrementing and decrementing columns and horizontal/vertical inputs in the stitch menu
 - Disabled layer menu icon when no layers in PDF
-- Shit-Tab to move counterclockwise around calibration grid
+- Shift-Tab to move counterclockwise around calibration grid
 - Buy me a coffee widget to landing page
 - Cursor changes from grab to grabbing hand when dragging
 - Selected corner on calibration grid is colored
