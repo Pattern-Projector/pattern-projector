@@ -2,7 +2,6 @@ import {
   PDFDocument,
   PDFName,
   PDFRef,
-  PDFPage,
   PDFPageLeaf,  
   PDFOperator,
   concatTransformationMatrix,
@@ -11,6 +10,8 @@ import {
   popGraphicsState,
   PDFContentStream,
   PDFDict,
+  PDFStream,
+  PDFArray,
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
@@ -46,6 +47,21 @@ async function initNewDoc(inDoc: PDFDocument) {
   return outDoc;
 }
 
+function mergeStreams(streams: PDFArray | PDFStream): PDFStream {
+  /**
+   * Content streams can be an array of streams or a single stream.
+   * This function merges them into a single stream, or just returns 
+   * the stream if it was already a singleton.
+   * 
+   * This is implemented in pdf-lib here: https://github.com/cantoo-scribe/pdf-lib/blob/9593e75cbcf70f68dcf26bd541919e22514a5898/src/core/embedders/PDFPageEmbedder.ts#L118
+   * However, this decodes and re-encodes the streams, which I'd really prefer to avoid.
+   */
+  if (streams instanceof PDFStream) return streams;
+  else {
+    throw new Error("Documents with arrays of content streams are not yet supported.");
+  }
+}
+
 function getFormXObjectForPage(doc: PDFDocument, ref: PDFRef): PDFRef | undefined {
   /**
    * Create a form XObject from a page reference. Does not copy resources, just references them.
@@ -55,22 +71,27 @@ function getFormXObjectForPage(doc: PDFDocument, ref: PDFRef): PDFRef | undefine
   const page = doc.context.lookup(ref) as PDFPageLeaf | undefined;
   if (!page) return undefined;
 
-  // Create a new form XObject
-  const xObject = doc.context.obj({});
-  xObject.set(PDFName.of("Type"), PDFName.of("XObject"));
-  xObject.set(PDFName.of("Subtype"), PDFName.of("Form"));
+  // PDF treats pages differently from forms, so we need to extract 
+  // the content stream and then add on the various attributes.
+  let xObject = page.Contents();
+  if (!xObject) return undefined;
+
+  xObject = mergeStreams(xObject);
+  xObject.dict.set(PDFName.of("Type"), PDFName.of("XObject"));
+  xObject.dict.set(PDFName.of("Subtype"), PDFName.of("Form"));
 
   // Copy the contents, resources, and group info
-  const toCopy = ["Group", "Resources", "Contents"].map((key) => PDFName.of(key));
+  const toCopy = ["Group", "Resources"].map((key) => PDFName.of(key));
   for (const key of toCopy) {
     const value = page.get(key);
-    if (value) xObject.set(key, value);
+    if (value) xObject.dict.set(key, value);
   }
-  
+
   // Bounding box is set by CropBox if it exists, otherwise MediaBox
   const bbox = page.get(PDFName.of("CropBox")) || page.get(PDFName.of("MediaBox"));
-  if (bbox) xObject.set(PDFName.of("BBox"), bbox);
-  
+  if (bbox) xObject.dict.set(PDFName.of("BBox"), bbox);
+
+
   // register the new form XObject and return the reference
   return doc.context.register(xObject);
 }
@@ -129,14 +150,16 @@ export async function saveStitchedPDF(
         throw new Error(`Failed to create form XObject for page ${p}`);
       }
 
+      const pageName = `Page${p}`
+
       // Add commands to the content stream to draw the form
       commands.push(pushGraphicsState());
       commands.push(concatTransformationMatrix(1, 0, 0, 1, x, y));
-      commands.push(drawObject(`page${p}`));
+      commands.push(drawObject(pageName));
       commands.push(popGraphicsState());
 
       // Update the resources dictionary
-      XObjectDict.set(PDFName.of(`page${p}`), xRef);
+      XObjectDict.set(PDFName.of(pageName), xRef);
     }
 
     // Adjust the position for the next page
