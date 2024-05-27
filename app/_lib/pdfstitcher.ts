@@ -2,7 +2,7 @@ import {
   PDFDocument,
   PDFName,
   PDFRef,
-  PDFPageLeaf,  
+  PDFPageLeaf,
   PDFOperator,
   concatTransformationMatrix,
   pushGraphicsState,
@@ -19,7 +19,7 @@ import { getPageNumbers } from "./get-page-numbers";
 function trimmedPageSize(
   inDoc: PDFDocument,
   pages: number[],
-  settings: StitchSettings
+  settings: StitchSettings,
 ) {
   /**
    * Computes the size for each trimmed page.
@@ -35,34 +35,49 @@ function trimmedPageSize(
   return { width: width, height: height };
 }
 
-async function initNewDoc(inDoc: PDFDocument) {
+function initDoc(doc: PDFDocument, pages: number[]): Map<number, PDFRef> {
   /**
-   * Creates a copy of the input document, but removes all the pages.
+   * Creates a list of page numbers and references, then removes the pages from the document.
    */
-  const outDoc = await PDFDocument.load(await inDoc.save());
-  while (outDoc.getPageCount() > 0) {
-    outDoc.removePage(0);
+
+  const pageMap = new Map<number, PDFRef>();
+  for (const p of pages) {
+    if (p == 0) {
+      pageMap.set(p, PDFRef.of(-1));
+    } else {
+      pageMap.set(p, doc.getPage(p - 1).ref);
+    }
   }
 
-  return outDoc;
+  // Remove all the pages
+  while (doc.getPageCount() > 0) {
+    doc.removePage(0);
+  }
+
+  return pageMap;
 }
 
 function mergeStreams(streams: PDFArray | PDFStream): PDFStream {
   /**
    * Content streams can be an array of streams or a single stream.
-   * This function merges them into a single stream, or just returns 
+   * This function merges them into a single stream, or just returns
    * the stream if it was already a singleton.
-   * 
+   *
    * This is implemented in pdf-lib here: https://github.com/cantoo-scribe/pdf-lib/blob/9593e75cbcf70f68dcf26bd541919e22514a5898/src/core/embedders/PDFPageEmbedder.ts#L118
    * However, this decodes and re-encodes the streams, which I'd really prefer to avoid.
    */
   if (streams instanceof PDFStream) return streams;
   else {
-    throw new Error("Documents with arrays of content streams are not yet supported.");
+    throw new Error(
+      "Documents with arrays of content streams are not yet supported.",
+    );
   }
 }
 
-function getFormXObjectForPage(doc: PDFDocument, ref: PDFRef): PDFRef | undefined {
+function getFormXObjectForPage(
+  doc: PDFDocument,
+  ref: PDFRef,
+): PDFRef | undefined {
   /**
    * Create a form XObject from a page reference. Does not copy resources, just references them.
    * Adapted from https://github.com/qpdf/qpdf/blob/2eefa580aa0ecf70ae3864d5c47e728480055c38/libqpdf/QPDFPageObjectHelper.cc#L705
@@ -71,7 +86,7 @@ function getFormXObjectForPage(doc: PDFDocument, ref: PDFRef): PDFRef | undefine
   const page = doc.context.lookup(ref) as PDFPageLeaf | undefined;
   if (!page) return undefined;
 
-  // PDF treats pages differently from forms, so we need to extract 
+  // PDF treats pages differently from forms, so we need to extract
   // the content stream and then add on the various attributes.
   let xObject = page.Contents();
   if (!xObject) return undefined;
@@ -88,9 +103,9 @@ function getFormXObjectForPage(doc: PDFDocument, ref: PDFRef): PDFRef | undefine
   }
 
   // Bounding box is set by CropBox if it exists, otherwise MediaBox
-  const bbox = page.get(PDFName.of("CropBox")) || page.get(PDFName.of("MediaBox"));
+  const bbox =
+    page.get(PDFName.of("CropBox")) || page.get(PDFName.of("MediaBox"));
   if (bbox) xObject.dict.set(PDFName.of("BBox"), bbox);
-
 
   // register the new form XObject and return the reference
   return doc.context.register(xObject);
@@ -100,17 +115,15 @@ export async function saveStitchedPDF(
   file: File,
   settings: StitchSettings,
   pageCount: number,
-  password: string = ""
+  password: string = "",
 ) {
   // Grab the bytes from the file object and try to load the PDF
   // Error handling is done in the calling function.
   const pdfBytes = await file.arrayBuffer();
-  const inDoc = await PDFDocument.load(pdfBytes, {
+  const doc = await PDFDocument.load(pdfBytes, {
     ignoreEncryption: true,
     password,
   });
-
-  const outDoc = await initNewDoc(inDoc);
 
   // Trust that the user is happy with the layout
   const pages = getPageNumbers(settings.pageRange, pageCount);
@@ -119,19 +132,22 @@ export async function saveStitchedPDF(
   const trim = settings.edgeInsets;
 
   // Compute the size of the output document
-  const pageSize = trimmedPageSize(inDoc, pages, settings);
+  const pageSize = trimmedPageSize(doc, pages, settings);
   const outWidth = pageSize.width * cols;
   const outHeight = pageSize.height * rows;
+
+  // Modify the document to remove the pages but keep the objects
+  const pageMap = initDoc(doc, pages);
 
   // Create a new page to hold the stitched pages
   // Add at least a 1" margin because of weirdness.
   const margin = Math.max(trim.horizontal, trim.vertical, 72);
-  const outPage = outDoc.addPage();
+  const outPage = doc.addPage();
   outPage.setMediaBox(
     -margin,
     -margin,
     outWidth + margin * 2,
-    outHeight + margin * 2
+    outHeight + margin * 2,
   );
 
   // Loop through the pages and copy them to the output document
@@ -140,17 +156,17 @@ export async function saveStitchedPDF(
 
   // define the commands to draw the page and the resources dictionary
   const commands: PDFOperator[] = [];
-  const XObjectDict = outDoc.context.obj({});
+  const XObjectDict = doc.context.obj({});
 
-  for (const p of pages) {
+  for (const [p, ref] of pageMap.entries()) {
     if (p > 0) {
       // create a new form XObject for the page
-      const xRef = await getFormXObjectForPage(outDoc, inDoc.getPage(p - 1).ref);
+      const xRef = await getFormXObjectForPage(doc, ref);
       if (!xRef) {
         throw new Error(`Failed to create form XObject for page ${p}`);
       }
 
-      const pageName = `Page${p}`
+      const pageName = `Page${p}`;
 
       // Add commands to the content stream to draw the form
       commands.push(pushGraphicsState());
@@ -170,19 +186,24 @@ export async function saveStitchedPDF(
     }
   }
 
-  // Write the commands to the content stream  
-  const dict = outDoc.context.obj({});
+  // Write the commands to the content stream
+  const dict = doc.context.obj({});
   const contentStream = PDFContentStream.of(dict, commands);
-  outPage.node.set(PDFName.Contents, outDoc.context.register(contentStream));
+  outPage.node.set(PDFName.Contents, doc.context.register(contentStream));
 
   // Update the resources dictionary
-  const resources = outPage.node.get(PDFName.of("Resources")) as PDFDict | undefined;
+  const resources = outPage.node.get(PDFName.of("Resources")) as
+    | PDFDict
+    | undefined;
   if (resources) {
     resources.set(PDFName.of("XObject"), XObjectDict);
   } else {
-    outPage.node.set(PDFName.of("Resources"), outDoc.context.obj({XObject: XObjectDict}));
+    outPage.node.set(
+      PDFName.of("Resources"),
+      doc.context.obj({ XObject: XObjectDict }),
+    );
   }
 
   // Save the stitched document
-  return await outDoc.save();
+  return await doc.save();
 }
