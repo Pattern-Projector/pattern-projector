@@ -1,11 +1,19 @@
-import { PDFDocument, PDFName, PDFObjectCopier } from "@cantoo/pdf-lib";
+import {
+  PDFDocument,
+  PDFName,
+  PDFObjectCopier,
+  PDFObject,
+  PDFRef,
+  PDFDict,
+  PDFArray,
+} from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
 
 function trimmedPageSize(
   inDoc: PDFDocument,
   pages: number[],
-  settings: StitchSettings,
+  settings: StitchSettings
 ) {
   /**
    * Computes the size for each trimmed page.
@@ -21,18 +29,57 @@ function trimmedPageSize(
   return { width: width, height: height };
 }
 
+function copyAndRegister(inDoc: PDFDocument, outDoc: PDFDocument, key: PDFName) {
+  /**
+   * Recursively copies an object with the given name, maintaining the same references in target document.
+   */
+  
+  const xObject = inDoc.catalog.get(key);
+
+  if (xObject === undefined) return;
+
+  // Create the copier and copy the object
+  const copier = PDFObjectCopier.for(inDoc.context, outDoc.context);
+  outDoc.catalog.set(key, copier.copy(xObject));
+
+  // if the value is a reference, copy the object and register it in the context
+  if (xObject instanceof PDFRef) {
+    const object = inDoc.context.lookup(xObject);
+    if (object instanceof PDFObject) {
+      outDoc.context.assign(xObject, copier.copy(object));
+    }
+  }
+
+  // if the referenced value is an array, copy all the elements
+  if (xObject instanceof PDFArray) {
+    for (let i = 0; i < xObject.size(); i++) {
+      const element = xObject.lookup(i);
+      if (element instanceof PDFRef) {
+        const arrObject = inDoc.context.lookup(element);
+        if (arrObject instanceof PDFObject) {
+          outDoc.context.assign(element, copier.copy(arrObject));
+        }
+      }
+    }
+  }
+
+  // Finally, recurse into the object if it's a dictionary
+  if (xObject instanceof PDFDict) {
+    for (const key of xObject.keys()) {
+      copyAndRegister(inDoc, outDoc, key);
+    }
+  }
+}
+
 async function initNewDoc(inDoc: PDFDocument) {
   /**
    * Creates a new document, copying over metadata and various other
    * properties (especially layer info)
    */
   const outDoc = await PDFDocument.create();
-  const copier = PDFObjectCopier.for(inDoc.context, outDoc.context);
-  const pagesKey = PDFName.of("Pages");
-  for (const [key, value] of inDoc.catalog.entries()) {
-    if (key != pagesKey) {
-      outDoc.catalog.set(key, copier.copy(value));
-    }
+  const copyKeys = ["Metadata", "OCProperties"].map((k) => PDFName.of(k));
+  for (const key of copyKeys) {
+    copyAndRegister(inDoc, outDoc, key);
   }
 
   return outDoc;
@@ -42,7 +89,7 @@ export async function saveStitchedPDF(
   file: File,
   settings: StitchSettings,
   pageCount: number,
-  password: string = "",
+  password: string = ""
 ) {
   // Grab the bytes from the file object and try to load the PDF
   // Error handling is done in the calling function.
@@ -73,7 +120,7 @@ export async function saveStitchedPDF(
     -margin,
     -margin,
     outWidth + margin * 2,
-    outHeight + margin * 2,
+    outHeight + margin * 2
   );
 
   // Loop through the pages and copy them to the output document
