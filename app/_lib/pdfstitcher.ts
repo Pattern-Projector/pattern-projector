@@ -1,11 +1,15 @@
 import {
   PDFDocument,
   PDFName,
-  PDFObjectCopier,
-  PDFObject,
   PDFRef,
+  PDFPageLeaf,  
+  PDFOperator,
+  concatTransformationMatrix,
+  pushGraphicsState,
+  drawObject,
+  popGraphicsState,
+  PDFContentStream,
   PDFDict,
-  PDFArray,
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
@@ -29,60 +33,45 @@ function trimmedPageSize(
   return { width: width, height: height };
 }
 
-function copyAndRegister(inDoc: PDFDocument, outDoc: PDFDocument, key: PDFName) {
-  /**
-   * Recursively copies an object with the given name, maintaining the same references in target document.
-   */
-  
-  const xObject = inDoc.catalog.get(key);
-
-  if (xObject === undefined) return;
-
-  // Create the copier and copy the object
-  const copier = PDFObjectCopier.for(inDoc.context, outDoc.context);
-  outDoc.catalog.set(key, copier.copy(xObject));
-
-  // if the value is a reference, copy the object and register it in the context
-  if (xObject instanceof PDFRef) {
-    const object = inDoc.context.lookup(xObject);
-    if (object instanceof PDFObject) {
-      outDoc.context.assign(xObject, copier.copy(object));
-    }
-  }
-
-  // if the referenced value is an array, copy all the elements
-  if (xObject instanceof PDFArray) {
-    for (let i = 0; i < xObject.size(); i++) {
-      const element = xObject.lookup(i);
-      if (element instanceof PDFRef) {
-        const arrObject = inDoc.context.lookup(element);
-        if (arrObject instanceof PDFObject) {
-          outDoc.context.assign(element, copier.copy(arrObject));
-        }
-      }
-    }
-  }
-
-  // Finally, recurse into the object if it's a dictionary
-  if (xObject instanceof PDFDict) {
-    for (const key of xObject.keys()) {
-      copyAndRegister(inDoc, outDoc, key);
-    }
-  }
-}
-
 async function initNewDoc(inDoc: PDFDocument) {
   /**
-   * Creates a new document, copying over metadata and various other
-   * properties (especially layer info)
+   * Creates a copy of the input document, but removes all the pages.
    */
-  const outDoc = await PDFDocument.create();
-  const copyKeys = ["Metadata", "OCProperties"].map((k) => PDFName.of(k));
-  for (const key of copyKeys) {
-    copyAndRegister(inDoc, outDoc, key);
+  const outDoc = await PDFDocument.load(await inDoc.save());
+  while (outDoc.getPageCount() > 0) {
+    outDoc.removePage(0);
   }
 
   return outDoc;
+}
+
+function getFormXObjectForPage(doc: PDFDocument, ref: PDFRef): PDFRef | undefined {
+  /**
+   * Create a form XObject from a page reference. Does not copy resources, just references them.
+   * Adapted from https://github.com/qpdf/qpdf/blob/2eefa580aa0ecf70ae3864d5c47e728480055c38/libqpdf/QPDFPageObjectHelper.cc#L705
+   */
+
+  const page = doc.context.lookup(ref) as PDFPageLeaf | undefined;
+  if (!page) return undefined;
+
+  // create a new form XObject
+  const xObject = doc.context.obj({});
+  xObject.set(PDFName.of("Type"), PDFName.of("XObject"));
+  xObject.set(PDFName.of("Subtype"), PDFName.of("Form"));
+
+  // Copy the contents, resources, and group info
+  const toCopy = ["Group", "Resources", "Contents"].map((key) => PDFName.of(key));
+  for (const key of toCopy) {
+    const value = page.get(key);
+    if (value) xObject.set(key, value);
+  }
+  
+  // Bounding box is set by CropBox if it exists, otherwise MediaBox
+  const bbox = page.get(PDFName.of("CropBox")) || page.get(PDFName.of("MediaBox"));
+  if (bbox) xObject.set(PDFName.of("BBox"), bbox);
+  
+  // register the new form XObject and return the reference
+  return doc.context.register(xObject);
 }
 
 export async function saveStitchedPDF(
@@ -127,17 +116,46 @@ export async function saveStitchedPDF(
   let x = 0;
   let y = outHeight - pageSize.height;
 
+  // define the commands to draw the page and the resources dictionary
+  const commands: PDFOperator[] = [];
+  const XObjectDict = outDoc.context.obj({});
+
   for (const p of pages) {
     if (p > 0) {
-      const xobject = await outDoc.embedPage(inDoc.getPage(p - 1));
-      outPage.drawPage(xobject, { x: x, y: y });
+      const xRef = await getFormXObjectForPage(outDoc, inDoc.getPage(p - 1).ref);
+      if (!xRef) {
+        throw new Error(`Failed to create form XObject for page ${p}`);
+      }
+
+      // Add commands to the content stream to draw the form
+      commands.push(pushGraphicsState());
+      commands.push(concatTransformationMatrix(1, 0, 0, 1, x, y));
+      commands.push(drawObject(`page${p}`));
+      commands.push(popGraphicsState());
+
+      // Update the resources dictionary
+      XObjectDict.set(PDFName.of(`page${p}`), xRef);
     }
+
     // Adjust the position for the next page
     x += pageSize.width;
     if (x > outWidth - margin) {
       x = 0;
       y -= pageSize.height;
     }
+  }
+
+  // Write the commands to the content stream  
+  const dict = outDoc.context.obj({});
+  const contentStream = PDFContentStream.of(dict, commands);
+  outPage.node.set(PDFName.Contents, outDoc.context.register(contentStream));
+
+  // Update the resources dictionary
+  const resources = outPage.node.get(PDFName.of("Resources")) as PDFDict | undefined;
+  if (resources) {
+    resources.set(PDFName.of("XObject"), XObjectDict);
+  } else {
+    outPage.node.set(PDFName.of("Resources"), outDoc.context.obj({XObject: XObjectDict}));
   }
 
   // Save the stitched document
