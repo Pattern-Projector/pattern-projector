@@ -2,6 +2,7 @@ import {
   PDFDocument,
   PDFName,
   PDFRef,
+  PDFPage,
   PDFPageLeaf,  
   PDFOperator,
   concatTransformationMatrix,
@@ -54,7 +55,7 @@ function getFormXObjectForPage(doc: PDFDocument, ref: PDFRef): PDFRef | undefine
   const page = doc.context.lookup(ref) as PDFPageLeaf | undefined;
   if (!page) return undefined;
 
-  // create a new form XObject
+  // Create a new form XObject
   const xObject = doc.context.obj({});
   xObject.set(PDFName.of("Type"), PDFName.of("XObject"));
   xObject.set(PDFName.of("Subtype"), PDFName.of("Form"));
@@ -122,6 +123,7 @@ export async function saveStitchedPDF(
 
   for (const p of pages) {
     if (p > 0) {
+      // create a new form XObject for the page
       const xRef = await getFormXObjectForPage(outDoc, inDoc.getPage(p - 1).ref);
       if (!xRef) {
         throw new Error(`Failed to create form XObject for page ${p}`);
