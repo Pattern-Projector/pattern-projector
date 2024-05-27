@@ -36,7 +36,7 @@
       "open": "Click (or tap) <pdficon></pdficon> to open the PDF document.",
       "move": "Move the PDF by clicking and dragging it around the screen.",
       "cut": "Cut along the projected design.",
-      "tools": "In projection mode there are several tools provided:",
+      "tools": "In projection mode there are several tools provided. Some have keyboard shortcuts, which are denoted in parentheses.",
       "fullscreen": {
         "title": "Full screen",
         "description": "It's generally easier to use the software in full screen mode."
@@ -50,40 +50,93 @@
         "description": "When projecting, it's usually easier to see green or white lines on black. Click/tap once for green lines, twice for white lines, and three times to return to black lines."
       },
       "moveTool": {
-        "title": "Show/hide move tool",
+        "title": "Show or hide move tool",
         "description": "The move tool has four arrow buttons to move the calibration grid corners/edges. It also has a next button in the middle for switching to the next corner/edge."
       },
       "overlayOptions": {
-        "title": "Show/hide overlay options",
-        "description": "The overlays grid, border, paper sheet, and flip lines can be shown or hidden. The grid match the calibration grid, border is the border of the calibration grid, paper sheet is a rectangle the size of a Letter or A4 piece of paper, and flip lines are lines that help with mirroring patterns."
+        "title": "Show or hide overlay options",
+        "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting."
       },
       "lineWeight": {
         "title": "Line weight",
         "description": "Change the thickness of the lines in the PDF pattern."
       },
       "flip": {
-        "title": "Flip Vertical/Horizontal",
+        "title": "Flip Vertical (V) or Horizontal (H)",
         "description": "Helpful when mirroring patterns in half."
       },
       "rotate": {
-        "title": "Rotate",
+        "title": "Rotate (R)",
         "description": "Change the orientation of the pattern by 90 degrees."
       },
       "recenter": {
-        "title": "Center and Reset",
+        "title": "Center and Reset (C)",
         "description": "Centers the pattern on the cutting mat and resets the rotation/flipping."
       },
       "layers": {
-        "title": "Show/hide layers",
+        "title": "Show or hide layers",
         "description": "Show or hide layers in the PDF."
       },
       "stitch": {
-        "title": "Show/hide stitch menu",
+        "title": "Show or hide stitch menu",
         "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
       },
       "measure": {
-        "title": "Line tool",
+        "title": "Line tool (L)",
         "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking."
+      }
+    },
+    "tools": "Tools",
+    "lineTool": {
+      "title": "Line Tool",
+      "description": "The line tool can be used to measure distances, mark lines on, rotate, flip, and move the PDF. Click (or tap) the line tool button, then click (or tap) on the PDF and drag to draw a line. Once a line is drawn, a menu will appear on the bottom of the screen with the following options:",
+      "delete": {
+        "title": "Delete line",
+        "description": "Deletes the selected line."
+      },
+      "rotate": {
+        "title": "Align to center",
+        "description": "Rotates the PDF so the selected line is horizontal and centered on your mat.",
+        "use": "For aligning the grain of a pattern piece with the grain of your fabric: draw a line on the grain line of the pattern piece, then click (or tap) the align to center button."
+      },
+      "previousNext": {
+        "title": "Bring previous/next line to center",
+        "description": "Moves the PDF so that the previous/next line drawn is horizontal and centered on your mat.",
+        "use": "For moving between pattern pieces when cutting: draw a line on the grain line of each pattern piece, then move through the pattern pieces using these buttons. Delete lines as you move through the pattern pieces to keep track of which pieces are left to be cut."
+      },
+      "flip": {
+        "title": "Flip along line",
+        "description": "Flips the PDF along the line.",
+        "use": "For unfolding pattern pieces: draw a line on the fold line of a pattern piece, cut the piece up to the fold line, click (or tap) the flip along line button, and then cut the remainder of the piece."
+      },
+      "move": {
+        "title": "Move PDF by line length",
+        "description": "Moves the PDF by the length of the line.",
+        "use": "For lengthening/shortening pattern pieces: draw a line perpendicular the lengthen/shorten line of a pattern piece, cut to the lengthen/shorten line, then click (or tap) the move by line length button, and then continue cutting the piece. The direction of the line drawn will depend on whether you are lengthening or shortening the pattern piece."
+      }
+    },
+    "overlayOptions": {
+      "title": "Overlay Options",
+      "description": "The overlay options can be used to verify calibration while projecting and help with cutting patterns. The following options are available:",
+      "border": {
+        "title": "Border",
+        "description": "Shows the border of the calibration grid."
+      },
+      "grid": {
+        "title": "Grid",
+        "description": "Shows the calibration grid."
+      },
+      "paper": {
+        "title": "Paper Sheet",
+        "description": "Shows a rectangle the size of a Letter or A4 piece of paper to verify calibration."
+      },
+      "flipLines": {
+        "title": "Flip Lines",
+        "description": "Shows lines that help with unfolding patterns. Line the fold line of the pattern up with the flip line and press flip horizontally or vertically to mirror the piece."
+      },
+      "flippedPattern": {
+        "title": "Wrong side",
+        "description": "Shows dots when the wrong side of the pattern is projected."
       }
     },
     "faq": {
@@ -93,7 +146,6 @@
         "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Patterns from designers usually have the correct scale, so a change in scale could have been introduced when opening the pattern in Affinity Designer or Inkscape."
       },
       "saveAsApp": {
-        "question": "Do you want to save Pattern Projector as an app?",
         "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
       },
       "annotationSupport": {
@@ -130,7 +182,7 @@
   "InstallButton": {
     "title": "Install App",
     "description": "For the best experience, install Pattern Projector using <chromeLink>Google Chrome</chromeLink>.",
-    "descriptionAndroid": "Download the app by tapping the more button <moreIcon></moreIcon> in the browser menu and then <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen.",
+    "descriptionAndroid": "For the best experience on Android, use Firefox. Download the app by tapping the more button <moreIcon></moreIcon> in the browser menu and then <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen.",
     "descriptionIOS": "Download the app by tapping the share button <shareIcon></shareIcon> in the browser menu and then Add to Home Screen <addBoxIcon></addBoxIcon>.",
     "ok": "OK"
   },
@@ -151,6 +203,7 @@
     "overlayOptionGrid": "Grid",
     "overlayOptionPaper": "Paper Sheet",
     "overlayOptionFliplines": "Flip Lines",
+    "overlayOptionFlippedPattern": "Wrong side",
     "invertColor": "Invert colors",
     "invertColorOff": "Invert colors off",
     "flipVertical": "Flip vertically (V)",
@@ -210,6 +263,8 @@
     "rotateAndCenterNext": "Bring next line to center",
     "deleteLine": "Delete line",
     "flipAlong": "Flip along line",
-    "translate": "Move PDF by line length"
+    "translate": "Move PDF by line length",
+    "line": "line",
+    "lines": "lines"
   }
 }

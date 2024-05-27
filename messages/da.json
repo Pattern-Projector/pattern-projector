@@ -63,6 +63,9 @@
             "fullscreen": {
                 "title": "Fuld skærm",
                 "description": "Det er som regel nemmere at bruge softwaren i fuld skærm."
+            },
+            "measure": {
+                "title": "Linjeværktøj (L)"
             }
         },
         "faq": {
@@ -104,7 +107,22 @@
             "translate": "Oversæt dette værktøj til flere sprog.",
             "feedback": "Feedback og forslag til funktioner er velkomne!"
         },
-        "contact": "Kontakt"
+        "contact": "Kontakt",
+        "lineTool": {
+            "title": "Linjeværktøj",
+            "rotate": {
+                "title": "Rotér til vandret"
+            },
+            "delete": {
+                "title": "Slet linje"
+            },
+            "flip": {
+                "title": "Vend langs linjen"
+            },
+            "move": {
+                "title": "Forskyd PDF med linjens længde"
+            }
+        }
     },
     "Header": {
         "projecting": "Visning af mønster",
@@ -145,12 +163,19 @@
         "measureOn": "Vis opmåling",
         "measureOff": "Skjul opmåling",
         "menuShow": "Vis menu",
-        "menuHide": "Skjul menu"
+        "menuHide": "Skjul menu",
+        "measure": "Linjeværktøj (L)"
     },
     "StitchMenu": {
         "columnCount": "Kolonner",
         "pageRange": "Sider",
         "horizontal": "Vandret",
         "vertical": "Lodret"
+    },
+    "MeasureCanvas": {
+        "rotateToHorizontal": "Rotér til vandret",
+        "translate": "Forskyd PDF med linjens længde",
+        "deleteLine": "Slet linje",
+        "flipAlong": "Vend langs linjen"
     }
 }

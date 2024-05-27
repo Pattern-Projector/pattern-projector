@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { CanvasState, drawOverlays } from "@/_lib/drawing";
 import { Point } from "@/_lib/point";
 import { DisplaySettings, strokeColor } from "@/_lib/display-settings";
-import { getPerspectiveTransformFromPoints } from "@/_lib/geometry";
+import { getPerspectiveTransformFromPoints, isFlipped } from "@/_lib/geometry";
+import { useTransformContext } from "@/_hooks/use-transform-context";
 
 export default function OverlayCanvas({
   className,
@@ -19,6 +20,7 @@ export default function OverlayCanvas({
   unitOfMeasure: string;
   displaySettings: DisplaySettings;
 }) {
+  const flipped = isFlipped(useTransformContext());
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
@@ -47,11 +49,12 @@ export default function OverlayCanvas({
           unitOfMeasure,
           strokeColor(displaySettings.theme),
           displaySettings,
+          flipped,
         );
         drawOverlays(cs);
       }
     }
-  }, [points, width, height, unitOfMeasure, displaySettings]);
+  }, [points, width, height, unitOfMeasure, displaySettings, flipped]);
   return (
     <canvas
       tabIndex={0}

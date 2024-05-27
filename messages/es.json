@@ -39,7 +39,7 @@
             "open": "Selecciona <pdficon></pdficon> para abrir el documento PDF.",
             "move": "Mueve el documento pinchando y arrastrándolo por la pantalla.",
             "cut": "Corta el patrón proyectado.",
-            "tools": "En el modo de proyección se proporcionan varias herramientas:",
+            "tools": "En el modo de proyección se proporcionan varias herramientas. Algunos tienen atajos de teclado, que se indican entre paréntesis.",
             "showGrid": {
                 "title": "Mostrar/Ocultar la cuadrícula",
                 "description": "Al proyectar, muestra/oculta una cuadrícula tenue para verificar que su calibración sea correcta."
@@ -49,16 +49,16 @@
                 "description": "Al proyectar, suele ser más fácil ver líneas verdes o blancas sobre fondo negro. Pincha una vez para obtener líneas verdes, dos veces para líneas blancas y tres veces para volver a líneas negras."
             },
             "flip": {
-                "title": "Voltear vertical/horizontalmente",
+                "title": "Girar vertical (V) u horizontalmente (H)",
                 "description": "Útil para reflejar patrones que sólo muestran una mitad."
             },
             "rotate": {
-                "title": "Girar",
+                "title": "Girar (R)",
                 "description": "Gira la orientación del patrón 90 grados a la derecha."
             },
             "recenter": {
-                "title": "Volver a centrar",
-                "description": "Centra el patrón en la base de corte."
+                "title": "Centrar y restablecer (C)",
+                "description": "Centra el patrón en la base de corte y restablece la rotación/inversión."
             },
             "fullscreen": {
                 "title": "Pantalla completa",
@@ -66,14 +66,14 @@
             },
             "stitch": {
                 "description": "Muestra u oculta el menú de unión de páginas, que permite montar/fusionar patrones en PDF que estén formados por varias páginas.",
-                "title": "Mostrar/ocultar menú de unión de páginas"
+                "title": "Mostrar u ocultar menú de unión de páginas"
             },
             "layers": {
                 "description": "Muestra u oculta capas del patrón PDF.",
-                "title": "Mostrar/ocultar capas"
+                "title": "Mostrar u ocultar capas"
             },
             "measure": {
-                "title": "Herramienta inicial para marcar, medir y transformar",
+                "title": "Herramienta de línea (L)",
                 "description": "Marque líneas en el archivo PDF para rotar, voltear, mover, medir o marcar."
             },
             "lineWeight": {
@@ -82,15 +82,15 @@
             },
             "moveTool": {
                 "description": "La herramienta para mover tiene 4 botones en forma de flecha para mover las esquinas o bordes de la cuadrícula a pequeños toques. También tiene un botón en el centro para cambiar a la siguiente esquina o borde.",
-                "title": "Mostrar/ocultar herramienta mover"
+                "title": "Mostrar u ocultar herramienta de movimiento"
             },
             "showMenu": {
                 "title": "Mostrar/ocultar menú superior",
                 "description": "Muestra u oculta el menú superior."
             },
             "overlayOptions": {
-                "description": "Las líneas de referencia, como la cuadrícula, los bordes o las líneas de volteo pueden mostrarse o esconderse. La opción \"cuadrícula\" se refiere a la cuadrícula en sí, \"borde\" se refiere a los bordes de la cuadrícula, \"hoja de papel\" es un rectángulo de tamaño carta o A4 y \"líneas de volteo\" son las líneas que se usan como eje al reflejar patrones.",
-                "title": "Mostrar/ocultar líneas de referencia"
+                "description": "En el PDF se pueden mostrar cuadrículas, bordes, hojas de papel, líneas invertidas o superposiciones del lado equivocado para ayudar con la calibración y el corte.",
+                "title": "Mostrar u ocultar líneas de referencia"
             }
         },
         "faq": {
@@ -131,12 +131,65 @@
         },
         "contribute": {
             "title": "Contribuye al proyecto",
-            "donation": "Si deseas apoyar el desarrollo de esta herramienta, considera <donateLink>invitarme a un café</donateLink>",
+            "donation": "Si desea apoyar el desarrollo de esta herramienta, ¡considere <donateLink>invitarme a un café</donateLink>!",
             "develop": "Ayuda a implementar funciones y solucionar problemas en <githubLink>GitHub</githubLink>.",
-            "translate": "Traduce esta herramienta a más idiomas.",
+            "translate": "Traduzca esta herramienta a más idiomas usando <weblateLink>Weblate</weblateLink>.",
             "feedback": "¡Los comentarios y solicitud de funciones son bien recibidos!"
         },
-        "contact": "Contactar"
+        "contact": "Contactar",
+        "tools": "Herramientas",
+        "lineTool": {
+            "title": "Herramienta línea",
+            "delete": {
+                "title": "Borrar línea",
+                "description": "Elimina la línea seleccionada."
+            },
+            "rotate": {
+                "title": "Centrar",
+                "use": "Para alinear la veta de una pieza de patrón con la veta de su tejido: dibuje una línea en la línea de veta de la pieza de patrón y, a continuación, haga clic (o toque) en el botón centrar.",
+                "description": "Gira el PDF para que la línea seleccionada quede horizontal y centrada en el tapete."
+            },
+            "flip": {
+                "title": "Girar a lo largo de la línea",
+                "description": "Girar el PDF a lo largo de la línea.",
+                "use": "Para desplegar las piezas del patrón: dibuje una línea en la línea de pliegue de una pieza de patrón, corte la pieza hasta la línea de pliegue, haga clic (o toque) en el botón girar a lo largo de la línea y, a continuación, corte el resto de la pieza."
+            },
+            "move": {
+                "title": "Mover PDF por la longitud de la línea",
+                "description": "Mover el PDF a lo largo de la línea.",
+                "use": "Para alargar/acortar las piezas del patrón: dibuje una línea perpendicular a la línea de alargar/acortar de una pieza de patrón, corte hasta la línea de alargar/acortar, luego haga clic (o toque) el botón de mover por longitud de línea, y luego continúe cortando la pieza. La dirección de la línea dibujada dependerá de si está alargando o acortando la pieza del patrón."
+            },
+            "previousNext": {
+                "title": "Traer la línea anterior/siguiente al centro",
+                "description": "Mueve el PDF para que la línea anterior/siguiente dibujada sea horizontal y esté centrada en el tapete.",
+                "use": "Para moverse entre las piezas del patrón al cortar: dibuje una línea en la línea de veta de cada pieza del patrón, luego muévase a través de las piezas del patrón usando estos botones. Elimine líneas a medida que avanza por las piezas del patrón para realizar un seguimiento de qué piezas quedan por cortar."
+            },
+            "description": "La herramienta línea se puede utilizar para medir distancias, marcar líneas, rotar, voltear y mover el PDF. Haga clic (o toque) el botón de la herramienta línea, luego haga clic (o toque) en el PDF y arrastre para dibujar una línea. Una vez dibujada una línea, aparecerá un menú en la parte inferior de la pantalla con las siguientes opciones:"
+        },
+        "overlayOptions": {
+            "title": "Líneas de referencia",
+            "description": "Las opciones de superposición se pueden utilizar para verificar la calibración mientras se proyecta y ayudar con los patrones de corte. Las siguientes opciones están disponibles:",
+            "border": {
+                "title": "Borde",
+                "description": "Muestra el borde de la cuadrícula de calibración."
+            },
+            "grid": {
+                "title": "Cuadrícula",
+                "description": "Muestra la cuadrícula de calibración."
+            },
+            "paper": {
+                "title": "Hoja de papel",
+                "description": "Muestra un rectángulo del tamaño de una carta o A4 para verificar la calibración."
+            },
+            "flipLines": {
+                "title": "Líneas invertidas",
+                "description": "Muestra líneas que ayudan a desarrollar patrones. Alinee la línea de plegado del patrón con la línea de giro y pulse girar horizontal o verticalmente para reflejar la pieza."
+            },
+            "flippedPattern": {
+                "title": "Lado erróneo",
+                "description": "Muestra puntos cuando se proyecta el lado equivocado del patrón."
+            }
+        }
     },
     "Header": {
         "projecting": "Proyectando",
@@ -157,21 +210,21 @@
         "overlayOptionFliplines": "Líneas de volteo",
         "invertColor": "Invertir colores",
         "invertColorOff": "Invertir colores desactivado",
-        "flipVertical": "Voltear verticalmente",
+        "flipVertical": "Girar verticalmente (V)",
         "flipVerticalOff": "Voltear verticalmente desactivado",
-        "flipHorizontal": "Voltear horizontalmente",
+        "flipHorizontal": "Girar horizontalmente (H)",
         "flipHorizontalOff": "Voltear horizontalmente desactivado",
         "flipCenterOn": "Voltear centro",
         "flipCenterOff": "Voltear centro desactivado",
         "fourCornersOn": "Resaltar todas las esquinas",
         "fourCornersOff": "Resaltar sólo la esquina seleccionada",
-        "rotate90": "Rotar 90 grados a la derecha",
+        "rotate90": "Girar 90 grados en el sentido de las agujas del reloj (R)",
         "arrowBack": "Retroceder 1 página",
         "arrowForward": "Avanzar 1 página",
         "info": "Página de inicio",
         "layersOn": "Mostrar menú de capas",
         "layersOff": "Ocultar menú de capas",
-        "recenter": "Volver a centrar",
+        "recenter": "Centrar y reiniciar (C)",
         "fullscreen": "Activar pantalla completa",
         "fullscreenExit": "Salir de pantalla completa",
         "menuShow": "Mostrar menú superior",
@@ -184,16 +237,18 @@
         "showMovement": "Mostrar herramienta mover",
         "hideMovement": "Ocultar herramienta mover",
         "fullScreenChange": "Por favor, asegúrese de que la calibración es correcta. Debe calibrar en modo de pantalla completa si desea proyectar en pantalla completa.",
-        "calibrationAlertContinue": "La ventana ha cambiado desde la última vez que proyectó, pero la calibración no se ha actualizado. ¿Continuar de todos modos?",
+        "calibrationAlertContinue": "El tamaño de la ventana no puede cambiar después de la calibración. Para proyectar en pantalla completa, calibre en pantalla completa. Si desea cambiar el tamaño de la ventana, recalibre.",
         "ok": "DE ACUERDO",
         "calibrationAlertTitle": "Aviso de calibración",
         "continue": "Guardar el tamaño de la ventana y continuar",
         "checkCalibration": "Comprobar la calibración",
-        "calibrationAlert": "La ventana ha cambiado desde que comenzó la proyección, active la pantalla completa o recalibre para solucionar este problema."
+        "calibrationAlert": "El tamaño de la ventana ha cambiado desde que comenzó la proyección, pulse el botón de pantalla completa o recalibre para solucionar este problema.",
+        "measure": "Herramienta de línea (L)",
+        "overlayOptionFlippedPattern": "Lado erróneo"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
-        "pageRange": "Páginas",
+        "pageRange": "Páginas de puntos",
         "horizontal": "Horizontal",
         "vertical": "Vertical"
     },
@@ -207,13 +262,26 @@
     "LayerMenu": {
         "title": "Capas",
         "showAll": "Mostrar todo",
-        "hideAll": "Ocultar todo"
+        "hideAll": "Ocultar todo",
+        "layersOff": "Ocultar el menú de la capa",
+        "layersOn": "Mostrar menú de la capa",
+        "noLayers": "Sin capas en PDF"
     },
     "MeasureCanvas": {
-        "rotateToHorizontal": "Girar en horizontal"
+        "rotateToHorizontal": "Centrar",
+        "deleteLine": "Borrar linea",
+        "flipAlong": "Girar a lo largo de la línea",
+        "translate": "Mover PDF por la longitud de la línea",
+        "rotateAndCenterNext": "Centrar la siguiente línea",
+        "lines": "líneas",
+        "rotateAndCenterPrevious": "Centrar la línea anterior",
+        "line": "línea"
     },
     "InstallButton": {
         "title": "Instalar aplicación",
-        "description": "Para obtener la mejor experiencia, instale el Proyector de patrones usando <chromeLink> Google Chrome</chromeLink> ."
+        "description": "Para obtener la mejor experiencia, instale el Proyector de patrones usando <chromeLink> Google Chrome</chromeLink> .",
+        "descriptionAndroid": "Para disfrutar de la mejor experiencia en Android, utiliza Firefox. Descarga la aplicación pulsando el botón más <moreIcon></moreIcon> en el menú del navegador y luego <addToHomeScreenIcon></addToHomeScreenIcon> Añadir a la pantalla de inicio.",
+        "descriptionIOS": "Descarga la aplicación tocando el botón compartir <shareIcon></shareIcon> en el menú del navegador y luego Agregar a la pantalla de inicio <addBoxIcon></addBoxIcon> .",
+        "ok": "De acuerdo"
     }
 }

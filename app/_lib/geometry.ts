@@ -41,7 +41,7 @@
 //
 //M*/
 
-import { Point } from "@/_lib/point";
+import { Point, subtract } from "@/_lib/point";
 import { AbstractMatrix, Matrix, solve } from "ml-matrix";
 import { getPtDensity } from "./unit";
 import { Line } from "./interfaces/line";
@@ -214,6 +214,16 @@ export function rotate(angle: number): Matrix {
   ]);
 }
 
+export function align(line: Line, to: Line): Matrix {
+  const toOrigin = translate({ x: -line[0].x, y: -line[0].y });
+  const rotateTo = rotate(angle(to) - angle(line));
+  return translate(to[0]).mmul(rotateTo).mmul(toOrigin);
+}
+
+export function move(from: Point, to: Point): Matrix {
+  return translate(subtract(to, from));
+}
+
 export function transformAboutPoint(matrix: Matrix, point: Point): Matrix {
   const translationToOrigin = translate({ x: -point.x, y: -point.y });
   const translationBack = translate(point);
@@ -235,12 +245,15 @@ export function flipHorizontal(origin: Point): Matrix {
 }
 
 export function angleDeg(line: Line): number {
+  return angle(line) * (180 / Math.PI);
+}
+
+export function angle(line: Line): number {
   const [p1, p2] = line;
   const dx = p2.x - p1.x;
   const dy = p2.y - p1.y;
-  return (Math.atan2(dy, dx) * 180) / Math.PI;
+  return Math.atan2(dy, dx);
 }
-
 export function rotateToHorizontal(line: Line): Matrix {
   return rotateMatrixDeg(-angleDeg(line), line[0]);
 }
@@ -356,18 +369,6 @@ function getOrientation(p1: Point, p2: Point, p3: Point): number {
   }
 }
 
-export function constrainInSpace(
-  p: Point,
-  anchorPoint: Point,
-  matrix: Matrix,
-  inverse: Matrix,
-): Point {
-  const p1 = transformPoint(p, matrix);
-  const p2 = transformPoint(anchorPoint, matrix);
-  const c = constrained(p1, p2);
-  return transformPoint(c, inverse);
-}
-
 export function constrained(p: Point, anchorPoint: Point) {
   const dx = Math.abs(anchorPoint.x - p.x);
   const dy = Math.abs(anchorPoint.y - p.y);
@@ -385,4 +386,8 @@ export function constrained(p: Point, anchorPoint: Point) {
       return { x: anchorPoint.x + ((p.x - anchorPoint.x) / dx) * dy, y: p.y };
     }
   }
+}
+
+export function isFlipped(m: Matrix): boolean {
+  return m.get(1, 1) * m.get(0, 0) < 0;
 }

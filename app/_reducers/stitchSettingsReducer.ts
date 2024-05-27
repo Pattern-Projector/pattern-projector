@@ -1,6 +1,11 @@
 import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 
+interface SetAction {
+  type: "set";
+  stitchSettings: StitchSettings;
+}
+
 interface SetPageRangeAction {
   type: "set-page-range";
   pageRange: string;
@@ -34,6 +39,7 @@ interface SetEdgeInsetsAction {
 }
 
 export type StitchSettingsAction =
+  | SetAction
   | SetPageRangeAction
   | StepColumnCountAction
   | SetColumnCountAction
@@ -44,8 +50,22 @@ export type StitchSettingsAction =
 export default function stitchSettingsReducer(
   stitchSettings: StitchSettings,
   action: StitchSettingsAction,
-) {
+): StitchSettings {
+  const newStitchSettings = reduceStitchSettings(stitchSettings, action);
+  localStorage.setItem(
+    newStitchSettings.key,
+    JSON.stringify(newStitchSettings),
+  );
+  return newStitchSettings;
+}
+
+function reduceStitchSettings(
+  stitchSettings: StitchSettings,
+  action: StitchSettingsAction,
+): StitchSettings {
   switch (action.type) {
+    case "set":
+      return action.stitchSettings;
     case "set-page-range":
       return { ...stitchSettings, pageRange: action.pageRange };
     case "set-column-count": {

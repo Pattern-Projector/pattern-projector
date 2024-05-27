@@ -18,6 +18,7 @@ import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { RenderContext } from "@/_hooks/use-render-context";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
+import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -30,6 +31,7 @@ export default function PdfViewer({
   setPageCount,
   setLayoutWidth,
   setLayoutHeight,
+  dispatchStitchSettings,
   pageCount,
   layers,
   lineThickness,
@@ -41,6 +43,7 @@ export default function PdfViewer({
   setPageCount: Dispatch<SetStateAction<number>>;
   setLayoutWidth: Dispatch<SetStateAction<number>>;
   setLayoutHeight: Dispatch<SetStateAction<number>>;
+  dispatchStitchSettings: Dispatch<StitchSettingsAction>;
   pageCount: number;
   layers: Map<string, Layer>;
   lineThickness: number;
@@ -54,9 +57,16 @@ export default function PdfViewer({
   const transformer = useTransformerContext();
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
-    setPageCount(docProxy.numPages);
+    const numPages = docProxy.numPages;
+    setPageCount(numPages);
     setLayers(new Map());
     setPageSize({ action: "clear" });
+    if (stitchSettings.pageRange.endsWith("-") && numPages > 0) {
+      dispatchStitchSettings({
+        type: "set-page-range",
+        pageRange: stitchSettings.pageRange + numPages,
+      });
+    }
     transformer.reset();
   }
 

@@ -1,4 +1,6 @@
 import {
+  align,
+  move,
   rotateToHorizontal,
   flipAlong,
   flipHorizontal,
@@ -53,10 +55,10 @@ interface ResetAction {
   type: "reset";
 }
 
-interface AlignToCenterAction {
-  type: "align_to_center";
-  gridCenter: Point;
+interface AlignAction {
+  type: "align";
   line: Line;
+  to: Line;
 }
 
 export type LocalTransformAction =
@@ -68,7 +70,7 @@ export type LocalTransformAction =
   | RotateAction
   | RecenterAction
   | ResetAction
-  | AlignToCenterAction;
+  | AlignAction;
 
 export default function localTransformReducer(
   localTransform: Matrix,
@@ -101,20 +103,13 @@ export default function localTransformReducer(
         { x: action.layoutWidth * 0.5, y: action.layoutHeight * 0.5 },
         localTransform,
       );
-      const p = {
-        x: action.centerPoint.x - current.x,
-        y: action.centerPoint.y - current.y,
-      };
-      return translate(p).mmul(localTransform);
+      return move(current, action.centerPoint).mmul(localTransform);
     }
     case "reset": {
       return Matrix.identity(3);
     }
-    case "align_to_center": {
-      return translate({
-        x: action.gridCenter.x - action.line[0].x,
-        y: action.gridCenter.y - action.line[0].y,
-      }).mmul(rotateToHorizontal(action.line).mmul(localTransform));
-      }
+    case "align": {
+      return align(action.line, action.to).mmul(localTransform);
+    }
   }
 }

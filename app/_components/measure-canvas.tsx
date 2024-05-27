@@ -1,8 +1,8 @@
 import {
   angleDeg,
-  constrainInSpace,
-  sqrDist,
-  sqrDistToLine,
+  constrained,
+  dist,
+  distToLine,
   transformLine,
   transformPoint,
 } from "@/_lib/geometry";
@@ -16,13 +16,15 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { CM } from "@/_lib/unit";
 import { drawLine, drawArrow, drawCircle } from "@/_lib/drawing";
 import { useTransformContext } from "@/_hooks/use-transform-context";
 import { Line } from "@/_lib/interfaces/line";
 
 import { KeyCode } from "@/_lib/key-code";
 import LineMenu from "./line-menu";
+import { useKeyDown } from "@/_hooks/use-key-down";
+import { useKeyUp } from "@/_hooks/use-key-up";
+import { CM } from "@/_lib/unit";
 
 export default function MeasureCanvas({
   perspective,
@@ -46,134 +48,141 @@ export default function MeasureCanvas({
   children: React.ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [startPoint, setStartPoint] = useState<Point | null>(null);
-  const [selectedLine, setSelectedLine] = useState<number>(-1);
-  const [selectedEnd, setSelectedEnd] = useState<number>(0);
   const dragOffset = useRef<Point | null>(null);
-  const [lines, setLines] = useState<Line[]>([]);
+
+  const [selectedLine, setSelectedLine] = useState<number>(-1);
+  const [lines, setLines] = useState<Line[]>([]); // pattern space coordinates.
   const [axisConstrained, setAxisConstrained] = useState<boolean>(false);
-  const [movingPoint, setMovingPoint] = useState<Point | null>(null);
+
   const transform = useTransformContext();
-  const disablePointer = measuring || selectedEnd >= 0;
+
+  const disablePointer = measuring || dragOffset.current;
+
+  const endCircleRadius = 24;
+  const lineTouchRadius = 48;
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const p = { x: e.clientX, y: e.clientY };
+    const client = { x: e.clientX, y: e.clientY };
+    const patternToClient = calibrationTransform.mmul(transform);
 
     // Possibly select a line.
-    if (!startPoint && lines.length > 0) {
-      const m = calibrationTransform.mmul(transform);
-      for (let i = 0; i < lines.length; i++) {
-        const line = transformLine(lines[i], m);
-        if (selectedLine == i) {
-          if (sqrDist(p, line[0]) < 2000) {
-            dragOffset.current = { x: p.x - line[0].x, y: p.y - line[0].y };
-            setSelectedEnd(0);
-            e.stopPropagation();
-            return;
-          }
-          if (sqrDist(p, line[1]) < 2000) {
-            dragOffset.current = { x: p.x - line[1].x, y: p.y - line[1].y };
-            setSelectedEnd(1);
-            e.stopPropagation();
-            return;
+    for (let i = 0; i < lines.length; i++) {
+      const patternLine = lines[i];
+      const clientLine = transformLine(patternLine, patternToClient);
+      // Start dragging one end of the selected line?
+      if (selectedLine == i) {
+        let minDist = lineTouchRadius;
+        let minEnd = -1;
+        for (const end of [0, 1]) {
+          const clientEnd = clientLine[end];
+          const d = dist(clientEnd, client);
+          if (d < minDist) {
+            minDist = d;
+            dragOffset.current = {
+              x: clientEnd.x - client.x,
+              y: clientEnd.y - client.y,
+            };
+            minEnd = end;
           }
         }
-
-        if (sqrDistToLine(line, p) < 600) {
-          e.stopPropagation();
-          if (i == selectedLine) {
-            setSelectedLine(-1);
-            return;
-          } else {
-            setSelectedLine(i);
-            return;
+        if (minEnd >= 0) {
+          if (minEnd == 0) {
+            // Swap to always drag the end.
+            setLines(lines.toSpliced(i, 1, [patternLine[1], patternLine[0]]));
           }
+          e.stopPropagation();
+          return;
         }
       }
 
-      setSelectedLine(-1);
-      setSelectedEnd(-1);
+      if (distToLine(clientLine, client) < endCircleRadius) {
+        // select/deselect the line.
+        setSelectedLine(i == selectedLine ? -1 : i);
+        e.stopPropagation();
+        return;
+      }
     }
+
+    // Nothing selected.
+    setSelectedLine(-1);
+    dragOffset.current = null;
 
     if (!measuring) {
       return;
     }
 
-    e.stopPropagation();
-    if (!startPoint) {
-      // Begin a new line.
-      setStartPoint(p);
-      setMovingPoint(p);
-    }
-
+    // Create a new line and start dragging its end.
+    const pattern = transformPoint(client, inverse(patternToClient));
+    setLines([...lines, [pattern, pattern]]);
+    setSelectedLine(lines.length);
+    dragOffset.current = {
+      x: 0,
+      y: 0,
+    };
     e.stopPropagation();
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
-
-    const p = { x: e.clientX, y: e.clientY };
-    if (startPoint && measuring) {
-      e.stopPropagation();
-      setMovingPoint(p);
-    }
-
-    if (e.buttons === 0 && selectedEnd >= 0) {
+    if (e.buttons === 0 && dragOffset.current) {
       e.stopPropagation();
       // If the mouse button is released, end the drag.
-      setSelectedEnd(-1);
+      dragOffset.current = null;
       return;
     }
 
-    if (selectedLine >= 0 && selectedEnd >= 0 && dragOffset.current) {
+    // Dragging an end of a line?
+    if (selectedLine >= 0 && dragOffset.current) {
       e.stopPropagation();
-      const line = lines[selectedLine];
-      const m = inverse(transform).mmul(perspective);
-      const op = {
-        x: p.x - dragOffset.current.x,
-        y: p.y - dragOffset.current.y,
+      const client = { x: e.clientX, y: e.clientY };
+      const clientDestination = {
+        x: client.x + dragOffset.current.x,
+        y: client.y + dragOffset.current.y,
       };
-      const pt = transformPoint(op, m);
-      if (selectedEnd == 0) {
-        const newLine: Line = [pt, line[1]];
-        setLines(lines.toSpliced(selectedLine, 1, newLine));
-      } else {
-        const newLine: Line = [line[0], pt];
-        setLines(lines.toSpliced(selectedLine, 1, newLine));
-      }
-      e.stopPropagation();
+      const clientToPattern = inverse(transform).mmul(perspective);
+      const patternDestination = transformPoint(
+        clientDestination,
+        clientToPattern,
+      );
+      const patternLine = lines[selectedLine];
+      patternLine[1] = patternDestination;
+      setLines(lines.toSpliced(selectedLine, 1, patternLine));
     }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setSelectedEnd(-1);
-    if (!startPoint || !measuring) {
+    if (!dragOffset.current) {
       return;
     }
-    const p = { x: e.clientX, y: e.clientY };
-    // finish the line.
-    let end = axisConstrained
-      ? constrainInSpace(p, startPoint, perspective, calibrationTransform)
-      : p;
-    const m = inverse(transform).mmul(perspective);
-    if (sqrDist(startPoint, end) < 100) {
-      end = { x: startPoint.x + CSS_PIXELS_PER_INCH, y: startPoint.y };
-    }
-    const pdfLine = transformLine([startPoint, end], m);
-    setSelectedLine(lines.length);
-    setLines([...lines, pdfLine]);
-    setStartPoint(null);
-    setMeasuring(false);
-  };
 
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.code === KeyCode.Backspace && selectedLine >= 0) {
-      handleDeleteLine();
+    const client = {
+      x: e.clientX + dragOffset.current.x,
+      y: e.clientY + dragOffset.current.y,
+    };
+
+    dragOffset.current = null;
+
+    e.stopPropagation();
+    // finish the line.
+    const patternLine = lines[selectedLine];
+    const patternAnchor = patternLine[0];
+    const matAnchor = transformPoint(patternAnchor, transform);
+    const destMat = transformPoint(client, perspective);
+    let matFinal = destMat;
+    if (axisConstrained) {
+      matFinal = constrained(destMat, matAnchor);
     }
-    setAxisConstrained(e.shiftKey);
-  }
+    // If it's too small, drop a reasonable size line instead.
+    if (dist(matFinal, matAnchor) < CSS_PIXELS_PER_INCH / 16) {
+      matFinal = { x: matAnchor.x + CSS_PIXELS_PER_INCH, y: matAnchor.y };
+    }
+    const patternFinal = transformPoint(matFinal, inverse(transform));
+    setMeasuring(false);
+    patternLine[1] = patternFinal;
+    setLines(lines.toSpliced(selectedLine, 1, patternLine));
+  };
 
   function handleDeleteLine() {
     if (selectedLine >= 0) {
@@ -187,6 +196,20 @@ export default function MeasureCanvas({
   }
 
   useEffect(() => {
+    if (measuring && selectedLine < 0 && lines.length > 0) {
+      setSelectedLine(0);
+    }
+  }, [measuring, lines.length, selectedLine]);
+
+  useKeyDown(() => {
+    setAxisConstrained(true);
+  }, [KeyCode.ShiftLeft, KeyCode.ShiftRight]);
+
+  useKeyUp(() => {
+    setAxisConstrained(false);
+  }, [KeyCode.ShiftLeft, KeyCode.ShiftRight]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
@@ -198,53 +221,23 @@ export default function MeasureCanvas({
         ctx.lineWidth = 4;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const m = calibrationTransform.mmul(transform);
+        const patternToClient = calibrationTransform.mmul(transform);
         for (let i = 0; i < lines.length; i++) {
           if (i !== selectedLine) {
-            drawLine(ctx, transformLine(lines[i], m));
+            drawLine(ctx, transformLine(lines[i], patternToClient));
           }
         }
         if (lines.length > 0 && selectedLine >= 0) {
-          const line = lines.at(selectedLine);
-          if (line) {
-            const l = transformLine(line, transform);
-            const axis = transformLine(
-              [l[0], { x: l[0].x + 96 + 48, y: l[0].y }],
-              calibrationTransform,
-            );
-            ctx.save();
-            ctx.lineWidth = 1;
-            drawLine(ctx, axis);
-            ctx.restore();
-            const tl = transformLine(line, m);
-            drawArrow(ctx, tl);
-            drawCircle(ctx, tl[0], 30);
-            drawCircle(ctx, tl[1], 30);
-            drawMeasurementsAt(ctx, l, tl[1]);
+          const patternLine = lines[selectedLine];
+          const matLine = transformLine(patternLine, transform);
+          if (axisConstrained && dragOffset.current) {
+            matLine[1] = constrained(matLine[1], matLine[0]);
           }
-        }
-
-        if (startPoint && movingPoint) {
-          const dest = axisConstrained
-            ? constrainInSpace(
-                movingPoint,
-                startPoint,
-                perspective,
-                calibrationTransform,
-              )
-            : movingPoint;
-          const screenLine: Line = [startPoint, dest];
-          const line = transformLine(screenLine, perspective);
-          drawMeasurementsAt(ctx, line, startPoint);
-          drawLine(ctx, screenLine);
-          const axis = transformLine(
-            [line[0], { x: line[0].x + 96 + 48, y: line[0].y }],
-            calibrationTransform,
-          );
-          ctx.save();
-          ctx.lineWidth = 1;
-          drawLine(ctx, axis);
-          ctx.restore();
+          const clientLine = transformLine(matLine, calibrationTransform);
+          drawArrow(ctx, clientLine);
+          drawCircle(ctx, clientLine[0], endCircleRadius);
+          drawCircle(ctx, clientLine[1], endCircleRadius);
+          drawMeasurementsAt(ctx, matLine, clientLine[1]);
         }
       }
     }
@@ -258,16 +251,14 @@ export default function MeasureCanvas({
       ctx.font = "24px sans-serif";
       ctx.strokeStyle = "#fff";
       ctx.fillStyle = "#000";
-      const o = 10;
-      const text = measurements(line, unitOfMeasure);
+      const text = measurementsString(line, unitOfMeasure);
       ctx.lineWidth = 4;
-      ctx.strokeText(text, p1.x + o, p1.y + o);
-      ctx.fillText(text, p1.x + o, p1.y + o);
+      const location = { x: p1.x, y: p1.y - endCircleRadius - 8 };
+      ctx.strokeText(text, location.x, location.y);
+      ctx.fillText(text, location.x, location.y);
       ctx.restore();
     }
   }, [
-    startPoint,
-    movingPoint,
     perspective,
     unitOfMeasure,
     axisConstrained,
@@ -286,12 +277,9 @@ export default function MeasureCanvas({
   return (
     <div className={className}>
       <div
-        onKeyDown={handleKeyDown}
-        onKeyUp={(e) => setAxisConstrained(e.shiftKey)}
         onPointerDownCapture={handlePointerDown}
         onPointerMoveCapture={handlePointerMove}
         onPointerUpCapture={handlePointerUp}
-        tabIndex={0}
         className={`${measuring ? "cursor-crosshair" : ""} h-screen w-screen`}
       >
         <div className={`${disablePointer ? "pointer-events-none" : ""}`}>
@@ -309,12 +297,12 @@ export default function MeasureCanvas({
         setLines={setLines}
         handleDeleteLine={handleDeleteLine}
         gridCenter={gridCenter}
+        setMeasuring={setMeasuring}
       />
     </div>
   );
 }
-
-function measurements(line: Line, unitOfMeasure: string): string {
+function measurementsString(line: Line, unitOfMeasure: string): string {
   let a = -angleDeg(line);
   if (a < 0) {
     a += 360;
@@ -323,12 +311,12 @@ function measurements(line: Line, unitOfMeasure: string): string {
   if (label == "360") {
     label = "0";
   }
-  const d = distance(line[0], line[1], unitOfMeasure);
+  const d = distanceString(line, unitOfMeasure);
   return `${d} ${label}°`;
 }
 
-function distance(p1: Point, p2: Point, unitOfMeasure: string): string {
-  let d = Math.sqrt(sqrDist(p1, p2)) / CSS_PIXELS_PER_INCH;
+function distanceString(line: Line, unitOfMeasure: string): string {
+  let d = dist(...line) / CSS_PIXELS_PER_INCH;
   if (unitOfMeasure == CM) {
     d *= 2.54;
   }
