@@ -55,7 +55,7 @@
       },
       "overlayOptions": {
         "title": "Show or hide overlay options",
-        "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting."
+        "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting. For more information, see the <overlayOptionsLink>overlay options section</overlayOptionsLink>."
       },
       "lineWeight": {
         "title": "Line weight",
@@ -83,7 +83,7 @@
       },
       "measure": {
         "title": "Line tool (L)",
-        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking."
+        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking. For a detailed description of the line tool, see the <lineToolLink>line tool section</lineToolLink>."
       }
     },
     "tools": "Tools",
