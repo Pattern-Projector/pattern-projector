@@ -12,6 +12,10 @@ import {
   PDFDict,
   PDFStream,
   PDFArray,
+  PDFContext,
+  PDFRawStream,
+  decodePDFRawStream,
+  UnrecognizedStreamTypeError,
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
@@ -57,25 +61,57 @@ function initDoc(doc: PDFDocument, pages: number[]): Map<number, PDFRef> {
   return pageMap;
 }
 
-function mergeStreams(streams: PDFArray | PDFStream): PDFStream {
+function mergeStreams(
+  streams: PDFArray | PDFStream,
+  context: PDFContext,
+): PDFStream {
   /**
    * Content streams can be an array of streams or a single stream.
    * This function merges them into a single stream, or just returns
    * the stream if it was already a singleton.
    *
-   * This is implemented in pdf-lib here: https://github.com/cantoo-scribe/pdf-lib/blob/9593e75cbcf70f68dcf26bd541919e22514a5898/src/core/embedders/PDFPageEmbedder.ts#L118
-   * However, this decodes and re-encodes the streams, which I'd really prefer to avoid.
+   * Note that the streams are first decoded, then joined with a newline,
+   * then re-encoded, as concatenating encoded streams led to broken pdfs.
+   * This results in an increase in file size, as the streams are copied.
+   * Removing the original streams sometimes led to broken pdfs, so we
+   * can't assume that they're never referenced elsewhere.
+   *
+   * Copied from the private function in pdf-lib here: https://github.com/cantoo-scribe/pdf-lib/blob/9593e75cbcf70f68dcf26bd541919e22514a5898/src/core/embedders/PDFPageEmbedder.ts#L118
    */
   if (streams instanceof PDFStream) return streams;
   else {
-    throw new Error(
-      "Documents with arrays of content streams are not yet supported.",
-    );
+    let totalLength = 0;
+    const decodedStreams: Uint8Array[] = [];
+    for (const ref of streams.asArray()) {
+      const stream = context.lookup(ref, PDFStream);
+      let content: Uint8Array;
+      if (stream instanceof PDFRawStream) {
+        content = decodePDFRawStream(stream).decode();
+      } else if (stream instanceof PDFContentStream) {
+        content = stream.getUnencodedContents();
+      } else {
+        throw new UnrecognizedStreamTypeError(stream);
+      }
+
+      totalLength += content.length + 1; // +1 for newline
+      decodedStreams.push(content);
+    }
+
+    const mergedStream = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const content of decodedStreams) {
+      mergedStream.set(content, offset);
+      offset += content.length;
+      mergedStream[offset] = 0x0a; // newline
+      offset += 1;
+    }
+
+    return context.flateStream(mergedStream);
   }
 }
 
 function getFormXObjectForPage(
-  doc: PDFDocument,
+  context: PDFContext,
   ref: PDFRef,
 ): PDFRef | undefined {
   /**
@@ -83,7 +119,7 @@ function getFormXObjectForPage(
    * Adapted from https://github.com/qpdf/qpdf/blob/2eefa580aa0ecf70ae3864d5c47e728480055c38/libqpdf/QPDFPageObjectHelper.cc#L705
    */
 
-  const page = doc.context.lookup(ref) as PDFPageLeaf | undefined;
+  const page = context.lookup(ref) as PDFPageLeaf | undefined;
   if (!page) return undefined;
 
   // PDF treats pages differently from forms, so we need to extract
@@ -91,7 +127,7 @@ function getFormXObjectForPage(
   let xObject = page.Contents();
   if (!xObject) return undefined;
 
-  xObject = mergeStreams(xObject);
+  xObject = mergeStreams(xObject, context);
   xObject.dict.set(PDFName.of("Type"), PDFName.of("XObject"));
   xObject.dict.set(PDFName.of("Subtype"), PDFName.of("Form"));
 
@@ -108,7 +144,7 @@ function getFormXObjectForPage(
   if (bbox) xObject.dict.set(PDFName.of("BBox"), bbox);
 
   // register the new form XObject and return the reference
-  return doc.context.register(xObject);
+  return context.register(xObject);
 }
 
 export async function saveStitchedPDF(
@@ -161,7 +197,7 @@ export async function saveStitchedPDF(
   for (const [p, ref] of pageMap.entries()) {
     if (p > 0) {
       // create a new form XObject for the page
-      const xRef = await getFormXObjectForPage(doc, ref);
+      const xRef = await getFormXObjectForPage(doc.context, ref);
       if (!xRef) {
         throw new Error(`Failed to create form XObject for page ${p}`);
       }
