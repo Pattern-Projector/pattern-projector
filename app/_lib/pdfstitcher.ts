@@ -16,6 +16,7 @@ import {
   PDFRawStream,
   decodePDFRawStream,
   UnrecognizedStreamTypeError,
+  PDFObject,
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
@@ -148,21 +149,45 @@ function getFormXObjectForPage(
   return context.register(xObject);
 }
 
-export async function savePDF(
-  file: File,
-  settings: StitchSettings,
-  layers: Map<string, Layer>,
-  password: string = "",
-) {
-  // Grab the bytes from the file object and try to load the PDF
-  // Error handling is done in the calling function.
-  const pdfBytes = await file.arrayBuffer();
-  const doc = await PDFDocument.load(pdfBytes, {
-    ignoreEncryption: true,
-    password,
-  });
+function getAsDict(name: string, dict: PDFDict): PDFDict | undefined {
+  /**
+   * Helper function to get a dictionary from a parent dictionary.
+   * If the object is a reference, find the actual dictionary.
+   */
+  const obj = dict.get(PDFName.of(name));
+  if (obj instanceof PDFDict) return obj;
+  if (obj instanceof PDFRef) return dict.context.lookup(obj, PDFDict);
+  else return undefined;
+}
 
-  // Trust that the user is happy with the layout
+function toggleLayers(doc: PDFDocument, layers: Map<string, Layer>) {
+  /**
+   * Toggle the default visibility of layers in the PDF based on user selections.
+   * Note that this does not actually remove content the way PDFStitcher does.
+   */
+  const ocprops = getAsDict("OCProperties", doc.catalog);
+  if (!ocprops) return; // sometimes the document doesn't have layers
+
+  let D = getAsDict("D", ocprops) ?? doc.context.obj({});
+  ocprops.set(PDFName.of("D"), D);
+
+  const visible : PDFArray = doc.context.obj([]);
+  const hidden : PDFArray = doc.context.obj([]);
+
+  for (const layer of layers.values()) {
+    const refs = layer.ids.map((id) => PDFRef.of(parseInt(id)));
+    refs.map((r) => layer.visible ? visible.push(r) : hidden.push(r));
+  }
+
+  D.set(PDFName.of("ON"), visible);
+  D.set(PDFName.of("OFF"), hidden);
+}
+
+async function tilePages(doc: PDFDocument, settings: StitchSettings) {
+  /**
+   * Do the stitching stuff and update the document. Converts a multi-page document
+   * into a single large page.
+   */
   const pages = getPageNumbers(settings.pageRange, doc.getPageCount());
   const cols = settings.columnCount;
   const rows = Math.ceil(pages.length / cols);
@@ -240,7 +265,30 @@ export async function savePDF(
       doc.context.obj({ XObject: XObjectDict }),
     );
   }
+}
 
-  // Save the stitched document
+export async function savePDF(
+  file: File,
+  settings: StitchSettings,
+  layers: Map<string, Layer>,
+  password: string = "",
+) {
+  // Grab the bytes from the file object and try to load the PDF
+  // Error handling is done in the calling function.
+  const pdfBytes = await file.arrayBuffer();
+  const doc = await PDFDocument.load(pdfBytes, {
+    ignoreEncryption: true,
+    password,
+  });
+
+  // Toggle the visibility of layers
+  toggleLayers(doc, layers);
+
+  // if it's a one-page document, we're done. Otherwise, stitch it together.
+  if (doc.getPageCount() > 1) {
+    await tilePages(doc, settings);
+  }
+
+  // Save the modified document and return the blob
   return await doc.save();
 }
