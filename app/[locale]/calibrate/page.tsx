@@ -55,6 +55,7 @@ import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
+import SaveButton from "@/_components/save-button";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -74,10 +75,10 @@ export default function Page() {
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [stitchSettings, dispatchStitchSettings] = useReducer(
     stitchSettingsReducer,
-    defaultStitchSettings,
+    defaultStitchSettings
   );
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
-    getDefaultDisplaySettings(),
+    getDefaultDisplaySettings()
   );
   const [calibrationValidated, setCalibrationValidated] =
     useState<boolean>(false);
@@ -87,7 +88,7 @@ export default function Page() {
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
   const [file, setFile] = useState<File | null>(null);
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
-    Matrix.identity(3, 3),
+    Matrix.identity(3, 3)
   );
   const [pageCount, setPageCount] = useState<number>(1);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
@@ -98,7 +99,7 @@ export default function Page() {
   const [measuring, setMeasuring] = useState<boolean>(false);
 
   const [menuStates, setMenuStates] = useState<MenuStates>(
-    getDefaultMenuStates(),
+    getDefaultMenuStates()
   );
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
@@ -262,14 +263,14 @@ export default function Page() {
         w,
         h,
         ptDensity,
-        true,
+        true
       );
       const n = getPerspectiveTransformFromPoints(
         points,
         w,
         h,
         ptDensity,
-        false,
+        false
       );
       setPerspective(m);
       setCalibrationTransform(n);
@@ -300,7 +301,7 @@ export default function Page() {
           getIsInvalidatedCalibrationContextWithPointerEvent(
             expected,
             e,
-            fullScreenHandle.active,
+            fullScreenHandle.active
           )
         ) {
           setCalibrationValidated(false);
@@ -326,7 +327,7 @@ export default function Page() {
         const expected = JSON.parse(calibrationContext) as CalibrationContext;
         const isInvalid = getIsInvalidatedCalibrationContext(
           expected,
-          fullScreenHandle.active,
+          fullScreenHandle.active
         );
         if (isInvalid === calibrationValidated) {
           setCalibrationValidated(!isInvalid);
@@ -456,8 +457,8 @@ export default function Page() {
                   localStorage.setItem(
                     "calibrationContext",
                     JSON.stringify(
-                      getCalibrationContext(fullScreenHandle.active),
-                    ),
+                      getCalibrationContext(fullScreenHandle.active)
+                    )
                   );
                   dispatch({ type: "set", points: getDefaultPoints() });
                 }}
@@ -498,7 +499,6 @@ export default function Page() {
                   setShowMenu={(showMenu) =>
                     setMenuStates({ ...menuStates, stitch: showMenu })
                   }
-                  file={file}
                   dispatchStitchSettings={dispatchStitchSettings}
                   stitchSettings={stitchSettings}
                   pageCount={pageCount}
@@ -510,6 +510,11 @@ export default function Page() {
                   }
                   layers={layers}
                   setLayers={setLayers}
+                />
+                <SaveButton
+                  file={file}
+                  stitchSettings={stitchSettings}
+                  layers={layers}
                 />
               </menu>
             </menu>

@@ -19,6 +19,7 @@ import {
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
+import { Layer } from "./interfaces/layer";
 
 function trimmedPageSize(
   inDoc: PDFDocument,
@@ -147,10 +148,10 @@ function getFormXObjectForPage(
   return context.register(xObject);
 }
 
-export async function saveStitchedPDF(
+export async function savePDF(
   file: File,
   settings: StitchSettings,
-  pageCount: number,
+  layers: Map<string, Layer>,
   password: string = "",
 ) {
   // Grab the bytes from the file object and try to load the PDF
@@ -162,7 +163,7 @@ export async function saveStitchedPDF(
   });
 
   // Trust that the user is happy with the layout
-  const pages = getPageNumbers(settings.pageRange, pageCount);
+  const pages = getPageNumbers(settings.pageRange, doc.getPageCount());
   const cols = settings.columnCount;
   const rows = Math.ceil(pages.length / cols);
   const trim = settings.edgeInsets;
