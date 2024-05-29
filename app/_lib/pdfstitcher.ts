@@ -16,7 +16,6 @@ import {
   PDFRawStream,
   decodePDFRawStream,
   UnrecognizedStreamTypeError,
-  PDFObject,
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
@@ -168,15 +167,15 @@ function toggleLayers(doc: PDFDocument, layers: Map<string, Layer>) {
   const ocprops = getAsDict("OCProperties", doc.catalog);
   if (!ocprops) return; // sometimes the document doesn't have layers
 
-  let D = getAsDict("D", ocprops) ?? doc.context.obj({});
+  const D = getAsDict("D", ocprops) ?? doc.context.obj({});
   ocprops.set(PDFName.of("D"), D);
 
-  const visible : PDFArray = doc.context.obj([]);
-  const hidden : PDFArray = doc.context.obj([]);
+  const visible: PDFArray = doc.context.obj([]);
+  const hidden: PDFArray = doc.context.obj([]);
 
   for (const layer of layers.values()) {
     const refs = layer.ids.map((id) => PDFRef.of(parseInt(id)));
-    refs.map((r) => layer.visible ? visible.push(r) : hidden.push(r));
+    refs.map((r) => (layer.visible ? visible.push(r) : hidden.push(r)));
   }
 
   D.set(PDFName.of("ON"), visible);
