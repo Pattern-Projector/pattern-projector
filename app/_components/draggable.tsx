@@ -29,10 +29,10 @@ export default function Draggable({
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
-  const [isIdle, setIsIdle] = useState(false);
+  // const [isIdle, setIsIdle] = useState(false);
   const [matrix3d, setMatrix3d] = useState<string>("");
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const transform = useTransformContext();
   const transformer = useTransformerContext();
@@ -51,15 +51,15 @@ export default function Draggable({
 
   const IDLE_TIMEOUT = 1500;
 
-  function resetIdle() {
-    setIsIdle(false);
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(() => {
-      setIsIdle(true);
-    }, IDLE_TIMEOUT);
-  }
+  // function resetIdle() {
+  //   setIsIdle(false);
+  //   if (timeoutRef.current) {
+  //     clearTimeout(timeoutRef.current);
+  //   }
+  //   timeoutRef.current = setTimeout(() => {
+  //     setIsIdle(true);
+  //   }, IDLE_TIMEOUT);
+  // }
 
   function handleOnEnd(): void {
     setDragStart(null);
@@ -70,7 +70,7 @@ export default function Draggable({
     const p = { x: e.clientX, y: e.clientY };
 
     if (e.pointerType === "mouse") {
-      resetIdle();
+      // resetIdle();
       /* If we aren't currently dragging, ignore the mouse move event */
       if (dragStart === null) {
         return;
@@ -98,22 +98,22 @@ export default function Draggable({
     setTransformStart(transform.clone());
   }
 
-  let cursorMode = `${dragStart !== null ? "grabbing" : "grab"}`;
-  let viewportCursorMode = `${dragStart !== null ? "grabbing" : "default"}`;
+  const cursorMode = `${dragStart !== null ? "grabbing" : "grab"}`;
+  const viewportCursorMode = `${dragStart !== null ? "grabbing" : "default"}`;
 
   /* If we aren't dragging and the idle timer has set isIdle
    * to true, hide the cursor */
-  if (dragStart === null && isIdle) {
-    cursorMode = "none";
-    viewportCursorMode = "none";
-  }
+  // if (dragStart === null && isIdle) {
+  //   cursorMode = "none";
+  //   viewportCursorMode = "none";
+  // }
 
   return (
     <div
       tabIndex={0}
       className={`${className ?? ""} select-none absolute top-0 ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 w-screen h-screen`}
       onPointerMove={handleMove}
-      onMouseEnter={resetIdle}
+      // onMouseEnter={resetIdle}
       onMouseUp={handleOnEnd}
       style={{
         cursor: viewportCursorMode,
