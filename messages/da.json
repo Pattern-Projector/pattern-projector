@@ -8,19 +8,19 @@
         "choose-language": "Sprog",
         "welcome": {
             "title": "Velkommen til Pattern Projector!",
-            "description": "Pattern Projector er en gratis og open source webapp, der hjælper brugere til hurtigt at kalibrere projektorer til brug med symønstre. Dette projekt er lige nu i beta, så forvent store ændringer og tilføjelser af nye funktioner med tiden."
+            "description": "Pattern Projector er en gratis og open source webapp, der hurtigt kalibrerer projektorer til brug med symønstre. PP har også værktøjer til at samle mønstre på mange sider, ændre linjetykkelse, vise farver omvendt, vende/rotere mønstre og meget andet. For at læse om de seneste opdateringer, se nærmere på <changeLogLink>changelog</changeLogLink>."
         },
         "requirements": {
             "title": "Hvad du skal bruge",
             "projector": "Projektor: mindst 720p anbefalet",
-            "mat": "Skæreunderlag, gerne med gitter og tern for hver tomme / centimeter",
+            "mat": "Skæreunderlag, evt. med målelinjer",
             "mount": "Tripod eller beslag/holder på væg, hylde eller bord til projektor",
             "computer": "Computer eller tablet til at forbinde til projektoren",
             "pattern": "Et PDF-mønster"
         },
         "setup": {
             "title": "Montering/opsætning",
-            "place": "Placér projektoren direkte over skæreunderlaget, så den lyser ned på underlaget. Prøv at placere projektoren direkte over skæreunderlaget, så den peger lige ned.",
+            "place": "Placér projektoren direkte over skæreunderlaget, så den lyser ned på underlaget. Hvis du ikke har et skæreunderlag, kan du bruge papir eller malertape til at markere et gitter eller et rektangel på et bord eller gulvet.",
             "connect": "Forbind din computer eller tablet til projektoren. Spejl eller udvid skærm, så billedet fra computer eller tavlet vises på projektoren.",
             "focus": "Justér fokus på projektoren indtil teksten står skarpt i midten af projektorbilledet. Hvis du ikke kan få et tydeligt billede, skal du kontrollere, om afstanden mellem projektoren og skæreunderlaget er inden for producentens anbefalinger.",
             "keystone": "Hvis din projektor har mulighed for at justere keystone, så justér den indtil projektorbilledet er tæt på rektangulær og fokus ude i kanten forbedres."
@@ -31,7 +31,7 @@
             "input": "Indtast bredde og højde på dit skæreunderlag.",
             "fullscreen": "Gå til fuld skærm ved at klikke eller tappe ",
             "drag": "Træk i hjørnerne af gitteret, så ternene kommer til at passe med ternene på dit skæreunderlag. Justér hjørnerne på din tablet eller computer, mens du kigger på skæreunderlaget. Justér hjørnernes placering indtil gitteret i projektorbilledet passer med skæreunderlagets gitter.",
-            "size": "Du behøver ikke at bruge hele dit skæreunderlag, når du kalibrerer. Brug i stedet det størst mulige område, som du kan få kalibreringsgitteret til at passe i. Vær sikker på at målene (bredde og højde) på måtten passer med de indtastede mål.",
+            "size": "Du behøver ikke at bruge hele dit skæreunderlag, når du kalibrerer. Brug i stedet det størst mulige område, som du kan få kalibreringsgitteret til at passe i. Indtast målene (bredde og højde), så de stemmer overens med målene på kalibreringsgitteret.",
             "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap \"Vis på projektor\""
         },
         "project": {
@@ -39,33 +39,58 @@
             "open": "Klik eller tap <pdficon></pdficon> for at åbne PDF-dokumentet.",
             "move": "Flyt PDF’en ved at klikke og trække det rundt på skærmen.",
             "cut": "Skær ud efter mønsteret.",
-            "tools": "Under \"Vis mønster\" er der flere værktøjer tilgængelige:",
+            "tools": "Under \"Vis mønster\" er der flere værktøjer tilgængelige. Nogle af dem har genvejstaster, som står i parentes.",
             "showGrid": {
                 "title": "Vis/skjul gitter",
                 "description": "Når mønsteret vises, kan man vælge at se et svagt gitter for kunne kontrollere, at kalibreringen er korrekt."
             },
             "invert": {
-                "title": "Omvendte farver",
-                "description": "Når mønsteret vises, er det som regel nemmere at se hvide linjer på sort."
+                "title": "Omvend farver",
+                "description": "Når mønsteret vises, er det som regel nemmere at se grønne eller hvide linjer på sort. Klik én gang for grønne linjer, to gange for hvide linjer og tre gange for at vende tilbage til sorte linjer."
             },
             "flip": {
-                "title": "Vend lodret/vandret",
+                "title": "Vend lodret/vertikalt (V) eller horisontalt/vandret (H)",
                 "description": "Nyttigt til at spejle halve mønsterdele."
             },
             "rotate": {
-                "title": "Rotér",
-                "description": "Ændre mønsterets retning med 90 grader."
+                "title": "Rotér (R)",
+                "description": "Ændr mønsterets retning med 90 grader."
             },
             "recenter": {
-                "title": "Til midten af PDF'en",
-                "description": "Centrerer mønsteret på skæreunderlaget."
+                "title": "Centrér og nulstil (C)",
+                "description": "Centrerer mønsteret på skæreunderlaget og nulstiller rotation/vending."
             },
             "fullscreen": {
                 "title": "Fuld skærm",
                 "description": "Det er som regel nemmere at bruge softwaren i fuld skærm."
             },
             "measure": {
-                "title": "Linjeværktøj (L)"
+                "title": "Linjeværktøj (L)",
+                "description": "Lav linjer på PDF'en for at rotere, vende, flytte måle eller markere."
+            },
+            "stitch": {
+                "title": "Vis eller skjul samlemenu",
+                "description": "Vis eller skjul samlemenu, som giver mulighed for at samle mønstre på flere sider (A4-mønstre)."
+            },
+            "layers": {
+                "title": "Vis eller skjul lag",
+                "description": "Vis eller skjul lag i PDF'en."
+            },
+            "lineWeight": {
+                "title": "Linjetykkelse",
+                "description": "Ændr tykkelsen på linjerne i PDF-mønsteret."
+            },
+            "overlayOptions": {
+                "description": "Markeringer for gitter, kant, papirark, vende-linjer eller vrangside kan vises på PDF'en for at hjælpe med kalibrering og udskæring.",
+                "title": "Vis eller skjul overlay-funktioner"
+            },
+            "moveTool": {
+                "title": "Vis eller skjul flytte-værktøj",
+                "description": "Flytte-værktøjet har fire piletaster til at flytte kalibreringsgitterets hjørner/kanter. Det har også en \"næste\"-knap i midten for at skifte til næste hjørne/kant."
+            },
+            "showMenu": {
+                "title": "Vis/skjul menu",
+                "description": "Vis eller skjul topmenu."
             }
         },
         "faq": {
@@ -97,6 +122,10 @@
                 "projectorsForSewing": {
                     "title": "Projektorsyning - sy med projektor",
                     "link": "https://www.facebook.com/groups/syprojektor"
+                },
+                "onePageGuide": {
+                    "title": "Énsidesguide til projektorsyning",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
                 }
             }
         },
@@ -111,17 +140,55 @@
         "lineTool": {
             "title": "Linjeværktøj",
             "rotate": {
-                "title": "Rotér til vandret"
+                "title": "Justér til center",
+                "description": "Roterer PDF'en, så den valgte linje bliver vandret og centreret på dit skæreunderlag.",
+                "use": "For at justere trådretningen på en mønsterdel, så den følger trådretning på stoffet: Tegn en linje på trådretningsstregen på mønsteret og tryk derefter på \"Justér til center\"-knappen."
             },
             "delete": {
-                "title": "Slet linje"
+                "title": "Slet linje",
+                "description": "Sletter den valgte linje."
             },
             "flip": {
-                "title": "Vend langs linjen"
+                "title": "Vend langs linjen",
+                "description": "Vender PDF'en langs linjen.",
+                "use": "For at folde mønsterdele ud: Tegn en linje på til fold-linjen af en mønstedel, skær mønstedelen ud frem til til fold-linjen, klik på \"vend langs streg\"-knappen og skær resten af delen ud."
             },
             "move": {
-                "title": "Forskyd PDF med linjens længde"
-            }
+                "title": "Forskyd PDF'en med linjens længde",
+                "description": "Forskyd PDF'en med linjens længde",
+                "use": "For at forkorte/forlænge mønsterdele: Tegn en linje vinkelret på forkort/forlæng-linjen på mønsterdelen, skær ud frem til forkort/forlæng-linjen og klik så på \"forskyd PDF med linjens længde\"-knappen og fortsæt med at skære ud. Retningen på den tegnede linje afhænger af, om du vil forkorte eller forlænge mønsterdelen."
+            },
+            "previousNext": {
+                "title": "Bring forrige/næste linje til center",
+                "description": "Flytter PDF'en, så den forrige/næste linje er vandret og centreret på skæreunderlaget.",
+                "use": "For at flytte mellem mønstedele under udskæring: Tegn en linje på trådretningslinjen af hver mønsterdel og gå derefter frem gennem mønsteret ved hjælp af disse knapper. Slet linjerne efterhånden, som du kommer igennem for at holde styr på hvilke dele, der stadig mangler at blive skåret ud."
+            },
+            "description": "Linjeværktøjet kan bruges til at måle afstande, lave linjer, rotere, vende og flytte PDF'en. Klik på linjeværktøjsknappen, klik derefter på PDF'en og træk for at tegne en linje. Når der er tegnet en linje, vil der dukke en menu op i bunden af skærmen med følgende funktioner:"
+        },
+        "tools": "Værktøjer",
+        "overlayOptions": {
+            "title": "Overlay-funktioner",
+            "border": {
+                "title": "Kant",
+                "description": "Viser kanten på kalibreringsgitteret."
+            },
+            "grid": {
+                "title": "Gitter",
+                "description": "Viser kalibreringsgitteret."
+            },
+            "paper": {
+                "title": "Papirark",
+                "description": "Viser et rektangel på størrelse med et papirark (Letter eller A4) for at kontrollere kalibreringen."
+            },
+            "flipLines": {
+                "title": "Vende-linjer",
+                "description": "Viser linjer, der hjælper med at folde mønstre ud. Få til fold-linjen på mønsterdelen til at passe med vende-linjen og tryk på \"vend vandret\" eller \"vend lodret\" for at spejle mønsterdelen."
+            },
+            "flippedPattern": {
+                "title": "Vrangside/bagside",
+                "description": "Viser prikker, når mønsteret vrangside/bagside vises."
+            },
+            "description": "Overlay-funktioner kan bruges til at kontrollere kalibreringen under visning af mønster og hjælpe undervejs med udskæringen. Følgende funktioner er tilgængelige:"
         }
     },
     "Header": {
@@ -164,7 +231,22 @@
         "measureOff": "Skjul opmåling",
         "menuShow": "Vis menu",
         "menuHide": "Skjul menu",
-        "measure": "Linjeværktøj (L)"
+        "measure": "Linjeværktøj (L)",
+        "showMovement": "Vis flytte-værktøj",
+        "overlayOptions": "Overlay-funktioner",
+        "overlayOptionBorder": "Kant",
+        "overlayOptionDisabled": "Deaktiveret",
+        "overlayOptionGrid": "Gitter",
+        "overlayOptionPaper": "Papirark",
+        "overlayOptionFliplines": "Vende-linjer",
+        "calibrationAlertContinue": "Størrelsen på vinduet kan ikke ændres efter kalibrering. For at vise mønster i fuld skærm skal du kalibrere i fuld skærm. Hvis du vil ændre vinduets størrelse, skal du kalibrere igen.",
+        "ok": "OK",
+        "hideMovement": "Skjul flytte-værktøj",
+        "checkCalibration": "Tjek kalibrering",
+        "overlayOptionFlippedPattern": "Vrangside/bagside",
+        "calibrationAlertTitle": "Kalibreringsadvarsel",
+        "calibrationAlert": "Størrelsen på vinduet har ændret sig siden mønstervisningen begyndte, tryk på \"fuld skærm\"-knappen for at rette problemet.",
+        "continue": "Gem størrelse på vindue og fortsæt"
     },
     "StitchMenu": {
         "columnCount": "Kolonner",
@@ -176,6 +258,32 @@
         "rotateToHorizontal": "Rotér til vandret",
         "translate": "Forskyd PDF med linjens længde",
         "deleteLine": "Slet linje",
-        "flipAlong": "Vend langs linjen"
+        "flipAlong": "Vend langs linjen",
+        "rotateAndCenterPrevious": "Bring forrige linje til center",
+        "rotateAndCenterNext": "Bring næste linje til center",
+        "line": "linje",
+        "lines": "linjer"
+    },
+    "LayerMenu": {
+        "layersOn": "Vis lagmenu",
+        "layersOff": "Skjul lagmenu",
+        "noLayers": "Ingen lag i PDF",
+        "showAll": "Vis alle",
+        "hideAll": "Skjul all",
+        "title": "Lag"
+    },
+    "MovementPad": {
+        "up": "Op",
+        "left": "Højre",
+        "right": "Venstre",
+        "next": "Næste hjørne",
+        "down": "Ned"
+    },
+    "InstallButton": {
+        "ok": "OK",
+        "title": "Installér app",
+        "description": "For bedste brugeroplevelse, installér Pattern Projector på <chromeLink>Google Chrome</chromeLink>.",
+        "descriptionIOS": "Download app'en ved at trykke på share-knappen <shareIcon></shareIcon> i browsermenuen og derefter Add to Home Screen <addBoxIcon></addBoxIcon>/Tilføj til hjemmeskærm.",
+        "descriptionAndroid": "For bedre brugeroplevelse på Android, brug Firefox. Download app'en ved at trykke på more-knappen <moreIcon></moreIcon> i browsermenuen og derefter <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen/Tilføj til hjemmeskærm."
     }
 }
