@@ -74,7 +74,7 @@
             },
             "measure": {
                 "title": "Herramienta de línea (L)",
-                "description": "Marque líneas en el archivo PDF para rotar, voltear, mover, medir o marcar."
+                "description": "Marca las líneas en el PDF para girar, voltear, mover, medir o marcar. Para obtener una descripción detallada de la herramienta de línea, consulte la sección <lineToolLink>herramienta de línea</lineToolLink>."
             },
             "lineWeight": {
                 "title": "Grosor de línea",
@@ -89,7 +89,7 @@
                 "description": "Muestra u oculta el menú superior."
             },
             "overlayOptions": {
-                "description": "En el PDF se pueden mostrar cuadrículas, bordes, hojas de papel, líneas invertidas o superposiciones del lado equivocado para ayudar con la calibración y el corte.",
+                "description": "Las superposiciones de la cuadrícula, borde, hoja de papel, líneas de giro o el lado incorrecto se pueden mostrar en el PDF para ayudar con la calibración y el corte. Para obtener más información, consulta la sección <overlayOptionsLink>opciones de superposición</overlayOptionsLink>.",
                 "title": "Mostrar u ocultar líneas de referencia"
             }
         },
