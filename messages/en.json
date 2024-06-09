@@ -240,8 +240,8 @@
     "vertical": "Vertical"
   },
   "SaveMenu": {
-    "save": "Download PDF",
-    "saveTooltip": "Download PDF with stitched pages and selected layers",
+    "save": "Export PDF",
+    "saveTooltip": "Export PDF with stitched pages and selected layers",
     "encryptedPDF": "This PDF is encrypted. Please enter the password to save the stitched PDF."
   },
   "LayerMenu": {
