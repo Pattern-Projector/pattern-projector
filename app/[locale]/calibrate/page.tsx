@@ -55,7 +55,6 @@ import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
-import SaveButton from "@/_components/save-button";
 
 const defaultStitchSettings = {
   columnCount: 1,
