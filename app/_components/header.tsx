@@ -278,8 +278,6 @@ export default function Header({
           aria-label="Global"
         >
           <div className="flex items-center gap-2">
-            <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
-
             <Tooltip
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
@@ -306,6 +304,31 @@ export default function Header({
                 onClick={() => setMenuStates({ ...menuStates, nav: false })}
               >
                 <ExpandLessIcon ariaLabel={t("menuHide")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              description={
+                menuStates.stitch
+                  ? t("stitchMenuHide")
+                  : pageCount === 0
+                    ? t("stitchMenuDisabled")
+                    : t("stitchMenuShow")
+              }
+            >
+              <IconButton
+                disabled={pageCount === 0}
+                onClick={() =>
+                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
+                }
+                className={`${menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""} ${visible(!isCalibrating)}`}
+              >
+                <FlexWrapIcon
+                  ariaLabel={
+                    menuStates.stitch
+                      ? t("stitchMenuHide")
+                      : t("stitchMenuShow")
+                  }
+                />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("invertColor")}>
@@ -346,6 +369,16 @@ export default function Header({
                     },
                   });
                 }}
+              />
+            )}
+            {!isCalibrating && (
+              <DropdownIconButton
+                dropdownClassName="w-fit -left-5"
+                description={t("lineWeight")}
+                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                options={lineThicknessOptions}
+                setSelection={setLineThickness}
+                selection={lineThickness}
               />
             )}
           </div>
@@ -412,41 +445,6 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
-            <Tooltip
-              description={
-                menuStates.stitch ? t("stitchMenuHide") : t("stitchMenuShow")
-              }
-              className={`${visible(pageCount > 1)}`}
-            >
-              <IconButton
-                onClick={() =>
-                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
-                }
-                className={
-                  menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""
-                }
-              >
-                <FlexWrapIcon
-                  ariaLabel={
-                    menuStates.stitch
-                      ? t("stitchMenuHide")
-                      : t("stitchMenuShow")
-                  }
-                />
-              </IconButton>
-            </Tooltip>
-
-            {!isCalibrating && (
-              <DropdownIconButton
-                dropdownClassName="w-fit -left-5"
-                description={t("lineWeight")}
-                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
-                options={lineThicknessOptions}
-                setSelection={setLineThickness}
-                selection={lineThickness}
-              />
-            )}
-
             <Tooltip description={t("flipHorizontal")}>
               <IconButton onClick={handleFlipHorizontal}>
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />

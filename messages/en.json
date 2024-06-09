@@ -187,8 +187,6 @@
     "ok": "OK"
   },
   "Header": {
-    "projecting": "Projecting",
-    "calibrating": "Calibrating",
     "openPDF": "Open PDF",
     "height": "H:",
     "width": "W:",
@@ -230,6 +228,7 @@
     "lineWeight": "Line weight",
     "stitchMenuShow": "Show stitch menu",
     "stitchMenuHide": "Hide stitch menu",
+    "stitchMenuDisabled": "Open PDF to use stitch menu",
     "measure": "Line tool (L)",
     "showMovement": "Show move tool",
     "hideMovement": "Hide move tool"
@@ -241,7 +240,8 @@
     "vertical": "Vertical"
   },
   "SaveMenu": {
-    "save": "Save PDF",
+    "save": "Download PDF",
+    "saveTooltip": "Download PDF with stitched pages and selected layers",
     "encryptedPDF": "This PDF is encrypted. Please enter the password to save the stitched PDF."
   },
   "LayerMenu": {
