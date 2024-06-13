@@ -204,6 +204,10 @@ export function scale(s: number, sy: null | number = null): Matrix {
   return Matrix.from1DArray(3, 3, [s, 0, 0, 0, sy, 0, 0, 0, 1]);
 }
 
+export function scaleAboutPoint(s: number, point: Point): Matrix {
+  return translate(point).mmul(scale(s)).mmul(translate({ x: -point.x, y: -point.y }));
+}
+
 export function rotate(angle: number): Matrix {
   const cosAngle = Math.cos(angle);
   const sinAngle = Math.sin(angle);

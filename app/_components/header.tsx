@@ -53,6 +53,8 @@ import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
+import MagnifyIcon from "@/_icons/magnify-icon";
+import ZoomOutIcon from "@/_icons/zoom-out-icon";
 
 export default function Header({
   isCalibrating,
@@ -81,6 +83,8 @@ export default function Header({
   setShowingMovePad,
   setCalibrationValidated,
   fullScreenTooltipVisible,
+  magnifying,
+  setMagnifying,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -108,6 +112,8 @@ export default function Header({
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
   fullScreenTooltipVisible: boolean;
+  magnifying: boolean;
+  setMagnifying: Dispatch<SetStateAction<boolean>>;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
@@ -244,7 +250,15 @@ export default function Header({
 
   useKeyDown(() => {
     setMeasuring(!measuring);
+  }, [KeyCode.KeyL]);
+
+  useKeyDown(() => {
+    setMagnifying(!magnifying);
   }, [KeyCode.KeyM]);
+
+  useKeyDown(() => {
+    //TODO: ZoomOut
+  }, [KeyCode.KeyZ]);
 
   return (
     <>
@@ -480,6 +494,16 @@ export default function Header({
                 className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
               >
                 <MarkAndMeasureIcon ariaLabel={t("measure")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={t("magnify")}>
+              <IconButton onClick={() => setMagnifying(!magnifying)}>
+                <MagnifyIcon ariaLabel={t("magnify")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={t("zoomOut")}>
+              <IconButton onClick={() => {}}>
+                <ZoomOutIcon ariaLabel={t("zoomOut")} />
               </IconButton>
             </Tooltip>
           </div>

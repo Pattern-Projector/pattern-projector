@@ -89,6 +89,7 @@ export default function Page() {
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
+  const [restoreTransform, setRestoreTransform] = useState<Matrix | null>(null);
   const [pageCount, setPageCount] = useState<number>(0);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
@@ -96,6 +97,7 @@ export default function Page() {
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
+  const [magnifying, setMagnifying] = useState<boolean>(false);
 
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
@@ -309,6 +311,12 @@ export default function Page() {
     }
   }
 
+  function handlePointerUp() {
+    if (magnifying) {
+      setMagnifying(false);
+    }
+  }
+
   useEffect(() => {
     const projectingWithInvalidContext =
       !isCalibrating && !calibrationValidated;
@@ -341,6 +349,7 @@ export default function Page() {
   return (
     <main
       onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
       ref={noZoomRefCallback}
       className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
@@ -419,6 +428,9 @@ export default function Page() {
                 isCalibrating={isCalibrating}
                 unitOfMeasure={unitOfMeasure}
                 calibrationTransform={calibrationTransform}
+                magnifying={magnifying}
+                setRestoreTransform={setRestoreTransform}
+                restoreTransform={restoreTransform}
               >
                 <PdfViewer
                   file={file}
@@ -491,6 +503,8 @@ export default function Page() {
                 }}
                 setCalibrationValidated={setCalibrationValidated}
                 fullScreenTooltipVisible={fullScreenTooltipVisible}
+                magnifying={magnifying}
+                setMagnifying={setMagnifying}
               />
               <menu className={`${visible(!isCalibrating && file !== null)}`}>
                 <StitchMenu

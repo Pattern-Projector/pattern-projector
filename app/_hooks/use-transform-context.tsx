@@ -25,6 +25,7 @@ export interface TransformerContextType {
   reset: () => void;
   translate: (p: Point) => void;
   align: (line: Line, to: Line) => void;
+  magnify: (scale: number, point: Point) => void;
 }
 
 const TransformerContext = createContext<TransformerContextType>({
@@ -38,6 +39,7 @@ const TransformerContext = createContext<TransformerContextType>({
   flipAlong: () => {},
   translate: () => {},
   align: () => {},
+  magnify: () => {},
 });
 
 const TransformContext = createContext<Matrix>(Matrix.eye(3));
@@ -76,6 +78,8 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
         dispatch({ type: "recenter", centerPoint, layoutWidth, layoutHeight }),
       reset: () => dispatch({ type: "reset" }),
       align: (line: Line, to: Line) => dispatch({ type: "align", line, to }),
+      magnify: (scale: number, point: Point) =>
+        dispatch({ type: "magnify", scale, point }),
     }),
     [dispatch],
   );

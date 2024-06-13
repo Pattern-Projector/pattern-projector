@@ -1,5 +1,12 @@
 import { Matrix } from "ml-matrix";
-import { ReactNode, useState, useRef, useEffect } from "react";
+import {
+  ReactNode,
+  useState,
+  useRef,
+  useEffect,
+  SetStateAction,
+  Dispatch,
+} from "react";
 
 import { toMatrix3d, transformPoint, translate } from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
@@ -19,6 +26,9 @@ export default function Draggable({
   unitOfMeasure,
   calibrationTransform,
   className,
+  magnifying,
+  setRestoreTransform,
+  restoreTransform,
 }: {
   children: ReactNode;
   perspective: Matrix;
@@ -26,6 +36,9 @@ export default function Draggable({
   unitOfMeasure: string;
   calibrationTransform: Matrix;
   className: string;
+  magnifying: boolean;
+  setRestoreTransform: Dispatch<SetStateAction<Matrix | null>>;
+  restoreTransform: Matrix | null;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
@@ -94,11 +107,16 @@ export default function Draggable({
   function handleOnStart(e: React.PointerEvent): void {
     const p = { x: e.clientX, y: e.clientY };
     const pt = transformPoint(p, perspective);
-    setDragStart(pt);
-    setTransformStart(transform.clone());
+    if (magnifying) {
+      setRestoreTransform(transform.clone());
+      transformer.magnify(5, pt);
+    } else {
+      setDragStart(pt);
+      setTransformStart(transform.clone());
+    }
   }
 
-  let cursorMode = `${dragStart !== null ? "grabbing" : "grab"}`;
+  let cursorMode = `${dragStart !== null ? "grabbing" : magnifying ? "zoom-in" : "grab"}`;
   let viewportCursorMode = `${dragStart !== null ? "grabbing" : "default"}`;
 
   /* If we aren't dragging and the idle timer has set isIdle
@@ -107,6 +125,13 @@ export default function Draggable({
     cursorMode = "none";
     viewportCursorMode = "none";
   }
+
+  useEffect(() => {
+    if (!magnifying && restoreTransform !== null) {
+      transformer.setLocalTransform(restoreTransform);
+      setRestoreTransform(null);
+    }
+  }, [magnifying, restoreTransform, setRestoreTransform, transformer]);
 
   return (
     <div
