@@ -1,4 +1,4 @@
-import { Layer } from "@/_lib/interfaces/layer";
+import { Layers } from "./layers";
 
 export interface MenuStates {
   nav: boolean;
@@ -29,13 +29,7 @@ export function getMenuStatesFromPageCount(
 
 export function getMenuStatesFromLayers(
   menuStates: MenuStates,
-  layers: Map<string, Layer>,
+  layers: Layers,
 ) {
-  let showLayers;
-  if (layers.size > 0) {
-    showLayers = true;
-  } else {
-    showLayers = false;
-  }
-  return { ...menuStates, layers: showLayers };
+  return { ...menuStates, layers: Object.keys(layers).length > 0 };
 }

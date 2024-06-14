@@ -6,14 +6,13 @@ import type {
   RenderParameters,
   PDFDocumentProxy,
 } from "pdfjs-dist/types/src/display/api.js";
-import { Layer } from "@/_lib/interfaces/layer";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { erodeImageData, erosionFilter } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 
 export default function CustomRenderer() {
-  const { layers, setLayers, erosions } = useRenderContext();
+  const { erosions, layers } = useRenderContext();
   const pageContext = usePageContext();
 
   invariant(pageContext, "Unable to find Page context.");
@@ -81,32 +80,9 @@ export default function CustomRenderer() {
     }
     async function optionalContentConfigPromise(pdf: PDFDocumentProxy) {
       const optionalContentConfig = await pdf.getOptionalContentConfig();
-      const groups = optionalContentConfig.getGroups();
-      if (groups) {
-        if (layers.size === 0) {
-          const l = new Map<string, Layer>();
-          Object.keys(groups).forEach((key) => {
-            const name = String(groups[key].name) ?? key;
-            const existing = l.get(name);
-            if (existing) {
-              existing.ids.push(key);
-              l.set(name, existing);
-            } else {
-              l.set(name, {
-                name,
-                ids: [key],
-                visible: true,
-              });
-            }
-            setLayers(l);
-          });
-        } else {
-          for (const entry of layers) {
-            const layer = entry[1];
-            for (let i = 0; i < layer.ids.length; i += 1) {
-              optionalContentConfig.setVisibility(layer.ids[i], layer.visible);
-            }
-          }
+      for (const layer of Object.values(layers)) {
+        for (const id of layer.ids) {
+          optionalContentConfig.setVisibility(id, layer.visible);
         }
       }
       return optionalContentConfig;
@@ -165,7 +141,6 @@ export default function CustomRenderer() {
     renderViewport,
     layers,
     pdf,
-    setLayers,
     erosions,
     filter,
     renderErosions,
