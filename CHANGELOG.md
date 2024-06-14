@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Export PDF button that saves the PDF with selected layers and stitched pages
 - Save visible layers by file per browser/device
+
+### Changed
+
+- Always show stitch menu button regardless of the number of pages in the PDF
 
 ## [1.0.2] - 2024-05-25
 

@@ -35,9 +35,9 @@ export default function Input({
   inputRef?: LegacyRef<HTMLInputElement> | undefined;
 }) {
   return (
-    <div className={className}>
+    <div className={`${className} flex flex-col`}>
       <label
-        className="text-sm font-medium text-gray-500 dark:text-white mr-1"
+        className="text-sm font-medium text-gray-500 dark:text-white ml-1"
         htmlFor={id}
       >
         {label}

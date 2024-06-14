@@ -90,7 +90,7 @@ export default function Page() {
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
-  const [pageCount, setPageCount] = useState<number>(1);
+  const [pageCount, setPageCount] = useState<number>(0);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
   const setLayers = useCallback(
@@ -506,6 +506,8 @@ export default function Page() {
                   dispatchStitchSettings={dispatchStitchSettings}
                   stitchSettings={stitchSettings}
                   pageCount={pageCount}
+                  file={file}
+                  layers={layers}
                 />
                 <LayerMenu
                   visible={menuStates.layers}

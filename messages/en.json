@@ -55,7 +55,7 @@
       },
       "overlayOptions": {
         "title": "Show or hide overlay options",
-        "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting."
+        "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting. For more information, see the <overlayOptionsLink>overlay options section</overlayOptionsLink>."
       },
       "lineWeight": {
         "title": "Line weight",
@@ -83,7 +83,7 @@
       },
       "measure": {
         "title": "Line tool (L)",
-        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking."
+        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking. For a detailed description of the line tool, see the <lineToolLink>line tool section</lineToolLink>."
       }
     },
     "tools": "Tools",
@@ -187,8 +187,6 @@
     "ok": "OK"
   },
   "Header": {
-    "projecting": "Projecting",
-    "calibrating": "Calibrating",
     "openPDF": "Open PDF",
     "height": "H:",
     "width": "W:",
@@ -230,6 +228,7 @@
     "lineWeight": "Line weight",
     "stitchMenuShow": "Show stitch menu",
     "stitchMenuHide": "Hide stitch menu",
+    "stitchMenuDisabled": "Open PDF to use stitch menu",
     "measure": "Line tool (L)",
     "showMovement": "Show move tool",
     "hideMovement": "Hide move tool"
@@ -239,6 +238,11 @@
     "pageRange": "Stitch Pages",
     "horizontal": "Horizontal",
     "vertical": "Vertical"
+  },
+  "SaveMenu": {
+    "save": "Export PDF",
+    "saveTooltip": "Export PDF with stitched pages and selected layers",
+    "encryptedPDF": "This PDF is encrypted. Please enter the password to save the stitched PDF."
   },
   "LayerMenu": {
     "title": "Layers",
