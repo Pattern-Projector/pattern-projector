@@ -58,5 +58,8 @@
   },
   "resolutions": {
     "jackspeak": "2.1.1"
+  },
+  "prettier": {
+    "trailingComma": "all"
   }
 }
