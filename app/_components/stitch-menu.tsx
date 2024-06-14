@@ -8,7 +8,7 @@ import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { allowInteger } from "@/_lib/remove-non-digits";
 import SaveButton from "./save-button";
-import { Layer } from "@/_lib/interfaces/layer";
+import { Layers } from "@/_lib/layers";
 
 export default function StitchMenu({
   dispatchStitchSettings,
@@ -25,7 +25,7 @@ export default function StitchMenu({
   className?: string;
   setShowMenu: (showMenu: boolean) => void;
   file: File | null;
-  layers: Map<string, Layer>;
+  layers: Layers;
 }) {
   const t = useTranslations("StitchMenu");
 
