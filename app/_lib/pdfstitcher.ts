@@ -19,7 +19,7 @@ import {
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers } from "./get-page-numbers";
-import { Layer } from "./interfaces/layer";
+import { Layers } from "./layers";
 
 function trimmedPageSize(
   inDoc: PDFDocument,
@@ -159,7 +159,7 @@ function getAsDict(name: string, dict: PDFDict): PDFDict | undefined {
   else return undefined;
 }
 
-function toggleLayers(doc: PDFDocument, layers: Map<string, Layer>) {
+function toggleLayers(doc: PDFDocument, layers: Layers) {
   /**
    * Toggle the default visibility of layers in the PDF based on user selections.
    * Note that this does not actually remove content the way PDFStitcher does.
@@ -173,7 +173,7 @@ function toggleLayers(doc: PDFDocument, layers: Map<string, Layer>) {
   const visible: PDFArray = doc.context.obj([]);
   const hidden: PDFArray = doc.context.obj([]);
 
-  for (const layer of layers.values()) {
+  for (const layer of Object.values(layers)) {
     const refs = layer.ids.map((id) => PDFRef.of(parseInt(id)));
     refs.map((r) => (layer.visible ? visible.push(r) : hidden.push(r)));
   }
@@ -269,7 +269,7 @@ async function tilePages(doc: PDFDocument, settings: StitchSettings) {
 export async function savePDF(
   file: File,
   settings: StitchSettings,
-  layers: Map<string, Layer>,
+  layers: Layers,
   password: string = "",
 ) {
   // Grab the bytes from the file object and try to load the PDF

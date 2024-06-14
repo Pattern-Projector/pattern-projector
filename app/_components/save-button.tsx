@@ -1,9 +1,9 @@
-import { Layer } from "@/_lib/interfaces/layer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { savePDF } from "@/_lib/pdfstitcher";
 import { useTranslations } from "next-intl";
 import DownloadIcon from "@/_icons/download-icon";
 import Tooltip from "./tooltip/tooltip";
+import { Layers } from "@/_lib/layers";
 
 export default function SaveButton({
   file,
@@ -12,7 +12,7 @@ export default function SaveButton({
 }: {
   file: File | null;
   stitchSettings: StitchSettings;
-  layers: Map<string, Layer>;
+  layers: Layers;
 }) {
   const t = useTranslations("SaveMenu");
 

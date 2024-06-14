@@ -26,7 +26,6 @@ import {
   themeFilter,
 } from "@/_lib/display-settings";
 import { IN, getPtDensity } from "@/_lib/unit";
-import { Layer } from "@/_lib/interfaces/layer";
 import LayerMenu from "@/_components/layer-menu";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
@@ -55,6 +54,8 @@ import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
+import { Layers } from "@/_lib/layers";
+import useLayers from "@/_hooks/use-layers";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -91,7 +92,11 @@ export default function Page() {
   );
   const [pageCount, setPageCount] = useState<number>(0);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
-  const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
+  const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
+  const setLayers = useCallback(
+    (l: Layers) => dispatchLayersAction({ type: "set-layers", layers: l }),
+    [dispatchLayersAction],
+  );
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
@@ -510,7 +515,7 @@ export default function Page() {
                     setMenuStates({ ...menuStates, layers: visible })
                   }
                   layers={layers}
-                  setLayers={setLayers}
+                  dispatchLayerAction={dispatchLayersAction}
                 />
               </menu>
             </menu>
