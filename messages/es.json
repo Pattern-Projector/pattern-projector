@@ -244,7 +244,8 @@
         "checkCalibration": "Comprobar la calibración",
         "calibrationAlert": "El tamaño de la ventana ha cambiado desde que comenzó la proyección, pulse el botón de pantalla completa o recalibre para solucionar este problema.",
         "measure": "Herramienta de línea (L)",
-        "overlayOptionFlippedPattern": "Lado erróneo"
+        "overlayOptionFlippedPattern": "Lado erróneo",
+        "stitchMenuDisabled": "Abra PDF para usar el menú de unión"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
@@ -283,5 +284,10 @@
         "descriptionAndroid": "Para disfrutar de la mejor experiencia en Android, utiliza Firefox. Descarga la aplicación pulsando el botón más <moreIcon></moreIcon> en el menú del navegador y luego <addToHomeScreenIcon></addToHomeScreenIcon> Añadir a la pantalla de inicio.",
         "descriptionIOS": "Descarga la aplicación tocando el botón compartir <shareIcon></shareIcon> en el menú del navegador y luego Agregar a la pantalla de inicio <addBoxIcon></addBoxIcon> .",
         "ok": "De acuerdo"
+    },
+    "SaveMenu": {
+        "save": "Exportar el pdf",
+        "saveTooltip": "Exportar PDF con páginas unidas y capas seleccionadas",
+        "encryptedPDF": "Este PDF está cifrado. Ingresa la contraseña para guardar el PDF unido."
     }
 }
