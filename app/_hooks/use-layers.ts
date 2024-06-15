@@ -12,15 +12,20 @@ export default function useLayers(fileName: string) {
   const dispatchLayersAction: Dispatch<LayerAction> = useCallback(
     (action: LayerAction) => {
       dispatchLayersActionInternal(action);
-      const newLayers = layersReducer(layers, action);
+      // We need to know the new layers value so we can synchronize with local storage
+      let newLayers = layersReducer(layers, action);
       if (action.type === "set-layers") {
         // Layers were freshly loaded, so let's check local storage for which layers should be visible
         const visibleLayers = visibleLayersFromLocalStorage(fileName);
         if (visibleLayers != null) {
-          dispatchLayersActionInternal({
+          const visibilityAction: LayerAction = {
             type: "update-visibility",
             visibleLayers: new Set(visibleLayers),
-          });
+          };
+          dispatchLayersActionInternal(visibilityAction);
+          // We also need to update the layers data we're about to write back to local storage -
+          // otherwise visible layers would reset to "everything visible"
+          newLayers = layersReducer(newLayers, visibilityAction)
         }
       }
       writeToLocalStorage(fileName, newLayers);
