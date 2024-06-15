@@ -512,12 +512,6 @@ export default function Header({
           </div>
         </nav>
       </header>
-      <IconButton
-        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
-        onClick={() => setMenuStates({ ...menuStates, nav: true })}
-      >
-        <ExpandMoreIcon ariaLabel={t("menuShow")} />
-      </IconButton>
     </>
   );
 }

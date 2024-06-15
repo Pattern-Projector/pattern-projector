@@ -56,6 +56,7 @@ import { IconButton } from "@/_components/buttons/icon-button";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import { Layers } from "@/_lib/layers";
 import useLayers from "@/_hooks/use-layers";
+import ExpandMoreIcon from "@/_icons/expand-more-icon";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -449,7 +450,9 @@ export default function Page() {
               />
             </MeasureCanvas>
 
-            <menu className={`absolute top-0 w-screen`}>
+            <menu
+              className={`absolute ${menuStates.nav ? "top-0" : "-top-16"} w-screen`}
+            >
               <Header
                 isCalibrating={isCalibrating}
                 setIsCalibrating={setIsCalibrating}
@@ -519,6 +522,12 @@ export default function Page() {
                 />
               </menu>
             </menu>
+            <IconButton
+              className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
+              onClick={() => setMenuStates({ ...menuStates, nav: true })}
+            >
+              <ExpandMoreIcon ariaLabel={t("menuShow")} />
+            </IconButton>
           </Transformable>
         </FullScreen>
       </div>
