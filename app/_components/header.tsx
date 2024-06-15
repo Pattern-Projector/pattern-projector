@@ -85,6 +85,8 @@ export default function Header({
   fullScreenTooltipVisible,
   magnifying,
   setMagnifying,
+  zoomedOut,
+  setZoomedOut,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -114,6 +116,8 @@ export default function Header({
   fullScreenTooltipVisible: boolean;
   magnifying: boolean;
   setMagnifying: Dispatch<SetStateAction<boolean>>;
+  zoomedOut: boolean;
+  setZoomedOut: Dispatch<SetStateAction<boolean>>;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
@@ -257,7 +261,7 @@ export default function Header({
   }, [KeyCode.KeyM]);
 
   useKeyDown(() => {
-    //TODO: ZoomOut
+    setZoomedOut(!zoomedOut);
   }, [KeyCode.KeyZ]);
 
   return (
@@ -502,7 +506,7 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <Tooltip description={t("zoomOut")}>
-              <IconButton onClick={() => {}}>
+              <IconButton onClick={() => setZoomedOut(!zoomedOut)}>
                 <ZoomOutIcon ariaLabel={t("zoomOut")} />
               </IconButton>
             </Tooltip>

@@ -9,6 +9,7 @@ import {
   transformPoint,
   translate,
   scaleAboutPoint,
+  fitPdfToView,
 } from "@/_lib/geometry";
 import { Line } from "@/_lib/interfaces/line";
 import { Point } from "@/_lib/point";
@@ -68,6 +69,19 @@ interface MagnifyAction {
   point: Point;
 }
 
+interface ZoomInAction {
+  type: "zoom_in";
+  point: Point;
+
+}
+
+interface ZoomOutAction {
+  type: "zoom_out";
+  layoutWidth: number;
+  layoutHeight: number;
+  calibrationTransform: Matrix;
+}
+
 export type LocalTransformAction =
   | FlipAction
   | RotateToHorizontalAction
@@ -78,7 +92,9 @@ export type LocalTransformAction =
   | RecenterAction
   | ResetAction
   | AlignAction
-  | MagnifyAction;
+  | MagnifyAction
+  | ZoomInAction
+  | ZoomOutAction;
 
 export default function localTransformReducer(
   localTransform: Matrix,
@@ -121,6 +137,12 @@ export default function localTransformReducer(
     }
     case "magnify": {
       return scaleAboutPoint(action.scale, action.point).mmul(localTransform);
+    }
+    case "zoom_out": {
+      return fitPdfToView(action.layoutWidth, action.layoutHeight);
+    }
+    case "zoom_in": {
+      return localTransform;
     }
   }
 }

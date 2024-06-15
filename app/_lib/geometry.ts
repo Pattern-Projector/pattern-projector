@@ -395,3 +395,34 @@ export function constrained(p: Point, anchorPoint: Point) {
 export function isFlipped(m: Matrix): boolean {
   return m.get(1, 1) * m.get(0, 0) < 0;
 }
+
+function areaOfTriangle(p1: Point, p2: Point, p3: Point): number {
+  // Heron's formula
+  const a = dist(p1, p2);
+  const b = dist(p2, p3);
+  const c = dist(p3, p1);
+  const s = (a + b + c) / 2;
+  return Math.sqrt(s * (s - a) * (s - b) * (s - c));
+}
+
+export function areaOfQuad(p1: Point, p2: Point, p3: Point, p4: Point): number {
+  return (
+    areaOfTriangle(p1, p2, p3) + areaOfTriangle(p1, p3, p4)
+  );
+}
+
+export function getBoundingBox(points: Point[]): { x: number; y: number; width: number; height: number } {
+  const x = points.map((p) => p.x);
+  const y = points.map((p) => p.y);
+  return {
+    x: Math.min(...x),
+    y: Math.min(...y),
+    width: Math.max(...x) - Math.min(...x),
+    height: Math.max(...y) - Math.min(...y),
+  };
+}
+
+export function fitPdfToView(layoutWidth: number, layoutHeight: number): Matrix {
+  const s = Math.min(window.innerWidth / layoutWidth, window.innerHeight / layoutHeight);
+  return scale(s);
+}

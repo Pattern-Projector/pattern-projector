@@ -26,6 +26,12 @@ export interface TransformerContextType {
   translate: (p: Point) => void;
   align: (line: Line, to: Line) => void;
   magnify: (scale: number, point: Point) => void;
+  zoomIn: (point: Point) => void;
+  zoomOut: (
+    layoutWidth: number,
+    layoutHeight: number,
+    calibrationTransform: Matrix,
+  ) => void;
 }
 
 const TransformerContext = createContext<TransformerContextType>({
@@ -40,6 +46,8 @@ const TransformerContext = createContext<TransformerContextType>({
   translate: () => {},
   align: () => {},
   magnify: () => {},
+  zoomIn: () => {},
+  zoomOut: () => {},
 });
 
 const TransformContext = createContext<Matrix>(Matrix.eye(3));
@@ -80,6 +88,18 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
       align: (line: Line, to: Line) => dispatch({ type: "align", line, to }),
       magnify: (scale: number, point: Point) =>
         dispatch({ type: "magnify", scale, point }),
+      zoomIn: (point: Point) => dispatch({ type: "zoom_in", point }),
+      zoomOut: (
+        layoutWidth: number,
+        layoutHeight: number,
+        calibrationTransform: Matrix,
+      ) =>
+        dispatch({
+          type: "zoom_out",
+          layoutWidth,
+          layoutHeight,
+          calibrationTransform,
+        }),
     }),
     [dispatch],
   );

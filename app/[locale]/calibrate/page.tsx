@@ -98,6 +98,7 @@ export default function Page() {
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
   const [magnifying, setMagnifying] = useState<boolean>(false);
+  const [zoomedOut, setZoomedOut] = useState<boolean>(false);
 
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
@@ -431,6 +432,10 @@ export default function Page() {
                 magnifying={magnifying}
                 setRestoreTransform={setRestoreTransform}
                 restoreTransform={restoreTransform}
+                zoomedOut={zoomedOut}
+                setZoomedOut={setZoomedOut}
+                layoutWidth={layoutWidth}
+                layoutHeight={layoutHeight}
               >
                 <PdfViewer
                   file={file}
@@ -505,6 +510,8 @@ export default function Page() {
                 fullScreenTooltipVisible={fullScreenTooltipVisible}
                 magnifying={magnifying}
                 setMagnifying={setMagnifying}
+                zoomedOut={zoomedOut}
+                setZoomedOut={setZoomedOut}
               />
               <menu className={`${visible(!isCalibrating && file !== null)}`}>
                 <StitchMenu

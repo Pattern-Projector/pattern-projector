@@ -8,7 +8,7 @@ import {
   Dispatch,
 } from "react";
 
-import { toMatrix3d, transformPoint, translate } from "@/_lib/geometry";
+import { move, toMatrix3d, transformPoint, translate } from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import { IN } from "@/_lib/unit";
@@ -29,6 +29,10 @@ export default function Draggable({
   magnifying,
   setRestoreTransform,
   restoreTransform,
+  zoomedOut,
+  setZoomedOut,
+  layoutWidth,
+  layoutHeight,
 }: {
   children: ReactNode;
   perspective: Matrix;
@@ -39,6 +43,10 @@ export default function Draggable({
   magnifying: boolean;
   setRestoreTransform: Dispatch<SetStateAction<Matrix | null>>;
   restoreTransform: Matrix | null;
+  zoomedOut: boolean;
+  setZoomedOut: Dispatch<SetStateAction<boolean>>;
+  layoutWidth: number;
+  layoutHeight: number;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
@@ -110,6 +118,17 @@ export default function Draggable({
     if (magnifying) {
       setRestoreTransform(transform.clone());
       transformer.magnify(5, pt);
+    } else if (zoomedOut && restoreTransform !== null) {
+      setZoomedOut(false);
+      const zoomedScale = transform.get(0, 0);
+      //transformer.setLocalTransform(restoreTransform);
+      transformer.setLocalTransform(
+        move(
+          { x: layoutWidth / 2, y: layoutHeight / 2 },
+          { x: p.x / zoomedScale, y: p.y / zoomedScale },
+        ),
+      );
+      setRestoreTransform(null);
     } else {
       setDragStart(pt);
       setTransformStart(transform.clone());
@@ -132,6 +151,22 @@ export default function Draggable({
       setRestoreTransform(null);
     }
   }, [magnifying, restoreTransform, setRestoreTransform, transformer]);
+
+  useEffect(() => {
+    if (zoomedOut) {
+      setRestoreTransform(transform.clone());
+      transformer.zoomOut(layoutWidth, layoutHeight, calibrationTransform);
+    }
+  }, [
+    zoomedOut,
+    setZoomedOut,
+    transformer,
+    layoutWidth,
+    layoutHeight,
+    calibrationTransform,
+    transform,
+    setRestoreTransform,
+  ]);
 
   return (
     <div
@@ -156,7 +191,7 @@ export default function Draggable({
         <div
           className={"absolute"}
           style={{
-            transform: `${matrix3d}`,
+            transform: `${zoomedOut ? `scale(${transform.get(0, 0)})` : matrix3d}`,
             transformOrigin: "0 0",
           }}
         >
