@@ -14,7 +14,7 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import {
-  getCenterPoint,
+  getCalibrationCenterPoint,
   getPerspectiveTransformFromPoints,
 } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
@@ -421,7 +421,11 @@ export default function Page() {
               measuring={measuring}
               setMeasuring={setMeasuring}
               file={file}
-              gridCenter={getCenterPoint(+width, +height, unitOfMeasure)}
+              gridCenter={getCalibrationCenterPoint(
+                +width,
+                +height,
+                unitOfMeasure,
+              )}
             >
               <Draggable
                 className={`absolute`}
@@ -436,6 +440,11 @@ export default function Page() {
                 setZoomedOut={setZoomedOut}
                 layoutWidth={layoutWidth}
                 layoutHeight={layoutHeight}
+                calibrationCenter={getCalibrationCenterPoint(
+                  +width,
+                  +height,
+                  unitOfMeasure,
+                )}
               >
                 <PdfViewer
                   file={file}

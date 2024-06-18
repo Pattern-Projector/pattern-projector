@@ -146,7 +146,7 @@ function getDstVertices(
   return rectCorners(dx, dy);
 }
 
-export function getCenterPoint(
+export function getCalibrationCenterPoint(
   width: number,
   height: number,
   unitOfMeasure: string,
@@ -205,7 +205,9 @@ export function scale(s: number, sy: null | number = null): Matrix {
 }
 
 export function scaleAboutPoint(s: number, point: Point): Matrix {
-  return translate(point).mmul(scale(s)).mmul(translate({ x: -point.x, y: -point.y }));
+  return translate(point)
+    .mmul(scale(s))
+    .mmul(translate({ x: -point.x, y: -point.y }));
 }
 
 export function rotate(angle: number): Matrix {
@@ -406,12 +408,15 @@ function areaOfTriangle(p1: Point, p2: Point, p3: Point): number {
 }
 
 export function areaOfQuad(p1: Point, p2: Point, p3: Point, p4: Point): number {
-  return (
-    areaOfTriangle(p1, p2, p3) + areaOfTriangle(p1, p3, p4)
-  );
+  return areaOfTriangle(p1, p2, p3) + areaOfTriangle(p1, p3, p4);
 }
 
-export function getBoundingBox(points: Point[]): { x: number; y: number; width: number; height: number } {
+export function getBoundingBox(points: Point[]): {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+} {
   const x = points.map((p) => p.x);
   const y = points.map((p) => p.y);
   return {
@@ -422,7 +427,13 @@ export function getBoundingBox(points: Point[]): { x: number; y: number; width: 
   };
 }
 
-export function fitPdfToView(layoutWidth: number, layoutHeight: number): Matrix {
-  const s = Math.min(window.innerWidth / layoutWidth, window.innerHeight / layoutHeight);
+export function fitPdfToView(
+  layoutWidth: number,
+  layoutHeight: number,
+): Matrix {
+  const s = Math.min(
+    window.innerWidth / layoutWidth,
+    window.innerHeight / layoutHeight,
+  );
   return scale(s);
 }

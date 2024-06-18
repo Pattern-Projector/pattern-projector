@@ -72,7 +72,7 @@ interface MagnifyAction {
 interface ZoomInAction {
   type: "zoom_in";
   point: Point;
-
+  calibrationCenter: Point;
 }
 
 interface ZoomOutAction {
@@ -142,7 +142,11 @@ export default function localTransformReducer(
       return fitPdfToView(action.layoutWidth, action.layoutHeight);
     }
     case "zoom_in": {
-      return localTransform;
+      const zoomedScale = localTransform.get(0, 0);
+      return translate({
+        x: -action.point.x / zoomedScale + action.calibrationCenter.x,
+        y: -action.point.y / zoomedScale + action.calibrationCenter.y,
+      });
     }
   }
 }

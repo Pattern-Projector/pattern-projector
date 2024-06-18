@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Export PDF button that saves the PDF with selected layers and stitched pages
+- Magnify button to zoom in PDF where tapped or clicked
+- Zoom out button to zoom the whole PDF to be shown on the screen, then click spot on PDF to zoom into that point
 
 ### Changed
 

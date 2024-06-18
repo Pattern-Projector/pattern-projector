@@ -8,7 +8,7 @@ import {
   Dispatch,
 } from "react";
 
-import { move, toMatrix3d, transformPoint, translate } from "@/_lib/geometry";
+import { toMatrix3d, transformPoint, translate } from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import { IN } from "@/_lib/unit";
@@ -28,11 +28,11 @@ export default function Draggable({
   className,
   magnifying,
   setRestoreTransform,
-  restoreTransform,
   zoomedOut,
   setZoomedOut,
   layoutWidth,
   layoutHeight,
+  calibrationCenter,
 }: {
   children: ReactNode;
   perspective: Matrix;
@@ -47,11 +47,13 @@ export default function Draggable({
   setZoomedOut: Dispatch<SetStateAction<boolean>>;
   layoutWidth: number;
   layoutHeight: number;
+  calibrationCenter: Point;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
   const [isIdle, setIsIdle] = useState(false);
   const [matrix3d, setMatrix3d] = useState<string>("");
+  const [zoomOutMode, setZoomOutMode] = useState(false);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -118,24 +120,17 @@ export default function Draggable({
     if (magnifying) {
       setRestoreTransform(transform.clone());
       transformer.magnify(5, pt);
-    } else if (zoomedOut && restoreTransform !== null) {
+    } else if (zoomOutMode) {
+      setZoomOutMode(false);
       setZoomedOut(false);
-      const zoomedScale = transform.get(0, 0);
-      //transformer.setLocalTransform(restoreTransform);
-      transformer.setLocalTransform(
-        move(
-          { x: layoutWidth / 2, y: layoutHeight / 2 },
-          { x: p.x / zoomedScale, y: p.y / zoomedScale },
-        ),
-      );
-      setRestoreTransform(null);
+      transformer.zoomIn(p, calibrationCenter);
     } else {
       setDragStart(pt);
       setTransformStart(transform.clone());
     }
   }
 
-  let cursorMode = `${dragStart !== null ? "grabbing" : magnifying ? "zoom-in" : "grab"}`;
+  let cursorMode = `${dragStart !== null ? "grabbing" : magnifying || zoomedOut ? "zoom-in" : "grab"}`;
   let viewportCursorMode = `${dragStart !== null ? "grabbing" : "default"}`;
 
   /* If we aren't dragging and the idle timer has set isIdle
@@ -146,16 +141,9 @@ export default function Draggable({
   }
 
   useEffect(() => {
-    if (!magnifying && restoreTransform !== null) {
-      transformer.setLocalTransform(restoreTransform);
-      setRestoreTransform(null);
-    }
-  }, [magnifying, restoreTransform, setRestoreTransform, transformer]);
-
-  useEffect(() => {
-    if (zoomedOut) {
-      setRestoreTransform(transform.clone());
+    if (zoomedOut && !zoomOutMode) {
       transformer.zoomOut(layoutWidth, layoutHeight, calibrationTransform);
+      setZoomOutMode(true);
     }
   }, [
     zoomedOut,
@@ -165,7 +153,7 @@ export default function Draggable({
     layoutHeight,
     calibrationTransform,
     transform,
-    setRestoreTransform,
+    zoomOutMode,
   ]);
 
   return (

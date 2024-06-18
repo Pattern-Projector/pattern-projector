@@ -26,7 +26,7 @@ export interface TransformerContextType {
   translate: (p: Point) => void;
   align: (line: Line, to: Line) => void;
   magnify: (scale: number, point: Point) => void;
-  zoomIn: (point: Point) => void;
+  zoomIn: (point: Point, calibrationCenter: Point) => void;
   zoomOut: (
     layoutWidth: number,
     layoutHeight: number,
@@ -88,7 +88,8 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
       align: (line: Line, to: Line) => dispatch({ type: "align", line, to }),
       magnify: (scale: number, point: Point) =>
         dispatch({ type: "magnify", scale, point }),
-      zoomIn: (point: Point) => dispatch({ type: "zoom_in", point }),
+      zoomIn: (point: Point, calibrationCenter: Point) =>
+        dispatch({ type: "zoom_in", point, calibrationCenter }),
       zoomOut: (
         layoutWidth: number,
         layoutHeight: number,

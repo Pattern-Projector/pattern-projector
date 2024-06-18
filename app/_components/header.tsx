@@ -26,7 +26,7 @@ import {
 } from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
-import { getCenterPoint } from "@/_lib/geometry";
+import { getCalibrationCenterPoint } from "@/_lib/geometry";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-checkbox-icon-button";
@@ -163,20 +163,27 @@ export default function Header({
   }
 
   const handleRotate90 = () => {
-    transformer.rotate(getCenterPoint(+width, +height, unitOfMeasure), 90);
+    transformer.rotate(
+      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+      90,
+    );
   };
 
   const handleFlipHorizontal = () => {
-    transformer.flipHorizontal(getCenterPoint(+width, +height, unitOfMeasure));
+    transformer.flipHorizontal(
+      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+    );
   };
 
   const handleFlipVertical = () => {
-    transformer.flipVertical(getCenterPoint(+width, +height, unitOfMeasure));
+    transformer.flipVertical(
+      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+    );
   };
 
   const handleRecenter = () => {
     transformer.recenter(
-      getCenterPoint(+width, +height, unitOfMeasure),
+      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
       layoutWidth,
       layoutHeight,
     );
@@ -483,7 +490,7 @@ export default function Header({
                 onClick={() => {
                   transformer.reset();
                   transformer.recenter(
-                    getCenterPoint(+width, +height, unitOfMeasure),
+                    getCalibrationCenterPoint(+width, +height, unitOfMeasure),
                     layoutWidth,
                     layoutHeight,
                   );
