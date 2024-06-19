@@ -455,6 +455,7 @@ export default function Page() {
                   dispatchStitchSettings={dispatchStitchSettings}
                   setPdfLoadStatus={setPdfLoadStatus}
                   setLineThicknessStatus={setLineThicknessStatus}
+                  gridCenter={getCenterPoint(+width, +height, unitOfMeasure)}
                 />
               </Draggable>
               <OverlayCanvas
