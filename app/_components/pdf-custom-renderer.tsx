@@ -8,8 +8,53 @@ import type {
 } from "pdfjs-dist/types/src/display/api.js";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
-import { erodeImageData, erosionFilter } from "@/_lib/erode";
+import { ErodeShader } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
+import * as THREE from "three";
+
+class LineThickener {
+  private readonly scene: THREE.Scene;
+  private readonly camera: THREE.Camera;
+  private readonly renderer: THREE.WebGLRenderer;
+  private readonly mesh: THREE.Mesh;
+  private readonly shader: THREE.ShaderMaterialParameters;
+  private readonly texture: THREE.Texture;
+  private readonly material: THREE.ShaderMaterial;
+  private readonly geometry: THREE.PlaneGeometry;
+
+  constructor(inputCanvas: HTMLCanvasElement, outputCanvas: HTMLCanvasElement) {
+    this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const width = inputCanvas.width;
+    const height = inputCanvas.height;
+    this.shader = ErodeShader(width, height, 0);
+    this.material = new THREE.ShaderMaterial(this.shader);
+    this.geometry = new THREE.PlaneGeometry(2, 2);
+    this.renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      canvas: outputCanvas,
+    });
+    this.scene = new THREE.Scene();
+    this.texture = new THREE.CanvasTexture(inputCanvas);
+    if (this.shader.uniforms) {
+      this.shader.uniforms.tDiffuse.value = this.texture;
+    }
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.scene.add(this.mesh);
+  }
+
+  textureChanged() {
+    this.texture.needsUpdate = true;
+  }
+
+  render(width: number, height: number, erosions: number) {
+    if (this.shader.uniforms) {
+      this.shader.uniforms.radius.value = erosions;
+      this.shader.uniforms.resolution.value.set(width, height);
+    }
+    this.renderer.setSize(width, height);
+    this.renderer.render(this.scene, this.camera);
+  }
+}
 
 export default function CustomRenderer() {
   const { erosions, layers } = useRenderContext();
@@ -21,20 +66,12 @@ export default function CustomRenderer() {
 
   invariant(docContext, "Unable to find Document context.");
 
-  const isSafari = useMemo(() => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
-  }, []);
-  const filter = isSafari ? "none" : erosionFilter(erosions);
-
-  // Safari does not support the feMorphology filter in CSS.
-  const renderErosions = isSafari ? erosions : 0;
-
   const _className = pageContext._className;
   const page = pageContext.page;
   const pdf = docContext.pdf;
   const canvasElement = useRef<HTMLCanvasElement>(null);
-  const offscreen = useRef<OffscreenCanvas | null>(null);
+  const offscreen = useRef<HTMLCanvasElement | null>(null);
+  const effects = useRef<LineThickener | null>(null);
   const userUnit = (page as PDFPageProxy).userUnit || 1;
 
   invariant(page, "Unable to find page.");
@@ -53,18 +90,9 @@ export default function CustomRenderer() {
   const renderWidth = Math.floor(renderViewport.width);
   const renderHeight = Math.floor(renderViewport.height);
 
-  if (
-    offscreen.current === null ||
-    offscreen.current.width !== renderWidth ||
-    offscreen.current.height !== renderHeight
-  ) {
-    // Some iPad's don't support OffscreenCanvas.
-    if (!isSafari) {
-      console.log(
-        `Creating new offscreen canvas ${renderWidth}x${renderHeight} ${offscreen.current?.width}x${offscreen.current?.height} ${offscreen.current ? "replacing" : "initializing"}`,
-      );
-      offscreen.current = new OffscreenCanvas(renderWidth, renderHeight);
-    }
+  if (offscreen.current === null) {
+    const canvas = document.createElement("canvas");
+    offscreen.current = canvas;
   }
 
   function drawPageOnCanvas() {
@@ -74,10 +102,18 @@ export default function CustomRenderer() {
 
     page.cleanup();
 
-    const canvas = offscreen.current ?? canvasElement.current;
-    if (!canvas) {
+    const source = offscreen.current;
+    const dest = canvasElement.current;
+    if (!source || !dest) {
       return;
     }
+    source.width = renderWidth;
+    source.height = renderHeight;
+    const e: LineThickener = effects.current ?? new LineThickener(source, dest);
+    if (!effects.current) {
+      effects.current = e;
+    }
+
     async function optionalContentConfigPromise(pdf: PDFDocumentProxy) {
       const optionalContentConfig = await pdf.getOptionalContentConfig();
       for (const layer of Object.values(layers)) {
@@ -88,7 +124,7 @@ export default function CustomRenderer() {
       return optionalContentConfig;
     }
 
-    const ctx = canvas.getContext("2d", {
+    const ctx = source.getContext("2d", {
       alpha: false,
     }) as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
     if (!ctx) {
@@ -107,24 +143,8 @@ export default function CustomRenderer() {
 
     cancellable.promise
       .then(() => {
-        if (renderErosions > 0) {
-          let result = ctx.getImageData(0, 0, renderWidth, renderHeight);
-          let buffer = new ImageData(renderWidth, renderHeight);
-          for (let i = 0; i < renderErosions; i++) {
-            erodeImageData(result, buffer);
-            [result, buffer] = [buffer, result];
-          }
-          ctx.putImageData(result, 0, 0);
-        } else if (offscreen.current) {
-          // draw offscreen canvas to onscreen canvas with filter.
-          const dest = canvasElement.current?.getContext("2d");
-          if (!dest) {
-            return;
-          }
-          dest.imageSmoothingEnabled = false;
-          dest.filter = filter;
-          dest.drawImage(canvas, 0, 0);
-        }
+        e.textureChanged();
+        e.render(renderWidth, renderHeight, erosions);
       })
       .catch(() => {
         // Intentionally empty
@@ -142,11 +162,8 @@ export default function CustomRenderer() {
     layers,
     pdf,
     erosions,
-    filter,
-    renderErosions,
     renderWidth,
     renderHeight,
-    isSafari,
   ]);
 
   return (
