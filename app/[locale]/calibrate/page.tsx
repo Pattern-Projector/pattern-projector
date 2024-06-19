@@ -407,7 +407,7 @@ export default function Page() {
             />
           )}
 
-          <Transformable>
+          <Transformable fileName={file?.name ?? "default"}>
             <MeasureCanvas
               className={visible(!isCalibrating)}
               perspective={perspective}
