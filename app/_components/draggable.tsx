@@ -27,6 +27,7 @@ export default function Draggable({
   calibrationTransform,
   className,
   magnifying,
+  restoreTransform,
   setRestoreTransform,
   zoomedOut,
   setZoomedOut,
@@ -155,6 +156,13 @@ export default function Draggable({
     transform,
     zoomOutMode,
   ]);
+
+  useEffect(() => {
+    if (!magnifying && restoreTransform !== null) {
+      transformer.setLocalTransform(restoreTransform);
+      setRestoreTransform(null);
+    }
+  }, [magnifying, restoreTransform, setRestoreTransform, transformer]);
 
   return (
     <div
