@@ -15,7 +15,6 @@ import CustomRenderer from "@/_components/pdf-custom-renderer";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { RenderContext } from "@/_hooks/use-render-context";
-import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { Layers, getLayersFromPdf } from "@/_lib/layers";
@@ -54,7 +53,6 @@ export default function PdfViewer({
     pageSizeReducer,
     new Map<number, { width: number; height: number }>(),
   );
-  const transformer = useTransformerContext();
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     const numPages = docProxy.numPages;
@@ -67,7 +65,6 @@ export default function PdfViewer({
       });
     }
     getLayersFromPdf(docProxy).then((l) => setLayers(l));
-    transformer.reset();
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
