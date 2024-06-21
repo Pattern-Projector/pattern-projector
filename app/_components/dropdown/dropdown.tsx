@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef } from "react";
+import useOnClickOutside from "@/_hooks/use-on-click-outside";
+import { useRef } from "react";
 
 export function Dropdown({
   position,
@@ -12,22 +13,11 @@ export function Dropdown({
   onClose: () => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-
-  const handleClickAway = useCallback(
-    (event: any) => {
-      if (open && !ref?.current?.contains(event.target)) {
-        onClose();
-      }
-    },
-    [open, onClose],
-  );
-
-  useEffect(() => {
-    window.addEventListener("click", handleClickAway);
-    return () => {
-      window.removeEventListener("click", handleClickAway);
-    };
-  }, [handleClickAway]);
+  useOnClickOutside(ref, () => {
+    if (open) {
+      onClose();
+    }
+  });
 
   function getPosition() {
     if (!position || position === "left") {

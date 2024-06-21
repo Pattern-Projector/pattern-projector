@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { IconButton } from "@/_components/buttons/icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { visible } from "@/_components/theme/css-functions";
+import useOnClickOutside from "@/_hooks/use-on-click-outside";
 
 type BooleanOption = {
   icon: React.ReactNode;
@@ -48,21 +49,7 @@ export function DropdownCheckboxIconButton<T>({
   const dropdownClasses =
     "absolute left-0 mt-2 min-w-max bg-white dark:bg-gray-800 rounded-md shadow-lg z-10";
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("pointerdown", handleClickOutside);
-    return () => {
-      document.removeEventListener("pointerdown", handleClickOutside);
-    };
-  }, [containerRef]);
+  useOnClickOutside(containerRef, () => setIsOpen(false));
 
   const updateOption = (key: keyof T, value: boolean): void => {
     const updatedOptions = {
