@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Always show stitch menu button regardless of the number of pages in the PDF
 
+### Fixed
+
+- Close overlay options menu on click outside
+
 ## [1.0.2] - 2024-05-25
 
 ### Changed
