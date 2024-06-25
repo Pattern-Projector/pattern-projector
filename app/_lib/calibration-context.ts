@@ -9,6 +9,32 @@ export default interface CalibrationContext {
   fullScreen: boolean;
 }
 
+export function logCalibrationContextDifferences(
+  context: CalibrationContext,
+  fullScreen: boolean,
+): void {
+  const current = getCalibrationContext(fullScreen);
+  console.log('CalibrationContext differences:');
+  if (context.windowInnerWidth !== current.windowInnerWidth) {
+  console.log('windowInnerWidth:', context.windowInnerWidth, current.windowInnerWidth);
+  }
+  if (context.windowInnerHeight !== current.windowInnerHeight) {
+  console.log('windowInnerHeight:', context.windowInnerHeight, current.windowInnerHeight);
+  }
+  if (context.windowScreenTop !== current.windowScreenTop) {
+  console.log('windowScreenTop:', context.windowScreenTop, current.windowScreenTop);
+  }
+  if (context.windowScreenLeft !== current.windowScreenLeft) {
+  console.log('windowScreenLeft:', context.windowScreenLeft, current.windowScreenLeft);
+  }
+  if (context.devicePixelRatio !== current.devicePixelRatio) {
+  console.log('devicePixelRatio:', context.devicePixelRatio, current.devicePixelRatio);
+  }
+  if (context.fullScreen !== current.fullScreen) {
+  console.log('fullScreen:', context.fullScreen, current.fullScreen);
+  }
+}
+
 export function getCalibrationContext(fullScreen: boolean): CalibrationContext {
   const top =
     window.screenTop === undefined ? window.screenY : window.screenTop;
@@ -72,8 +98,8 @@ export function getIsInvalidatedCalibrationContextWithPointerEvent(
       return false;
     }
   }
-  return (
-    context.clientScreenTop !== current.clientScreenTop ||
-    context.clientScreenLeft !== current.clientScreenLeft
-  );
+  // check if the difference is greater than 1 since the values sometimes fluctuate without the viewport changing
+  const topDiff = context.clientScreenTop === null || current.clientScreenTop === null ? context.clientScreenTop !== current.clientScreenTop : Math.abs(context.clientScreenTop - current.clientScreenTop) > 1;
+  const leftDiff = context.clientScreenLeft === null || current.clientScreenLeft === null ? context.clientScreenLeft !== current.clientScreenLeft : Math.abs(context.clientScreenLeft - current.clientScreenLeft) > 1;
+  return topDiff || leftDiff;
 }
