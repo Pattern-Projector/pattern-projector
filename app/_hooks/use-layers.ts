@@ -25,7 +25,7 @@ export default function useLayers(fileName: string) {
           dispatchLayersActionInternal(visibilityAction);
           // We also need to update the layers data we're about to write back to local storage -
           // otherwise visible layers would reset to "everything visible"
-          newLayers = layersReducer(newLayers, visibilityAction)
+          newLayers = layersReducer(newLayers, visibilityAction);
         }
       }
       writeToLocalStorage(fileName, newLayers);

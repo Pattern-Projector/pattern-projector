@@ -33,7 +33,6 @@ import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-check
 import Tooltip from "@/_components/tooltip/tooltip";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
-import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import { useKeyDown } from "@/_hooks/use-key-down";
