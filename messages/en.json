@@ -181,7 +181,7 @@
   },
   "InstallButton": {
     "title": "Install App",
-    "description": "For the best experience, install Pattern Projector using <chromeLink>Google Chrome</chromeLink>.",
+    "description": "For the best experience, install Pattern Projector using <chromeLink>Google Chrome</chromeLink>. In Chrome, download the app by tapping <installIcon></installIcon> in the address bar.",
     "descriptionAndroid": "For the best experience on Android, use Firefox. Download the app by tapping the more button <moreIcon></moreIcon> in the browser menu and then <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen.",
     "descriptionIOS": "Download the app by tapping the share button <shareIcon></shareIcon> in the browser menu and then Add to Home Screen <addBoxIcon></addBoxIcon>.",
     "ok": "OK"

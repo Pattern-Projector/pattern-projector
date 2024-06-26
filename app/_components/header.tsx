@@ -33,7 +33,6 @@ import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-check
 import Tooltip from "@/_components/tooltip/tooltip";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
-import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import { useKeyDown } from "@/_hooks/use-key-down";
@@ -547,12 +546,6 @@ export default function Header({
           </div>
         </nav>
       </header>
-      <IconButton
-        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
-        onClick={() => setMenuStates({ ...menuStates, nav: true })}
-      >
-        <ExpandMoreIcon ariaLabel={t("menuShow")} />
-      </IconButton>
     </>
   );
 }

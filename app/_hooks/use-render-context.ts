@@ -1,17 +1,15 @@
 import { useContext } from "react";
 import { createContext } from "react";
-import { Layer } from "@/_lib/interfaces/layer";
+import { Layers } from "@/_lib/layers";
 
 export interface RenderContextType {
   erosions: number;
-  layers: Map<string, Layer>;
-  setLayers: (layer: Map<string, Layer>) => void;
+  layers: Layers;
 }
 
 export const RenderContext = createContext<RenderContextType>({
-  layers: new Map(),
-  setLayers: () => {},
   erosions: 0,
+  layers: {},
 });
 
 export default function useRenderContext() {

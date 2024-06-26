@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { IconButton } from "@/_components/buttons/icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { visible } from "@/_components/theme/css-functions";
 import CheckIcon from "@/_icons/check-icon";
+import useOnClickOutside from "@/_hooks/use-on-click-outside";
 
 export function DropdownIconButton<T>({
   icon,
@@ -39,21 +40,7 @@ export function DropdownIconButton<T>({
   const dropdownClasses =
     "absolute mt-2 bg-white dark:bg-gray-800 rounded-md shadow-lg";
 
-  useEffect(() => {
-    const handleClickOutside = (event: PointerEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("pointerdown", handleClickOutside);
-    return () => {
-      document.removeEventListener("pointerdown", handleClickOutside);
-    };
-  }, [containerRef]);
+  useOnClickOutside(containerRef, () => setIsOpen(false));
 
   return (
     <div

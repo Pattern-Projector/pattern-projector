@@ -64,6 +64,11 @@ export default function InstallButton() {
           {chunks}
         </a>
       ),
+      installIcon: () => (
+        <div className="inline-block">
+          <InstallDesktopIcon ariaLabel={""} />
+        </div>
+      ),
     });
   }
 
