@@ -1,0 +1,72 @@
+{
+    "HomePage": {
+        "project": {
+            "moveTool": {
+                "description": "Lo strumento spostamento ha quattro pulsanti freccia per spostare gli angoli della griglia di calibrazione e i bordi. Ha anche un pulsante successivo al centro per passare all'angolo/bordo successivo.",
+                "title": "Mostra o nasconde lo strumento sposta"
+            },
+            "open": "Fai clic (o tocca) <pdficon></pdficon> per aprire il documento PDF.",
+            "cut": "Taglia il cartamodello proiettato.",
+            "tools": "In modalità proiezione ci sono diversi strumenti a disposizione. Alcuni hanno scorciatoie da tastiera, che sono indicate tra parentesi.",
+            "fullscreen": {
+                "title": "Schermo intero",
+                "description": "Generalmente è più facile usare il software in modalità a schermo intero."
+            },
+            "showMenu": {
+                "description": "Mostra o nasconde il menu in alto.",
+                "title": "Menu mostra/nascondi"
+            },
+            "invert": {
+                "description": "Quando si proietta, di solito è più facile vedere linee verdi o bianche su nero. Fai clic/tap una volta per linee verdi, due volte per linee bianche, e tre volte per tornare alle linee nere.",
+                "title": "Inverte colori"
+            },
+            "overlayOptions": {
+                "title": "Mostra o nasconde le opzioni di sovrapposizione"
+            },
+            "title": "Proiezione di un modello",
+            "move": "Sposta il PDF facendo clic e trascinandolo sullo schermo.",
+            "lineWeight": {
+                "title": "Spessore della linea",
+                "description": "Cambia lo spessore delle linee nel modello PDF."
+            },
+            "flip": {
+                "title": "Specchia verticale (V) o orizzontale (H)"
+            },
+            "rotate": {
+                "title": "Ruota (R)",
+                "description": "Modifica l'orientamento del modello di 90 gradi."
+            }
+        },
+        "calibration": {
+            "size": "Non è necessario calibrare utilizzando l'intero tappetino, invece scegli l'area più grande in cui è possibile far entrare la griglia di calibrazione e inserisci larghezza e altezza per farle combaciare con la larghezza e l'altezza della griglia.",
+            "project": "Quando la griglia proiettata è allineata con il tappetino, fai clic (o tocca) “Progetto.”",
+            "title": "Calibrazione",
+            "fullscreen": "Entra in modalità a schermo intero cliccando (o toccando) ",
+            "start": "Fari clic (o tocca) su “Avvia calibrazione.”",
+            "drag": "Trascina gli angoli della griglia per allinearli con il tappetino. Mantenendo occhi sul tappetino, regola gli angoli sul computer o tablet. Sistema il posizionamento degli angoli fino a quando la griglia proiettata corrisponde alla griglia del tappetino."
+        },
+        "choose-language": "Lingua",
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "requirements": {
+            "pattern": "Un cartamodello in PDF",
+            "title": "Di cosa hai bisogno",
+            "computer": "Computer o tablet da connettere al proiettore",
+            "projector": "Proiettore: raccomandato almeno 720p",
+            "mat": "Un tappetino da taglio con linee guida (opzionale)",
+            "mount": "Treppiede o aggancio per muro/mensola/tavola per il proiettore"
+        },
+        "setup": {
+            "keystone": "Se il proiettore ha il keystone (correzione trapezoidale), regolalo in modo che la proiezione sia più rettangolare possibile e la messa a fuoco vicino ai bordi migliori.",
+            "title": "Allestimento",
+            "place": "Posiziona il proiettore sopra il tappetino di taglio, puntando direttamente sul tappetino di taglio. Se non si dispone di un tappetino da taglio, è possibile utilizzare carta o nastro adesivo per realizzare una griglia / rettangolo su un tavolo o sul pavimento.",
+            "connect": "Collega il computer o il tablet al proiettore e fai il mirroring o estendi lo schermo in modo che l'immagine da computer o tablet sia mostrata sul proiettore.",
+            "focus": "Regolare la messa a fuoco sul proiettore, fino a quando il testo al centro della proiezione non è nitido. Se non riesci ad ottenere un'immagine chiara, assicurati che la distanza tra il proiettore e il tappetino di taglio rientri nell'intervallo funzionale consigliato dal produttore."
+        },
+        "github": "Vedi codice sorgente",
+        "calibrate": "Inizia a calibrare",
+        "welcome": {
+            "title": "Benvenuto in Pattern Projector!",
+            "description": "Pattern projector è un'app web open source gratuita che calibra rapidamente i proiettori per i cartamodelli. Ha anche strumenti per unire cartamodelli a più pagine, cambiare lo spessore delle linee, invertire i colori, specchiare / ruotare i cartamodelli e altro ancora. Per leggere gli ultimi aggiornamenti, consulta il <changeLogLink>changelog</changeLogLink>."
+        }
+    }
+}
