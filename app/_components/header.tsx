@@ -541,7 +541,7 @@ export default function Header({
             >
               {isCalibrating ? t("project") : t("calibrate")}
             </button>
-            <Tooltip description={t("info")}>
+            <Tooltip description={t("info")} className={visible(isCalibrating)}>
               <IconButton href="/">
                 <InfoIcon ariaLabel={t("info")} />
               </IconButton>
