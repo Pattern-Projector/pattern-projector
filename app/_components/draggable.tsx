@@ -54,7 +54,6 @@ export default function Draggable({
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
   const [isIdle, setIsIdle] = useState(false);
   const [matrix3d, setMatrix3d] = useState<string>("");
-  const [zoomOutMode, setZoomOutMode] = useState(false);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -121,8 +120,8 @@ export default function Draggable({
     if (magnifying) {
       setRestoreTransform(transform.clone());
       transformer.magnify(5, pt);
-    } else if (zoomOutMode) {
-      setZoomOutMode(false);
+    } else if (restoreTransform !== null) {
+      setRestoreTransform(null);
       setZoomedOut(false);
       transformer.zoomIn(p, calibrationCenter);
     } else {
@@ -142,9 +141,9 @@ export default function Draggable({
   }
 
   useEffect(() => {
-    if (zoomedOut && !zoomOutMode) {
+    if (zoomedOut && restoreTransform === null) {
+      setRestoreTransform(transform.clone());
       transformer.zoomOut(layoutWidth, layoutHeight, calibrationTransform);
-      setZoomOutMode(true);
     }
   }, [
     zoomedOut,
@@ -154,15 +153,24 @@ export default function Draggable({
     layoutHeight,
     calibrationTransform,
     transform,
-    zoomOutMode,
+    setRestoreTransform,
+    restoreTransform,
   ]);
 
   useEffect(() => {
-    if (!magnifying && restoreTransform !== null) {
-      transformer.setLocalTransform(restoreTransform);
-      setRestoreTransform(null);
+    if (!magnifying && !zoomedOut) {
+      if (restoreTransform !== null) {
+        transformer.setLocalTransform(restoreTransform);
+        setRestoreTransform(null);
+      }
     }
-  }, [magnifying, restoreTransform, setRestoreTransform, transformer]);
+  }, [
+    magnifying,
+    zoomedOut,
+    restoreTransform,
+    setRestoreTransform,
+    transformer,
+  ]);
 
   return (
     <div

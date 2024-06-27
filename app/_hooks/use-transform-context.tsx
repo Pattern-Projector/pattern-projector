@@ -162,8 +162,20 @@ function readFromLocalStorage(fileName: string): Matrix {
     return DEFAULT_TRANSFORM;
   }
   try {
-    return new Matrix(JSON.parse(rawValue));
+    const localTransform = new Matrix(JSON.parse(rawValue));
+    // Reset the scale in case the user was zoomed in or out when they last used the file
+    return resetScale(localTransform);
   } catch {
     return DEFAULT_TRANSFORM;
   }
+}
+
+function resetScale(matrix: Matrix): Matrix {
+  const x = matrix.get(0, 0);
+  const y = matrix.get(1, 1);
+  const xScale = Math.sign(x);
+  const yScale = Math.sign(y);
+  matrix.set(0, 0, xScale);
+  matrix.set(1, 1, yScale);
+  return matrix.clone();
 }

@@ -470,17 +470,17 @@ export default function Header({
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
             <Tooltip description={t("flipHorizontal")}>
-              <IconButton onClick={handleFlipHorizontal}>
+              <IconButton onClick={handleFlipHorizontal} disabled={zoomedOut}>
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
-              <IconButton onClick={handleFlipVertical}>
+              <IconButton onClick={handleFlipVertical} disabled={zoomedOut}>
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>
-              <IconButton onClick={handleRotate90}>
+              <IconButton onClick={handleRotate90} disabled={zoomedOut}>
                 <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
               </IconButton>
             </Tooltip>
@@ -507,7 +507,10 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <Tooltip description={t("magnify")}>
-              <IconButton onClick={() => setMagnifying(!magnifying)}>
+              <IconButton
+                onClick={() => setMagnifying(!magnifying)}
+                disabled={zoomedOut}
+              >
                 <MagnifyIcon ariaLabel={t("magnify")} />
               </IconButton>
             </Tooltip>

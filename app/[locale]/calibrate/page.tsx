@@ -206,6 +206,10 @@ export default function Page() {
     if (!file) {
       return;
     }
+    setZoomedOut(false);
+    setRestoreTransform(null);
+    setMagnifying(false);
+    setMeasuring(false);
     setPageCount(0); // Reset page count while loading
     const key = `stitchSettings:${file.name ?? "default"}`;
     const stitchSettingsString = localStorage.getItem(key);
