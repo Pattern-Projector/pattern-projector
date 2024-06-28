@@ -6,6 +6,7 @@ import {
   useCallback,
   useEffect,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -44,6 +45,7 @@ import CalibrationContext, {
   getCalibrationContext,
   getIsInvalidatedCalibrationContext,
   getIsInvalidatedCalibrationContextWithPointerEvent,
+  logCalibrationContextDifferences,
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
@@ -53,10 +55,13 @@ import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
-import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
+import FullScreenExitIcon from "@/_icons/full-screen-exit-icon";
 import { Layers } from "@/_lib/layers";
 import useLayers from "@/_hooks/use-layers";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
+import FullScreenIcon from "@/_icons/full-screen-icon";
+import { set } from "node_modules/cypress/types/lodash";
+import { is } from "node_modules/cypress/types/bluebird";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -105,6 +110,8 @@ export default function Page() {
   const [measuring, setMeasuring] = useState<boolean>(false);
   const [magnifying, setMagnifying] = useState<boolean>(false);
   const [zoomedOut, setZoomedOut] = useState<boolean>(false);
+  const [menusHidden, setMenusHidden] = useState<boolean>(false);
+  const [isIdle, setIsIdle] = useState(false);
 
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
@@ -115,7 +122,21 @@ export default function Page() {
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
 
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const t = useTranslations("Header");
+
+  const IDLE_TIMEOUT = 8000;
+
+  function resetIdle() {
+    setIsIdle(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      setIsIdle(true);
+    }, IDLE_TIMEOUT);
+  }
 
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
@@ -299,6 +320,7 @@ export default function Page() {
   }, []);
 
   function handlePointerDown(e: React.PointerEvent) {
+    resetIdle();
     if (fullScreenTooltipVisible) {
       setFullScreenTooltipVisible(false);
     }
@@ -316,10 +338,13 @@ export default function Page() {
             fullScreenHandle.active,
           )
         ) {
+          logCalibrationContextDifferences(expected, fullScreenHandle.active);
           setCalibrationValidated(false);
         }
       }
     }
+
+    setMenusHidden(false);
   }
 
   function handlePointerUp() {
@@ -328,11 +353,20 @@ export default function Page() {
     }
   }
 
+  function handlePointerMove() {
+    resetIdle();
+    setMenusHidden(false);
+  }
+
   useEffect(() => {
     const projectingWithInvalidContext =
       !isCalibrating && !calibrationValidated;
     setShowCalibrationAlert(projectingWithInvalidContext);
   }, [isCalibrating, calibrationValidated]);
+
+  useEffect(() => {
+    setMenusHidden(isIdle && !isCalibrating);
+  }, [isIdle, isCalibrating]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -361,8 +395,9 @@ export default function Page() {
     <main
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
+      onPointerMove={handlePointerMove}
       ref={noZoomRefCallback}
-      className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
+      className={`${menusHidden && "cursor-none"} ${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
       <div className="bg-white dark:bg-black dark:text-white w-screen h-screen ">
         <FullScreen
@@ -390,9 +425,9 @@ export default function Page() {
                   }
                 >
                   {fullScreenHandle.active ? (
-                    <FullscreenExitIcon ariaLabel={t("fullscreen")} />
+                    <FullScreenIcon ariaLabel={t("fullscreen")} />
                   ) : (
-                    <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
+                    <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
                   )}
                 </IconButton>
               </Tooltip>
@@ -438,7 +473,7 @@ export default function Page() {
               )}
             >
               <Draggable
-                className={`absolute`}
+                className={`absolute ${menusHidden && "!cursor-none"} `}
                 perspective={perspective}
                 isCalibrating={isCalibrating}
                 unitOfMeasure={unitOfMeasure}
@@ -481,7 +516,7 @@ export default function Page() {
             </MeasureCanvas>
 
             <menu
-              className={`absolute ${menuStates.nav ? "top-0" : "-top-16"} w-screen`}
+              className={`absolute ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} w-screen`}
             >
               <Header
                 isCalibrating={isCalibrating}
@@ -545,6 +580,8 @@ export default function Page() {
                   pageCount={pageCount}
                   file={file}
                   layers={layers}
+                  menuStates={menuStates}
+                  setMenuStates={setMenuStates}
                 />
                 <LayerMenu
                   visible={menuStates.layers}
@@ -557,7 +594,7 @@ export default function Page() {
               </menu>
             </menu>
             <IconButton
-              className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
+              className={`${visible(!menusHidden)} !p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
               onClick={() => setMenuStates({ ...menuStates, nav: true })}
             >
               <ExpandMoreIcon ariaLabel={t("menuShow")} />

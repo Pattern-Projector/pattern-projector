@@ -31,10 +31,8 @@ import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-checkbox-icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
-import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
-import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
@@ -54,6 +52,8 @@ import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
 import MagnifyIcon from "@/_icons/magnify-icon";
 import ZoomOutIcon from "@/_icons/zoom-out-icon";
+import FullSceenExitIcon from "@/_icons/full-screen-exit-icon";
+import FullScreenIcon from "@/_icons/full-screen-icon";
 
 export default function Header({
   isCalibrating,
@@ -301,7 +301,7 @@ export default function Header({
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
           aria-label="Global"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Tooltip
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
@@ -316,43 +316,21 @@ export default function Header({
                 }
               >
                 {fullScreenHandle.active ? (
-                  <FullscreenExitIcon ariaLabel={t("fullscreen")} />
+                  <FullScreenIcon ariaLabel={t("fullscreen")} />
                 ) : (
-                  <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
+                  <FullSceenExitIcon ariaLabel={t("fullscreenExit")} />
                 )}
               </IconButton>
             </Tooltip>
-            <Tooltip description={t("menuHide")}>
+            <Tooltip
+              description={t("menuHide")}
+              className={visible(isCalibrating)}
+            >
               <IconButton
                 className={`!p-1 border-2 border-black dark:border-white`}
                 onClick={() => setMenuStates({ ...menuStates, nav: false })}
               >
                 <ExpandLessIcon ariaLabel={t("menuHide")} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              description={
-                menuStates.stitch
-                  ? t("stitchMenuHide")
-                  : pageCount === 0
-                    ? t("stitchMenuDisabled")
-                    : t("stitchMenuShow")
-              }
-            >
-              <IconButton
-                disabled={pageCount === 0}
-                onClick={() =>
-                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
-                }
-                className={`${menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""} ${visible(!isCalibrating)}`}
-              >
-                <FlexWrapIcon
-                  ariaLabel={
-                    menuStates.stitch
-                      ? t("stitchMenuHide")
-                      : t("stitchMenuShow")
-                  }
-                />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("invertColor")}>
@@ -406,7 +384,7 @@ export default function Header({
               />
             )}
           </div>
-          <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
+          <div className={`flex items-center gap-1 ${visible(isCalibrating)}`}>
             <div className="flex gap-1">
               <InlineInput
                 className="relative flex flex-col"
@@ -468,7 +446,7 @@ export default function Header({
               </IconButton>
             </Tooltip>
           </div>
-          <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
+          <div className={`flex items-center gap-1 ${visible(!isCalibrating)}`}>
             <Tooltip description={t("flipHorizontal")}>
               <IconButton onClick={handleFlipHorizontal} disabled={zoomedOut}>
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
@@ -520,7 +498,7 @@ export default function Header({
               </IconButton>
             </Tooltip>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <label
               className={`${visible(
                 !isCalibrating,
