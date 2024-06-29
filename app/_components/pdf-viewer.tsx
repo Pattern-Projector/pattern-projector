@@ -150,6 +150,7 @@ export default function PdfViewer({
                     renderTextLayer={true}
                     canvasBackground="#ccc"
                     onLoadSuccess={onPageLoadSuccess}
+                    renderAnnotationLayer={false}
                   />
                 </RenderContext.Provider>
               )}
