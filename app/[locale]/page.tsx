@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
 
-import FullscreenIcon from "@/_icons/fullscreen-icon";
+import FullScreenIcon from "@/_icons/full-screen-icon";
 
 import { Link } from "../../navigation";
 import FlipHorizontalIcon from "../_icons/flip-horizontal-icon";
@@ -124,7 +124,7 @@ export default function Home() {
           <li>{t("calibration.start")}</li>
           <li>
             {t("calibration.fullscreen")}
-            <FullscreenIcon ariaLabel="" />
+            <FullScreenIcon ariaLabel="" />
           </li>
           <li>{t("calibration.drag")}</li>
           <li>
@@ -163,7 +163,7 @@ export default function Home() {
         <p>{t("project.tools")}</p>
         <dl>
           <Definition
-            icon={<FullscreenIcon ariaLabel="" />}
+            icon={<FullScreenIcon ariaLabel="" />}
             title={t("project.fullscreen.title")}
           >
             {t("project.fullscreen.description")}

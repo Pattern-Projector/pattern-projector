@@ -1,4 +1,8 @@
-export default function FullsceenIcon({ ariaLabel }: { ariaLabel: string }) {
+export default function FullSceenExitIcon({
+  ariaLabel,
+}: {
+  ariaLabel: string;
+}) {
   return (
     <svg
       aria-label={ariaLabel}

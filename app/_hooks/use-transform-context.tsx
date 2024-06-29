@@ -31,6 +31,13 @@ export interface TransformerContextType {
   reset: () => void;
   translate: (p: Point) => void;
   align: (line: Line, to: Line) => void;
+  magnify: (scale: number, point: Point) => void;
+  zoomIn: (point: Point, calibrationCenter: Point) => void;
+  zoomOut: (
+    layoutWidth: number,
+    layoutHeight: number,
+    calibrationTransform: Matrix,
+  ) => void;
 }
 
 const TransformerContext = createContext<TransformerContextType>({
@@ -44,6 +51,9 @@ const TransformerContext = createContext<TransformerContextType>({
   flipAlong: () => {},
   translate: () => {},
   align: () => {},
+  magnify: () => {},
+  zoomIn: () => {},
+  zoomOut: () => {},
 });
 
 const DEFAULT_TRANSFORM = Matrix.eye(3);
@@ -111,6 +121,21 @@ export const Transformable = ({
         dispatch({ type: "recenter", centerPoint, layoutWidth, layoutHeight }),
       reset: () => dispatch({ type: "reset" }),
       align: (line: Line, to: Line) => dispatch({ type: "align", line, to }),
+      magnify: (scale: number, point: Point) =>
+        dispatch({ type: "magnify", scale, point }),
+      zoomIn: (point: Point, calibrationCenter: Point) =>
+        dispatch({ type: "zoom_in", point, calibrationCenter }),
+      zoomOut: (
+        layoutWidth: number,
+        layoutHeight: number,
+        calibrationTransform: Matrix,
+      ) =>
+        dispatch({
+          type: "zoom_out",
+          layoutWidth,
+          layoutHeight,
+          calibrationTransform,
+        }),
     }),
     [dispatch],
   );
@@ -137,8 +162,20 @@ function readFromLocalStorage(fileName: string): Matrix {
     return DEFAULT_TRANSFORM;
   }
   try {
-    return new Matrix(JSON.parse(rawValue));
+    const localTransform = new Matrix(JSON.parse(rawValue));
+    // Reset the scale in case the user was zoomed in or out when they last used the file
+    return resetScale(localTransform);
   } catch {
     return DEFAULT_TRANSFORM;
   }
+}
+
+function resetScale(matrix: Matrix): Matrix {
+  const x = matrix.get(0, 0);
+  const y = matrix.get(1, 1);
+  const xScale = Math.sign(x);
+  const yScale = Math.sign(y);
+  matrix.set(0, 0, xScale);
+  matrix.set(1, 1, yScale);
+  return matrix.clone();
 }

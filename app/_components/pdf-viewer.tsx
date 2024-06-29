@@ -111,7 +111,7 @@ export default function PdfViewer({
   const insetHeight = `${tileHeight - cssEdgeInsets.vertical}px`;
 
   return (
-    <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+    <Document file={file} onLoadSuccess={onDocumentLoadSuccess} noData="">
       <div
         style={{
           display: "grid",

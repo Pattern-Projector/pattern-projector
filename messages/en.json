@@ -231,7 +231,9 @@
     "stitchMenuDisabled": "Open PDF to use stitch menu",
     "measure": "Line tool (L)",
     "showMovement": "Show move tool",
-    "hideMovement": "Hide move tool"
+    "hideMovement": "Hide move tool",
+    "magnify": "Magnify (M)",
+    "zoomOut": "Zoom out (Z)"
   },
   "StitchMenu": {
     "columnCount": "Columns",

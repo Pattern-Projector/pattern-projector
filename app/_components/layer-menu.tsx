@@ -31,16 +31,18 @@ export default function LayerMenu({
   return (
     <>
       <div
-        className={`${className ?? ""} absolute z-20 ${visible ? "left-0" : "-left-60"} w-48 ${hasLayers && numberOfLayers * 40 < 200 ? "h-fit" : "h-[calc(100vh-12rem)]"}  text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-black border border-gray-200 dark:border-gray-700 border-top-0 absolute transition-all duration-700`}
+        className={`${className ?? ""} pointer-events-auto absolute z-20 ${visible ? "left-0" : "-left-60"} w-48 ${hasLayers && numberOfLayers * 40 < 200 ? "h-fit" : "h-[calc(100vh-12rem)]"}  text-sm font-medium text-gray-900 dark:text-white bg-opacity-80 dark:bg-opacity-70 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 border-top-0 absolute transition-all duration-700`}
       >
         <h1
           key="global"
           className="w-full rounded-t-lg border-b border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center space-between">
-            <IconButton onClick={() => setVisible(false)}>
-              <KeyboardArrowLeftIcon ariaLabel="close" />
-            </IconButton>
+            <Tooltip description={t("layersOff")}>
+              <IconButton onClick={() => setVisible(false)}>
+                <KeyboardArrowLeftIcon ariaLabel="close" />
+              </IconButton>
+            </Tooltip>
             <h6 className="ml-2">{t("title")}</h6>
             <button
               className="text-purple-600 ml-auto px-4 hover:text-purple-800 "
@@ -84,7 +86,7 @@ export default function LayerMenu({
       {!visible ? (
         <Tooltip
           description={hasLayers ? t("layersOn") : t("noLayers")}
-          className="m-2 w-10 !absolute z-10"
+          className="m-2 w-10 !absolute z-10 pointer-events-auto"
         >
           <IconButton
             border={true}

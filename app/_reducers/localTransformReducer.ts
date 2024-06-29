@@ -8,6 +8,8 @@ import {
   rotateMatrixDeg,
   transformPoint,
   translate,
+  scaleAboutPoint,
+  fitPdfToView,
 } from "@/_lib/geometry";
 import { Line } from "@/_lib/interfaces/line";
 import { Point } from "@/_lib/point";
@@ -61,6 +63,25 @@ interface AlignAction {
   to: Line;
 }
 
+interface MagnifyAction {
+  type: "magnify";
+  scale: number;
+  point: Point;
+}
+
+interface ZoomInAction {
+  type: "zoom_in";
+  point: Point;
+  calibrationCenter: Point;
+}
+
+interface ZoomOutAction {
+  type: "zoom_out";
+  layoutWidth: number;
+  layoutHeight: number;
+  calibrationTransform: Matrix;
+}
+
 export type LocalTransformAction =
   | FlipAction
   | RotateToHorizontalAction
@@ -70,7 +91,10 @@ export type LocalTransformAction =
   | RotateAction
   | RecenterAction
   | ResetAction
-  | AlignAction;
+  | AlignAction
+  | MagnifyAction
+  | ZoomInAction
+  | ZoomOutAction;
 
 export default function localTransformReducer(
   localTransform: Matrix,
@@ -110,6 +134,19 @@ export default function localTransformReducer(
     }
     case "align": {
       return align(action.line, action.to).mmul(localTransform);
+    }
+    case "magnify": {
+      return scaleAboutPoint(action.scale, action.point).mmul(localTransform);
+    }
+    case "zoom_out": {
+      return fitPdfToView(action.layoutWidth, action.layoutHeight);
+    }
+    case "zoom_in": {
+      const zoomedScale = localTransform.get(0, 0);
+      return translate({
+        x: -action.point.x / zoomedScale + action.calibrationCenter.x,
+        y: -action.point.y / zoomedScale + action.calibrationCenter.y,
+      });
     }
   }
 }
