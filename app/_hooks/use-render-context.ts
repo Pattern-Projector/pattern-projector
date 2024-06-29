@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { createContext } from "react";
 import { Layers } from "@/_lib/layers";
-import { LoadStatusEnum } from "@/_lib/load-status-enum";
 
 export interface RenderContextType {
   erosions: number;
