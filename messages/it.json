@@ -2,7 +2,7 @@
     "HomePage": {
         "project": {
             "moveTool": {
-                "description": "Lo strumento spostamento ha quattro pulsanti freccia per spostare gli angoli della griglia di calibrazione e i bordi. Ha anche un pulsante successivo al centro per passare all'angolo/bordo successivo.",
+                "description": "Lo strumento spostamento ha quattro pulsanti freccia per spostare gli angoli della griglia di calibrazione e i bordi. Ha anche un pulsante \"successivo\" al centro per passare all'angolo/bordo successivo.",
                 "title": "Mostra o nasconde lo strumento sposta"
             },
             "open": "Fai clic (o tocca) <pdficon></pdficon> per aprire il documento PDF.",
@@ -21,7 +21,8 @@
                 "title": "Inverte colori"
             },
             "overlayOptions": {
-                "title": "Mostra o nasconde le opzioni di sovrapposizione"
+                "title": "Mostra o nasconde le opzioni di sovrapposizione",
+                "description": "Griglia, bordo, foglio di carta, linee di riflessione o sovrapposizioni del rovescio del modello possono essere mostrati sul PDF per aiutare con la calibrazione e il taglio. Per ulteriori informazioni, vedere la sezione <overlayOptionsLink>opzioni di sovrapposizione</overlayOptionsLink>."
             },
             "title": "Proiezione di un modello",
             "move": "Sposta il PDF facendo clic e trascinandolo sullo schermo.",
@@ -30,11 +31,27 @@
                 "description": "Cambia lo spessore delle linee nel modello PDF."
             },
             "flip": {
-                "title": "Specchia verticale (V) o orizzontale (H)"
+                "title": "Specchia verticale (V) o orizzontale (H)",
+                "description": "Utile quando si specchia un cartamodello a metà."
             },
             "rotate": {
                 "title": "Ruota (R)",
                 "description": "Modifica l'orientamento del modello di 90 gradi."
+            },
+            "recenter": {
+                "title": "Centra e ripristina (C)",
+                "description": "Centro il modello sul tappetino di taglio e ripristina la rotazione/rispecchiamento."
+            },
+            "layers": {
+                "title": "Mostra o nasconde i livelli",
+                "description": "Mostra o nasconde i livelli nel PDF."
+            },
+            "stitch": {
+                "title": "Mostra o nasconde il menu \"cuci\"",
+                "description": "Mostra o nasconde il menu \"cuci\", che consente di unire insieme più pagine di un cartamodello PDF."
+            },
+            "measure": {
+                "title": "Strumento Linea (L)"
             }
         },
         "calibration": {
@@ -67,6 +84,64 @@
         "welcome": {
             "title": "Benvenuto in Pattern Projector!",
             "description": "Pattern projector è un'app web open source gratuita che calibra rapidamente i proiettori per i cartamodelli. Ha anche strumenti per unire cartamodelli a più pagine, cambiare lo spessore delle linee, invertire i colori, specchiare / ruotare i cartamodelli e altro ancora. Per leggere gli ultimi aggiornamenti, consulta il <changeLogLink>changelog</changeLogLink>."
+        },
+        "tools": "Strumenti",
+        "lineTool": {
+            "title": "Strumento linea",
+            "delete": {
+                "title": "Cancella linea",
+                "description": "Cancella la linea selezionata."
+            },
+            "rotate": {
+                "title": "Allinea al centro",
+                "description": "Ruota il PDF in modo che la linea selezionata sia orizzontale e centrata sul tappetino.",
+                "use": "Per allineare il drittofilo di un cartamodello con il drittofilo del tessuto: disegna una linea sulla drittofilo del pezzo modello, quindi fai clic (o tocca) il pulsante \"allinea al centro\"."
+            },
+            "previousNext": {
+                "title": "Porta la linea precedente/siccessiva al centro",
+                "description": "Sposta il PDF in modo che la linea precedente/successiva disegnata sia orizzontale e centrata sul tappetino.",
+                "use": "Per spostarsi tra i pezzi di pattern quando si taglia: disegna una linea sul drittofilo di ogni pezzo modello, quindi spostati attraverso i pezzi di pattern utilizzando questi pulsanti. Elimina le linee mentre passi attraverso i pezzi del cartamodello per tenere traccia di quali pezzi sono rimasti da tagliare."
+            },
+            "flip": {
+                "title": "Specchia lungo la linea",
+                "description": "Specchia il PDF lungo la linea.",
+                "use": "Per dispiegare i pezzi del cartamodello: disegna una linea sulla linea di piega di un pezzo di modello, taglia il pezzo fino alla linea di piega, fai clic (o tocca) sul pulsante specchia lungo la linea, e quindi taglia il resto del pezzo."
+            },
+            "move": {
+                "title": "Sposta il PDF della stessa lunghezza linea",
+                "description": "Sposta il PDF dalla lunghezza della linea.",
+                "use": "Per allungare/accorciare i pezzi del cartamodello: disegna una linea perpendicolare la linea di allungamento di un pezzo del cartamodello, taglia fino alla linea di allungamento, quindi fai clic (o tocca) il pulsante \"movimento per lunghezza linea\" e continua a tagliare il pezzo. La direzione della linea disegnata dipenderà se stai allungando o accorciando il pezzo."
+            },
+            "description": "Lo strumento linea può essere utilizzato per misurare le distanze, contrassegnare le linee, ruotare, capovolgere e spostare il PDF. Fai clic (o tocca) sul pulsante della linea, quindi fai clic (o tocca) sul PDF e trascinare per disegnare una linea. Una volta tracciata una riga, un menu apparirà sul fondo dello schermo con le seguenti opzioni:"
+        },
+        "overlayOptions": {
+            "border": {
+                "title": "Bordi",
+                "description": "Mostra il bordo della griglia di calibrazione."
+            },
+            "grid": {
+                "title": "Griglia",
+                "description": "Mostra la griglia di calibrazione."
+            },
+            "flipLines": {
+                "title": "Linee di riflessione"
+            },
+            "paper": {
+                "title": "Foglio di carta",
+                "description": "Mostra un rettangolo della dimensione di foglio formato Letter o A4 per verificare la calibrazione."
+            },
+            "title": "Opzioni di sovrapposizione",
+            "description": "Le opzioni di sovrapposizione possono essere utilizzate per verificare la calibrazione durante la proiezione e come aiuto per tagliare i cartamodelli. Sono disponibili le seguenti opzioni:",
+            "flippedPattern": {
+                "title": "Rovescio del cartamodello",
+                "description": "Mostra punti quando il rovescio del modello è proiettato."
+            }
+        },
+        "faq": {
+            "title": "FAQ",
+            "wrongSizePdf": {
+                "question": "La proiezione del PDF è troppo grande o troppo piccola?"
+            }
         }
     }
 }
