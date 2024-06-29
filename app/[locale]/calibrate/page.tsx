@@ -91,6 +91,8 @@ export default function Page() {
   const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
   );
+  const [lineThicknessStatus, setLineThicknessStatus] =
+    useState<LoadStatusEnum>(LoadStatusEnum.DEFAULT);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
   const [file, setFile] = useState<File | null>(null);
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
@@ -452,6 +454,7 @@ export default function Page() {
                   filter={themeFilter(displaySettings.theme)}
                   dispatchStitchSettings={dispatchStitchSettings}
                   setPdfLoadStatus={setPdfLoadStatus}
+                  setLineThicknessStatus={setLineThicknessStatus}
                 />
               </Draggable>
               <OverlayCanvas
@@ -501,7 +504,10 @@ export default function Page() {
                 layoutWidth={layoutWidth}
                 layoutHeight={layoutHeight}
                 lineThickness={lineThickness}
-                setLineThickness={setLineThickness}
+                setLineThickness={(newThickness: number) => {
+                  setLineThickness(newThickness);
+                  setLineThicknessStatus(LoadStatusEnum.LOADING);
+                }}
                 setMenuStates={setMenuStates}
                 menuStates={menuStates}
                 measuring={measuring}
@@ -514,6 +520,7 @@ export default function Page() {
                 setCalibrationValidated={setCalibrationValidated}
                 fullScreenTooltipVisible={fullScreenTooltipVisible}
                 pdfLoadStatus={pdfLoadStatus}
+                lineThicknessStatus={lineThicknessStatus}
               />
               <menu className={`${visible(!isCalibrating && file !== null)}`}>
                 <StitchMenu

@@ -89,6 +89,7 @@ export default function Header({
   setCalibrationValidated,
   fullScreenTooltipVisible,
   pdfLoadStatus,
+  lineThicknessStatus,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -107,7 +108,7 @@ export default function Header({
   layoutWidth: number;
   layoutHeight: number;
   lineThickness: number;
-  setLineThickness: Dispatch<SetStateAction<number>>;
+  setLineThickness: (newThickness: number) => void;
   measuring: boolean;
   setMeasuring: Dispatch<SetStateAction<boolean>>;
   menuStates: MenuStates;
@@ -117,6 +118,7 @@ export default function Header({
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
   fullScreenTooltipVisible: boolean;
   pdfLoadStatus: LoadStatusEnum;
+  lineThicknessStatus: LoadStatusEnum;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
@@ -389,6 +391,7 @@ export default function Header({
             )}
             {!isCalibrating && (
               <DropdownIconButton
+                loadStatus={lineThicknessStatus}
                 dropdownClassName="w-fit -left-5"
                 description={t("lineWeight")}
                 icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}

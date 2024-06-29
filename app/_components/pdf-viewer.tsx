@@ -38,6 +38,7 @@ export default function PdfViewer({
   stitchSettings,
   filter,
   setPdfLoadStatus,
+  setLineThicknessStatus,
 }: {
   file: any;
   layers: Layers;
@@ -51,6 +52,7 @@ export default function PdfViewer({
   stitchSettings: StitchSettings;
   filter: string;
   setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
+  setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -82,6 +84,7 @@ export default function PdfViewer({
 
   function onPageRenderSuccess() {
     setPdfLoadStatus(LoadStatusEnum.SUCCESS);
+    setLineThicknessStatus(LoadStatusEnum.SUCCESS);
   }
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
