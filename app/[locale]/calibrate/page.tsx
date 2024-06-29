@@ -438,6 +438,7 @@ export default function Page() {
                   stitchSettings={stitchSettings}
                   filter={themeFilter(displaySettings.theme)}
                   dispatchStitchSettings={dispatchStitchSettings}
+                  gridCenter={getCenterPoint(+width, +height, unitOfMeasure)}
                 />
               </Draggable>
               <OverlayCanvas

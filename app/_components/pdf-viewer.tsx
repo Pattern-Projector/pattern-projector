@@ -18,6 +18,7 @@ import { RenderContext } from "@/_hooks/use-render-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { Layers, getLayersFromPdf } from "@/_lib/layers";
+import { Point } from "@/_lib/point";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -36,6 +37,7 @@ export default function PdfViewer({
   lineThickness,
   stitchSettings,
   filter,
+  gridCenter,
 }: {
   file: any;
   layers: Layers;
@@ -48,6 +50,7 @@ export default function PdfViewer({
   lineThickness: number;
   stitchSettings: StitchSettings;
   filter: string;
+  gridCenter: Point;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -69,12 +72,17 @@ export default function PdfViewer({
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
     const scale = (pdfProxy.userUnit || 1) * PDF_TO_CSS_UNITS;
+    const width = pdfProxy.view[2] * scale;
+    const height = pdfProxy.view[3] * scale;
     setPageSize({
       action: "setPage",
       pageNumber: pdfProxy.pageNumber,
       width: pdfProxy.view[2] * scale,
       height: pdfProxy.view[3] * scale,
     });
+    if (pageCount === 1) {
+      transformer.recenter(gridCenter, width, height);
+    }
   }
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
