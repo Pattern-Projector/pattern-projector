@@ -1,5 +1,11 @@
 import { useTranslations } from "next-intl";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useState,
+} from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -52,6 +58,8 @@ import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
+import LoadingSpinner from "@/_icons/loading-spinner";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
 
 export default function Header({
   isCalibrating,
@@ -80,6 +88,7 @@ export default function Header({
   setShowingMovePad,
   setCalibrationValidated,
   fullScreenTooltipVisible,
+  pdfLoadStatus,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -107,10 +116,18 @@ export default function Header({
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
   fullScreenTooltipVisible: boolean;
+  pdfLoadStatus: LoadStatusEnum;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
   const t = useTranslations("Header");
+
+  const fileInputClassNames = useMemo(() => {
+    if (!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING) {
+      return "outline-gray-50 text-gray-50 bg-gray-500";
+    }
+    return "outline-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white";
+  }, [isCalibrating, pdfLoadStatus]);
 
   function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
     const current = getCalibrationContextUpdatedWithEvent(
@@ -486,19 +503,26 @@ export default function Header({
             <label
               className={`${visible(
                 !isCalibrating,
-              )} flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
+              )} ${fileInputClassNames} flex gap-2 items-center outline focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
             >
               <FileInput
+                disabled={
+                  pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating
+                }
                 accept="application/pdf"
                 className="hidden"
                 handleChange={handleFileChange}
                 id="pdfFile"
               ></FileInput>
-              <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />
+              {pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating ? (
+                <LoadingSpinner classname="mr-1 mt-0.5 w-4 h-4" />
+              ) : (
+                <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />
+              )}
               {t("openPDF")}
             </label>
             <button
-              className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+              className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 flex align-middle"
               onClick={handleCalibrateProjectButtonClick}
             >
               {isCalibrating ? t("project") : t("calibrate")}

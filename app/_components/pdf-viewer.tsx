@@ -17,7 +17,8 @@ import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { RenderContext } from "@/_hooks/use-render-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
-import { Layers, getLayersFromPdf } from "@/_lib/layers";
+import { getLayersFromPdf, Layers } from "@/_lib/layers";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -36,6 +37,7 @@ export default function PdfViewer({
   lineThickness,
   stitchSettings,
   filter,
+  setPdfLoadStatus,
 }: {
   file: any;
   layers: Layers;
@@ -48,6 +50,7 @@ export default function PdfViewer({
   lineThickness: number;
   stitchSettings: StitchSettings;
   filter: string;
+  setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -69,6 +72,7 @@ export default function PdfViewer({
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
     const scale = (pdfProxy.userUnit || 1) * PDF_TO_CSS_UNITS;
+    setPdfLoadStatus(LoadStatusEnum.SUCCESS);
     setPageSize({
       action: "setPage",
       pageNumber: pdfProxy.pageNumber,
