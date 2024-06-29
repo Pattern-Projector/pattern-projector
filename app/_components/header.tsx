@@ -69,7 +69,6 @@ export default function Header({
   setUnitOfMeasure,
   displaySettings,
   setDisplaySettings,
-  pageCount,
   layoutWidth,
   layoutHeight,
   lineThickness,
@@ -100,7 +99,6 @@ export default function Header({
   setUnitOfMeasure: (newUnit: string) => void;
   displaySettings: DisplaySettings;
   setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
-  pageCount: number;
   layoutWidth: number;
   layoutHeight: number;
   lineThickness: number;

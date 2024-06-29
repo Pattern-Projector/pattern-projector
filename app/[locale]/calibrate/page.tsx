@@ -546,7 +546,6 @@ export default function Page() {
                     updateLocalSettings(newSettings);
                   }
                 }}
-                pageCount={pageCount}
                 layoutWidth={layoutWidth}
                 layoutHeight={layoutHeight}
                 lineThickness={lineThickness}
