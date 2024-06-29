@@ -60,8 +60,6 @@ import { Layers } from "@/_lib/layers";
 import useLayers from "@/_hooks/use-layers";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import FullScreenIcon from "@/_icons/full-screen-icon";
-import { set } from "node_modules/cypress/types/lodash";
-import { is } from "node_modules/cypress/types/bluebird";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -516,7 +514,7 @@ export default function Page() {
             </MeasureCanvas>
 
             <menu
-              className={`absolute ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} w-screen`}
+              className={`absolute w-screen pointer-events-auto ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
             >
               <Header
                 isCalibrating={isCalibrating}
@@ -569,7 +567,9 @@ export default function Page() {
                 zoomedOut={zoomedOut}
                 setZoomedOut={setZoomedOut}
               />
-              <menu className={`${visible(!isCalibrating && file !== null)}`}>
+              <menu
+                className={`${visible(!isCalibrating && file !== null)} p-0`}
+              >
                 <StitchMenu
                   className={`${menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
                   setShowMenu={(showMenu) =>

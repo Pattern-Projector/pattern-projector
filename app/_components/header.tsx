@@ -295,7 +295,7 @@ export default function Header({
         </ModalActions>
       </Modal>
       <header
-        className={`relative z-10 bg-white dark:bg-black left-0 w-full border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "translate-y-0" : "-translate-y-16"}`}
+        className={`relative z-10 bg-opacity-80 dark:bg-opacity-70 bg-white dark:bg-black left-0 w-full border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "translate-y-0" : "-translate-y-16"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
@@ -464,6 +464,7 @@ export default function Header({
             </Tooltip>
             <Tooltip description={t("recenter")}>
               <IconButton
+                disabled={zoomedOut}
                 onClick={() => {
                   transformer.reset();
                   transformer.recenter(
@@ -502,7 +503,7 @@ export default function Header({
             <label
               className={`${visible(
                 !isCalibrating,
-              )} flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
+              )} flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 dark:bg-black bg-white hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
             >
               <FileInput
                 accept="application/pdf"

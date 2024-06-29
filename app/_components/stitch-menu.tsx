@@ -2,7 +2,6 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
 import Input from "@/_components/input";
 import { IconButton } from "@/_components/buttons/icon-button";
-import CloseIcon from "@/_icons/close-icon";
 import StepperInput from "@/_components/stepper-input";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
@@ -12,6 +11,7 @@ import { Layers } from "@/_lib/layers";
 import Tooltip from "./tooltip/tooltip";
 import { MenuStates } from "@/_lib/menu-states";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
+import KeyboardArrowLeftIcon from "@/_icons/keyboard-arrow-left";
 
 export default function StitchMenu({
   dispatchStitchSettings,
@@ -52,9 +52,14 @@ export default function StitchMenu({
   return (
     <>
       <menu
-        className={`${className ?? ""} flex justify-between items-center left-0 w-full transition-all duration-700 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 p-2`}
+        className={`${className ?? ""} pointer-events-auto flex justify-between items-center left-0 transition-all duration-700 dark:bg-opacity-70 bg-opacity-80 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 py-2 pr-2`}
       >
-        <div className="flex gap-4 items-end">
+        <div className="gap-2 flex flex-wrap items-end">
+          <Tooltip description={h("stitchMenuHide")} className="z-30">
+            <IconButton onClick={() => setShowMenu(false)} className="h-11">
+              <KeyboardArrowLeftIcon ariaLabel="close" />
+            </IconButton>
+          </Tooltip>
           <Input
             inputClassName="w-36"
             handleChange={(e) =>
@@ -129,13 +134,10 @@ export default function StitchMenu({
             layers={layers}
           />
         </div>
-        <IconButton onClick={() => setShowMenu(false)} className="h-11">
-          <CloseIcon ariaLabel="close" />
-        </IconButton>
       </menu>
       {!menuStates.stitch ? (
         <Tooltip
-          className="m-2 w-10 z-10"
+          className="m-2 w-10 z-30 pointer-events-auto"
           description={
             menuStates.stitch
               ? h("stitchMenuHide")
