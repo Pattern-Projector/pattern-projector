@@ -72,13 +72,16 @@ export default function PdfViewer({
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
     const scale = (pdfProxy.userUnit || 1) * PDF_TO_CSS_UNITS;
-    setPdfLoadStatus(LoadStatusEnum.SUCCESS);
     setPageSize({
       action: "setPage",
       pageNumber: pdfProxy.pageNumber,
       width: pdfProxy.view[2] * scale,
       height: pdfProxy.view[3] * scale,
     });
+  }
+
+  function onPageRenderSuccess() {
+    setPdfLoadStatus(LoadStatusEnum.SUCCESS);
   }
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -140,7 +143,11 @@ export default function PdfViewer({
             >
               {value != 0 && (
                 <RenderContext.Provider
-                  value={{ erosions: lineThickness, layers }}
+                  value={{
+                    erosions: lineThickness,
+                    layers,
+                    onPageRenderSuccess,
+                  }}
                 >
                   <Page
                     scale={PDF_TO_CSS_UNITS}
