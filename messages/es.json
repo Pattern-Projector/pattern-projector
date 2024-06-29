@@ -74,7 +74,7 @@
             },
             "measure": {
                 "title": "Herramienta de línea (L)",
-                "description": "Marque líneas en el archivo PDF para rotar, voltear, mover, medir o marcar."
+                "description": "Marca las líneas en el PDF para girar, voltear, mover, medir o marcar. Para obtener una descripción detallada de la herramienta de línea, consulte la sección <lineToolLink>herramienta de línea</lineToolLink>."
             },
             "lineWeight": {
                 "title": "Grosor de línea",
@@ -89,7 +89,7 @@
                 "description": "Muestra u oculta el menú superior."
             },
             "overlayOptions": {
-                "description": "En el PDF se pueden mostrar cuadrículas, bordes, hojas de papel, líneas invertidas o superposiciones del lado equivocado para ayudar con la calibración y el corte.",
+                "description": "Las superposiciones de la cuadrícula, borde, hoja de papel, líneas de giro o el lado incorrecto se pueden mostrar en el PDF para ayudar con la calibración y el corte. Para obtener más información, consulta la sección <overlayOptionsLink>opciones de superposición</overlayOptionsLink>.",
                 "title": "Mostrar u ocultar líneas de referencia"
             }
         },
@@ -244,7 +244,8 @@
         "checkCalibration": "Comprobar la calibración",
         "calibrationAlert": "El tamaño de la ventana ha cambiado desde que comenzó la proyección, pulse el botón de pantalla completa o recalibre para solucionar este problema.",
         "measure": "Herramienta de línea (L)",
-        "overlayOptionFlippedPattern": "Lado erróneo"
+        "overlayOptionFlippedPattern": "Lado erróneo",
+        "stitchMenuDisabled": "Abra PDF para usar el menú de unión"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
@@ -283,5 +284,10 @@
         "descriptionAndroid": "Para disfrutar de la mejor experiencia en Android, utiliza Firefox. Descarga la aplicación pulsando el botón más <moreIcon></moreIcon> en el menú del navegador y luego <addToHomeScreenIcon></addToHomeScreenIcon> Añadir a la pantalla de inicio.",
         "descriptionIOS": "Descarga la aplicación tocando el botón compartir <shareIcon></shareIcon> en el menú del navegador y luego Agregar a la pantalla de inicio <addBoxIcon></addBoxIcon> .",
         "ok": "De acuerdo"
+    },
+    "SaveMenu": {
+        "save": "Exportar el pdf",
+        "saveTooltip": "Exportar PDF con páginas unidas y capas seleccionadas",
+        "encryptedPDF": "Este PDF está cifrado. Ingresa la contraseña para guardar el PDF unido."
     }
 }

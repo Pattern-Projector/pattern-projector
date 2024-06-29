@@ -7,6 +7,8 @@ import StepperInput from "@/_components/stepper-input";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { allowInteger } from "@/_lib/remove-non-digits";
+import SaveButton from "./save-button";
+import { Layers } from "@/_lib/layers";
 
 export default function StitchMenu({
   dispatchStitchSettings,
@@ -14,12 +16,16 @@ export default function StitchMenu({
   pageCount,
   className,
   setShowMenu,
+  file,
+  layers,
 }: {
   dispatchStitchSettings: Dispatch<StitchSettingsAction>;
   stitchSettings: StitchSettings;
   pageCount: number;
   className?: string;
   setShowMenu: (showMenu: boolean) => void;
+  file: File | null;
+  layers: Layers;
 }) {
   const t = useTranslations("StitchMenu");
 
@@ -37,9 +43,9 @@ export default function StitchMenu({
 
   return (
     <menu
-      className={`${className ?? ""} flex justify-between left-0 w-full transition-all duration-700 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 p-2`}
+      className={`${className ?? ""} flex justify-between items-center left-0 w-full transition-all duration-700 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 p-2`}
     >
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-end">
         <Input
           inputClassName="w-36"
           handleChange={(e) =>
@@ -108,8 +114,13 @@ export default function StitchMenu({
             dispatchStitchSettings({ type: "step-vertical", step: increment })
           }
         />
+        <SaveButton
+          file={file}
+          stitchSettings={stitchSettings}
+          layers={layers}
+        />
       </div>
-      <IconButton onClick={() => setShowMenu(false)}>
+      <IconButton onClick={() => setShowMenu(false)} className="h-11">
         <CloseIcon ariaLabel="close" />
       </IconButton>
     </menu>

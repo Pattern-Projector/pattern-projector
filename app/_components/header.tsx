@@ -33,7 +33,6 @@ import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-check
 import Tooltip from "@/_components/tooltip/tooltip";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
-import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import { useKeyDown } from "@/_hooks/use-key-down";
@@ -278,8 +277,6 @@ export default function Header({
           aria-label="Global"
         >
           <div className="flex items-center gap-2">
-            <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
-
             <Tooltip
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
@@ -306,6 +303,31 @@ export default function Header({
                 onClick={() => setMenuStates({ ...menuStates, nav: false })}
               >
                 <ExpandLessIcon ariaLabel={t("menuHide")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              description={
+                menuStates.stitch
+                  ? t("stitchMenuHide")
+                  : pageCount === 0
+                    ? t("stitchMenuDisabled")
+                    : t("stitchMenuShow")
+              }
+            >
+              <IconButton
+                disabled={pageCount === 0}
+                onClick={() =>
+                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
+                }
+                className={`${menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""} ${visible(!isCalibrating)}`}
+              >
+                <FlexWrapIcon
+                  ariaLabel={
+                    menuStates.stitch
+                      ? t("stitchMenuHide")
+                      : t("stitchMenuShow")
+                  }
+                />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("invertColor")}>
@@ -346,6 +368,16 @@ export default function Header({
                     },
                   });
                 }}
+              />
+            )}
+            {!isCalibrating && (
+              <DropdownIconButton
+                dropdownClassName="w-fit -left-5"
+                description={t("lineWeight")}
+                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                options={lineThicknessOptions}
+                setSelection={setLineThickness}
+                selection={lineThickness}
               />
             )}
           </div>
@@ -412,41 +444,6 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
-            <Tooltip
-              description={
-                menuStates.stitch ? t("stitchMenuHide") : t("stitchMenuShow")
-              }
-              className={`${visible(pageCount > 1)}`}
-            >
-              <IconButton
-                onClick={() =>
-                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
-                }
-                className={
-                  menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""
-                }
-              >
-                <FlexWrapIcon
-                  ariaLabel={
-                    menuStates.stitch
-                      ? t("stitchMenuHide")
-                      : t("stitchMenuShow")
-                  }
-                />
-              </IconButton>
-            </Tooltip>
-
-            {!isCalibrating && (
-              <DropdownIconButton
-                dropdownClassName="w-fit -left-5"
-                description={t("lineWeight")}
-                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
-                options={lineThicknessOptions}
-                setSelection={setLineThickness}
-                selection={lineThickness}
-              />
-            )}
-
             <Tooltip description={t("flipHorizontal")}>
               <IconButton onClick={handleFlipHorizontal}>
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
@@ -514,12 +511,6 @@ export default function Header({
           </div>
         </nav>
       </header>
-      <IconButton
-        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
-        onClick={() => setMenuStates({ ...menuStates, nav: true })}
-      >
-        <ExpandMoreIcon ariaLabel={t("menuShow")} />
-      </IconButton>
     </>
   );
 }
