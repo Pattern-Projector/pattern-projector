@@ -17,7 +17,8 @@ import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { RenderContext } from "@/_hooks/use-render-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
-import { Layers, getLayersFromPdf } from "@/_lib/layers";
+import { getLayersFromPdf, Layers } from "@/_lib/layers";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -36,6 +37,8 @@ export default function PdfViewer({
   lineThickness,
   stitchSettings,
   filter,
+  setPdfLoadStatus,
+  setLineThicknessStatus,
 }: {
   file: any;
   layers: Layers;
@@ -48,6 +51,8 @@ export default function PdfViewer({
   lineThickness: number;
   stitchSettings: StitchSettings;
   filter: string;
+  setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
+  setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -75,6 +80,11 @@ export default function PdfViewer({
       width: pdfProxy.view[2] * scale,
       height: pdfProxy.view[3] * scale,
     });
+  }
+
+  function onPageRenderSuccess() {
+    setPdfLoadStatus(LoadStatusEnum.SUCCESS);
+    setLineThicknessStatus(LoadStatusEnum.SUCCESS);
   }
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -136,7 +146,11 @@ export default function PdfViewer({
             >
               {value != 0 && (
                 <RenderContext.Provider
-                  value={{ erosions: lineThickness, layers }}
+                  value={{
+                    erosions: lineThickness,
+                    layers,
+                    onPageRenderSuccess,
+                  }}
                 >
                   <Page
                     scale={PDF_TO_CSS_UNITS}
