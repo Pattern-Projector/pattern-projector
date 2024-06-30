@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Always show stitch menu button regardless of the number of pages in the PDF
+- Disabled rendering of PDF links
 
 ### Fixed
 
