@@ -20,13 +20,12 @@ import {
 import isValidPDF from "@/_lib/is-valid-pdf";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
-  getDefaultDisplaySettings,
   DisplaySettings,
+  getDefaultDisplaySettings,
   isDarkTheme,
   themeFilter,
 } from "@/_lib/display-settings";
-import { IN, getPtDensity } from "@/_lib/unit";
-import { Layer } from "@/_lib/interfaces/layer";
+import { getPtDensity, IN } from "@/_lib/unit";
 import LayerMenu from "@/_components/layer-menu";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
@@ -55,6 +54,11 @@ import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
+import { Layers } from "@/_lib/layers";
+import useLayers from "@/_hooks/use-layers";
+import ExpandMoreIcon from "@/_icons/expand-more-icon";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
+import LoadingSpinner from "@/_icons/loading-spinner";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -84,14 +88,23 @@ export default function Page() {
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
+  const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
+    LoadStatusEnum.DEFAULT,
+  );
+  const [lineThicknessStatus, setLineThicknessStatus] =
+    useState<LoadStatusEnum>(LoadStatusEnum.DEFAULT);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
   const [file, setFile] = useState<File | null>(null);
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
-  const [pageCount, setPageCount] = useState<number>(1);
+  const [pageCount, setPageCount] = useState<number>(0);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
-  const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
+  const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
+  const setLayers = useCallback(
+    (l: Layers) => dispatchLayersAction({ type: "set-layers", layers: l }),
+    [dispatchLayersAction],
+  );
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
@@ -156,6 +169,7 @@ export default function Page() {
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
       setLineThickness(0);
+      setPdfLoadStatus(LoadStatusEnum.LOADING);
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -402,7 +416,7 @@ export default function Page() {
             />
           )}
 
-          <Transformable>
+          <Transformable fileName={file?.name ?? "default"}>
             <MeasureCanvas
               className={visible(!isCalibrating)}
               perspective={perspective}
@@ -420,6 +434,13 @@ export default function Page() {
                 unitOfMeasure={unitOfMeasure}
                 calibrationTransform={calibrationTransform}
               >
+                {!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING ? (
+                  <LoadingSpinner
+                    height={200}
+                    width={200}
+                    classname="ml-24 mt-24"
+                  />
+                ) : null}
                 <PdfViewer
                   file={file}
                   setPageCount={setPageCount}
@@ -432,6 +453,8 @@ export default function Page() {
                   stitchSettings={stitchSettings}
                   filter={themeFilter(displaySettings.theme)}
                   dispatchStitchSettings={dispatchStitchSettings}
+                  setPdfLoadStatus={setPdfLoadStatus}
+                  setLineThicknessStatus={setLineThicknessStatus}
                 />
               </Draggable>
               <OverlayCanvas
@@ -444,7 +467,9 @@ export default function Page() {
               />
             </MeasureCanvas>
 
-            <menu className={`absolute top-0 w-screen`}>
+            <menu
+              className={`absolute ${menuStates.nav ? "top-0" : "-top-16"} w-screen`}
+            >
               <Header
                 isCalibrating={isCalibrating}
                 setIsCalibrating={setIsCalibrating}
@@ -479,7 +504,10 @@ export default function Page() {
                 layoutWidth={layoutWidth}
                 layoutHeight={layoutHeight}
                 lineThickness={lineThickness}
-                setLineThickness={setLineThickness}
+                setLineThickness={(newThickness: number) => {
+                  setLineThickness(newThickness);
+                  setLineThicknessStatus(LoadStatusEnum.LOADING);
+                }}
                 setMenuStates={setMenuStates}
                 menuStates={menuStates}
                 measuring={measuring}
@@ -491,6 +519,8 @@ export default function Page() {
                 }}
                 setCalibrationValidated={setCalibrationValidated}
                 fullScreenTooltipVisible={fullScreenTooltipVisible}
+                pdfLoadStatus={pdfLoadStatus}
+                lineThicknessStatus={lineThicknessStatus}
               />
               <menu className={`${visible(!isCalibrating && file !== null)}`}>
                 <StitchMenu
@@ -501,6 +531,8 @@ export default function Page() {
                   dispatchStitchSettings={dispatchStitchSettings}
                   stitchSettings={stitchSettings}
                   pageCount={pageCount}
+                  file={file}
+                  layers={layers}
                 />
                 <LayerMenu
                   visible={menuStates.layers}
@@ -508,10 +540,16 @@ export default function Page() {
                     setMenuStates({ ...menuStates, layers: visible })
                   }
                   layers={layers}
-                  setLayers={setLayers}
+                  dispatchLayerAction={dispatchLayersAction}
                 />
               </menu>
             </menu>
+            <IconButton
+              className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
+              onClick={() => setMenuStates({ ...menuStates, nav: true })}
+            >
+              <ExpandMoreIcon ariaLabel={t("menuShow")} />
+            </IconButton>
           </Transformable>
         </FullScreen>
       </div>

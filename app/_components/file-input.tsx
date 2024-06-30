@@ -7,11 +7,13 @@ import { ChangeEvent } from "react";
  * @param name - Name submitted with the form
  */
 export default function FileInput({
+  disabled,
   accept,
   className,
   handleChange,
   id,
 }: {
+  disabled?: boolean;
   accept: string;
   className: string | undefined;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -19,6 +21,7 @@ export default function FileInput({
 }) {
   return (
     <input
+      disabled={disabled}
       accept={accept}
       className={className}
       id={id}

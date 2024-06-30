@@ -12,13 +12,13 @@ import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
-import { Layer } from "@/_lib/interfaces/layer";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { RenderContext } from "@/_hooks/use-render-context";
-import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
+import { getLayersFromPdf, Layers } from "@/_lib/layers";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -27,39 +27,41 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 export default function PdfViewer({
   file,
+  layers,
   setLayers,
   setPageCount,
   setLayoutWidth,
   setLayoutHeight,
   dispatchStitchSettings,
   pageCount,
-  layers,
   lineThickness,
   stitchSettings,
   filter,
+  setPdfLoadStatus,
+  setLineThicknessStatus,
 }: {
   file: any;
-  setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
+  layers: Layers;
+  setLayers: (layers: Layers) => void;
   setPageCount: Dispatch<SetStateAction<number>>;
   setLayoutWidth: Dispatch<SetStateAction<number>>;
   setLayoutHeight: Dispatch<SetStateAction<number>>;
   dispatchStitchSettings: Dispatch<StitchSettingsAction>;
   pageCount: number;
-  layers: Map<string, Layer>;
   lineThickness: number;
   stitchSettings: StitchSettings;
   filter: string;
+  setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
+  setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
     new Map<number, { width: number; height: number }>(),
   );
-  const transformer = useTransformerContext();
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     const numPages = docProxy.numPages;
     setPageCount(numPages);
-    setLayers(new Map());
     setPageSize({ action: "clear" });
     if (stitchSettings.pageRange.endsWith("-") && numPages > 0) {
       dispatchStitchSettings({
@@ -67,7 +69,7 @@ export default function PdfViewer({
         pageRange: stitchSettings.pageRange + numPages,
       });
     }
-    transformer.reset();
+    getLayersFromPdf(docProxy).then((l) => setLayers(l));
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
@@ -78,6 +80,11 @@ export default function PdfViewer({
       width: pdfProxy.view[2] * scale,
       height: pdfProxy.view[3] * scale,
     });
+  }
+
+  function onPageRenderSuccess() {
+    setPdfLoadStatus(LoadStatusEnum.SUCCESS);
+    setLineThicknessStatus(LoadStatusEnum.SUCCESS);
   }
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -139,7 +146,11 @@ export default function PdfViewer({
             >
               {value != 0 && (
                 <RenderContext.Provider
-                  value={{ layers, setLayers, erosions: lineThickness }}
+                  value={{
+                    erosions: lineThickness,
+                    layers,
+                    onPageRenderSuccess,
+                  }}
                 >
                   <Page
                     scale={PDF_TO_CSS_UNITS}

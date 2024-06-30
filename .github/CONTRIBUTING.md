@@ -34,8 +34,9 @@ own issue to propose an improvement or feature.
 Once you know what to program, log in to Github and create a fork of the project. Clone your fork locally like you did
 in the description for getting your local development environment up and running.
 
-Make a local git branch to work in:
+Make a local git branch to work in. It should be based off the `beta` branch:
 
+    git checkout beta
     git checkout -b your-branch-name
 
 Make your changes on this branch, then do
@@ -43,7 +44,7 @@ Make your changes on this branch, then do
     git commit <all files you changed>
     git push
 
-Then go to Github and create pull request (PR) from your branch.
+Then go to Github and create pull request (PR) from your branch into the `beta` branch in the main repository.
 
 Before creating a (PR), make sure to do
 

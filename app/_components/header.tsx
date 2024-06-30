@@ -1,5 +1,11 @@
 import { useTranslations } from "next-intl";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useState,
+} from "react";
 import { FullScreenHandle } from "react-full-screen";
 
 import FileInput from "@/_components/file-input";
@@ -33,7 +39,6 @@ import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-check
 import Tooltip from "@/_components/tooltip/tooltip";
 import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
-import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import { useKeyDown } from "@/_hooks/use-key-down";
@@ -53,6 +58,8 @@ import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
+import LoadingSpinner from "@/_icons/loading-spinner";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
 
 export default function Header({
   isCalibrating,
@@ -81,6 +88,8 @@ export default function Header({
   setShowingMovePad,
   setCalibrationValidated,
   fullScreenTooltipVisible,
+  pdfLoadStatus,
+  lineThicknessStatus,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -99,7 +108,7 @@ export default function Header({
   layoutWidth: number;
   layoutHeight: number;
   lineThickness: number;
-  setLineThickness: Dispatch<SetStateAction<number>>;
+  setLineThickness: (newThickness: number) => void;
   measuring: boolean;
   setMeasuring: Dispatch<SetStateAction<boolean>>;
   menuStates: MenuStates;
@@ -108,10 +117,19 @@ export default function Header({
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
   fullScreenTooltipVisible: boolean;
+  pdfLoadStatus: LoadStatusEnum;
+  lineThicknessStatus: LoadStatusEnum;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
   const t = useTranslations("Header");
+
+  const fileInputClassNames = useMemo(() => {
+    if (!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING) {
+      return "outline-gray-50 text-gray-50 bg-gray-500";
+    }
+    return "outline-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white";
+  }, [isCalibrating, pdfLoadStatus]);
 
   function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
     const current = getCalibrationContextUpdatedWithEvent(
@@ -278,8 +296,6 @@ export default function Header({
           aria-label="Global"
         >
           <div className="flex items-center gap-2">
-            <h1>{isCalibrating ? t("calibrating") : t("projecting")}</h1>
-
             <Tooltip
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
@@ -306,6 +322,31 @@ export default function Header({
                 onClick={() => setMenuStates({ ...menuStates, nav: false })}
               >
                 <ExpandLessIcon ariaLabel={t("menuHide")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              description={
+                menuStates.stitch
+                  ? t("stitchMenuHide")
+                  : pageCount === 0
+                    ? t("stitchMenuDisabled")
+                    : t("stitchMenuShow")
+              }
+            >
+              <IconButton
+                disabled={pageCount === 0}
+                onClick={() =>
+                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
+                }
+                className={`${menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""} ${visible(!isCalibrating)}`}
+              >
+                <FlexWrapIcon
+                  ariaLabel={
+                    menuStates.stitch
+                      ? t("stitchMenuHide")
+                      : t("stitchMenuShow")
+                  }
+                />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("invertColor")}>
@@ -346,6 +387,17 @@ export default function Header({
                     },
                   });
                 }}
+              />
+            )}
+            {!isCalibrating && (
+              <DropdownIconButton
+                loadStatus={lineThicknessStatus}
+                dropdownClassName="w-fit -left-5"
+                description={t("lineWeight")}
+                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
+                options={lineThicknessOptions}
+                setSelection={setLineThickness}
+                selection={lineThickness}
               />
             )}
           </div>
@@ -412,41 +464,6 @@ export default function Header({
             </Tooltip>
           </div>
           <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
-            <Tooltip
-              description={
-                menuStates.stitch ? t("stitchMenuHide") : t("stitchMenuShow")
-              }
-              className={`${visible(pageCount > 1)}`}
-            >
-              <IconButton
-                onClick={() =>
-                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
-                }
-                className={
-                  menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""
-                }
-              >
-                <FlexWrapIcon
-                  ariaLabel={
-                    menuStates.stitch
-                      ? t("stitchMenuHide")
-                      : t("stitchMenuShow")
-                  }
-                />
-              </IconButton>
-            </Tooltip>
-
-            {!isCalibrating && (
-              <DropdownIconButton
-                dropdownClassName="w-fit -left-5"
-                description={t("lineWeight")}
-                icon={<LineWeightIcon ariaLabel={t("lineWeight")} />}
-                options={lineThicknessOptions}
-                setSelection={setLineThickness}
-                selection={lineThickness}
-              />
-            )}
-
             <Tooltip description={t("flipHorizontal")}>
               <IconButton onClick={handleFlipHorizontal}>
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
@@ -489,19 +506,26 @@ export default function Header({
             <label
               className={`${visible(
                 !isCalibrating,
-              )} flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
+              )} ${fileInputClassNames} flex gap-2 items-center outline focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
             >
               <FileInput
+                disabled={
+                  pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating
+                }
                 accept="application/pdf"
                 className="hidden"
                 handleChange={handleFileChange}
                 id="pdfFile"
               ></FileInput>
-              <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />
+              {pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating ? (
+                <LoadingSpinner classname="mr-1 mt-0.5 w-4 h-4" />
+              ) : (
+                <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />
+              )}
               {t("openPDF")}
             </label>
             <button
-              className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+              className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 flex align-middle"
               onClick={handleCalibrateProjectButtonClick}
             >
               {isCalibrating ? t("project") : t("calibrate")}
@@ -514,12 +538,6 @@ export default function Header({
           </div>
         </nav>
       </header>
-      <IconButton
-        className={`!p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
-        onClick={() => setMenuStates({ ...menuStates, nav: true })}
-      >
-        <ExpandMoreIcon ariaLabel={t("menuShow")} />
-      </IconButton>
     </>
   );
 }

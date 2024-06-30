@@ -52,40 +52,42 @@ export default function StepperInput({
     "rounded-none h-11 p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-4 focus:outline-none focus:ring-blue-300 w-12 text-center dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-800 dark:focus:border-blue-800";
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex flex-col">
       <label
         style={{ WebkitUserSelect: "none", userSelect: "none" }}
-        className="text-sm font-medium text-gray-900 dark:text-white mr-1 user-select-none"
+        className="text-sm font-medium text-gray-900 dark:text-white ml-1 user-select-none"
         htmlFor={name}
       >
         {label}
       </label>
-      <button
-        style={{ WebkitUserSelect: "none", userSelect: "none" }}
-        className={`${buttonClassName} rounded-s-lg`}
-        onPointerDown={() => handleStep(-1)}
-        onPointerUp={handleButtonRelease}
-        onPointerLeave={handleButtonRelease}
-      >
-        <StepDownIcon ariaLabel="decrement" />
-      </button>
-      <input
-        onChange={handleChange}
-        inputMode="numeric"
-        value={value}
-        name={name}
-        id={name}
-        className={`${inputClassName} ${inputClass}`}
-      />
-      <button
-        style={{ WebkitUserSelect: "none", userSelect: "none" }}
-        className={`${buttonClassName} rounded-e-lg`}
-        onPointerDown={() => handleStep(1)}
-        onPointerUp={handleButtonRelease}
-        onPointerLeave={handleButtonRelease}
-      >
-        <StepUpIcon ariaLabel="increment" />
-      </button>
+      <div className="flex items-center justify-center">
+        <button
+          style={{ WebkitUserSelect: "none", userSelect: "none" }}
+          className={`${buttonClassName} rounded-s-lg`}
+          onPointerDown={() => handleStep(-1)}
+          onPointerUp={handleButtonRelease}
+          onPointerLeave={handleButtonRelease}
+        >
+          <StepDownIcon ariaLabel="decrement" />
+        </button>
+        <input
+          onChange={handleChange}
+          inputMode="numeric"
+          value={value}
+          name={name}
+          id={name}
+          className={`${inputClassName} ${inputClass}`}
+        />
+        <button
+          style={{ WebkitUserSelect: "none", userSelect: "none" }}
+          className={`${buttonClassName} rounded-e-lg`}
+          onPointerDown={() => handleStep(1)}
+          onPointerUp={handleButtonRelease}
+          onPointerLeave={handleButtonRelease}
+        >
+          <StepUpIcon ariaLabel="increment" />
+        </button>
+      </div>
     </div>
   );
 }

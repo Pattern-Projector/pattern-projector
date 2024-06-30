@@ -23,3 +23,8 @@
     background: #6b7280;
   }
 }
+
+/* Do not display PDF Links https://github.com/Pattern-Projector/pattern-projector/issues/260 */
+.annotationLayer a {
+  display: none !important;
+}
