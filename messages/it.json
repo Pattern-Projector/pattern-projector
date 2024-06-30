@@ -141,7 +141,62 @@
             "title": "FAQ",
             "wrongSizePdf": {
                 "question": "La proiezione del PDF è troppo grande o troppo piccola?"
+            },
+            "annotationSupport": {
+                "question": "Hai il supporto per aggiungere annotazioni?",
+                "answer": "Non ancora, ma è previsto un prossimo rilascio."
+            },
+            "mobileSupport": {
+                "question": "Telefoni cellulari e tablet sono supportati?",
+                "answer": "Anche se è possibile visitare e utilizzare la pagina web su uno smartphone , la dimensione limitata dello schermo la rende difficile da usare. Un migliore supporto mobile è previsto in un prossimo rilascio."
+            },
+            "saveAsApp": {
+                "answer": "Pattern Projector è un Progressive Web App (PWA) quindi può essere salvato come app. Su un desktop, è possibile installarlo utilizzando <googleChromeLink>Chrome</googleChromeLink> o <microsoftEdgeLink>Edge</microsoftEdgeLink>. Su un tablet, apri il menu Condividi e tocca Aggiungi alla schermata iniziale."
             }
-        }
+        },
+        "resources": {
+            "title": "Risorse aggiuntive",
+            "links": {
+                "onePageGuide": {
+                    "title": "Guida di una pagina per Projector Sewing",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
+                },
+                "projectorsForSewing": {
+                    "link": "https://www.facebook.com/groups/481078582801085",
+                    "title": "Gruppo Facebook Projector for Sewing"
+                }
+            }
+        },
+        "contribute": {
+            "develop": "Aiuta a implementare funzionalità e risolvere problemi su <githubLink>GitHub</githubLink>.",
+            "feedback": "Feedback e richieste funzionalità sono i benvenuti!",
+            "donation": "Se vuoi sostenere lo sviluppo di questo strumento, per favore, prendi in considerazione l'idea di<donateLink>comprarmi un caffè</donateLink>!",
+            "translate": "Traduci questo strumento in più lingue utilizzando <weblateLink>Weblate</weblateLink>.",
+            "title": "Contribuisci al progetto"
+        },
+        "contact": "Contattami"
+    },
+    "InstallButton": {
+        "title": "Installa l'app",
+        "ok": "OK",
+        "descriptionAndroid": "Per una migliore esperienza su Android, utilizza Firefox. Scarica l'applicazione toccando più pulsante <moreIcon></moreIcon> nel menu del browser e poi <addToHomeScreenIcon></addToHomeScreenIcon> Aggiungi alla schermata iniziale.",
+        "descriptionIOS": "Scarica l'applicazione toccando il pulsante di condivisione <shareIcon></shareIcon> nel menu del browser e poi Aggiungi alla schermata iniziale <addBoxIcon></addBoxIcon>.",
+        "description": "Per una migliore esperienza, installa Pattern Projector utilizzando <chromeLink>Google Chrome</chromeLink>. In Chrome, scarica l'app toccando <installIcon></installIcon> nella barra degli indirizzi."
+    },
+    "Header": {
+        "width": "L:",
+        "height": "A:",
+        "project": "Proietta",
+        "delete": "Ripristina la calibrazione",
+        "overlayOptionBorder": "Bordi",
+        "overlayOptionFlippedPattern": "Rovescio del cartamodello",
+        "invertColor": "Inverti colori",
+        "invertColorOff": "Inverti colori off",
+        "overlayOptionPaper": "Foglio di carta",
+        "openPDF": "Apri PDF",
+        "calibrate": "Calibra",
+        "overlayOptionDisabled": "Disabilitato",
+        "overlayOptionGrid": "Griglia",
+        "overlayOptions": "Opzioni di sovrapposizione"
     }
 }

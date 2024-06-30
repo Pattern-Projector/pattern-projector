@@ -280,7 +280,7 @@
     },
     "InstallButton": {
         "title": "Instalar aplicación",
-        "description": "Para obtener la mejor experiencia, instale el Proyector de patrones usando <chromeLink> Google Chrome</chromeLink> .",
+        "description": "Para la mejor experiencia, instalar Pattern Projector usando <chromeLink>Google Chrome</chromeLink>. En Chrome, descargar la aplicación pulsando <installIcon></installIcon> en la barra de direcciones.",
         "descriptionAndroid": "Para disfrutar de la mejor experiencia en Android, utiliza Firefox. Descarga la aplicación pulsando el botón más <moreIcon></moreIcon> en el menú del navegador y luego <addToHomeScreenIcon></addToHomeScreenIcon> Añadir a la pantalla de inicio.",
         "descriptionIOS": "Descarga la aplicación tocando el botón compartir <shareIcon></shareIcon> en el menú del navegador y luego Agregar a la pantalla de inicio <addBoxIcon></addBoxIcon> .",
         "ok": "De acuerdo"
