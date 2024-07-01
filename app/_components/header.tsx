@@ -475,25 +475,29 @@ export default function Header({
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
-            <Tooltip description={t("measure")}>
-              <IconButton
-                onClick={() => setMeasuring(!measuring)}
-                className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
-              >
-                <MarkAndMeasureIcon ariaLabel={t("measure")} />
-              </IconButton>
-            </Tooltip>
             <Tooltip description={t("magnify")}>
               <IconButton
                 onClick={() => setMagnifying(!magnifying)}
+                active={magnifying}
                 disabled={zoomedOut}
               >
                 <MagnifyIcon ariaLabel={t("magnify")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("zoomOut")}>
-              <IconButton onClick={() => setZoomedOut(!zoomedOut)}>
+              <IconButton
+                onClick={() => setZoomedOut(!zoomedOut)}
+                active={zoomedOut}
+              >
                 <ZoomOutIcon ariaLabel={t("zoomOut")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={t("measure")}>
+              <IconButton
+                onClick={() => setMeasuring(!measuring)}
+                active={measuring}
+              >
+                <MarkAndMeasureIcon ariaLabel={t("measure")} />
               </IconButton>
             </Tooltip>
           </div>

@@ -15,6 +15,7 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import {
+  RestoreTransforms,
   getCalibrationCenterPoint,
   getPerspectiveTransformFromPoints,
 } from "@/_lib/geometry";
@@ -94,7 +95,8 @@ export default function Page() {
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
-  const [restoreTransform, setRestoreTransform] = useState<Matrix | null>(null);
+  const [restoreTransforms, setRestoreTransforms] =
+    useState<RestoreTransforms | null>(null);
   const [pageCount, setPageCount] = useState<number>(0);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
   const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
@@ -226,7 +228,7 @@ export default function Page() {
       return;
     }
     setZoomedOut(false);
-    setRestoreTransform(null);
+    setRestoreTransforms(null);
     setMagnifying(false);
     setMeasuring(false);
     setPageCount(0); // Reset page count while loading
@@ -469,6 +471,7 @@ export default function Page() {
                 +height,
                 unitOfMeasure,
               )}
+              zoomedOut={zoomedOut}
             >
               <Draggable
                 className={`absolute ${menusHidden && "!cursor-none"} `}
@@ -476,9 +479,11 @@ export default function Page() {
                 isCalibrating={isCalibrating}
                 unitOfMeasure={unitOfMeasure}
                 calibrationTransform={calibrationTransform}
+                setCalibrationTransform={setCalibrationTransform}
+                setPerspective={setPerspective}
                 magnifying={magnifying}
-                setRestoreTransform={setRestoreTransform}
-                restoreTransform={restoreTransform}
+                setRestoreTransforms={setRestoreTransforms}
+                restoreTransforms={restoreTransforms}
                 zoomedOut={zoomedOut}
                 setZoomedOut={setZoomedOut}
                 layoutWidth={layoutWidth}
@@ -488,6 +493,7 @@ export default function Page() {
                   +height,
                   unitOfMeasure,
                 )}
+                menuStates={menuStates}
               >
                 <PdfViewer
                   file={file}
@@ -504,7 +510,7 @@ export default function Page() {
                 />
               </Draggable>
               <OverlayCanvas
-                className="absolute top-0 pointer-events-none"
+                className={`absolute top-0 pointer-events-none ${visible(!zoomedOut)}`}
                 points={points}
                 width={+width}
                 height={+height}
@@ -514,58 +520,60 @@ export default function Page() {
             </MeasureCanvas>
 
             <menu
-              className={`absolute w-screen pointer-events-auto ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
+              className={`absolute w-screen ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
             >
-              <Header
-                isCalibrating={isCalibrating}
-                setIsCalibrating={setIsCalibrating}
-                height={height}
-                width={width}
-                handleHeightChange={handleHeightChange}
-                handleWidthChange={handleWidthChange}
-                handleResetCalibration={() => {
-                  localStorage.setItem(
-                    "calibrationContext",
-                    JSON.stringify(
-                      getCalibrationContext(fullScreenHandle.active),
-                    ),
-                  );
-                  dispatch({ type: "set", points: getDefaultPoints() });
-                }}
-                handleFileChange={handleFileChange}
-                fullScreenHandle={fullScreenHandle}
-                unitOfMeasure={unitOfMeasure}
-                setUnitOfMeasure={(newUnit) => {
-                  setUnitOfMeasure(newUnit);
-                  updateLocalSettings({ unitOfMeasure: newUnit });
-                }}
-                displaySettings={displaySettings}
-                setDisplaySettings={(newSettings) => {
-                  setDisplaySettings(newSettings);
-                  if (newSettings) {
-                    updateLocalSettings(newSettings);
-                  }
-                }}
-                layoutWidth={layoutWidth}
-                layoutHeight={layoutHeight}
-                lineThickness={lineThickness}
-                setLineThickness={setLineThickness}
-                setMenuStates={setMenuStates}
-                menuStates={menuStates}
-                measuring={measuring}
-                setMeasuring={setMeasuring}
-                showingMovePad={showingMovePad}
-                setShowingMovePad={(show) => {
-                  setShowingMovePad(show);
-                  updateLocalSettings({ showingMovePad: show });
-                }}
-                setCalibrationValidated={setCalibrationValidated}
-                fullScreenTooltipVisible={fullScreenTooltipVisible}
-                magnifying={magnifying}
-                setMagnifying={setMagnifying}
-                zoomedOut={zoomedOut}
-                setZoomedOut={setZoomedOut}
-              />
+              <menu className="pointer-events-auto">
+                <Header
+                  isCalibrating={isCalibrating}
+                  setIsCalibrating={setIsCalibrating}
+                  height={height}
+                  width={width}
+                  handleHeightChange={handleHeightChange}
+                  handleWidthChange={handleWidthChange}
+                  handleResetCalibration={() => {
+                    localStorage.setItem(
+                      "calibrationContext",
+                      JSON.stringify(
+                        getCalibrationContext(fullScreenHandle.active),
+                      ),
+                    );
+                    dispatch({ type: "set", points: getDefaultPoints() });
+                  }}
+                  handleFileChange={handleFileChange}
+                  fullScreenHandle={fullScreenHandle}
+                  unitOfMeasure={unitOfMeasure}
+                  setUnitOfMeasure={(newUnit) => {
+                    setUnitOfMeasure(newUnit);
+                    updateLocalSettings({ unitOfMeasure: newUnit });
+                  }}
+                  displaySettings={displaySettings}
+                  setDisplaySettings={(newSettings) => {
+                    setDisplaySettings(newSettings);
+                    if (newSettings) {
+                      updateLocalSettings(newSettings);
+                    }
+                  }}
+                  layoutWidth={layoutWidth}
+                  layoutHeight={layoutHeight}
+                  lineThickness={lineThickness}
+                  setLineThickness={setLineThickness}
+                  setMenuStates={setMenuStates}
+                  menuStates={menuStates}
+                  measuring={measuring}
+                  setMeasuring={setMeasuring}
+                  showingMovePad={showingMovePad}
+                  setShowingMovePad={(show) => {
+                    setShowingMovePad(show);
+                    updateLocalSettings({ showingMovePad: show });
+                  }}
+                  setCalibrationValidated={setCalibrationValidated}
+                  fullScreenTooltipVisible={fullScreenTooltipVisible}
+                  magnifying={magnifying}
+                  setMagnifying={setMagnifying}
+                  zoomedOut={zoomedOut}
+                  setZoomedOut={setZoomedOut}
+                />
+              </menu>
               <menu
                 className={`${visible(!isCalibrating && file !== null)} p-0`}
               >

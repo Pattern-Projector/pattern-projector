@@ -35,6 +35,7 @@ export default function MeasureCanvas({
   setMeasuring,
   file,
   gridCenter,
+  zoomedOut,
   children,
 }: {
   perspective: Matrix;
@@ -45,6 +46,7 @@ export default function MeasureCanvas({
   setMeasuring: Dispatch<SetStateAction<boolean>>;
   file: File | null;
   gridCenter: Point;
+  zoomedOut: boolean;
   children: React.ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -179,7 +181,9 @@ export default function MeasureCanvas({
       matFinal = { x: matAnchor.x + CSS_PIXELS_PER_INCH, y: matAnchor.y };
     }
     const patternFinal = transformPoint(matFinal, inverse(transform));
-    setMeasuring(false);
+    if (!zoomedOut) {
+      setMeasuring(false);
+    }
     patternLine[1] = patternFinal;
     setLines(lines.toSpliced(selectedLine, 1, patternLine));
   };

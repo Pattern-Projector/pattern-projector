@@ -427,13 +427,7 @@ export function getBoundingBox(points: Point[]): {
   };
 }
 
-export function fitPdfToView(
-  layoutWidth: number,
-  layoutHeight: number,
-): Matrix {
-  const s = Math.min(
-    window.innerWidth / layoutWidth,
-    window.innerHeight / layoutHeight,
-  );
-  return scale(s);
+export interface RestoreTransforms {
+  localTransform: Matrix;
+  calibrationTransform: Matrix;
 }

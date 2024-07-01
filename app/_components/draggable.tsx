@@ -7,7 +7,13 @@ import {
   Dispatch,
 } from "react";
 
-import { toMatrix3d, transformPoint, translate } from "@/_lib/geometry";
+import {
+  RestoreTransforms,
+  toMatrix3d,
+  transformPoint,
+  translate,
+  scale,
+} from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
 import { IN } from "@/_lib/unit";
@@ -17,6 +23,8 @@ import {
   useTransformContext,
   useTransformerContext,
 } from "@/_hooks/use-transform-context";
+import { MenuStates } from "@/_lib/menu-states";
+import { inverse } from "ml-matrix";
 
 export default function Draggable({
   children,
@@ -24,30 +32,36 @@ export default function Draggable({
   isCalibrating,
   unitOfMeasure,
   calibrationTransform,
+  setCalibrationTransform,
+  setPerspective,
   className,
   magnifying,
-  restoreTransform,
-  setRestoreTransform,
+  restoreTransforms,
+  setRestoreTransforms,
   zoomedOut,
   setZoomedOut,
   layoutWidth,
   layoutHeight,
   calibrationCenter,
+  menuStates,
 }: {
   children: ReactNode;
   perspective: Matrix;
   isCalibrating: boolean;
   unitOfMeasure: string;
   calibrationTransform: Matrix;
+  setCalibrationTransform: Dispatch<SetStateAction<Matrix>>;
+  setPerspective: Dispatch<SetStateAction<Matrix>>;
   className: string;
   magnifying: boolean;
-  setRestoreTransform: Dispatch<SetStateAction<Matrix | null>>;
-  restoreTransform: Matrix | null;
+  setRestoreTransforms: Dispatch<SetStateAction<RestoreTransforms | null>>;
+  restoreTransforms: RestoreTransforms | null;
   zoomedOut: boolean;
   setZoomedOut: Dispatch<SetStateAction<boolean>>;
   layoutWidth: number;
   layoutHeight: number;
   calibrationCenter: Point;
+  menuStates: MenuStates;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
@@ -59,11 +73,14 @@ export default function Draggable({
 
   const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
   const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
-  const scale = unitOfMeasure === IN ? quarterInchPx : halfCmPx;
 
-  useProgArrowKeyToMatrix(!isCalibrating, scale, (matrix) => {
-    transformer.setLocalTransform(matrix.mmul(transform));
-  });
+  useProgArrowKeyToMatrix(
+    !isCalibrating,
+    unitOfMeasure === IN ? quarterInchPx : halfCmPx,
+    (matrix) => {
+      transformer.setLocalTransform(matrix.mmul(transform));
+    },
+  );
 
   useEffect(() => {
     setMatrix3d(toMatrix3d(calibrationTransform.mmul(transform)));
@@ -102,12 +119,22 @@ export default function Draggable({
     const p = { x: e.clientX, y: e.clientY };
     const pt = transformPoint(p, perspective);
     if (magnifying) {
-      setRestoreTransform(transform.clone());
+      setRestoreTransforms({
+        localTransform: transform.clone(),
+        calibrationTransform: calibrationTransform.clone(),
+      });
       transformer.magnify(5, pt);
-    } else if (restoreTransform !== null) {
-      setRestoreTransform(null);
+    } else if (restoreTransforms !== null) {
+      const dest = transformPoint(p, perspective);
+      const newLocal = translate({
+        x: -dest.x + calibrationCenter.x,
+        y: -dest.y + calibrationCenter.y,
+      });
+      setRestoreTransforms({
+        localTransform: newLocal,
+        calibrationTransform: restoreTransforms.calibrationTransform.clone(),
+      });
       setZoomedOut(false);
-      transformer.zoomIn(p, calibrationCenter);
     } else {
       setDragStart(pt);
       setTransformStart(transform.clone());
@@ -118,35 +145,58 @@ export default function Draggable({
   const viewportCursorMode = `${dragStart !== null ? "grabbing" : "default"}`;
 
   useEffect(() => {
-    if (zoomedOut && restoreTransform === null) {
-      setRestoreTransform(transform.clone());
-      transformer.zoomOut(layoutWidth, layoutHeight, calibrationTransform);
+    if (zoomedOut && restoreTransforms === null) {
+      setRestoreTransforms({
+        localTransform: transform.clone(),
+        calibrationTransform: calibrationTransform.clone(),
+      });
+      const layerMenuWidth = 190;
+      const stitchMenuHeight = 81;
+      const navHeight = 64;
+      const x = menuStates.layers ? layerMenuWidth : 0;
+      const y = menuStates.stitch ? navHeight + stitchMenuHeight : navHeight;
+      const s = Math.min(
+        (window.innerWidth - x) / layoutWidth,
+        (window.innerHeight - y) / layoutHeight,
+      );
+      const scaledTransform = scale(s);
+      const movedTransform = translate({ x, y });
+      const zoomOut = movedTransform.mmul(scaledTransform);
+
+      setCalibrationTransform(zoomOut.clone());
+      setPerspective(inverse(zoomOut.clone()));
+      transformer.setLocalTransform(Matrix.identity(3));
     }
   }, [
     zoomedOut,
     setZoomedOut,
+    transform,
     transformer,
     layoutWidth,
     layoutHeight,
+    restoreTransforms,
+    menuStates,
+    setCalibrationTransform,
+    setPerspective,
     calibrationTransform,
-    transform,
-    setRestoreTransform,
-    restoreTransform,
+    setRestoreTransforms,
   ]);
 
   useEffect(() => {
-    if (!magnifying && !zoomedOut) {
-      if (restoreTransform !== null) {
-        transformer.setLocalTransform(restoreTransform);
-        setRestoreTransform(null);
-      }
+    if (!magnifying && !zoomedOut && restoreTransforms !== null) {
+      transformer.setLocalTransform(restoreTransforms.localTransform);
+      setCalibrationTransform(restoreTransforms.calibrationTransform);
+      setPerspective(inverse(restoreTransforms.calibrationTransform));
+      setRestoreTransforms(null);
     }
   }, [
     magnifying,
     zoomedOut,
-    restoreTransform,
-    setRestoreTransform,
+    restoreTransforms,
+    setRestoreTransforms,
+    setCalibrationTransform,
     transformer,
+    setPerspective,
   ]);
 
   return (
@@ -171,7 +221,7 @@ export default function Draggable({
         <div
           className={"absolute"}
           style={{
-            transform: `${zoomedOut ? `scale(${transform.get(0, 0)})` : matrix3d}`,
+            transform: `${matrix3d}`,
             transformOrigin: "0 0",
           }}
         >
