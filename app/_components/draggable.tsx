@@ -13,6 +13,7 @@ import {
   transformPoint,
   translate,
   scale,
+  scaleAboutPoint,
 } from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
@@ -124,6 +125,8 @@ export default function Draggable({
         calibrationTransform: calibrationTransform.clone(),
       });
       transformer.magnify(5, pt);
+      setDragStart(pt);
+      setTransformStart(scaleAboutPoint(5, pt).mmul(transform));
     } else if (restoreTransforms !== null) {
       const dest = transformPoint(p, perspective);
       const newLocal = translate({
