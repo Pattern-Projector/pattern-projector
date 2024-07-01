@@ -14,15 +14,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Save position by file per browser/device
 - Magnify button to zoom in PDF where tapped or clicked
 - Zoom out button to zoom the whole PDF to be shown on the screen, then click spot on PDF to zoom into that point
+- Auto hide the menus after timeout
 
 ### Changed
 
 - Always show stitch menu button regardless of the number of pages in the PDF
+- Menus are translucent to see pattern through them
+- Stitch menu icon moved to the left (above the layer menu)
+- Stitch menu wraps on smaller devices
 
 ### Fixed
 
 - Close overlay options menu on click outside
 - Warning no longer flashes when dragging on Android, Chromebook, and in Firefox
+- Full screen icon enter/exit swapped to be correct versions
+
+### Removed
+
+- Hide and show main nav (replaced by auto hide)
+- No PDF loaded message
 
 ## [1.0.2] - 2024-05-25
 
