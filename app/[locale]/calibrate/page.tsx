@@ -1,6 +1,6 @@
 "use client";
 
-import { Matrix } from "ml-matrix";
+import { Matrix, inverse } from "ml-matrix";
 import {
   ChangeEvent,
   useCallback,
@@ -229,6 +229,17 @@ export default function Page() {
     }
     setZoomedOut(false);
     setRestoreTransforms(null);
+
+    const m = getPerspectiveTransformFromPoints(
+      points,
+      Number(width),
+      Number(height),
+      getPtDensity(unitOfMeasure),
+      false,
+    );
+
+    setCalibrationTransform(m);
+    setPerspective(inverse(m));
     setMagnifying(false);
     setMeasuring(false);
     setPageCount(0); // Reset page count while loading
@@ -246,7 +257,7 @@ export default function Page() {
         key,
       },
     });
-  }, [file]);
+  }, [file, points, width, height, unitOfMeasure]);
 
   useEffect(() => {
     setMenuStates((m) => getMenuStatesFromLayers(m, layers));
@@ -296,17 +307,11 @@ export default function Page() {
         w,
         h,
         ptDensity,
-        true,
-      );
-      const n = getPerspectiveTransformFromPoints(
-        points,
-        w,
-        h,
-        ptDensity,
         false,
       );
-      setPerspective(m);
-      setCalibrationTransform(n);
+      // TODO: Replace perspective with inverse of calibrationTransform
+      setPerspective(inverse(m));
+      setCalibrationTransform(m);
     }
   }, [points, width, height, unitOfMeasure]);
 
