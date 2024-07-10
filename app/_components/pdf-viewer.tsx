@@ -15,10 +15,12 @@ import CustomRenderer from "@/_components/pdf-custom-renderer";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { RenderContext } from "@/_hooks/use-render-context";
+import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { getLayersFromPdf, Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
+import { Point } from "@/_lib/point";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -39,6 +41,7 @@ export default function PdfViewer({
   filter,
   setPdfLoadStatus,
   setLineThicknessStatus,
+  gridCenter,
 }: {
   file: any;
   layers: Layers;
@@ -53,11 +56,13 @@ export default function PdfViewer({
   filter: string;
   setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
+  gridCenter: Point;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
     new Map<number, { width: number; height: number }>(),
   );
+  const transformer = useTransformerContext();
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     const numPages = docProxy.numPages;
@@ -74,12 +79,17 @@ export default function PdfViewer({
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
     const scale = (pdfProxy.userUnit || 1) * PDF_TO_CSS_UNITS;
+    const width = pdfProxy.view[2] * scale;
+    const height = pdfProxy.view[3] * scale;
     setPageSize({
       action: "setPage",
       pageNumber: pdfProxy.pageNumber,
-      width: pdfProxy.view[2] * scale,
-      height: pdfProxy.view[3] * scale,
+      width,
+      height,
     });
+    if (pageCount === 1) {
+      transformer.recenter(gridCenter, width, height);
+    }
   }
 
   function onPageRenderSuccess() {
