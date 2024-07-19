@@ -227,8 +227,6 @@ export default function Page() {
     if (!file) {
       return;
     }
-    setZoomedOut(false);
-    setRestoreTransforms(null);
 
     const m = getPerspectiveTransformFromPoints(
       points,
@@ -240,9 +238,7 @@ export default function Page() {
 
     setCalibrationTransform(m);
     setPerspective(inverse(m));
-    setMagnifying(false);
-    setMeasuring(false);
-    setPageCount(0); // Reset page count while loading
+
     const key = `stitchSettings:${file.name ?? "default"}`;
     const stitchSettingsString = localStorage.getItem(key);
     if (stitchSettingsString !== null) {
@@ -258,6 +254,14 @@ export default function Page() {
       },
     });
   }, [file, points, width, height, unitOfMeasure]);
+
+  useEffect(() => {
+    setRestoreTransforms(null);
+    setZoomedOut(false);
+    setMagnifying(false);
+    setMeasuring(false);
+    setPageCount(0); // Reset page count while loading
+  }, [file]);
 
   useEffect(() => {
     setMenuStates((m) => getMenuStatesFromLayers(m, layers));
