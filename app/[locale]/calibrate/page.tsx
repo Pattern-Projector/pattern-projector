@@ -374,8 +374,8 @@ export default function Page() {
   }, [isCalibrating, calibrationValidated]);
 
   useEffect(() => {
-    setMenusHidden(isIdle && !isCalibrating);
-  }, [isIdle, isCalibrating]);
+    setMenusHidden(isIdle && !isCalibrating && !zoomedOut);
+  }, [isIdle, isCalibrating, zoomedOut]);
 
   useEffect(() => {
     const interval = setInterval(() => {
