@@ -51,7 +51,8 @@
                 "description": "Mostra o nasconde il menu \"cuci\", che consente di unire insieme più pagine di un cartamodello PDF."
             },
             "measure": {
-                "title": "Strumento Linea (L)"
+                "title": "Strumento Linea (L)",
+                "description": "Crea delle linee nel PDF per ruotare, specchiare, spostare, misurare o contrassegnare. Per una descrizione dettagliata dello strumento linea, visita la<lineToolLink>sezione strumento linea</lineToolLink>."
             }
         },
         "calibration": {
@@ -221,9 +222,51 @@
         "measure": "Strumento Linea (L)",
         "calibrationAlert": "La dimensione della finestra è cambiata da quando è iniziata la proiezione, premi il pulsante schermo intero o ricalibra per risolvere questo problema.",
         "continue": "Salva la dimensione della finestra e continua",
-        "overlayOptionFliplines": "Rifletti linee"
+        "overlayOptionFliplines": "Rifletti linee",
+        "fourCornersOn": "Evidenzia tutti gli angoli",
+        "fourCornersOff": "Evidenzia solo l'angolo selezionato",
+        "fullscreen": "Entra in modalità schermo pieno",
+        "fullscreenExit": "Esci dalla modalità schermo pieno",
+        "stitchMenuShow": "Mostra il menu cuci",
+        "stitchMenuHide": "Nascondi il menu cuci",
+        "stitchMenuDisabled": "Apre il PDF per usare il menu cuci",
+        "showMovement": "Mostra lo strumento muovi",
+        "hideMovement": "Nasconde lo strumento muovi"
     },
     "MeasureCanvas": {
-        "flipAlong": "Rifletti lungo la linea"
+        "flipAlong": "Rifletti lungo la linea",
+        "rotateToHorizontal": "Allinea al centro",
+        "rotateAndCenterPrevious": "Porta la linea precedente al centro",
+        "rotateAndCenterNext": "Porta la linea successiva al centro",
+        "deleteLine": "Cancella la linea",
+        "translate": "Sposta il PDF della lunghezza della linea",
+        "line": "Linea",
+        "lines": "Linee"
+    },
+    "StitchMenu": {
+        "columnCount": "Colonne",
+        "pageRange": "Cuci pagine",
+        "horizontal": "Orizzontale",
+        "vertical": "Verticale"
+    },
+    "SaveMenu": {
+        "save": "Esporta PDF",
+        "saveTooltip": "Esporta PDF con le pagine cucite e i livelli selezionati",
+        "encryptedPDF": "Questo PDF è criptato. Per favore inserisci la password per salvare il PDF cucito."
+    },
+    "LayerMenu": {
+        "title": "Livelli",
+        "showAll": "Mostra tutto",
+        "hideAll": "Nascondi tutto",
+        "layersOn": "Mostra il menu livelli",
+        "layersOff": "Nascondi il menu livelli",
+        "noLayers": "Nessun livello nel PDF"
+    },
+    "MovementPad": {
+        "up": "Su",
+        "down": "Giù",
+        "left": "Sinistra",
+        "right": "Destra",
+        "next": "Angolo successivo"
     }
 }
