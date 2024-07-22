@@ -185,7 +185,19 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
-      setLineThickness(0);
+      setRestoreTransforms(null);
+      setZoomedOut(false);
+      setMagnifying(false);
+      setMeasuring(false);
+      setPageCount(0);
+      const lineThicknessString = localStorage.getItem(
+        `lineThickness:${files[0].name}`,
+      );
+      if (lineThicknessString !== null) {
+        setLineThickness(Number(lineThicknessString));
+      } else {
+        setLineThickness(0);
+      }
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -254,14 +266,6 @@ export default function Page() {
       },
     });
   }, [file, points, width, height, unitOfMeasure]);
-
-  useEffect(() => {
-    setRestoreTransforms(null);
-    setZoomedOut(false);
-    setMagnifying(false);
-    setMeasuring(false);
-    setPageCount(0); // Reset page count while loading
-  }, [file]);
 
   useEffect(() => {
     setMenuStates((m) => getMenuStatesFromLayers(m, layers));
@@ -565,7 +569,15 @@ export default function Page() {
                   layoutWidth={layoutWidth}
                   layoutHeight={layoutHeight}
                   lineThickness={lineThickness}
-                  setLineThickness={setLineThickness}
+                  setLineThickness={(newLineThickness) => {
+                    setLineThickness(newLineThickness);
+                    if (file) {
+                      localStorage.setItem(
+                        `lineThickness:${file.name}`,
+                        String(newLineThickness),
+                      );
+                    }
+                  }}
                   setMenuStates={setMenuStates}
                   menuStates={menuStates}
                   measuring={measuring}
