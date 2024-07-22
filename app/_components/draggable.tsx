@@ -156,12 +156,18 @@ export default function Draggable({
       const layerMenuWidth = 190;
       const stitchMenuHeight = 81;
       const navHeight = 64;
-      const x = menuStates.layers ? layerMenuWidth : 0;
+      let x = menuStates.layers ? layerMenuWidth : 0;
       const y = menuStates.stitch ? navHeight + stitchMenuHeight : navHeight;
+      // scale to fit below/next to the menu
       const s = Math.min(
         (window.innerWidth - x) / layoutWidth,
         (window.innerHeight - y) / layoutHeight,
       );
+      // center the layout
+      if (x + layoutWidth * s < window.innerWidth) {
+        x = (window.innerWidth - layoutWidth * s) / 2;
+      }
+
       const scaledTransform = scale(s);
       const movedTransform = translate({ x, y });
       const zoomOut = movedTransform.mmul(scaledTransform);
