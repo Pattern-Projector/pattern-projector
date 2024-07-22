@@ -36,6 +36,7 @@ export default function MeasureCanvas({
   file,
   gridCenter,
   zoomedOut,
+  menusHidden,
   children,
 }: {
   perspective: Matrix;
@@ -47,6 +48,7 @@ export default function MeasureCanvas({
   file: File | null;
   gridCenter: Point;
   zoomedOut: boolean;
+  menusHidden: boolean;
   children: React.ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -302,6 +304,7 @@ export default function MeasureCanvas({
         handleDeleteLine={handleDeleteLine}
         gridCenter={gridCenter}
         setMeasuring={setMeasuring}
+        menusHidden={menusHidden}
       />
     </div>
   );

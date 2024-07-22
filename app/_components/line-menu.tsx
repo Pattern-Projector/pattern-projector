@@ -26,6 +26,7 @@ export default function LineMenu({
   handleDeleteLine,
   gridCenter,
   setMeasuring,
+  menusHidden,
 }: {
   selectedLine: number;
   setSelectedLine: Dispatch<SetStateAction<number>>;
@@ -34,6 +35,7 @@ export default function LineMenu({
   handleDeleteLine: () => void;
   gridCenter: Point;
   setMeasuring: Dispatch<SetStateAction<boolean>>;
+  menusHidden: boolean;
 }) {
   const t = useTranslations("MeasureCanvas");
   const transformer = useTransformerContext();
@@ -77,7 +79,7 @@ export default function LineMenu({
   return (
     // center menu items horizontally
     <menu
-      className={`absolute justify-center items-center left-0 right-0 bottom-0 flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
+      className={`absolute justify-center items-center left-0 right-0 bottom-0 flex gap-2 p-2 ${visible(selectedLine >= 0 && !menusHidden)}`}
     >
       <div className="flex flex-col items-center">
         <span>{lines.length}</span>

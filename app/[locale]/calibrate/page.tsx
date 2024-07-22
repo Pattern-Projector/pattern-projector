@@ -485,6 +485,7 @@ export default function Page() {
                 unitOfMeasure,
               )}
               zoomedOut={zoomedOut}
+              menusHidden={menusHidden}
             >
               <Draggable
                 className={`absolute ${menusHidden && "!cursor-none"} `}
