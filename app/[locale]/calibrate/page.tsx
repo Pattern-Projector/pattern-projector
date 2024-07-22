@@ -520,6 +520,7 @@ export default function Page() {
                   stitchSettings={stitchSettings}
                   filter={themeFilter(displaySettings.theme)}
                   dispatchStitchSettings={dispatchStitchSettings}
+                  magnifying={magnifying}
                 />
               </Draggable>
               <OverlayCanvas

@@ -12,7 +12,7 @@ import { erodeImageData, erosionFilter } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 
 export default function CustomRenderer() {
-  const { erosions, layers } = useRenderContext();
+  const { erosions, layers, magnifying } = useRenderContext();
   const pageContext = usePageContext();
 
   invariant(pageContext, "Unable to find Page context.");
@@ -25,7 +25,7 @@ export default function CustomRenderer() {
     const ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
   }, []);
-  const filter = isSafari ? "none" : erosionFilter(erosions);
+  const filter = isSafari ? "none" : erosionFilter(magnifying ? 0 : erosions);
 
   // Safari does not support the feMorphology filter in CSS.
   const renderErosions = isSafari ? erosions : 0;

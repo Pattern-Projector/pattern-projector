@@ -36,6 +36,7 @@ export default function PdfViewer({
   lineThickness,
   stitchSettings,
   filter,
+  magnifying,
 }: {
   file: any;
   layers: Layers;
@@ -48,6 +49,7 @@ export default function PdfViewer({
   lineThickness: number;
   stitchSettings: StitchSettings;
   filter: string;
+  magnifying: boolean;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -136,7 +138,7 @@ export default function PdfViewer({
             >
               {value != 0 && (
                 <RenderContext.Provider
-                  value={{ erosions: lineThickness, layers }}
+                  value={{ erosions: lineThickness, layers, magnifying }}
                 >
                   <Page
                     scale={PDF_TO_CSS_UNITS}
