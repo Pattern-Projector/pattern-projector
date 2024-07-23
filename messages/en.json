@@ -270,5 +270,9 @@
     "translate": "Move PDF by line length",
     "line": "line",
     "lines": "lines"
+  },
+  "OverlayCanvas": {
+    "zoomedOut": "click PDF to zoom in",
+    "magnifying": "click PDF to zoom out"
   }
 }

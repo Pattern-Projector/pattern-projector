@@ -39,6 +39,7 @@ export class CanvasState {
     public calibrationTransform: Matrix,
     public zoomedOut: boolean,
     public restoreTransforms: RestoreTransforms | null,
+    public t: any,
   ) {
     this.isConcave = checkIsConcave(this.points);
   }
@@ -116,7 +117,7 @@ export function drawOverlays(cs: CanvasState) {
 
   ctx.strokeStyle = strokeColor(theme);
   if (zoomedOut) {
-    drawViewportOutline(cs);
+    drawZoomedOut(cs);
   } else {
     if (grid) {
       drawGrid(cs, 8, [1]);
@@ -135,6 +136,26 @@ export function drawOverlays(cs: CanvasState) {
       drawFlippedPattern(cs);
     }
   }
+}
+
+function drawZoomedOut(cs: CanvasState) {
+  const { ctx, width, perspective, t } = cs;
+  ctx.save();
+  ctx.fillStyle = "#9333ea";
+  ctx.font = "48px sans-serif";
+  const text = t("zoomedOut");
+  const textWidth = ctx.measureText(text).width;
+  const center = transformPoint(
+    {
+      x: width * 0.5,
+      y: 1,
+    },
+    perspective,
+  );
+  ctx.fillText(text, center.x - textWidth * 0.5, center.y);
+  ctx.restore();
+
+  drawViewportOutline(cs);
 }
 
 function drawViewportOutline(cs: CanvasState) {

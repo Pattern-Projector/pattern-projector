@@ -9,6 +9,7 @@ import {
 } from "@/_lib/geometry";
 import { useTransformContext } from "@/_hooks/use-transform-context";
 import Matrix from "ml-matrix";
+import { useTranslations } from "next-intl";
 
 export default function OverlayCanvas({
   className,
@@ -33,6 +34,9 @@ export default function OverlayCanvas({
 }) {
   const flipped = isFlipped(useTransformContext());
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const t = useTranslations("OverlayCanvas");
+
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
       const canvas = canvasRef.current;
@@ -64,6 +68,7 @@ export default function OverlayCanvas({
           calibrationTransform,
           zoomedOut,
           restoreTransforms,
+          t,
         );
         drawOverlays(cs);
       }
@@ -78,6 +83,7 @@ export default function OverlayCanvas({
     calibrationTransform,
     zoomedOut,
     restoreTransforms,
+    t,
   ]);
   return (
     <canvas
