@@ -525,12 +525,15 @@ export default function Page() {
                 />
               </Draggable>
               <OverlayCanvas
-                className={`absolute top-0 pointer-events-none ${visible(!zoomedOut)}`}
+                className={`absolute top-0 pointer-events-none`}
                 points={points}
                 width={+width}
                 height={+height}
                 unitOfMeasure={unitOfMeasure}
                 displaySettings={displaySettings}
+                calibrationTransform={calibrationTransform}
+                zoomedOut={zoomedOut}
+                restoreTransforms={restoreTransforms}
               />
             </MeasureCanvas>
 

@@ -20,6 +20,7 @@ import { KeyCode } from "@/_lib/key-code";
 import { PointAction } from "@/_reducers/pointsReducer";
 import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
 import { FullScreenHandle } from "react-full-screen";
+import Matrix from "ml-matrix";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const cornerMargin = 96;
@@ -94,6 +95,9 @@ export default function CalibrationCanvas({
           strokeColor(displaySettings.theme),
           displaySettings,
           false,
+          Matrix.identity(3),
+          false,
+          null,
         );
         draw(cs);
       }

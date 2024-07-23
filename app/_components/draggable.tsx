@@ -168,9 +168,7 @@ export default function Draggable({
         x = (window.innerWidth - layoutWidth * s) / 2;
       }
 
-      const scaledTransform = scale(s);
-      const movedTransform = translate({ x, y });
-      const zoomOut = movedTransform.mmul(scaledTransform);
+      const zoomOut = translate({ x, y }).mmul(scale(s));
 
       setCalibrationTransform(zoomOut.clone());
       setPerspective(inverse(zoomOut.clone()));

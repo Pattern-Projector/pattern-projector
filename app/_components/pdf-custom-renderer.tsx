@@ -60,9 +60,6 @@ export default function CustomRenderer() {
   ) {
     // Some iPad's don't support OffscreenCanvas.
     if (!isSafari) {
-      console.log(
-        `Creating new offscreen canvas ${renderWidth}x${renderHeight} ${offscreen.current?.width}x${offscreen.current?.height} ${offscreen.current ? "replacing" : "initializing"}`,
-      );
       offscreen.current = new OffscreenCanvas(renderWidth, renderHeight);
     }
   }

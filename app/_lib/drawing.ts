@@ -7,6 +7,7 @@ import {
   strokeColor,
 } from "@/_lib/display-settings";
 import {
+  RestoreTransforms,
   checkIsConcave,
   rectCorners,
   transformLine,
@@ -35,6 +36,9 @@ export class CanvasState {
     public errorFillPattern: CanvasFillStrokeStyles["fillStyle"],
     public displaySettings: DisplaySettings,
     public isFlipped: boolean,
+    public calibrationTransform: Matrix,
+    public zoomedOut: boolean,
+    public restoreTransforms: RestoreTransforms | null,
   ) {
     this.isConcave = checkIsConcave(this.points);
   }
@@ -101,7 +105,7 @@ export function drawPolygon(
 }
 
 export function drawOverlays(cs: CanvasState) {
-  const { ctx, displaySettings } = cs;
+  const { ctx, displaySettings, zoomedOut } = cs;
   const { grid, border, paper, flipLines, flippedPattern, disabled } =
     displaySettings.overlay;
   const { theme } = displaySettings;
@@ -111,22 +115,47 @@ export function drawOverlays(cs: CanvasState) {
   }
 
   ctx.strokeStyle = strokeColor(theme);
-  if (grid) {
-    drawGrid(cs, 8, [1]);
+  if (zoomedOut) {
+    drawViewportOutline(cs);
+  } else {
+    if (grid) {
+      drawGrid(cs, 8, [1]);
+    }
+    if (border) {
+      drawBorder(cs, strokeColor(theme), fillColor(theme));
+    }
+    if (paper) {
+      ctx.strokeStyle = "black";
+      drawPaperSheet(cs);
+    }
+    if (flipLines) {
+      drawCenterLines(cs);
+    }
+    if (flippedPattern && cs.isFlipped) {
+      drawFlippedPattern(cs);
+    }
   }
-  if (border) {
-    drawBorder(cs, strokeColor(theme), fillColor(theme));
+}
+
+function drawViewportOutline(cs: CanvasState) {
+  const { ctx, calibrationTransform, restoreTransforms } = cs;
+  ctx.save();
+  ctx.strokeStyle = "#9333ea";
+  ctx.lineWidth = 2;
+  let corners = transformPoints(
+    rectCorners(window.innerWidth, window.innerHeight),
+    calibrationTransform,
+  );
+  if (restoreTransforms !== null) {
+    const x = restoreTransforms.localTransform.get(0, 2);
+    const y = restoreTransforms.localTransform.get(1, 2);
+    const s = calibrationTransform.get(0, 0);
+    corners = translatePoints(corners, Math.abs(x) * s, Math.abs(y) * s);
+    drawPolygon(ctx, corners);
+    ctx.stroke();
   }
-  if (paper) {
-    ctx.strokeStyle = "black";
-    drawPaperSheet(cs);
-  }
-  if (flipLines) {
-    drawCenterLines(cs);
-  }
-  if (flippedPattern && cs.isFlipped) {
-    drawFlippedPattern(cs);
-  }
+
+  ctx.restore();
 }
 
 export function drawCenterLines(cs: CanvasState) {
