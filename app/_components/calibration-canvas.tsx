@@ -97,6 +97,8 @@ export default function CalibrationCanvas({
           false,
           Matrix.identity(3),
           false,
+          false,
+          null,
           null,
         );
         draw(cs);

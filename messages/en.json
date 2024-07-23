@@ -273,6 +273,6 @@
   },
   "OverlayCanvas": {
     "zoomedOut": "click PDF to zoom in",
-    "magnifying": "click PDF to zoom out"
+    "magnifying": "click PDF to stop magnifying"
   }
 }

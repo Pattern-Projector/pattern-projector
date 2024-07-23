@@ -38,6 +38,7 @@ export class CanvasState {
     public isFlipped: boolean,
     public calibrationTransform: Matrix,
     public zoomedOut: boolean,
+    public magnifying: boolean,
     public restoreTransforms: RestoreTransforms | null,
     public t: any,
   ) {
@@ -106,7 +107,8 @@ export function drawPolygon(
 }
 
 export function drawOverlays(cs: CanvasState) {
-  const { ctx, displaySettings, zoomedOut } = cs;
+  const { ctx, displaySettings, zoomedOut, t, magnifying, restoreTransforms } =
+    cs;
   const { grid, border, paper, flipLines, flippedPattern, disabled } =
     displaySettings.overlay;
   const { theme } = displaySettings;
@@ -117,7 +119,10 @@ export function drawOverlays(cs: CanvasState) {
 
   ctx.strokeStyle = strokeColor(theme);
   if (zoomedOut) {
-    drawZoomedOut(cs);
+    drawMessage(cs, t("zoomedOut"));
+    drawViewportOutline(cs);
+  } else if (magnifying && restoreTransforms !== null) {
+    drawMessage(cs, t("magnifying"));
   } else {
     if (grid) {
       drawGrid(cs, 8, [1]);
@@ -138,12 +143,12 @@ export function drawOverlays(cs: CanvasState) {
   }
 }
 
-function drawZoomedOut(cs: CanvasState) {
-  const { ctx, width, perspective, t } = cs;
+function drawMessage(cs: CanvasState, message: string) {
+  const { ctx, width, perspective } = cs;
   ctx.save();
   ctx.fillStyle = "#9333ea";
   ctx.font = "48px sans-serif";
-  const text = t("zoomedOut");
+  const text = message;
   const textWidth = ctx.measureText(text).width;
   const center = transformPoint(
     {
@@ -154,8 +159,6 @@ function drawZoomedOut(cs: CanvasState) {
   );
   ctx.fillText(text, center.x - textWidth * 0.5, center.y);
   ctx.restore();
-
-  drawViewportOutline(cs);
 }
 
 function drawViewportOutline(cs: CanvasState) {

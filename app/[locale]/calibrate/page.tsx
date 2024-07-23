@@ -533,6 +533,7 @@ export default function Page() {
                 displaySettings={displaySettings}
                 calibrationTransform={calibrationTransform}
                 zoomedOut={zoomedOut}
+                magnifying={magnifying}
                 restoreTransforms={restoreTransforms}
               />
             </MeasureCanvas>

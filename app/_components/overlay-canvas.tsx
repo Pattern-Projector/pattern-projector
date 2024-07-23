@@ -20,6 +20,7 @@ export default function OverlayCanvas({
   displaySettings,
   calibrationTransform,
   zoomedOut,
+  magnifying,
   restoreTransforms,
 }: {
   className: string | undefined;
@@ -30,6 +31,7 @@ export default function OverlayCanvas({
   displaySettings: DisplaySettings;
   calibrationTransform: Matrix;
   zoomedOut: boolean;
+  magnifying: boolean;
   restoreTransforms: RestoreTransforms | null;
 }) {
   const flipped = isFlipped(useTransformContext());
@@ -67,6 +69,7 @@ export default function OverlayCanvas({
           flipped,
           calibrationTransform,
           zoomedOut,
+          magnifying,
           restoreTransforms,
           t,
         );
@@ -82,6 +85,7 @@ export default function OverlayCanvas({
     flipped,
     calibrationTransform,
     zoomedOut,
+    magnifying,
     restoreTransforms,
     t,
   ]);
