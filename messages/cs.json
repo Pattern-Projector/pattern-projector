@@ -1,1 +1,11 @@
-{}
+{
+    "HomePage": {
+        "github": "Zobrazit zdrojový kód",
+        "calibrate": "Zahájit kalibraci",
+        "choose-language": "Jazyk",
+        "welcome": {
+            "title": "Vítejte v Pattern Projectoru!",
+            "description": "Pattern projector je zdarma a volně šířítelná webová aplikace, která umožňuje rychlou kalibraci projektorů pro šicí vzory. Má také nástroje pro slučování vzorů o více sranách, změnu tloušťky čar, prohození barev, otáčení vzorů a další. Nejnovější updaty jsou zaznamenány v <changeLogLink>changelogu</changeLogLink>."
+        }
+    }
+}
