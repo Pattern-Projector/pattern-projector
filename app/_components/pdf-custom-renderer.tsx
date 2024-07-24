@@ -12,7 +12,8 @@ import { erodeImageData, erosionFilter } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 
 export default function CustomRenderer() {
-  const { erosions, layers, magnifying } = useRenderContext();
+  const { erosions, layers, magnifying, onPageRenderSuccess } =
+    useRenderContext();
   const pageContext = usePageContext();
 
   invariant(pageContext, "Unable to find Page context.");
@@ -121,6 +122,7 @@ export default function CustomRenderer() {
           dest.imageSmoothingEnabled = false;
           dest.filter = filter;
           dest.drawImage(canvas, 0, 0);
+          onPageRenderSuccess();
         }
       })
       .catch(() => {
@@ -144,6 +146,7 @@ export default function CustomRenderer() {
     renderWidth,
     renderHeight,
     isSafari,
+    onPageRenderSuccess,
   ]);
 
   return (

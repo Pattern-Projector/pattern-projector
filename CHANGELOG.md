@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Magnify button to zoom in PDF where tapped or clicked
 - Zoom out button to zoom the whole PDF to be shown on the screen, then click spot on PDF to zoom into that point
 - Auto hide the menus after timeout
+- Status icons that indicate when a PDF is loading and for when line thickness is updated
 
 ### Changed
 
@@ -22,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Menus are translucent to see pattern through them
 - Stitch menu icon moved to the left (above the layer menu)
 - Stitch menu wraps on smaller devices
+- Disabled rendering of PDF links
+- A single page PDF is centered on load
 
 ### Fixed
 

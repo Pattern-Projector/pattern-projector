@@ -22,12 +22,12 @@ import {
 import isValidPDF from "@/_lib/is-valid-pdf";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
-  getDefaultDisplaySettings,
   DisplaySettings,
+  getDefaultDisplaySettings,
   isDarkTheme,
   themeFilter,
 } from "@/_lib/display-settings";
-import { IN, getPtDensity } from "@/_lib/unit";
+import { getPtDensity, IN } from "@/_lib/unit";
 import LayerMenu from "@/_components/layer-menu";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
@@ -57,10 +57,12 @@ import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
 import FullScreenExitIcon from "@/_icons/full-screen-exit-icon";
+import FullScreenIcon from "@/_icons/full-screen-icon";
 import { Layers } from "@/_lib/layers";
 import useLayers from "@/_hooks/use-layers";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
-import FullScreenIcon from "@/_icons/full-screen-icon";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
+import LoadingSpinner from "@/_icons/loading-spinner";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -90,6 +92,11 @@ export default function Page() {
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
+  const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
+    LoadStatusEnum.DEFAULT,
+  );
+  const [lineThicknessStatus, setLineThicknessStatus] =
+    useState<LoadStatusEnum>(LoadStatusEnum.DEFAULT);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
   const [file, setFile] = useState<File | null>(null);
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
@@ -185,34 +192,7 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
-      setRestoreTransforms(null);
-      setZoomedOut(false);
-      setMagnifying(false);
-      setMeasuring(false);
-      setPageCount(0);
-      const lineThicknessString = localStorage.getItem(
-        `lineThickness:${files[0].name}`,
-      );
-      if (lineThicknessString !== null) {
-        setLineThickness(Number(lineThicknessString));
-      } else {
-        setLineThickness(0);
-      }
-
-      const key = `stitchSettings:${files[0].name ?? "default"}`;
-      const stitchSettingsString = localStorage.getItem(key);
-      if (stitchSettingsString !== null) {
-        const stitchSettings = JSON.parse(stitchSettingsString);
-        dispatchStitchSettings({ type: "set", stitchSettings });
-        return;
-      }
-      dispatchStitchSettings({
-        type: "set",
-        stitchSettings: {
-          ...defaultStitchSettings,
-          key,
-        },
-      });
+      setLineThickness(0);
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -482,6 +462,13 @@ export default function Page() {
                 )}
                 menuStates={menuStates}
               >
+                {!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING ? (
+                  <LoadingSpinner
+                    height={200}
+                    width={200}
+                    classname="ml-24 mt-24"
+                  />
+                ) : null}
                 <PdfViewer
                   file={file}
                   setPageCount={setPageCount}
@@ -494,7 +481,14 @@ export default function Page() {
                   stitchSettings={stitchSettings}
                   filter={themeFilter(displaySettings.theme)}
                   dispatchStitchSettings={dispatchStitchSettings}
+                  setLineThicknessStatus={setLineThicknessStatus}
+                  setPdfLoadStatus={setPdfLoadStatus}
                   magnifying={magnifying}
+                  gridCenter={getCalibrationCenterPoint(
+                    +width,
+                    +height,
+                    unitOfMeasure,
+                  )}
                 />
               </Draggable>
               <OverlayCanvas
@@ -572,6 +566,8 @@ export default function Page() {
                   setMagnifying={setMagnifying}
                   zoomedOut={zoomedOut}
                   setZoomedOut={setZoomedOut}
+                  pdfLoadStatus={pdfLoadStatus}
+                  lineThicknessStatus={lineThicknessStatus}
                 />
               </menu>
               <menu
