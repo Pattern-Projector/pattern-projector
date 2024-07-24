@@ -32,15 +32,13 @@ import {
 } from "@/_lib/display-settings";
 import { CM, IN } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
-import { getCenterPoint } from "@/_lib/geometry";
+import { getCalibrationCenterPoint } from "@/_lib/geometry";
 import { visible } from "@/_components/theme/css-functions";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { DropdownCheckboxIconButton } from "@/_components/buttons/dropdown-checkbox-icon-button";
 import Tooltip from "@/_components/tooltip/tooltip";
-import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
 import ExpandLessIcon from "@/_icons/expand-less-icon";
 import LineWeightIcon from "@/_icons/line-weight-icon";
-import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { MenuStates } from "@/_lib/menu-states";
@@ -58,6 +56,10 @@ import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
+import MagnifyIcon from "@/_icons/magnify-icon";
+import ZoomOutIcon from "@/_icons/zoom-out-icon";
+import FullSceenExitIcon from "@/_icons/full-screen-exit-icon";
+import FullScreenIcon from "@/_icons/full-screen-icon";
 import LoadingSpinner from "@/_icons/loading-spinner";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 
@@ -75,7 +77,6 @@ export default function Header({
   setUnitOfMeasure,
   displaySettings,
   setDisplaySettings,
-  pageCount,
   layoutWidth,
   layoutHeight,
   lineThickness,
@@ -88,6 +89,10 @@ export default function Header({
   setShowingMovePad,
   setCalibrationValidated,
   fullScreenTooltipVisible,
+  magnifying,
+  setMagnifying,
+  zoomedOut,
+  setZoomedOut,
   pdfLoadStatus,
   lineThicknessStatus,
 }: {
@@ -104,7 +109,6 @@ export default function Header({
   setUnitOfMeasure: (newUnit: string) => void;
   displaySettings: DisplaySettings;
   setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
-  pageCount: number;
   layoutWidth: number;
   layoutHeight: number;
   lineThickness: number;
@@ -117,6 +121,10 @@ export default function Header({
   setShowingMovePad: Dispatch<SetStateAction<boolean>>;
   setCalibrationValidated: Dispatch<SetStateAction<boolean>>;
   fullScreenTooltipVisible: boolean;
+  magnifying: boolean;
+  setMagnifying: Dispatch<SetStateAction<boolean>>;
+  zoomedOut: boolean;
+  setZoomedOut: Dispatch<SetStateAction<boolean>>;
   pdfLoadStatus: LoadStatusEnum;
   lineThicknessStatus: LoadStatusEnum;
 }) {
@@ -171,20 +179,27 @@ export default function Header({
   }
 
   const handleRotate90 = () => {
-    transformer.rotate(getCenterPoint(+width, +height, unitOfMeasure), 90);
+    transformer.rotate(
+      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+      90,
+    );
   };
 
   const handleFlipHorizontal = () => {
-    transformer.flipHorizontal(getCenterPoint(+width, +height, unitOfMeasure));
+    transformer.flipHorizontal(
+      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+    );
   };
 
   const handleFlipVertical = () => {
-    transformer.flipVertical(getCenterPoint(+width, +height, unitOfMeasure));
+    transformer.flipVertical(
+      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+    );
   };
 
   const handleRecenter = () => {
     transformer.recenter(
-      getCenterPoint(+width, +height, unitOfMeasure),
+      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
       layoutWidth,
       layoutHeight,
     );
@@ -262,7 +277,15 @@ export default function Header({
 
   useKeyDown(() => {
     setMeasuring(!measuring);
+  }, [KeyCode.KeyL]);
+
+  useKeyDown(() => {
+    setMagnifying(!magnifying);
   }, [KeyCode.KeyM]);
+
+  useKeyDown(() => {
+    setZoomedOut(!zoomedOut);
+  }, [KeyCode.KeyZ]);
 
   return (
     <>
@@ -289,13 +312,13 @@ export default function Header({
         </ModalActions>
       </Modal>
       <header
-        className={`relative z-10 bg-white dark:bg-black left-0 w-full border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "translate-y-0" : "-translate-y-16"}`}
+        className={`relative z-10 bg-opacity-80 dark:bg-opacity-70 bg-white dark:bg-black left-0 w-full border-b dark:border-gray-700 transition-all duration-500 h-16 flex items-center ${menuStates.nav ? "translate-y-0" : "-translate-y-16"}`}
       >
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 w-full"
           aria-label="Global"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Tooltip
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
@@ -310,43 +333,21 @@ export default function Header({
                 }
               >
                 {fullScreenHandle.active ? (
-                  <FullscreenExitIcon ariaLabel={t("fullscreen")} />
+                  <FullScreenIcon ariaLabel={t("fullscreen")} />
                 ) : (
-                  <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
+                  <FullSceenExitIcon ariaLabel={t("fullscreenExit")} />
                 )}
               </IconButton>
             </Tooltip>
-            <Tooltip description={t("menuHide")}>
+            <Tooltip
+              description={t("menuHide")}
+              className={visible(isCalibrating)}
+            >
               <IconButton
                 className={`!p-1 border-2 border-black dark:border-white`}
                 onClick={() => setMenuStates({ ...menuStates, nav: false })}
               >
                 <ExpandLessIcon ariaLabel={t("menuHide")} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              description={
-                menuStates.stitch
-                  ? t("stitchMenuHide")
-                  : pageCount === 0
-                    ? t("stitchMenuDisabled")
-                    : t("stitchMenuShow")
-              }
-            >
-              <IconButton
-                disabled={pageCount === 0}
-                onClick={() =>
-                  setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
-                }
-                className={`${menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""} ${visible(!isCalibrating)}`}
-              >
-                <FlexWrapIcon
-                  ariaLabel={
-                    menuStates.stitch
-                      ? t("stitchMenuHide")
-                      : t("stitchMenuShow")
-                  }
-                />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("invertColor")}>
@@ -401,7 +402,7 @@ export default function Header({
               />
             )}
           </div>
-          <div className={`flex items-center gap-2 ${visible(isCalibrating)}`}>
+          <div className={`flex items-center gap-1 ${visible(isCalibrating)}`}>
             <div className="flex gap-1">
               <InlineInput
                 className="relative flex flex-col"
@@ -463,28 +464,38 @@ export default function Header({
               </IconButton>
             </Tooltip>
           </div>
-          <div className={`flex items-center gap-2 ${visible(!isCalibrating)}`}>
+          <div className={`flex items-center gap-1 ${visible(!isCalibrating)}`}>
             <Tooltip description={t("flipHorizontal")}>
-              <IconButton onClick={handleFlipHorizontal}>
+              <IconButton
+                onClick={handleFlipHorizontal}
+                disabled={zoomedOut || magnifying}
+              >
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
-              <IconButton onClick={handleFlipVertical}>
+              <IconButton
+                onClick={handleFlipVertical}
+                disabled={zoomedOut || magnifying}
+              >
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>
-              <IconButton onClick={handleRotate90}>
+              <IconButton
+                onClick={handleRotate90}
+                disabled={zoomedOut || magnifying}
+              >
                 <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("recenter")}>
               <IconButton
+                disabled={zoomedOut || magnifying}
                 onClick={() => {
                   transformer.reset();
                   transformer.recenter(
-                    getCenterPoint(+width, +height, unitOfMeasure),
+                    getCalibrationCenterPoint(+width, +height, unitOfMeasure),
                     layoutWidth,
                     layoutHeight,
                   );
@@ -493,20 +504,39 @@ export default function Header({
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
+            <Tooltip description={t("magnify")}>
+              <IconButton
+                onClick={() => setMagnifying(!magnifying)}
+                active={magnifying}
+                disabled={zoomedOut}
+              >
+                <MagnifyIcon ariaLabel={t("magnify")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={t("zoomOut")}>
+              <IconButton
+                onClick={() => setZoomedOut(!zoomedOut)}
+                active={zoomedOut}
+                disabled={magnifying}
+              >
+                <ZoomOutIcon ariaLabel={t("zoomOut")} />
+              </IconButton>
+            </Tooltip>
             <Tooltip description={t("measure")}>
               <IconButton
                 onClick={() => setMeasuring(!measuring)}
-                className={`${measuring ? "!bg-gray-300 dark:!bg-gray-700" : ""}`}
+                active={measuring}
+                disabled={magnifying}
               >
                 <MarkAndMeasureIcon ariaLabel={t("measure")} />
               </IconButton>
             </Tooltip>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <label
               className={`${visible(
                 !isCalibrating,
-              )} ${fileInputClassNames} flex gap-2 items-center outline focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
+              )} flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 dark:bg-black bg-white hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center ${fileInputClassNames} flex gap-2 items-center outline focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
             >
               <FileInput
                 disabled={
@@ -518,7 +548,7 @@ export default function Header({
                 id="pdfFile"
               ></FileInput>
               {pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating ? (
-                <LoadingSpinner classname="mr-1 mt-0.5 w-4 h-4" />
+                <LoadingSpinner className="mr-1 mt-0.5 w-4 h-4" />
               ) : (
                 <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />
               )}
@@ -530,7 +560,7 @@ export default function Header({
             >
               {isCalibrating ? t("project") : t("calibrate")}
             </button>
-            <Tooltip description={t("info")}>
+            <Tooltip description={t("info")} className={visible(isCalibrating)}>
               <IconButton href="/">
                 <InfoIcon ariaLabel={t("info")} />
               </IconButton>

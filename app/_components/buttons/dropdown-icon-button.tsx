@@ -52,7 +52,7 @@ export function DropdownIconButton<T>({
       ref={containerRef}
     >
       {loadStatus === LoadStatusEnum.LOADING ? (
-        <LoadingSpinner classname="absolute top-3.5 m-auto left-0 right-0 h-4 w-4 z-10" />
+        <LoadingSpinner className="absolute top-3.5 m-auto left-0 right-0 h-4 w-4 z-10" />
       ) : null}
       <Tooltip
         description={description}
