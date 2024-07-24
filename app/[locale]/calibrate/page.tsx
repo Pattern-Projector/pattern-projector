@@ -192,7 +192,35 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
-      setLineThickness(0);
+      setPdfLoadStatus(LoadStatusEnum.LOADING);
+      setRestoreTransforms(null);
+      setZoomedOut(false);
+      setMagnifying(false);
+      setMeasuring(false);
+      setPageCount(0);
+      const lineThicknessString = localStorage.getItem(
+        `lineThickness:${files[0].name}`,
+      );
+      if (lineThicknessString !== null) {
+        setLineThickness(Number(lineThicknessString));
+      } else {
+        setLineThickness(0);
+      }
+
+      const key = `stitchSettings:${files[0].name ?? "default"}`;
+      const stitchSettingsString = localStorage.getItem(key);
+      if (stitchSettingsString !== null) {
+        const stitchSettings = JSON.parse(stitchSettingsString);
+        dispatchStitchSettings({ type: "set", stitchSettings });
+        return;
+      }
+      dispatchStitchSettings({
+        type: "set",
+        stitchSettings: {
+          ...defaultStitchSettings,
+          key,
+        },
+      });
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -331,8 +359,14 @@ export default function Page() {
   }, [isCalibrating, calibrationValidated]);
 
   useEffect(() => {
-    setMenusHidden(isIdle && !isCalibrating && !zoomedOut && file !== null);
-  }, [isIdle, isCalibrating, zoomedOut, file]);
+    setMenusHidden(
+      isIdle &&
+        !isCalibrating &&
+        !zoomedOut &&
+        file !== null &&
+        pdfLoadStatus !== LoadStatusEnum.LOADING,
+    );
+  }, [isIdle, isCalibrating, zoomedOut, file, pdfLoadStatus]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -462,13 +496,6 @@ export default function Page() {
                 )}
                 menuStates={menuStates}
               >
-                {!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING ? (
-                  <LoadingSpinner
-                    height={200}
-                    width={200}
-                    classname="ml-24 mt-24"
-                  />
-                ) : null}
                 <PdfViewer
                   file={file}
                   setPageCount={setPageCount}
@@ -602,6 +629,13 @@ export default function Page() {
             >
               <ExpandMoreIcon ariaLabel={t("menuShow")} />
             </IconButton>
+            {!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING ? (
+              <LoadingSpinner
+                height={100}
+                width={100}
+                className="absolute left-1/2 top-1/2"
+              />
+            ) : null}
           </Transformable>
         </FullScreen>
       </div>

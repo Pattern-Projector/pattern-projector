@@ -88,6 +88,7 @@ export default function CustomRenderer() {
 
     const ctx = canvas.getContext("2d", {
       alpha: false,
+      willReadFrequently: true,
     }) as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
     if (!ctx) {
       return;
