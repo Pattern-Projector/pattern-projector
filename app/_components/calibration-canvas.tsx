@@ -242,7 +242,6 @@ export default function CalibrationCanvas({
      * the localStorage of the points to invalid values */
     if (dragPoint === null) return;
 
-    localStorage.setItem("points", JSON.stringify(localPoints));
     localStorage.setItem(
       "calibrationContext",
       JSON.stringify(

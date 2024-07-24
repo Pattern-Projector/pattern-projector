@@ -279,9 +279,9 @@ export default function Page() {
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
-      dispatch({ type: "initialize", points: JSON.parse(localPoints) });
+      dispatch({ type: "set", points: JSON.parse(localPoints) });
     } else {
-      dispatch({ type: "initialize", points: getDefaultPoints() });
+      dispatch({ type: "set", points: getDefaultPoints() });
     }
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
