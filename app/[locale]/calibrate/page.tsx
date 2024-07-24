@@ -360,12 +360,6 @@ export default function Page() {
     setMenusHidden(false);
   }
 
-  function handlePointerUp() {
-    if (magnifying) {
-      setMagnifying(false);
-    }
-  }
-
   function handlePointerMove() {
     resetIdle();
     setMenusHidden(false);
@@ -407,7 +401,6 @@ export default function Page() {
   return (
     <main
       onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
       onPointerMove={handlePointerMove}
       ref={noZoomRefCallback}
       className={`${menusHidden && "cursor-none"} ${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
@@ -496,6 +489,7 @@ export default function Page() {
                 setCalibrationTransform={setCalibrationTransform}
                 setPerspective={setPerspective}
                 magnifying={magnifying}
+                setMagnifying={setMagnifying}
                 setRestoreTransforms={setRestoreTransforms}
                 restoreTransforms={restoreTransforms}
                 zoomedOut={zoomedOut}

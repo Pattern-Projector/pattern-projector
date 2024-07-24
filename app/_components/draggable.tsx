@@ -37,6 +37,7 @@ export default function Draggable({
   setPerspective,
   className,
   magnifying,
+  setMagnifying,
   restoreTransforms,
   setRestoreTransforms,
   zoomedOut,
@@ -55,6 +56,7 @@ export default function Draggable({
   setPerspective: Dispatch<SetStateAction<Matrix>>;
   className: string;
   magnifying: boolean;
+  setMagnifying: Dispatch<SetStateAction<boolean>>;
   setRestoreTransforms: Dispatch<SetStateAction<RestoreTransforms | null>>;
   restoreTransforms: RestoreTransforms | null;
   zoomedOut: boolean;
@@ -120,13 +122,17 @@ export default function Draggable({
     const p = { x: e.clientX, y: e.clientY };
     const pt = transformPoint(p, perspective);
     if (magnifying) {
-      setRestoreTransforms({
-        localTransform: transform.clone(),
-        calibrationTransform: calibrationTransform.clone(),
-      });
-      transformer.magnify(5, pt);
-      setDragStart(pt);
-      setTransformStart(scaleAboutPoint(5, pt).mmul(transform));
+      if (restoreTransforms === null) {
+        setRestoreTransforms({
+          localTransform: transform.clone(),
+          calibrationTransform: calibrationTransform.clone(),
+        });
+        transformer.magnify(5, pt);
+        setDragStart(pt);
+        setTransformStart(scaleAboutPoint(5, pt).mmul(transform));
+      } else {
+        setMagnifying(false);
+      }
     } else if (restoreTransforms !== null) {
       const dest = transformPoint(p, perspective);
       const newLocal = translate({
@@ -144,7 +150,18 @@ export default function Draggable({
     }
   }
 
-  const cursorMode = `${dragStart !== null ? "grabbing" : magnifying || zoomedOut ? "zoom-in" : "grab"}`;
+  let cursorMode = "grab";
+
+  if (zoomedOut || magnifying) {
+    cursorMode = "zoom-in";
+  }
+  if (magnifying && restoreTransforms !== null) {
+    cursorMode = "zoom-out";
+  }
+  if (dragStart !== null) {
+    cursorMode = "grabbing";
+  }
+
   const viewportCursorMode = `${dragStart !== null ? "grabbing" : "default"}`;
 
   useEffect(() => {
