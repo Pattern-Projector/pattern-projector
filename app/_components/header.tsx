@@ -548,7 +548,7 @@ export default function Header({
                 id="pdfFile"
               ></FileInput>
               {pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating ? (
-                <LoadingSpinner classname="mr-1 mt-0.5 w-4 h-4" />
+                <LoadingSpinner className="mr-1 mt-0.5 w-4 h-4" />
               ) : (
                 <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />
               )}
