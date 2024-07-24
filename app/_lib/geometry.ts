@@ -136,6 +136,24 @@ export function rectCorners(width: number, height: number): Point[] {
   ];
 }
 
+export function getBounds(pts: Point[]): Point[] {
+  const first = pts[0];
+  let minX = first.x;
+  let minY = first.y;
+  let maxX = first.x;
+  let maxY = first.y;
+  for (const { x, y } of pts) {
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x);
+    maxY = Math.max(maxY, y);
+  }
+  return [
+    { x: minX, y: minY },
+    { x: maxX, y: maxY },
+  ];
+}
+
 function getDstVertices(
   width: number,
   height: number,

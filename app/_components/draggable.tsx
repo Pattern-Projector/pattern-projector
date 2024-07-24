@@ -14,6 +14,9 @@ import {
   translate,
   scale,
   scaleAboutPoint,
+  transformPoints,
+  getBounds,
+  rectCorners,
 } from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
@@ -134,11 +137,13 @@ export default function Draggable({
         setMagnifying(false);
       }
     } else if (restoreTransforms !== null) {
-      const dest = transformPoint(p, perspective);
+      // zoomed out, so we need to zoom in
+      const oldLocal = restoreTransforms.localTransform;
+      const dest = transformPoint(transformPoint(p, perspective), oldLocal);
       const newLocal = translate({
         x: -dest.x + calibrationCenter.x,
         y: -dest.y + calibrationCenter.y,
-      });
+      }).mmul(oldLocal);
       setRestoreTransforms({
         localTransform: newLocal,
         calibrationTransform: restoreTransforms.calibrationTransform.clone(),
@@ -175,17 +180,29 @@ export default function Draggable({
       const navHeight = 64;
       let x = menuStates.layers ? layerMenuWidth : 0;
       const y = menuStates.stitch ? navHeight + stitchMenuHeight : navHeight;
+
+      // get four corners layout width and height
+      // transform the four corners to the perspective
+      // find the min and max x and y
+      const [min, max] = getBounds(
+        transformPoints(rectCorners(layoutWidth, layoutHeight), transform),
+      );
+      const w = max.x - min.x;
+      const h = max.y - min.y;
       // scale to fit below/next to the menu
       const s = Math.min(
-        (window.innerWidth - x) / layoutWidth,
-        (window.innerHeight - y) / layoutHeight,
+        (window.innerWidth - x) / w,
+        (window.innerHeight - y) / h,
       );
       // center the layout
-      if (x + layoutWidth * s < window.innerWidth) {
-        x = (window.innerWidth - layoutWidth * s) / 2;
+      if (x + w * s < window.innerWidth) {
+        x = (window.innerWidth - w * s) / 2;
       }
 
-      const zoomOut = translate({ x, y }).mmul(scale(s));
+      const zoomOut = translate({ x, y })
+        .mmul(scale(s))
+        .mmul(translate({ x: -min.x, y: -min.y }))
+        .mmul(transform);
 
       setCalibrationTransform(zoomOut.clone());
       setPerspective(inverse(zoomOut.clone()));
