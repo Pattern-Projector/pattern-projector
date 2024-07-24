@@ -146,7 +146,6 @@ export default function CustomRenderer() {
     renderWidth,
     renderHeight,
     isSafari,
-    onPageRenderSuccess,
   ]);
 
   return (
