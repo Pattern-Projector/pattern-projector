@@ -12,7 +12,8 @@ import { erodeImageData, erosionFilter } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 
 export default function CustomRenderer() {
-  const { erosions, layers, onPageRenderSuccess } = useRenderContext();
+  const { erosions, layers, magnifying, onPageRenderSuccess } =
+    useRenderContext();
   const pageContext = usePageContext();
 
   invariant(pageContext, "Unable to find Page context.");
@@ -25,7 +26,7 @@ export default function CustomRenderer() {
     const ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
   }, []);
-  const filter = isSafari ? "none" : erosionFilter(erosions);
+  const filter = isSafari ? "none" : erosionFilter(magnifying ? 0 : erosions);
 
   // Safari does not support the feMorphology filter in CSS.
   const renderErosions = isSafari ? erosions : 0;
@@ -60,9 +61,6 @@ export default function CustomRenderer() {
   ) {
     // Some iPad's don't support OffscreenCanvas.
     if (!isSafari) {
-      console.log(
-        `Creating new offscreen canvas ${renderWidth}x${renderHeight} ${offscreen.current?.width}x${offscreen.current?.height} ${offscreen.current ? "replacing" : "initializing"}`,
-      );
       offscreen.current = new OffscreenCanvas(renderWidth, renderHeight);
     }
   }
@@ -90,6 +88,7 @@ export default function CustomRenderer() {
 
     const ctx = canvas.getContext("2d", {
       alpha: false,
+      willReadFrequently: true,
     }) as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
     if (!ctx) {
       return;

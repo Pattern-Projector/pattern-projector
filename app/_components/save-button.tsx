@@ -52,7 +52,7 @@ export default function SaveButton({
   return (
     <Tooltip description={t("saveTooltip")}>
       <button
-        className="flex h-11 gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center"
+        className="flex h-11 gap-2 items-center outline outline-purple-600 text-purple-600 dark:bg-black bg-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center"
         onClick={handleSave}
       >
         <DownloadIcon ariaLabel={t("save")} />

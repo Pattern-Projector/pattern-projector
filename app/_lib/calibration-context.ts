@@ -119,13 +119,28 @@ export function getIsInvalidatedCalibrationContextWithPointerEvent(
     }
   }
   // check if the difference is greater than 1 since the values sometimes fluctuate without the viewport changing
+  // considered no difference if any values are null
   const topDiff =
     context.clientScreenTop === null || current.clientScreenTop === null
-      ? context.clientScreenTop !== current.clientScreenTop
+      ? false
       : Math.abs(context.clientScreenTop - current.clientScreenTop) > 1;
   const leftDiff =
     context.clientScreenLeft === null || current.clientScreenLeft === null
-      ? context.clientScreenLeft !== current.clientScreenLeft
+      ? false
       : Math.abs(context.clientScreenLeft - current.clientScreenLeft) > 1;
+  if (context.clientScreenTop !== current.clientScreenTop) {
+    console.log(
+      "clientScreenTop:",
+      context.clientScreenTop,
+      current.clientScreenTop,
+    );
+  }
+  if (context.clientScreenLeft !== current.clientScreenLeft) {
+    console.log(
+      "clientScreenLeft:",
+      context.clientScreenLeft,
+      current.clientScreenLeft,
+    );
+  }
   return topDiff || leftDiff;
 }

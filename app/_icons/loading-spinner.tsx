@@ -1,20 +1,18 @@
-import { useMemo } from "react";
-
 export default function LoadingSpinner({
   height,
   width,
-  classname,
+  className,
 }: {
   height?: number;
   width?: number;
-  classname?: string;
+  className?: string;
 }) {
   return (
     <svg
       height={height}
       width={width}
       aria-hidden="true"
-      className={`text-gray-50 animate-spin dark:text-gray-200 fill-purple-600 ${classname || ""}`}
+      className={`text-gray-50 animate-spin dark:text-gray-200 fill-purple-600 ${className || ""}`}
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

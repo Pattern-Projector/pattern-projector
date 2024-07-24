@@ -39,6 +39,7 @@ export default function PdfViewer({
   lineThickness,
   stitchSettings,
   filter,
+  magnifying,
   setPdfLoadStatus,
   setLineThicknessStatus,
   gridCenter,
@@ -54,6 +55,7 @@ export default function PdfViewer({
   lineThickness: number;
   stitchSettings: StitchSettings;
   filter: string;
+  magnifying: boolean;
   setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   gridCenter: Point;
@@ -131,7 +133,7 @@ export default function PdfViewer({
   const insetHeight = `${tileHeight - cssEdgeInsets.vertical}px`;
 
   return (
-    <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+    <Document file={file} onLoadSuccess={onDocumentLoadSuccess} noData="">
       <div
         style={{
           display: "grid",
@@ -159,6 +161,7 @@ export default function PdfViewer({
                   value={{
                     erosions: lineThickness,
                     layers,
+                    magnifying,
                     onPageRenderSuccess,
                   }}
                 >
