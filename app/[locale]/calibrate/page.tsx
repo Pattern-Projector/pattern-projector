@@ -198,6 +198,21 @@ export default function Page() {
       } else {
         setLineThickness(0);
       }
+
+      const key = `stitchSettings:${files[0].name ?? "default"}`;
+      const stitchSettingsString = localStorage.getItem(key);
+      if (stitchSettingsString !== null) {
+        const stitchSettings = JSON.parse(stitchSettingsString);
+        dispatchStitchSettings({ type: "set", stitchSettings });
+        return;
+      }
+      dispatchStitchSettings({
+        type: "set",
+        stitchSettings: {
+          ...defaultStitchSettings,
+          key,
+        },
+      });
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -235,37 +250,19 @@ export default function Page() {
   }, [pageCount]);
 
   useEffect(() => {
-    // If the file changes, get stitch settings for that file from localStorage
-    if (!file) {
-      return;
+    if (points.length === maxPoints) {
+      const m = getPerspectiveTransformFromPoints(
+        points,
+        Number(width),
+        Number(height),
+        getPtDensity(unitOfMeasure),
+        false,
+      );
+
+      setCalibrationTransform(m);
+      setPerspective(inverse(m));
     }
-
-    const m = getPerspectiveTransformFromPoints(
-      points,
-      Number(width),
-      Number(height),
-      getPtDensity(unitOfMeasure),
-      false,
-    );
-
-    setCalibrationTransform(m);
-    setPerspective(inverse(m));
-
-    const key = `stitchSettings:${file.name ?? "default"}`;
-    const stitchSettingsString = localStorage.getItem(key);
-    if (stitchSettingsString !== null) {
-      const stitchSettings = JSON.parse(stitchSettingsString);
-      dispatchStitchSettings({ type: "set", stitchSettings });
-      return;
-    }
-    dispatchStitchSettings({
-      type: "set",
-      stitchSettings: {
-        ...defaultStitchSettings,
-        key,
-      },
-    });
-  }, [file, points, width, height, unitOfMeasure]);
+  }, [points, width, height, unitOfMeasure]);
 
   useEffect(() => {
     setMenuStates((m) => getMenuStatesFromLayers(m, layers));
@@ -304,24 +301,6 @@ export default function Page() {
       });
     }
   }, []);
-
-  useEffect(() => {
-    const ptDensity = getPtDensity(unitOfMeasure);
-    const w = Number(width);
-    const h = Number(height);
-    if (points && points.length === maxPoints) {
-      const m = getPerspectiveTransformFromPoints(
-        points,
-        w,
-        h,
-        ptDensity,
-        false,
-      );
-      // TODO: Replace perspective with inverse of calibrationTransform
-      setPerspective(inverse(m));
-      setCalibrationTransform(m);
-    }
-  }, [points, width, height, unitOfMeasure]);
 
   const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
     if (element === null) {
