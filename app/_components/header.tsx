@@ -446,23 +446,32 @@ export default function Header({
           </div>
           <div className={`flex items-center gap-1 ${visible(!isCalibrating)}`}>
             <Tooltip description={t("flipHorizontal")}>
-              <IconButton onClick={handleFlipHorizontal} disabled={zoomedOut}>
+              <IconButton
+                onClick={handleFlipHorizontal}
+                disabled={zoomedOut || magnifying}
+              >
                 <FlipVerticalIcon ariaLabel={t("flipHorizontal")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("flipVertical")}>
-              <IconButton onClick={handleFlipVertical} disabled={zoomedOut}>
+              <IconButton
+                onClick={handleFlipVertical}
+                disabled={zoomedOut || magnifying}
+              >
                 <FlipHorizontalIcon ariaLabel={t("flipVertical")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("rotate90")}>
-              <IconButton onClick={handleRotate90} disabled={zoomedOut}>
+              <IconButton
+                onClick={handleRotate90}
+                disabled={zoomedOut || magnifying}
+              >
                 <Rotate90DegreesCWIcon ariaLabel={t("rotate90")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("recenter")}>
               <IconButton
-                disabled={zoomedOut}
+                disabled={zoomedOut || magnifying}
                 onClick={() => {
                   transformer.reset();
                   transformer.recenter(
@@ -488,6 +497,7 @@ export default function Header({
               <IconButton
                 onClick={() => setZoomedOut(!zoomedOut)}
                 active={zoomedOut}
+                disabled={magnifying}
               >
                 <ZoomOutIcon ariaLabel={t("zoomOut")} />
               </IconButton>
@@ -496,6 +506,7 @@ export default function Header({
               <IconButton
                 onClick={() => setMeasuring(!measuring)}
                 active={measuring}
+                disabled={magnifying}
               >
                 <MarkAndMeasureIcon ariaLabel={t("measure")} />
               </IconButton>
