@@ -50,7 +50,10 @@ import CalibrationContext, {
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
-import { Transformable } from "@/_hooks/use-transform-context";
+import {
+  Transformable,
+  useTransformerContext,
+} from "@/_hooks/use-transform-context";
 import OverlayCanvas from "@/_components/overlay-canvas";
 import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
@@ -212,15 +215,25 @@ export default function Page() {
       if (stitchSettingsString !== null) {
         const stitchSettings = JSON.parse(stitchSettingsString);
         dispatchStitchSettings({ type: "set", stitchSettings });
-        return;
+      } else {
+        dispatchStitchSettings({
+          type: "set",
+          stitchSettings: {
+            ...defaultStitchSettings,
+            key,
+          },
+        });
       }
-      dispatchStitchSettings({
-        type: "set",
-        stitchSettings: {
-          ...defaultStitchSettings,
-          key,
-        },
-      });
+      const m = getPerspectiveTransformFromPoints(
+        points,
+        Number(width),
+        Number(height),
+        getPtDensity(unitOfMeasure),
+        false,
+      );
+
+      setCalibrationTransform(m);
+      setPerspective(inverse(m));
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -495,6 +508,7 @@ export default function Page() {
                   unitOfMeasure,
                 )}
                 menuStates={menuStates}
+                file={file}
               >
                 <PdfViewer
                   file={file}

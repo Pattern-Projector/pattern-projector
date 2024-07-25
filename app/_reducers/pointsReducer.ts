@@ -18,7 +18,6 @@ export default function pointsReducer(
   action: PointAction,
 ): Point[] {
   const newPoints = reducePoints(points, action);
-  console.log("newPoints", newPoints);
   localStorage.setItem("points", JSON.stringify(newPoints));
   return newPoints;
 }

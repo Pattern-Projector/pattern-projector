@@ -49,6 +49,7 @@ export default function Draggable({
   layoutHeight,
   calibrationCenter,
   menuStates,
+  file,
 }: {
   children: ReactNode;
   perspective: Matrix;
@@ -68,6 +69,7 @@ export default function Draggable({
   layoutHeight: number;
   calibrationCenter: Point;
   menuStates: MenuStates;
+  file: File | null;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
@@ -222,6 +224,10 @@ export default function Draggable({
     calibrationTransform,
     setRestoreTransforms,
   ]);
+
+  useEffect(() => {
+    transformer.setLocalTransform(Matrix.identity(3));
+  }, [file]);
 
   useEffect(() => {
     if (!magnifying && !zoomedOut && restoreTransforms !== null) {

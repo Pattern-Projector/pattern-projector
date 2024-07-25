@@ -13,7 +13,6 @@ import {
   createContext,
   Dispatch,
   useCallback,
-  useEffect,
 } from "react";
 
 export interface TransformerContextType {
@@ -48,8 +47,7 @@ const TransformerContext = createContext<TransformerContextType>({
   magnify: () => {},
 });
 
-const DEFAULT_TRANSFORM = Matrix.eye(3);
-const TransformContext = createContext<Matrix>(DEFAULT_TRANSFORM);
+const TransformContext = createContext<Matrix>(Matrix.eye(3));
 
 export function useTransformContext() {
   return useContext(TransformContext);
@@ -68,10 +66,11 @@ export const Transformable = ({
 }) => {
   const [transform, dispatchInternal] = useReducer(
     localTransformReducer,
-    DEFAULT_TRANSFORM,
+    Matrix.eye(3),
   );
   const dispatch: Dispatch<LocalTransformAction> = useCallback(
     (action: LocalTransformAction) => {
+      console.log("dispatching", action);
       dispatchInternal(action);
       // Also store the new local transform in local storage so that
       // we can restore it when the same file gets opened again later on
@@ -80,16 +79,6 @@ export const Transformable = ({
     },
     [transform, fileName],
   );
-
-  useEffect(() => {
-    // When we load a different file, reset the local transform to the
-    // value that was stored the last time the user viewed this file,
-    // or the identity matrix if this is the first time.
-    dispatchInternal({
-      type: "set",
-      localTransform: readFromLocalStorage(fileName),
-    });
-  }, [fileName]);
 
   const api = useMemo(
     () => ({
@@ -133,28 +122,4 @@ const debouncedWriteToLocalStorage = debounce(writeToLocalStorage, 500);
 
 function writeToLocalStorage(fileName: string, transform: Matrix) {
   localStorage.setItem(`localTransform:${fileName}`, JSON.stringify(transform));
-}
-
-function readFromLocalStorage(fileName: string): Matrix {
-  const rawValue = localStorage.getItem(`localTransform:${fileName}`);
-  if (rawValue == null) {
-    return DEFAULT_TRANSFORM;
-  }
-  try {
-    const localTransform = new Matrix(JSON.parse(rawValue));
-    // Reset the scale in case the user was zoomed in or out when they last used the file
-    return resetScale(localTransform);
-  } catch {
-    return DEFAULT_TRANSFORM;
-  }
-}
-
-function resetScale(matrix: Matrix): Matrix {
-  const x = matrix.get(0, 0);
-  const y = matrix.get(1, 1);
-  const xScale = Math.sign(x);
-  const yScale = Math.sign(y);
-  matrix.set(0, 0, xScale);
-  matrix.set(1, 1, yScale);
-  return matrix.clone();
 }
