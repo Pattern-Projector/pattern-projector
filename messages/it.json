@@ -231,7 +231,9 @@
         "stitchMenuHide": "Nascondi il menu cuci",
         "stitchMenuDisabled": "Apre il PDF per usare il menu cuci",
         "showMovement": "Mostra lo strumento muovi",
-        "hideMovement": "Nasconde lo strumento muovi"
+        "hideMovement": "Nasconde lo strumento muovi",
+        "magnify": "Ingrandisci (M)",
+        "zoomOut": "Zoom indietro (Z)"
     },
     "MeasureCanvas": {
         "flipAlong": "Rifletti lungo la linea",
