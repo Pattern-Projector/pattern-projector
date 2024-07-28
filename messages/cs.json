@@ -6,6 +6,26 @@
         "welcome": {
             "title": "Vítejte v Pattern Projectoru!",
             "description": "Pattern projector je zdarma a volně šířítelná webová aplikace, která umožňuje rychlou kalibraci projektorů pro šicí vzory. Má také nástroje pro slučování vzorů o více sranách, změnu tloušťky čar, prohození barev, otáčení vzorů a další. Nejnovější updaty jsou zaznamenány v <changeLogLink>changelogu</changeLogLink>."
+        },
+        "requirements": {
+            "title": "Co budete potřebovat",
+            "projector": "Projektor: doporučené rozlišení alespoň 720p",
+            "mat": "Řezací podložku s mřížkou (není nutné)",
+            "mount": "Stativ nebo držák na projektor na stěnu/polici/stůl",
+            "computer": "Počítač nebo tablet k připojení projektoru",
+            "pattern": "Šicí vzor ve formátu PDF"
+        },
+        "setup": {
+            "title": "Nastavení",
+            "place": "Umístěte projektor nad řezací podložku, otočený směrem k řezací podložce. Pokud nemáte řezací podložku, můžete použít papír nebo lepicí pásku k vyznačení mřížky na stole nebo podlaze.",
+            "focus": "Upravujte zaostření projektoru. dokud není obraz zcela zaostřený ve středu projekce. Pokud nemůžete obraz zaostřit, přesvěčte se, že vzdálenost mezi projektorem a řezací podložkou je ve funkčních mezích stanovených výrobcem projektoru (minimální projekční vzdálenost).",
+            "connect": "Připojte váš počítač nebo tablet k projektoru a buď obrazte nebo rozšiřte plochu tak, aby se obraz z počítače nebo tabletu zobrazil na projektoru.",
+            "keystone": "Pokud je váš projektor vybaven korekcí lichoběžníkového zkreslení, upravte ho tak, aby projekce měla co nejvíce obdélmníkový tvar a yaostření u krajů se zlepší."
+        },
+        "calibration": {
+            "title": "Kalibrace",
+            "start": "Klikněte na \"Začít kalibraci\"",
+            "fullscreen": "Kliknutím přepněte na režim celé obrazovky. "
         }
     }
 }
