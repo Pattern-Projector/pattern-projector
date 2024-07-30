@@ -133,7 +133,12 @@ export default function PdfViewer({
   const insetHeight = `${tileHeight - cssEdgeInsets.vertical}px`;
 
   return (
-    <Document file={file} onLoadSuccess={onDocumentLoadSuccess} noData="">
+    <Document
+      file={file}
+      onLoadSuccess={onDocumentLoadSuccess}
+      noData=""
+      onLoadError={() => setPdfLoadStatus(LoadStatusEnum.FAILED)}
+    >
       <div
         style={{
           display: "grid",
