@@ -70,7 +70,6 @@ export const Transformable = ({
   );
   const dispatch: Dispatch<LocalTransformAction> = useCallback(
     (action: LocalTransformAction) => {
-      console.log("dispatching", action);
       dispatchInternal(action);
       // Also store the new local transform in local storage so that
       // we can restore it when the same file gets opened again later on
