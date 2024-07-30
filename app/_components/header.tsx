@@ -504,7 +504,7 @@ export default function Header({
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
             </Tooltip>
-            {/* <Tooltip description={t("magnify")}>
+            <Tooltip description={t("magnify")}>
               <IconButton
                 onClick={() => setMagnifying(!magnifying)}
                 active={magnifying}
@@ -521,7 +521,7 @@ export default function Header({
               >
                 <ZoomOutIcon ariaLabel={t("zoomOut")} />
               </IconButton>
-            </Tooltip> */}
+            </Tooltip>
             <Tooltip description={t("measure")}>
               <IconButton
                 onClick={() => setMeasuring(!measuring)}
