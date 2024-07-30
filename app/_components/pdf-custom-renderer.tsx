@@ -123,8 +123,8 @@ export default function CustomRenderer() {
           dest.imageSmoothingEnabled = false;
           dest.filter = filter;
           dest.drawImage(canvas, 0, 0);
-          onPageRenderSuccess();
         }
+        onPageRenderSuccess();
       })
       .catch(() => {
         // Intentionally empty
