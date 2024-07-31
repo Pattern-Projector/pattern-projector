@@ -52,7 +52,7 @@ export default function StitchMenu({
   return (
     <>
       <menu
-        className={`${className ?? ""} pointer-events-auto flex justify-between items-center left-0 transition-all duration-700 dark:bg-opacity-70 bg-opacity-80 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 py-2 pr-2`}
+        className={`${className ?? ""} pointer-events-auto flex justify-between items-center left-0 transition-all duration-700 dark:bg-opacity-50 bg-opacity-60 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 py-2 pr-2`}
       >
         <div className="gap-2 flex flex-wrap items-end">
           <Tooltip description={h("stitchMenuHide")} className="z-30">
