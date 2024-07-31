@@ -1,7 +1,7 @@
 "use client";
 
 import { Matrix, inverse } from "ml-matrix";
-import {
+import React, {
   ChangeEvent,
   useCallback,
   useEffect,
@@ -50,10 +50,7 @@ import CalibrationContext, {
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
-import {
-  Transformable,
-  useTransformerContext,
-} from "@/_hooks/use-transform-context";
+import { Transformable } from "@/_hooks/use-transform-context";
 import OverlayCanvas from "@/_components/overlay-canvas";
 import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
@@ -334,6 +331,7 @@ export default function Page() {
 
   function handlePointerDown(e: React.PointerEvent) {
     resetIdle();
+    console.log("pointer down");
     if (fullScreenTooltipVisible) {
       setFullScreenTooltipVisible(false);
     }
@@ -360,7 +358,11 @@ export default function Page() {
     setMenusHidden(false);
   }
 
-  function handlePointerMove() {
+  function handlePointerMove(e: React.PointerEvent) {
+    // Chromebook triggers move after menu hides #268
+    if (e.movementX === 0 && e.movementY === 0) {
+      return;
+    }
     resetIdle();
     setMenusHidden(false);
   }
