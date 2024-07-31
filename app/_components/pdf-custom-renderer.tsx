@@ -46,9 +46,9 @@ export default function CustomRenderer() {
   const renderViewport = useMemo(
     () =>
       page.getViewport({
-        scale: getScale(viewport.width, viewport.height, userUnit),
+        scale: getScale(viewport.width, viewport.height, userUnit, isSafari),
       }),
-    [page, viewport, userUnit],
+    [page, viewport, userUnit, isSafari],
   );
 
   const renderWidth = Math.floor(renderViewport.width);
@@ -164,11 +164,16 @@ export default function CustomRenderer() {
   );
 }
 
-function getScale(w: number, h: number, userUnit: number): number {
+function getScale(
+  w: number,
+  h: number,
+  userUnit: number,
+  isSafari: boolean,
+): number {
   const dpr = window.devicePixelRatio;
   const dpi = dpr * userUnit * PDF_TO_CSS_UNITS;
   const renderArea = dpi * w * dpi * h;
-  const maxArea = 16_777_216; // limit for iOS device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
+  const maxArea = isSafari ? 16_777_216 : 117_418_896; // limit for iOS or Android device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
   let scale = dpi;
   if (renderArea > maxArea) {
     // scale to fit max area.
