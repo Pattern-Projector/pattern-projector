@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Export PDF button that saves the PDF with selected layers and stitched pages
 - Save visible layers by file per browser/device
-- Save position by file per browser/device
 - Magnify button to zoom in PDF where tapped or clicked
 - Zoom out button to zoom the whole PDF to be shown on the screen, then click spot on PDF to zoom into that point
 - Auto hide the menus after timeout
@@ -25,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stitch menu wraps on smaller devices
 - Disabled rendering of PDF links
 - A single page PDF is centered on load
+- Increase PDF resolution for all browsers except Safari (due to iOS limit)
 
 ### Fixed
 
