@@ -137,7 +137,7 @@ export default function StitchMenu({
       </menu>
       {!menuStates.stitch ? (
         <Tooltip
-          className="m-2 w-10 z-30 pointer-events-auto"
+          className="ml-3 mt-2 w-10 z-30 pointer-events-auto"
           description={
             menuStates.stitch
               ? h("stitchMenuHide")

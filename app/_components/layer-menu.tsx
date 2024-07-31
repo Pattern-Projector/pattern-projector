@@ -31,7 +31,7 @@ export default function LayerMenu({
   return (
     <>
       <div
-        className={`${className ?? ""} pointer-events-auto absolute z-20 ${visible ? "left-0" : "-left-60"} w-48 ${hasLayers && numberOfLayers * 40 < 200 ? "h-fit" : "h-[calc(100vh-12rem)]"}  text-sm font-medium text-gray-900 dark:text-white bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 border-top-0 absolute transition-all duration-700`}
+        className={`${className ?? ""} pointer-events-auto absolute z-20 mt-2 ${visible ? "left-0" : "-left-60"} w-48 ${hasLayers && numberOfLayers * 40 < 200 ? "h-fit" : "h-[calc(100vh-12rem)]"}  text-sm font-medium text-gray-900 dark:text-white bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 border-top-0 absolute transition-all duration-700`}
       >
         <h1
           key="global"
@@ -86,7 +86,7 @@ export default function LayerMenu({
       {!visible ? (
         <Tooltip
           description={hasLayers ? t("layersOn") : t("noLayers")}
-          className="m-2 w-10 !absolute z-10 pointer-events-auto"
+          className="ml-3 mt-2 w-10 !absolute z-10 pointer-events-auto"
         >
           <IconButton
             border={true}
