@@ -331,7 +331,6 @@ export default function Page() {
 
   function handlePointerDown(e: React.PointerEvent) {
     resetIdle();
-    console.log("pointer down");
     if (fullScreenTooltipVisible) {
       setFullScreenTooltipVisible(false);
     }
