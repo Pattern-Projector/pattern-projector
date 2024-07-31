@@ -73,6 +73,14 @@
         "title": "Center and Reset (C)",
         "description": "Centers the pattern on the cutting mat and resets the rotation/flipping."
       },
+      "magnify": {
+        "title": "Magnify (M)",
+        "description": "Click (or tap) on the PDF to magnify it. Click (or tap) again to stop magnifying."
+      },
+      "zoomOut": {
+        "title": "Zoom out (Z)",
+        "description": "Zoom out to see the whole PDF. Click (or tap) on the PDF to zoom back in at selected location."
+      },
       "layers": {
         "title": "Show or hide layers",
         "description": "Show or hide layers in the PDF."
