@@ -274,5 +274,9 @@
   "OverlayCanvas": {
     "zoomedOut": "click PDF to zoom in",
     "magnifying": "click PDF to stop magnifying"
+  },
+  "PdfViewer": {
+    "error": "Failed to load PDF",
+    "noData": "Press the \"Open PDF\" button to load a PDF"
   }
 }

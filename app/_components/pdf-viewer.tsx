@@ -21,6 +21,7 @@ import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { getLayersFromPdf, Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { Point } from "@/_lib/point";
+import { useTranslations } from "next-intl";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -65,6 +66,7 @@ export default function PdfViewer({
     new Map<number, { width: number; height: number }>(),
   );
   const transformer = useTransformerContext();
+  const t = useTranslations("PdfViewer");
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     const numPages = docProxy.numPages;
@@ -136,7 +138,8 @@ export default function PdfViewer({
     <Document
       file={file}
       onLoadSuccess={onDocumentLoadSuccess}
-      noData=""
+      noData={<p className="text-5xl">{t("noData")}</p>}
+      error={<p className="text-5xl">{t("error")}</p>}
       onLoadError={() => setPdfLoadStatus(LoadStatusEnum.FAILED)}
     >
       <div
