@@ -25,6 +25,7 @@ import LineMenu from "./line-menu";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { useKeyUp } from "@/_hooks/use-key-up";
 import { CM } from "@/_lib/unit";
+import { MenuStates } from "@/_lib/menu-states";
 
 export default function MeasureCanvas({
   perspective,
@@ -37,6 +38,7 @@ export default function MeasureCanvas({
   gridCenter,
   zoomedOut,
   menusHidden,
+  menuStates,
   children,
 }: {
   perspective: Matrix;
@@ -49,6 +51,7 @@ export default function MeasureCanvas({
   gridCenter: Point;
   zoomedOut: boolean;
   menusHidden: boolean;
+  menuStates: MenuStates;
   children: React.ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -305,6 +308,7 @@ export default function MeasureCanvas({
         gridCenter={gridCenter}
         setMeasuring={setMeasuring}
         menusHidden={menusHidden}
+        menuStates={menuStates}
       />
     </div>
   );
