@@ -34,6 +34,8 @@ import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
 import FlipCenterOnIcon from "@/_icons/flip-center-on-icon";
 import OverlayPaperIcon from "@/_icons/overlay-paper-icon";
 import { ReactNode } from "react";
+import MagnifyIcon from "@/_icons/magnify-icon";
+import ZoomOutIcon from "@/_icons/zoom-out-icon";
 
 const DynamicInstallButton = dynamic(
   () => import("@/_components/buttons/install-button"),
@@ -224,6 +226,18 @@ export default function Home() {
             title={t("project.recenter.title")}
           >
             {t("project.recenter.description")}
+          </Definition>
+          <Definition
+            icon={<MagnifyIcon ariaLabel="" />}
+            title={t("project.magnify.title")}
+          >
+            {t("project.magnify.description")}
+          </Definition>
+          <Definition
+            icon={<ZoomOutIcon ariaLabel="" />}
+            title={t("project.zoomOut.title")}
+          >
+            {t("project.zoomOut.description")}
           </Definition>
           <Definition
             icon={<MarkAndMeasureIcon ariaLabel="" />}
