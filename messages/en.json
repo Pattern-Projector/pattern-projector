@@ -156,13 +156,9 @@
       "saveAsApp": {
         "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
       },
-      "annotationSupport": {
-        "question": "Do you have support for adding annotations?",
-        "answer": "Not yet, but it's planned for an upcoming release."
-      },
       "mobileSupport": {
         "question": "Do you have support mobile phones and tablets?",
-        "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use. Better mobile support is planned in an upcoming release."
+        "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use."
       }
     },
     "resources": {
@@ -180,7 +176,7 @@
     },
     "contribute": {
       "title": "Contribute to the project",
-      "donation": "If you would like to support the development of this tool, please consider <donateLink>buying me a coffee</donateLink>!",
+      "donation": "If Pattern Projector has saved you money at the copyshop or freed you from a PDF viewer subscription, please consider <donateLink>buying me a coffee</donateLink> or supporting via <payPalLink>PayPal</payPalLink>!",
       "develop": "Help implement features and fix issues on <githubLink>GitHub</githubLink>.",
       "translate": "Translate this tool into more languages using <weblateLink>Weblate</weblateLink>.",
       "feedback": "Feedback and feature requests are welcome!"
