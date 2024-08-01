@@ -76,6 +76,20 @@ export default function Home() {
             ),
           })}
         </p>
+        <p>
+          {t.rich("contribute.donation", {
+            donateLink: (chunk) => (
+              <a href="https://www.buymeacoffee.com/patternprojector">
+                {chunk}
+              </a>
+            ),
+            payPalLink: (chunk) => (
+              <a href="https://www.paypal.com/donate?hosted_button_id=https://www.paypal.com/donate/?business=XNKEF57YX4E9Q&no_recurring=0&item_name=Support+the+development+of+Pattern+Projector%21&currency_code=CAD">
+                {chunk}
+              </a>
+            ),
+          })}
+        </p>
         <div className="aspect-w-16 aspect-h-9">
           <iframe
             src={t("youTubeSrc")}
@@ -364,10 +378,6 @@ export default function Home() {
             })}
           </li>
           <li>
-            <div>{t("faq.annotationSupport.question")}</div>
-            {t("faq.annotationSupport.answer")}
-          </li>
-          <li>
             <div>{t("faq.mobileSupport.question")}</div>
             {t("faq.mobileSupport.answer")}
           </li>
@@ -392,6 +402,11 @@ export default function Home() {
           {t.rich("contribute.donation", {
             donateLink: (chunk) => (
               <a href="https://www.buymeacoffee.com/patternprojector">
+                {chunk}
+              </a>
+            ),
+            payPalLink: (chunk) => (
+              <a href="https://www.paypal.com/donate?hosted_button_id=https://www.paypal.com/donate/?business=XNKEF57YX4E9Q&no_recurring=0&item_name=Support+the+development+of+Pattern+Projector%21&currency_code=CAD">
                 {chunk}
               </a>
             ),
