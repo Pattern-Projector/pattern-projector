@@ -91,6 +91,14 @@
             "overlayOptions": {
                 "description": "Las superposiciones de la cuadrícula, borde, hoja de papel, líneas de giro o el lado incorrecto se pueden mostrar en el PDF para ayudar con la calibración y el corte. Para obtener más información, consulta la sección <overlayOptionsLink>opciones de superposición</overlayOptionsLink>.",
                 "title": "Mostrar u ocultar líneas de referencia"
+            },
+            "magnify": {
+                "title": "Aumentar (M)",
+                "description": "Haz clic (o toca) en el PDF para ampliarlo. Haz clic (o toca) de nuevo para detener la ampliación."
+            },
+            "zoomOut": {
+                "title": "Alejar (Z)",
+                "description": "Aleja el zoom para ver todo el PDF. Haz clic (o toca) en el PDF para volver a acercarlo a la ubicación seleccionada."
             }
         },
         "faq": {
@@ -113,7 +121,7 @@
             },
             "mobileSupport": {
                 "question": "¿Tiene soporte para teléfonos móviles y tabletas?",
-                "answer": "Es posible visitar y utilizar la página web en un teléfono inteligente, pero el tamaño limitado de la pantalla dificulta su uso. Está previsto un mejor soporte para móviles en próximas versiones."
+                "answer": "Aunque es posible visitar y utilizar la página web en un teléfono inteligente, el tamaño limitado de la pantalla dificulta el uso."
             }
         },
         "resources": {
@@ -131,7 +139,7 @@
         },
         "contribute": {
             "title": "Contribuye al proyecto",
-            "donation": "Si desea apoyar el desarrollo de esta herramienta, ¡considere <donateLink>invitarme a un café</donateLink>!",
+            "donation": "¡Si Pattern Projector le ha ahorrado dinero en la copistería o le ha liberado de la suscripción a un visor de PDF, por favor considera <donateLink>comprarme un café</donateLink> o apoyarme a través de <payPalLink>PayPal</payPalLink>!",
             "develop": "Ayuda a implementar funciones y solucionar problemas en <githubLink>GitHub</githubLink>.",
             "translate": "Traduzca esta herramienta a más idiomas usando <weblateLink>Weblate</weblateLink>.",
             "feedback": "¡Los comentarios y solicitud de funciones son bien recibidos!"
@@ -245,7 +253,9 @@
         "calibrationAlert": "El tamaño de la ventana ha cambiado desde que comenzó la proyección, pulse el botón de pantalla completa o recalibre para solucionar este problema.",
         "measure": "Herramienta de línea (L)",
         "overlayOptionFlippedPattern": "Lado erróneo",
-        "stitchMenuDisabled": "Abra PDF para usar el menú de unión"
+        "stitchMenuDisabled": "Abra PDF para usar el menú de unión",
+        "magnify": "Aumentar (M)",
+        "zoomOut": "Alejar (Z)"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
@@ -289,5 +299,13 @@
         "save": "Exportar el pdf",
         "saveTooltip": "Exportar PDF con páginas unidas y capas seleccionadas",
         "encryptedPDF": "Este PDF está cifrado. Ingresa la contraseña para guardar el PDF unido."
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "Haz clic en el PDF para ampliar",
+        "magnifying": "Haz clic en PDF para detener la ampliación"
+    },
+    "PdfViewer": {
+        "error": "Error al cargar el PDF",
+        "noData": "Pulsa el botón \"Abrir PDF\" para cargar un PDF"
     }
 }
