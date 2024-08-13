@@ -6,7 +6,7 @@ enum ButtonColor {
 
 enum IconButtonStateClass {
   DEFAULT = "",
-  ACTIVE = "text-purple-700",
+  ACTIVE = "!bg-purple-600 text-white dark:bg-purple-500 dark:text-white hover:bg-purple-700 focus:ring-purple-800 dark:hover:bg-purple-800 dark:focus:ring-purple-800",
   DISABLED = "text-gray-400 dark:text-gray-600 cursor-not-allowed",
 }
 

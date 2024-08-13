@@ -25,6 +25,7 @@ import LineMenu from "./line-menu";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { useKeyUp } from "@/_hooks/use-key-up";
 import { CM } from "@/_lib/unit";
+import { MenuStates } from "@/_lib/menu-states";
 
 export default function MeasureCanvas({
   perspective,
@@ -35,6 +36,9 @@ export default function MeasureCanvas({
   setMeasuring,
   file,
   gridCenter,
+  zoomedOut,
+  menusHidden,
+  menuStates,
   children,
 }: {
   perspective: Matrix;
@@ -45,6 +49,9 @@ export default function MeasureCanvas({
   setMeasuring: Dispatch<SetStateAction<boolean>>;
   file: File | null;
   gridCenter: Point;
+  zoomedOut: boolean;
+  menusHidden: boolean;
+  menuStates: MenuStates;
   children: React.ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -179,7 +186,9 @@ export default function MeasureCanvas({
       matFinal = { x: matAnchor.x + CSS_PIXELS_PER_INCH, y: matAnchor.y };
     }
     const patternFinal = transformPoint(matFinal, inverse(transform));
-    setMeasuring(false);
+    if (!zoomedOut) {
+      setMeasuring(false);
+    }
     patternLine[1] = patternFinal;
     setLines(lines.toSpliced(selectedLine, 1, patternLine));
   };
@@ -298,6 +307,8 @@ export default function MeasureCanvas({
         handleDeleteLine={handleDeleteLine}
         gridCenter={gridCenter}
         setMeasuring={setMeasuring}
+        menusHidden={menusHidden}
+        menuStates={menuStates}
       />
     </div>
   );

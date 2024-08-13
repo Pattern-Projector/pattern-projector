@@ -20,6 +20,7 @@ import { KeyCode } from "@/_lib/key-code";
 import { PointAction } from "@/_reducers/pointsReducer";
 import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
 import { FullScreenHandle } from "react-full-screen";
+import Matrix from "ml-matrix";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const cornerMargin = 96;
@@ -94,6 +95,11 @@ export default function CalibrationCanvas({
           strokeColor(displaySettings.theme),
           displaySettings,
           false,
+          Matrix.identity(3),
+          false,
+          false,
+          null,
+          null,
         );
         draw(cs);
       }
@@ -236,7 +242,6 @@ export default function CalibrationCanvas({
      * the localStorage of the points to invalid values */
     if (dragPoint === null) return;
 
-    localStorage.setItem("points", JSON.stringify(localPoints));
     localStorage.setItem(
       "calibrationContext",
       JSON.stringify(
@@ -258,7 +263,7 @@ export default function CalibrationCanvas({
       onPointerUp={(e) => handlePointerUp(e)}
       style={{
         pointerEvents: isCalibrating ? "auto" : "none",
-        cursor: dragPoint ? "grabbing" : "grab",
+        cursor: dragPoint ? "none" : "grab",
       }}
     />
   );

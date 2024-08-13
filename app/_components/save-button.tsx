@@ -1,8 +1,9 @@
-import { Layer } from "@/_lib/interfaces/layer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { savePDF } from "@/_lib/pdfstitcher";
 import { useTranslations } from "next-intl";
-import PdfIcon from "@/_icons/pdf-icon";
+import DownloadIcon from "@/_icons/download-icon";
+import Tooltip from "./tooltip/tooltip";
+import { Layers } from "@/_lib/layers";
 
 export default function SaveButton({
   file,
@@ -11,7 +12,7 @@ export default function SaveButton({
 }: {
   file: File | null;
   stitchSettings: StitchSettings;
-  layers: Map<string, Layer>;
+  layers: Layers;
 }) {
   const t = useTranslations("SaveMenu");
 
@@ -49,19 +50,14 @@ export default function SaveButton({
   }
 
   return (
-    <>
+    <Tooltip description={t("saveTooltip")}>
       <button
-        className="flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center"
+        className="flex h-11 gap-2 items-center outline outline-purple-600 text-purple-600 dark:bg-black bg-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center"
         onClick={handleSave}
-        style={{
-          position: "fixed",
-          bottom: "10px",
-          left: "10px",
-        }}
       >
-        <PdfIcon ariaLabel={t("save")} fill="currentColor" />
+        <DownloadIcon ariaLabel={t("save")} />
         {t("save")}
       </button>
-    </>
+    </Tooltip>
   );
 }

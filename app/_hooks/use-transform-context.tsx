@@ -1,6 +1,9 @@
+import debounce from "@/_lib/debounce";
 import { Line } from "@/_lib/interfaces/line";
 import { Point } from "@/_lib/point";
-import localTransformReducer from "@/_reducers/localTransformReducer";
+import localTransformReducer, {
+  LocalTransformAction,
+} from "@/_reducers/localTransformReducer";
 import Matrix from "ml-matrix";
 import {
   ReactNode,
@@ -8,6 +11,8 @@ import {
   useMemo,
   useReducer,
   createContext,
+  Dispatch,
+  useCallback,
 } from "react";
 
 export interface TransformerContextType {
@@ -25,6 +30,7 @@ export interface TransformerContextType {
   reset: () => void;
   translate: (p: Point) => void;
   align: (line: Line, to: Line) => void;
+  magnify: (scale: number, point: Point) => void;
 }
 
 const TransformerContext = createContext<TransformerContextType>({
@@ -38,6 +44,7 @@ const TransformerContext = createContext<TransformerContextType>({
   flipAlong: () => {},
   translate: () => {},
   align: () => {},
+  magnify: () => {},
 });
 
 const TransformContext = createContext<Matrix>(Matrix.eye(3));
@@ -50,9 +57,27 @@ export function useTransformerContext() {
   return useContext(TransformerContext);
 }
 
-export const Transformable = ({ children }: { children: ReactNode }) => {
-  const defaultState = Matrix.eye(3);
-  const [transform, dispatch] = useReducer(localTransformReducer, defaultState);
+export const Transformable = ({
+  children,
+  fileName,
+}: {
+  children: ReactNode;
+  fileName: string;
+}) => {
+  const [transform, dispatchInternal] = useReducer(
+    localTransformReducer,
+    Matrix.eye(3),
+  );
+  const dispatch: Dispatch<LocalTransformAction> = useCallback(
+    (action: LocalTransformAction) => {
+      dispatchInternal(action);
+      // Also store the new local transform in local storage so that
+      // we can restore it when the same file gets opened again later on
+      const newTransform = localTransformReducer(transform, action);
+      debouncedWriteToLocalStorage(fileName, newTransform);
+    },
+    [transform, fileName],
+  );
 
   const api = useMemo(
     () => ({
@@ -76,6 +101,8 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
         dispatch({ type: "recenter", centerPoint, layoutWidth, layoutHeight }),
       reset: () => dispatch({ type: "reset" }),
       align: (line: Line, to: Line) => dispatch({ type: "align", line, to }),
+      magnify: (scale: number, point: Point) =>
+        dispatch({ type: "magnify", scale, point }),
     }),
     [dispatch],
   );
@@ -88,3 +115,10 @@ export const Transformable = ({ children }: { children: ReactNode }) => {
     </TransformerContext.Provider>
   );
 };
+
+// Let's not write to local storage too often, but rather wait until the user is done.
+const debouncedWriteToLocalStorage = debounce(writeToLocalStorage, 500);
+
+function writeToLocalStorage(fileName: string, transform: Matrix) {
+  localStorage.setItem(`localTransform:${fileName}`, JSON.stringify(transform));
+}

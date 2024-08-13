@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
 
-import FullscreenIcon from "@/_icons/fullscreen-icon";
+import FullScreenIcon from "@/_icons/full-screen-icon";
 
 import { Link } from "../../navigation";
 import FlipHorizontalIcon from "../_icons/flip-horizontal-icon";
@@ -33,6 +33,9 @@ import OverlayBorderIcon from "@/_icons/overlay-border-icon";
 import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
 import FlipCenterOnIcon from "@/_icons/flip-center-on-icon";
 import OverlayPaperIcon from "@/_icons/overlay-paper-icon";
+import { ReactNode } from "react";
+import MagnifyIcon from "@/_icons/magnify-icon";
+import ZoomOutIcon from "@/_icons/zoom-out-icon";
 
 const DynamicInstallButton = dynamic(
   () => import("@/_components/buttons/install-button"),
@@ -69,6 +72,20 @@ export default function Home() {
             changeLogLink: (chunks) => (
               <a href="https://github.com/Pattern-Projector/pattern-projector/blob/beta/CHANGELOG.md">
                 {chunks}
+              </a>
+            ),
+          })}
+        </p>
+        <p>
+          {t.rich("contribute.donation", {
+            donateLink: (chunk) => (
+              <a href="https://www.buymeacoffee.com/patternprojector">
+                {chunk}
+              </a>
+            ),
+            payPalLink: (chunk) => (
+              <a href="https://www.paypal.com/donate?hosted_button_id=https://www.paypal.com/donate/?business=XNKEF57YX4E9Q&no_recurring=0&item_name=Support+the+development+of+Pattern+Projector%21&currency_code=CAD">
+                {chunk}
               </a>
             ),
           })}
@@ -123,7 +140,7 @@ export default function Home() {
           <li>{t("calibration.start")}</li>
           <li>
             {t("calibration.fullscreen")}
-            <FullscreenIcon ariaLabel="" />
+            <FullScreenIcon ariaLabel="" />
           </li>
           <li>{t("calibration.drag")}</li>
           <li>
@@ -160,193 +177,186 @@ export default function Home() {
           <h2 id="tools">{t("tools")} #</h2>
         </a>
         <p>{t("project.tools")}</p>
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">
-                <FullscreenIcon ariaLabel="" />
-              </th>
-              <td>{t("project.fullscreen.title")}</td>
-              <td>{t("project.fullscreen.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <ExpandLessIcon ariaLabel="" />
-              </th>
-              <td>{t("project.showMenu.title")}</td>
-              <td>{t("project.showMenu.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <InvertColorIcon ariaLabel="" />
-              </th>
-              <td>{t("project.invert.title")}</td>
-              <td>{t("project.invert.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <MoveIcon ariaLabel="" />
-              </th>
-              <td>{t("project.moveTool.title")}</td>
-              <td>{t("project.moveTool.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <GridOnIcon ariaLabel="" />
-              </th>
-
-              <td>
-                <a href="#overlay-options">
-                  {t("project.overlayOptions.title")}
-                </a>
-              </td>
-              <td>{t("project.overlayOptions.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <LineWeightIcon ariaLabel="" />
-              </th>
-              <td>{t("project.lineWeight.title")}</td>
-              <td>{t("project.lineWeight.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
+        <dl>
+          <Definition
+            icon={<FullScreenIcon ariaLabel="" />}
+            title={t("project.fullscreen.title")}
+          >
+            {t("project.fullscreen.description")}
+          </Definition>
+          <Definition
+            icon={<ExpandLessIcon ariaLabel="" />}
+            title={t("project.showMenu.title")}
+          >
+            {t("project.showMenu.description")}
+          </Definition>
+          <Definition
+            icon={<InvertColorIcon ariaLabel="" />}
+            title={t("project.invert.title")}
+          >
+            {t("project.invert.description")}
+          </Definition>
+          <Definition
+            icon={<MoveIcon ariaLabel="" />}
+            title={t("project.moveTool.title")}
+          >
+            {t("project.moveTool.description")}
+          </Definition>
+          <Definition
+            icon={<GridOnIcon ariaLabel="" />}
+            title={t("project.overlayOptions.title")}
+          >
+            {t.rich("project.overlayOptions.description", {
+              overlayOptionsLink: (chunk) => (
+                <a href="#overlay-options">{chunk}</a>
+              ),
+            })}
+          </Definition>
+          <Definition
+            icon={<LineWeightIcon ariaLabel="" />}
+            title={t("project.lineWeight.title")}
+          >
+            {t("project.lineWeight.description")}
+          </Definition>
+          <Definition
+            icon={
+              <>
                 <FlipVerticalIcon ariaLabel="" />
                 <FlipHorizontalIcon ariaLabel="" />
-              </th>
-              <td>{t("project.flip.title")}</td>
-              <td>{t("project.flip.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <Rotate90DegreesCWIcon ariaLabel="" />
-              </th>
-              <td>{t("project.rotate.title")}</td>
-              <td>{t("project.rotate.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <RecenterIcon ariaLabel="" />
-              </th>
-              <td>{t("project.recenter.title")}</td>
-              <td>{t("project.recenter.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <MarkAndMeasureIcon ariaLabel="" />
-              </th>
-              <td>
-                <a href="#line-tool">{t("project.measure.title")}</a>
-              </td>
-              <td>{t("project.measure.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <LayersIcon ariaLabel="" />
-              </th>
-              <td>{t("project.layers.title")}</td>
-              <td>{t("project.layers.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <FlexWrapIcon ariaLabel="" />
-              </th>
-              <td>{t("project.stitch.title")}</td>
-              <td>{t("project.stitch.description")}</td>
-            </tr>
-          </tbody>
-        </table>
+              </>
+            }
+            title={t("project.flip.title")}
+          >
+            {t("project.flip.description")}
+          </Definition>
+          <Definition
+            icon={<Rotate90DegreesCWIcon ariaLabel="" />}
+            title={t("project.rotate.title")}
+          >
+            {t("project.rotate.description")}
+          </Definition>
+          <Definition
+            icon={<RecenterIcon ariaLabel="" />}
+            title={t("project.recenter.title")}
+          >
+            {t("project.recenter.description")}
+          </Definition>
+          <Definition
+            icon={<MagnifyIcon ariaLabel="" />}
+            title={t("project.magnify.title")}
+          >
+            {t("project.magnify.description")}
+          </Definition>
+          <Definition
+            icon={<ZoomOutIcon ariaLabel="" />}
+            title={t("project.zoomOut.title")}
+          >
+            {t("project.zoomOut.description")}
+          </Definition>
+          <Definition
+            icon={<MarkAndMeasureIcon ariaLabel="" />}
+            title={t("project.measure.title")}
+          >
+            {t.rich("project.measure.description", {
+              lineToolLink: (chunk) => <a href="#line-tool">{chunk}</a>,
+            })}
+          </Definition>
+          <Definition
+            icon={<LayersIcon ariaLabel="" />}
+            title={t("project.layers.title")}
+          >
+            {t("project.layers.description")}
+          </Definition>
+          <Definition
+            icon={<FlexWrapIcon ariaLabel="" />}
+            title={t("project.stitch.title")}
+          >
+            {t("project.stitch.description")}
+          </Definition>
+        </dl>
 
         <a href="#overlay-options">
           <h3 id="overlay-options">{t("overlayOptions.title")} #</h3>
         </a>
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">
-                <OverlayBorderIcon ariaLabel="" />
-              </th>
-              <td>{t("overlayOptions.border.title")}</td>
-              <td>{t("overlayOptions.border.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <GridOnIcon ariaLabel="" />
-              </th>
-              <td>{t("overlayOptions.grid.title")}</td>
-              <td>{t("overlayOptions.grid.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <OverlayPaperIcon ariaLabel="" />
-              </th>
-              <td>{t("overlayOptions.paper.title")}</td>
-              <td>{t("overlayOptions.paper.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <FlipCenterOnIcon ariaLabel="" />
-              </th>
-              <td>{t("overlayOptions.flipLines.title")}</td>
-              <td>{t("overlayOptions.flipLines.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <FlippedPatternIcon ariaLabel="" />
-              </th>
-              <td>{t("overlayOptions.flippedPattern.title")}</td>
-              <td>{t("overlayOptions.flippedPattern.description")}</td>
-            </tr>
-          </tbody>
-        </table>
+        <p>{t("overlayOptions.description")}</p>
+        <dl>
+          <Definition
+            icon={<OverlayBorderIcon ariaLabel="" />}
+            title={t("overlayOptions.border.title")}
+          >
+            {t("overlayOptions.border.description")}
+          </Definition>
+          <Definition
+            icon={<GridOnIcon ariaLabel="" />}
+            title={t("overlayOptions.grid.title")}
+          >
+            {t("overlayOptions.grid.description")}
+          </Definition>
+          <Definition
+            icon={<OverlayPaperIcon ariaLabel="" />}
+            title={t("overlayOptions.paper.title")}
+          >
+            {t("overlayOptions.paper.description")}
+          </Definition>
+          <Definition
+            icon={<FlipCenterOnIcon ariaLabel="" />}
+            title={t("overlayOptions.flipLines.title")}
+          >
+            {t("overlayOptions.flipLines.description")}
+          </Definition>
+          <Definition
+            icon={<FlippedPatternIcon ariaLabel="" />}
+            title={t("overlayOptions.flippedPattern.title")}
+          >
+            {t("overlayOptions.flippedPattern.description")}
+          </Definition>
+        </dl>
 
         <a href="#line-tool">
           <h3 id="line-tool">{t("lineTool.title")} #</h3>
         </a>
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">
-                <DeleteIcon ariaLabel="" />
-              </th>
-              <td>{t("lineTool.delete.title")}</td>
-              <td>{t("lineTool.delete.description")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <RotateToHorizontalIcon ariaLabel="" />
-              </th>
-              <td>{t("lineTool.rotate.title")}</td>
-              <td>{t("lineTool.rotate.description")}</td>
-              <td>{t("lineTool.rotate.use")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
+        <p>{t("lineTool.description")}</p>
+        <dl>
+          <Definition
+            icon={<DeleteIcon ariaLabel="" />}
+            title={t("lineTool.delete.title")}
+          >
+            {t("lineTool.delete.description")}
+          </Definition>
+          <Definition
+            icon={<RotateToHorizontalIcon ariaLabel="" />}
+            title={t("lineTool.rotate.title")}
+          >
+            {t("lineTool.rotate.description")}
+            <p>{t("lineTool.rotate.use")}</p>
+          </Definition>
+          <Definition
+            icon={
+              <>
                 <KeyboardArrowLeftIcon ariaLabel="" />
                 <KeyboardArrowRightIcon ariaLabel="" />
-              </th>
-              <td>{t("lineTool.previousNext.title")}</td>
-              <td>{t("lineTool.previousNext.description")}</td>
-              <td>{t("lineTool.previousNext.use")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <FlipHorizontalIcon ariaLabel="" />
-              </th>
-              <td>{t("lineTool.flip.title")}</td>
-              <td>{t("lineTool.flip.description")}</td>
-              <td>{t("lineTool.flip.use")}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <ShiftIcon ariaLabel="" />
-              </th>
-              <td>{t("lineTool.move.title")}</td>
-              <td>{t("lineTool.move.description")}</td>
-              <td>{t("lineTool.move.use")}</td>
-            </tr>
-          </tbody>
-        </table>
+              </>
+            }
+            title={t("lineTool.previousNext.title")}
+          >
+            {t("lineTool.previousNext.description")}
+            <p>{t("lineTool.previousNext.use")}</p>
+          </Definition>
+          <Definition
+            icon={<FlipHorizontalIcon ariaLabel="" />}
+            title={t("lineTool.flip.title")}
+          >
+            {t("lineTool.flip.description")}
+            <p>{t("lineTool.flip.use")}</p>
+          </Definition>
+          <Definition
+            icon={<ShiftIcon ariaLabel="" />}
+            title={t("lineTool.move.title")}
+          >
+            {t("lineTool.move.description")}
+            <p>{t("lineTool.move.use")}</p>
+          </Definition>
+        </dl>
 
         <a href="#faq">
           <h2 id="faq">{t("faq.title")} #</h2>
@@ -366,10 +376,6 @@ export default function Home() {
                 </a>
               ),
             })}
-          </li>
-          <li>
-            <div>{t("faq.annotationSupport.question")}</div>
-            {t("faq.annotationSupport.answer")}
           </li>
           <li>
             <div>{t("faq.mobileSupport.question")}</div>
@@ -396,6 +402,11 @@ export default function Home() {
           {t.rich("contribute.donation", {
             donateLink: (chunk) => (
               <a href="https://www.buymeacoffee.com/patternprojector">
+                {chunk}
+              </a>
+            ),
+            payPalLink: (chunk) => (
+              <a href="https://www.paypal.com/donate?hosted_button_id=https://www.paypal.com/donate/?business=XNKEF57YX4E9Q&no_recurring=0&item_name=Support+the+development+of+Pattern+Projector%21&currency_code=CAD">
                 {chunk}
               </a>
             ),
@@ -451,5 +462,25 @@ export default function Home() {
         data-y_margin="18"
       ></script>
     </main>
+  );
+}
+
+function Definition({
+  icon,
+  title,
+  children,
+}: {
+  icon: any;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <dt className="flex gap-2">
+        {icon}
+        {title}
+      </dt>
+      <dd>{children}</dd>
+    </>
   );
 }

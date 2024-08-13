@@ -12,13 +12,16 @@ import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
-import { Layer } from "@/_lib/interfaces/layer";
 import { getPageNumbers } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { RenderContext } from "@/_hooks/use-render-context";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
+import { getLayersFromPdf, Layers } from "@/_lib/layers";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
+import { Point } from "@/_lib/point";
+import { useTranslations } from "next-intl";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -27,39 +30,47 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 export default function PdfViewer({
   file,
+  layers,
   setLayers,
   setPageCount,
   setLayoutWidth,
   setLayoutHeight,
   dispatchStitchSettings,
   pageCount,
-  layers,
   lineThickness,
   stitchSettings,
   filter,
+  magnifying,
+  setPdfLoadStatus,
+  setLineThicknessStatus,
+  gridCenter,
 }: {
   file: any;
-  setLayers: Dispatch<SetStateAction<Map<string, Layer>>>;
+  layers: Layers;
+  setLayers: (layers: Layers) => void;
   setPageCount: Dispatch<SetStateAction<number>>;
   setLayoutWidth: Dispatch<SetStateAction<number>>;
   setLayoutHeight: Dispatch<SetStateAction<number>>;
   dispatchStitchSettings: Dispatch<StitchSettingsAction>;
   pageCount: number;
-  layers: Map<string, Layer>;
   lineThickness: number;
   stitchSettings: StitchSettings;
   filter: string;
+  magnifying: boolean;
+  setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
+  setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
+  gridCenter: Point;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
     new Map<number, { width: number; height: number }>(),
   );
   const transformer = useTransformerContext();
+  const t = useTranslations("PdfViewer");
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     const numPages = docProxy.numPages;
     setPageCount(numPages);
-    setLayers(new Map());
     setPageSize({ action: "clear" });
     if (stitchSettings.pageRange.endsWith("-") && numPages > 0) {
       dispatchStitchSettings({
@@ -67,17 +78,27 @@ export default function PdfViewer({
         pageRange: stitchSettings.pageRange + numPages,
       });
     }
-    transformer.reset();
+    getLayersFromPdf(docProxy).then((l) => setLayers(l));
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {
     const scale = (pdfProxy.userUnit || 1) * PDF_TO_CSS_UNITS;
+    const width = pdfProxy.view[2] * scale;
+    const height = pdfProxy.view[3] * scale;
     setPageSize({
       action: "setPage",
       pageNumber: pdfProxy.pageNumber,
-      width: pdfProxy.view[2] * scale,
-      height: pdfProxy.view[3] * scale,
+      width,
+      height,
     });
+    if (pageCount === 1) {
+      transformer.recenter(gridCenter, width, height);
+    }
+  }
+
+  function onPageRenderSuccess() {
+    setPdfLoadStatus(LoadStatusEnum.SUCCESS);
+    setLineThicknessStatus(LoadStatusEnum.SUCCESS);
   }
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
@@ -114,7 +135,13 @@ export default function PdfViewer({
   const insetHeight = `${tileHeight - cssEdgeInsets.vertical}px`;
 
   return (
-    <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+    <Document
+      file={file}
+      onLoadSuccess={onDocumentLoadSuccess}
+      noData={<p className="text-5xl">{t("noData")}</p>}
+      error={<p className="text-5xl">{t("error")}</p>}
+      onLoadError={() => setPdfLoadStatus(LoadStatusEnum.FAILED)}
+    >
       <div
         style={{
           display: "grid",
@@ -139,7 +166,12 @@ export default function PdfViewer({
             >
               {value != 0 && (
                 <RenderContext.Provider
-                  value={{ layers, setLayers, erosions: lineThickness }}
+                  value={{
+                    erosions: lineThickness,
+                    layers,
+                    magnifying,
+                    onPageRenderSuccess,
+                  }}
                 >
                   <Page
                     scale={PDF_TO_CSS_UNITS}

@@ -1,0 +1,278 @@
+{
+    "HomePage": {
+        "github": "Zobrazit zdrojový kód",
+        "calibrate": "Zahájit kalibraci",
+        "choose-language": "Jazyk",
+        "welcome": {
+            "title": "Vítejte v Pattern Projectoru!",
+            "description": "Pattern projector je zdarma a volně šířítelná webová aplikace, která umožňuje rychlou kalibraci projektorů pro šicí vzory. Má také nástroje pro slučování vzorů o více sranách, změnu tloušťky čar, prohození barev, otáčení vzorů a další. Nejnovější updaty jsou zaznamenány v <changeLogLink>changelogu</changeLogLink>."
+        },
+        "requirements": {
+            "title": "Co budete potřebovat",
+            "projector": "Projektor: doporučené rozlišení alespoň 720p",
+            "mat": "Řezací podložku s mřížkou (není nezbytné)",
+            "mount": "Stativ nebo držák na projektor na stěnu/polici/stůl",
+            "computer": "Počítač nebo tablet k připojení projektoru",
+            "pattern": "Šicí vzor ve formátu PDF"
+        },
+        "setup": {
+            "title": "Nastavení",
+            "place": "Umístěte projektor nad řezací podložku, otočený směrem k řezací podložce. Pokud nemáte řezací podložku, můžete použít papír nebo lepicí pásku k vyznačení mřížky na stole nebo podlaze.",
+            "focus": "Upravujte zaostření projektoru. dokud není obraz zcela zaostřený ve středu projekce. Pokud nemůžete obraz zaostřit, přesvěčte se, že vzdálenost mezi projektorem a řezací podložkou je ve funkčních mezích stanovených výrobcem projektoru (minimální projekční vzdálenost).",
+            "connect": "Připojte váš počítač nebo tablet k projektoru a buď obrazte nebo rozšiřte plochu tak, aby se obraz z počítače nebo tabletu zobrazil na projektoru.",
+            "keystone": "Pokud je váš projektor vybaven korekcí lichoběžníkového zkreslení, upravte ho tak, aby projekce měla co nejvíce obdélníkový tvar a zaostření u krajů se zlepší."
+        },
+        "calibration": {
+            "title": "Kalibrace",
+            "start": "Klikněte na \"Začít kalibraci\"",
+            "fullscreen": "Kliknutím přepněte na režim celé obrazovky ",
+            "size": "Není nutné provádět kalibraci za použití celé plochy vaší podložkz, namísto toho použijte největší plochu, na kterou dokážete umístit kalibrační mřížku a zadejte do programu výšku a šířku vaší mřížky.",
+            "project": "Jakmile se promítnutá mřížka překryje s mřížkou na vaší podložce, klikněte na \"Promítat\".",
+            "drag": "Přetáhněte rohy mřížky tak, aby se shodovaly s rohz na vaší podložce. Sledujte podložku a upravte polohu rohů zobrazených na vašem počítaci nebo tabletu. Upravujte polohu rohů do té doby, dokud se zobrazená plocha neshoduje s tou na vaší podložce."
+        },
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "project": {
+            "title": "Promítnout šicí vzor",
+            "open": "Pro otevření PDF stříhu klikněte na <pdficon></pdficon>.",
+            "move": "Pro změnu polohy PDF klidněte a potáhněte pdf po obrazovce.",
+            "cut": "Vzstřihnout kolem promítnutého designu.",
+            "tools": "V módu Promítání je k dispozici několik nástrojů. Některé mají klávesové zkratky, které jsou uvedeny v poznámkách.",
+            "fullscreen": {
+                "description": "Obecně je jednodučí používat tento program v režimu celé obrazovky.",
+                "title": "Celá obrazovka"
+            },
+            "showMenu": {
+                "title": "Zobrazit/ skrýt menu",
+                "description": "Zobrazit nebo skýt vrchní menu."
+            },
+            "moveTool": {
+                "title": "Zobrazit nebo skrýt nástroj \"přesunout\"",
+                "description": "Nástroj \"přesunout\" má 4 tlačítka se šipkami pro přesun rohů kalibrační mřížky. Také má ve středu také tlačítko \"další\" pro přepnutí na další roh."
+            },
+            "invert": {
+                "title": "Invertovat barvy",
+                "description": "Při promítání jsou obvykle lépe viditělné zelené nebo bílé čáry na černém pozadí. Klikněte jednou pro zelené čáry, dvakrát pro bílé a třikrát pro návrat k černým."
+            },
+            "overlayOptions": {
+                "title": "Zobrazit nebo skrýt možnosti překrytí",
+                "description": "Na PDF mohou být zobrazeny překryvy jako mřížka, hranice stránky, osa převrácení nebo druhá strana, pro snadnější kalibraci a stříhání. Pro více informací navštivte <overlayOptionsLink>overlay options section</overlayOptionsLink>."
+            },
+            "lineWeight": {
+                "title": "Tloušťka čáry",
+                "description": "Změnit tloušťku čar v PDF vzoru."
+            },
+            "flip": {
+                "title": "Převrátit vertikálně (V) nebo Horizontálně (H)",
+                "description": "Hodí se pro zobrazení, kdy jsou zobrazeny poloviny šicího vzoru."
+            },
+            "rotate": {
+                "title": "Otočit (R)",
+                "description": "Změnit orientaci vzoru o 90 stupňů."
+            },
+            "recenter": {
+                "title": "Zacentrovat a resetovat (C)",
+                "description": "Posune vzor na sřed a zruší otočení/ převrácení."
+            },
+            "layers": {
+                "description": "Zobrazí nebo skryje vrstvy v PDF.",
+                "title": "Zobrazit nebo skrýt vrstvy"
+            },
+            "stitch": {
+                "description": "Zobrazit nebo skrýt menu \"složit\" , které vám umožní složit dohromady několikastránkové PDF vzory.",
+                "title": "Zobrazit nebo skrýt menu \"složit\" (stitch)"
+            },
+            "measure": {
+                "title": "Nástroj čára (L)",
+                "description": "Označí čáry v PDF pro otočení, převrácení, přemístění nebo označení. Pro detailní popis tohoto nástroje otevřete <lineToolLink>Sekci nástroj čára</lineToolLink>."
+            }
+        },
+        "tools": "Nástroje",
+        "lineTool": {
+            "title": "Nástroj čára",
+            "delete": {
+                "title": "Smazat čáru",
+                "description": "Smazat vybranou čáru."
+            },
+            "rotate": {
+                "title": "Zarovnat na střed",
+                "description": "Otočí PDF tak, že zvolená čára je zacentrovaná horizontálně na vaší podložce.",
+                "use": "Pro zarovnání směru šicího vzoru se směrem vláken vaší látky: nakreslete čáru na směrové značce šicího vzoru, poté klikněte na tlačítko zarovnat na střed."
+            },
+            "previousNext": {
+                "title": "Zarovnat předchozí/ následující čáru na střed",
+                "description": "Posune PDF tak, že předchozí/následující nakreslená čára je horizontálně zarovnána na střed.",
+                "use": "Pro pohyb mezi díly šicího vzoru během stříhání: nakreslete čáru na směrové značce každého dílu vzoru, poté se pohybujte po šicím vzoru pomoci těchto tlačítek. Během pohybu po jednotlivých dílech šicího vzoru, mazejte jednotlivé čáry pro sledování toho, které díly ještě zbývá vystříhnout."
+            },
+            "flip": {
+                "title": "Převrátit podél osy",
+                "description": "Převrátí PDF podél osy.",
+                "use": "Pro rozložení dílů šicího vzoru: nakreslete čáru na skad látky na šicím vzoru, vyjměte díl až k skladu látky a klidněte na tlačítko převrátit podél osy, poté vyjměte zbytek dílu."
+            },
+            "move": {
+                "title": "Posunout PDF o délku čáry",
+                "description": "Posune PDF o délku čáry.",
+                "use": "Pro prodloužení/ zkrácení dílů šicího vzoru: nakreslete čáru vodorovnou k čáře pro prodloužení/zkrácení dílu střihu, vyjměte tuto čáru a klidněte na tlačítko posunout o délku čáry a poté pokračujte ve vzjmutí dílu střihu. Směr nakreslené čáry bude záviset na tom, zda prodlužujete nebo zkracujete stříhový díl."
+            },
+            "description": "Nástroj čára může být použit pro měření vzdálenosti, označování čar, otáčení, převrácení a posunování PDF. Klikněte na tlačítko nástroje čára, poté klikněte na PDF a tahem nakreslete čáru. Jakmile je čára nakreslená, na spodku obrazovky se objeví menu s následujícími možnostmi:"
+        },
+        "overlayOptions": {
+            "title": "Možnosti překryvu",
+            "description": "Možnosti překryvu mohou být použity pro ověření kalibrace během promítání a pomoci z vystřihováním vzorů. K dispozici jsou následující možnosti:",
+            "border": {
+                "title": "Hranice",
+                "description": "Zobrazí hranici kalibrační mřížky."
+            },
+            "flipLines": {
+                "title": "Převrátit čáry",
+                "description": "Zobrazí čáry, které pomáhají s rozbalením šicího vzoru. Zarovnejte sklad šicího vzoru s osou převrácení a zvolte horizontální nebo vertikální převrácení pro zobrazení dílu."
+            },
+            "grid": {
+                "title": "Mřížka",
+                "description": "Zobrazí kalibrační mřížku."
+            },
+            "paper": {
+                "title": "List papíru",
+                "description": "Zobrazí obdélník o velikosti listu papíru Letter nebo A4 pro ověření kalibrace."
+            },
+            "flippedPattern": {
+                "title": "Opačná strana",
+                "description": "Zobrazí tečky, kdzž je promítána opačná (spodní) strana vzoru."
+            }
+        },
+        "faq": {
+            "title": "Často kladené dotazy (FAQ)",
+            "wrongSizePdf": {
+                "question": "Je vaše promítnuté PDF příliš malé nebo velké?",
+                "answer": "Kalibrační nástroj Pattern Projectoru nemá zoom, protože měřítko projekce je dáno veikostním nastavením PDF souboru. Šicí vzory od návrhářů mají obvykle správné měřítko, talže změna měřítka může být přenastavena po otevření souboru v Affinity Designeru nebo Inkscapu."
+            },
+            "saveAsApp": {
+                "answer": "Patter Projektor je progresivní webová aplikace (Progressive Web App - PWA), takže může být uložen pouze hako applikace. Na plochu počítače ji můžete nainstalovat přes ?<googleChromeLink>Chrome</googleChromeLink> nebo <microsoftEdgeLink>Edge</microsoftEdgeLink>. Na tabletu, otevřete menu Sdílení a klikněte na \"Přidat na Home Screen\"."
+            },
+            "annotationSupport": {
+                "question": "Je k dispozici podpora pro přidávání anotací?",
+                "answer": "Aktuálně ne, ale je v plánu pro další verzi."
+            },
+            "mobileSupport": {
+                "answer": "Ačkoliv je možné na smartphonu navštívit webovou stránku, je používání ztížené omezenou velikostí obrazovky. Lepší podpora mobilních zařízení je plánována v další verzi.",
+                "question": "Je k dispozici podpora mobilních telefonů a tabletů?"
+            }
+        },
+        "contribute": {
+            "develop": "Pomožte při zavádění nových funkcí a opravě chyb na <githubLink>GitHub</githubLink>.",
+            "feedback": "Zpětná vazba a návrhy nových funcí jsou vítány!",
+            "title": "Přispějte do projektu",
+            "donation": "Pokud chcete projektu přispět, zvažte možnost <donateLink>Pozvat na kávu</donateLink>!",
+            "translate": "Přeložte tento nástroj do dalších jayzků pomocí <weblateLink>Weblate</weblateLink>."
+        },
+        "resources": {
+            "links": {
+                "projectorsForSewing": {
+                    "link": "https://www.facebook.com/groups/481078582801085",
+                    "title": "Faceboková skupina Projectors for Sewing (v angličtině)"
+                },
+                "onePageGuide": {
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing",
+                    "title": "Průvodce šitím s projektorem (v angličtině)"
+                }
+            },
+            "title": "Další zdroje informací"
+        },
+        "contact": "Kontakt"
+    },
+    "InstallButton": {
+        "title": "Naintalovat aplikaci",
+        "descriptionAndroid": "Pro nejlepší výsledky pro Android použijte Firefox. Aplikaci stáhněte kliknutím na tlačítko <moreIcon></moreIcon> v menu prohlížeče a následně klikněte na <addToHomeScreenIcon>Add to Home Screen</addToHomeScreenIcon>.",
+        "ok": "OK",
+        "descriptionIOS": "Stáhněte aplikaci kliknutím na tlačítko <shareIcon></shareIcon> v menu prohlížeče a poté klikněte na Add to Home Screen <addBoxIcon></addBoxIcon>.",
+        "description": "Pro nejlepší výsledky nainstalujte Pattern Projektor pomocí <chromeLink>Google Chrome</chromeLink>. V Chromu stáhněte aplikaci kliknutím na <installIcon></installIcon> v panelu Adresa."
+    },
+    "Header": {
+        "project": "Promítat",
+        "openPDF": "Otevřít PDF",
+        "height": "H:",
+        "width": "W:",
+        "calibrate": "Kalibrovat",
+        "delete": "Resetovat kalibraci",
+        "gridOn": "Zobrazit mřížku",
+        "gridOff": "Schovat mřížku",
+        "overlayOptions": "Možnosti překryvu",
+        "overlayOptionBorder": "Hranice",
+        "overlayOptionDisabled": "Deaktivováno",
+        "overlayOptionGrid": "Mřížka",
+        "overlayOptionPaper": "List papíru",
+        "overlayOptionFlippedPattern": "Druhá strana (líc)",
+        "invertColor": "Prohodit barvy",
+        "invertColorOff": "Vypnout prohození barev",
+        "flipVertical": "Převrátit vertikálně (V)",
+        "flipHorizontal": "Převrátit horizontálně (H)",
+        "flipCenterOff": "Vypnout převrácení podle středové osy",
+        "fourCornersOn": "Zvýraznit všechny rohy",
+        "fourCornersOff": "Zvýraznit pouze vybraný roh",
+        "rotate90": "Otočit o 90 stupňů po směru hodin (R)",
+        "arrowBack": "O jednu stranu zpět",
+        "arrowForward": "O jednu stranu vpřed",
+        "recenter": "Zarovnat na střed a resetovat (C)",
+        "fullscreen": "Přepnout na celou obrazovku",
+        "fullscreenExit": "Vypnout režim celé obrazovky",
+        "ok": "OK",
+        "calibrationAlertTitle": "Varování kalibrace",
+        "calibrationAlert": "Velikost okna se od začátku promítání změnila, zmáčkněte tlačítko Přepnout na celou obrazovku nebo opakujte kalibraci.",
+        "calibrationAlertContinue": "Velikost okna se nesmmí v průběhu kalibrace změnit. Pro Promítání v režimu celé obrazovky, proveďte kalibraci na celou obrazovku. Pokud chcete změnit velikost okna, proveďte kalibraci znovu.",
+        "checkCalibration": "Kontrola kalibrace",
+        "continue": "Uložit velikost okna a pokračovat",
+        "menuShow": "Zobrazit menu",
+        "menuHide": "Schovat menu",
+        "lineWeight": "Tloušťka čáry",
+        "stitchMenuDisabled": "Otevřít PDF pro použití spojovacího menu",
+        "hideMovement": "Shovat nástroj posun",
+        "magnify": "Zvětšit (M)",
+        "zoomOut": "Oddálit (Z)",
+        "overlayOptionFliplines": "Osy pro převrácení",
+        "flipCenterOn": "Převrátit podle středové osy",
+        "info": "Informace",
+        "stitchMenuShow": "Zobrazit spojovací menu",
+        "showMovement": "Zobrazit nástroj posun",
+        "stitchMenuHide": "Schovat spojovací menu",
+        "measure": "Nástroj čára (L)"
+    },
+    "StitchMenu": {
+        "columnCount": "Sloupce",
+        "pageRange": "Spojit strany",
+        "horizontal": "Horiyontální",
+        "vertical": "Vertikální"
+    },
+    "LayerMenu": {
+        "layersOn": "Zobrazit menu vrstvy",
+        "layersOff": "Schovat menu vrstvy",
+        "title": "Vrstvy",
+        "showAll": "Zobrazit vše",
+        "noLayers": "PDF neobsahuje vrstvy",
+        "hideAll": "Schovat vše"
+    },
+    "MeasureCanvas": {
+        "flipAlong": "Převrátit podél osy",
+        "line": "čára",
+        "translate": "Posunout PDF o délku čáry",
+        "rotateToHorizontal": "Zarovnat na střed",
+        "rotateAndCenterPrevious": "Zarovnat předchozí čáru na střed",
+        "rotateAndCenterNext": "Zarovnat následující čáru na střed",
+        "deleteLine": "Vymazat čáru",
+        "lines": "čáry"
+    },
+    "SaveMenu": {
+        "save": "Exportovat PDF",
+        "saveTooltip": "Eportovet PDF se spojenými stranami a vybranými vrstvami",
+        "encryptedPDF": "Toto PDF je zaheslováno. Prosím, pro uložení spojeného PDF zadejte heslo."
+    },
+    "MovementPad": {
+        "up": "Nahoru",
+        "next": "Následující roh",
+        "down": "Dolu",
+        "left": "Doleva",
+        "right": "Doprava"
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "Klidněte na PDF pro přiblížení",
+        "magnifying": "Klidněte na PDF pro zrušení přiblížení"
+    }
+}

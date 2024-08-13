@@ -39,7 +39,7 @@
             "open": "Klicke auf <pdficon></pdficon> um das PDF-Dokument zu öffnen.",
             "move": "Bewege die PDF durch Klicken und Ziehen über den Bildschirm.",
             "cut": "Schneide die Schnittteile an der Projektion aus.",
-            "tools": "Im Projektionsmodus sind verschiedene Tools enthalten:",
+            "tools": "Im Projektionsmodus sind verschiedene Tools enthalten. Manche funktionieren durch Tastatur-Kurzbefehl, diese sind in Klammern angegeben:",
             "showGrid": {
                 "title": "Ein-/Ausblenden des Rasters",
                 "description": "Beim Beamen kann das abgeschwächte Raster ein-/ausgeblendet, um zu sehen, ob die Kalibrierung korrekt ist."
@@ -49,16 +49,16 @@
                 "description": "Bei der Projektion ist es normalerweise einfacher, grüne oder weiße Linien auf schwarzem Grund zu sehen. Klicken/Tippen Sie einmal für grüne Linien, zweimal für weiße Linien und dreimal, um zu schwarzen Linien zurückzukehren."
             },
             "flip": {
-                "title": "Spiegel Vertikal/Horizontal",
+                "title": "Vertikal (V) oder Horizontal (H) spiegeln",
                 "description": "Hilfreich um Stoffbruch oder gegengleiche Schnitteile zu spiegeln."
             },
             "rotate": {
-                "title": "Drehen",
+                "title": "Drehen (R)",
                 "description": "Dreht das Schnittmuster um 90 Grad."
             },
             "recenter": {
-                "title": "PDF zentrieren",
-                "description": "Zentriert das Schnittmuster auf der Projektionsfläche"
+                "title": "PDF zentrieren (C)",
+                "description": "Zentriert das Schnittmuster auf der Projektionsfläche und setzt Drehung/Spiegelung zurück."
             },
             "fullscreen": {
                 "title": "Vollbild",
@@ -73,11 +73,11 @@
                 "description": "Das obere Menü ein- oder ausblenden."
             },
             "moveTool": {
-                "title": "Werkzeug zum Verschieben ein-/ausblenden",
+                "title": "Werkzeug zum Verschieben ein- oder ausblenden",
                 "description": "Das Verschiebewerkzeug verfügt über vier Pfeiltasten zum Verschieben der Ecken/Kanten des Kalibrierungsgitters. In der Mitte befindet sich außerdem eine Schaltfläche \"Weiter\", mit der Sie zur nächsten Ecke/Kante wechseln können."
             },
             "overlayOptions": {
-                "title": "Überlagerungsoptionen ein-/ausblenden",
+                "title": "Überlagerungsoptionen ein- oder ausblenden",
                 "description": "Die Overlays Raster, Rand, Papierbogen und Flip-Linien können ein- oder ausgeblendet werden. Das Raster entspricht dem Kalibrierungsraster, der Rand ist die Umrandung des Kalibrierungsrasters, das Papierblatt ist ein Rechteck in der Größe eines DIN-A4-Blattes, und die Umkehrlinien sind Linien, die bei der Spiegelung von Mustern helfen."
             },
             "lineWeight": {
@@ -85,12 +85,16 @@
                 "description": "Ändern Sie die Dicke der Linien im PDF-Muster."
             },
             "layers": {
-                "title": "Ebenen ein-/ausblenden",
+                "title": "Ebenen ein- oder ausblenden",
                 "description": "Ebenen in der PDF-Datei ein- oder ausblenden."
             },
             "stitch": {
-                "title": "Stichmenü anzeigen/verbergen",
+                "title": "Stichmenü anzeigen oder verbergen",
                 "description": "Blenden Sie das Stichmenü ein oder aus, mit dem Sie mehrseitige PDF-Designs zusammenheften können."
+            },
+            "magnify": {
+                "title": "Vergrößern (M)",
+                "description": "Klicke (oder tippe) auf das PDF, um es zu vergrößern. Klicke (oder tippe) erneut, um das Vergrößerung zu beenden."
             }
         },
         "faq": {
@@ -136,7 +140,19 @@
             "translate": "Übersetzung dieses Projekts in mehrere Sprachen.",
             "feedback": "Feedback und Verbesserungsvorschläge sind herzlich Willkommen!"
         },
-        "contact": "Kontakt"
+        "contact": "Kontakt",
+        "lineTool": {
+            "title": "Linien-Werkzeug",
+            "rotate": {
+                "description": "Dreht das PDF, so dass die ausgewählte Linie horizontal und mittig auf der Matte liegt.",
+                "title": "Zentrieren"
+            },
+            "delete": {
+                "title": "Linie löschen",
+                "description": "Ausgewählte Linie löschen."
+            }
+        },
+        "tools": "Werkzeuge"
     },
     "Header": {
         "projecting": "Beamen",
