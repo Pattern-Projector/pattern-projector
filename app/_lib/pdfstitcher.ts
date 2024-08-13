@@ -46,12 +46,8 @@ function initDoc(doc: PDFDocument, pages: number[]): Map<number, PDFRef> {
    */
 
   const pageMap = new Map<number, PDFRef>();
-  for (const p of pages) {
-    if (p == 0) {
-      pageMap.set(p, PDFRef.of(-1));
-    } else {
-      pageMap.set(p, doc.getPage(p - 1).ref);
-    }
+  for (const p of pages.filter(p => p > 0)) {
+    pageMap.set(p, doc.getPage(p - 1).ref);
   }
 
   // Remove all the pages
@@ -219,8 +215,9 @@ async function tilePages(doc: PDFDocument, settings: StitchSettings) {
   const commands: PDFOperator[] = [];
   const XObjectDict = doc.context.obj({});
 
-  for (const [p, ref] of pageMap.entries()) {
-    if (p > 0) {
+  for (const p of pages) {
+    const ref = pageMap.get(p);
+    if (p > 0 && ref) {
       // create a new form XObject for the page
       const xRef = await getFormXObjectForPage(doc.context, ref);
       if (!xRef) {
