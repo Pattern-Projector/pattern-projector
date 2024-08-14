@@ -217,7 +217,7 @@ async function tilePages(doc: PDFDocument, settings: StitchSettings) {
 
   for (const p of pages) {
     const ref = pageMap.get(p);
-    if (p > 0 && ref) {
+    if (ref) {
       // create a new form XObject for the page
       const xRef = await getFormXObjectForPage(doc.context, ref);
       if (!xRef) {
