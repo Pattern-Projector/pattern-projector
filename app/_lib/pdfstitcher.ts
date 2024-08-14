@@ -46,7 +46,7 @@ function initDoc(doc: PDFDocument, pages: number[]): Map<number, PDFRef> {
    */
 
   const pageMap = new Map<number, PDFRef>();
-  for (const p of pages.filter(p => p > 0)) {
+  for (const p of pages.filter((p) => p > 0)) {
     pageMap.set(p, doc.getPage(p - 1).ref);
   }
 
