@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full screen icon enter/exit swapped to be correct versions
 - Calibration is saved on keyboard input (not just mouse click)
 - Calibration corners no longer stick to cursor on mouse up
+- Saving stitched PDF respects multiple copies of the same page (e.g. multiple empty pages)
 
 ### Removed
 

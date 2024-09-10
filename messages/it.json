@@ -3,7 +3,7 @@
         "project": {
             "moveTool": {
                 "description": "Lo strumento spostamento ha quattro pulsanti freccia per spostare gli angoli della griglia di calibrazione e i bordi. Ha anche un pulsante \"successivo\" al centro per passare all'angolo/bordo successivo.",
-                "title": "Mostra o nasconde lo strumento sposta"
+                "title": "Mostra o nascondi lo strumento sposta"
             },
             "open": "Fai clic (o tocca) <pdficon></pdficon> per aprire il documento PDF.",
             "cut": "Taglia il cartamodello proiettato.",
@@ -17,14 +17,14 @@
                 "title": "Menu mostra/nascondi"
             },
             "invert": {
-                "description": "Quando si proietta, di solito è più facile vedere linee verdi o bianche su nero. Fai clic/tap una volta per linee verdi, due volte per linee bianche, e tre volte per tornare alle linee nere.",
-                "title": "Inverte colori"
+                "description": "Quando si proietta, di solito è più facile vedere linee verdi o bianche su nero. Fai clic/tocca una volta per linee verdi, due volte per linee bianche, e tre volte per tornare alle linee nere.",
+                "title": "Inverti colori"
             },
             "overlayOptions": {
-                "title": "Mostra o nasconde le opzioni di sovrapposizione",
+                "title": "Mostra o nascondi le opzioni di sovrapposizione",
                 "description": "Griglia, bordo, foglio di carta, linee di riflessione o sovrapposizioni del rovescio del modello possono essere mostrati sul PDF per aiutare con la calibrazione e il taglio. Per ulteriori informazioni, vedere la sezione <overlayOptionsLink>opzioni di sovrapposizione</overlayOptionsLink>."
             },
-            "title": "Proiezione di un modello",
+            "title": "Proiezione di un cartamodello",
             "move": "Sposta il PDF facendo clic e trascinandolo sullo schermo.",
             "lineWeight": {
                 "title": "Spessore della linea",
@@ -40,10 +40,10 @@
             },
             "recenter": {
                 "title": "Centra e ripristina (C)",
-                "description": "Centro il modello sul tappetino di taglio e ripristina la rotazione/riflessione."
+                "description": "Centra il modello sul tappetino di taglio e ripristina la rotazione/riflessione."
             },
             "layers": {
-                "title": "Mostra o nasconde i livelli",
+                "title": "Mostra o nascondi i livelli",
                 "description": "Mostra o nasconde i livelli nel PDF."
             },
             "stitch": {
@@ -52,16 +52,16 @@
             },
             "measure": {
                 "title": "Strumento Linea (L)",
-                "description": "Crea delle linee nel PDF per ruotare, specchiare, spostare, misurare o contrassegnare. Per una descrizione dettagliata dello strumento linea, visita la<lineToolLink>sezione strumento linea</lineToolLink>."
+                "description": "Crea delle linee nel PDF per ruotare, specchiare, spostare, misurare o contrassegnare. Per una descrizione dettagliata dello strumento linea, visita la <lineToolLink>sezione strumento linea</lineToolLink>."
             }
         },
         "calibration": {
             "size": "Non è necessario calibrare utilizzando l'intero tappetino, invece scegli l'area più grande in cui è possibile far entrare la griglia di calibrazione e inserisci larghezza e altezza per farle combaciare con la larghezza e l'altezza della griglia.",
-            "project": "Quando la griglia proiettata è allineata con il tappetino, fai clic (o tocca) “Progetto.”",
+            "project": "Quando la griglia proiettata è allineata con il tappetino, fai clic (o tocca) “Proietta.”",
             "title": "Calibrazione",
             "fullscreen": "Entra in modalità a schermo intero cliccando (o toccando) ",
             "start": "Fari clic (o tocca) su “Avvia calibrazione.”",
-            "drag": "Trascina gli angoli della griglia per allinearli con il tappetino. Mantenendo occhi sul tappetino, regola gli angoli sul computer o tablet. Sistema il posizionamento degli angoli fino a quando la griglia proiettata corrisponde alla griglia del tappetino."
+            "drag": "Trascina gli angoli della griglia per allinearli con il tappetino. Mantenendo gli occhi sul tappetino, regola gli angoli sul computer o tablet. Sistema il posizionamento degli angoli fino a quando la griglia proiettata corrisponde alla griglia del tappetino."
         },
         "choose-language": "Lingua",
         "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
@@ -74,11 +74,11 @@
             "mount": "Treppiede o aggancio per muro/mensola/tavola per il proiettore"
         },
         "setup": {
-            "keystone": "Se il proiettore ha il keystone (correzione trapezoidale), regolalo in modo che la proiezione sia più rettangolare possibile e la messa a fuoco vicino ai bordi migliori.",
+            "keystone": "Se il proiettore ha il keystone (correzione trapezoidale), regolalo in modo che la proiezione sia più rettangolare possibile e la messa a fuoco migliori vicino ai bordi.",
             "title": "Allestimento",
-            "place": "Posiziona il proiettore sopra il tappetino di taglio, puntando direttamente sul tappetino di taglio. Se non si dispone di un tappetino da taglio, è possibile utilizzare carta o nastro adesivo per realizzare una griglia / rettangolo su un tavolo o sul pavimento.",
+            "place": "Posiziona il proiettore sopra il tappetino di taglio, puntando direttamente sul tappetino di taglio. Se non disponi di un tappetino da taglio, è possibile utilizzare carta o nastro adesivo per realizzare una griglia / rettangolo su un tavolo o sul pavimento.",
             "connect": "Collega il computer o il tablet al proiettore e fai il mirroring o estendi lo schermo in modo che l'immagine da computer o tablet sia mostrata sul proiettore.",
-            "focus": "Regolare la messa a fuoco sul proiettore, fino a quando il testo al centro della proiezione non è nitido. Se non riesci ad ottenere un'immagine chiara, assicurati che la distanza tra il proiettore e il tappetino di taglio rientri nell'intervallo funzionale consigliato dal produttore."
+            "focus": "Regola la messa a fuoco sul proiettore, fino a quando il testo al centro della proiezione è nitido. Se non riesci ad ottenere un'immagine chiara, assicurati che la distanza tra il proiettore e il tappetino di taglio rientri nell'intervallo funzionale consigliato dal produttore."
         },
         "github": "Vedi codice sorgente",
         "calibrate": "Inizia a calibrare",
@@ -99,9 +99,9 @@
                 "use": "Per allineare il drittofilo di un cartamodello con il drittofilo del tessuto: disegna una linea sulla drittofilo del pezzo modello, quindi fai clic (o tocca) il pulsante \"allinea al centro\"."
             },
             "previousNext": {
-                "title": "Porta la linea precedente/siccessiva al centro",
+                "title": "Porta la linea precedente/successiva al centro",
                 "description": "Sposta il PDF in modo che la linea precedente/successiva disegnata sia orizzontale e centrata sul tappetino.",
-                "use": "Per spostarsi tra i pezzi di pattern quando si taglia: disegna una linea sul drittofilo di ogni pezzo modello, quindi spostati attraverso i pezzi di pattern utilizzando questi pulsanti. Elimina le linee mentre passi attraverso i pezzi del cartamodello per tenere traccia di quali pezzi sono rimasti da tagliare."
+                "use": "Per spostarsi tra i pezzi del cartamodello quando si taglia: disegna una linea sul drittofilo di ogni pezzo modello, quindi spostati attraverso i pezzi del cartamodello utilizzando questi pulsanti. Elimina le linee mentre passi attraverso i pezzi del cartamodello per tenere traccia di quali pezzi sono rimasti da tagliare."
             },
             "flip": {
                 "title": "Rifletti lungo la linea",
@@ -111,9 +111,9 @@
             "move": {
                 "title": "Sposta il PDF della stessa lunghezza linea",
                 "description": "Sposta il PDF dalla lunghezza della linea.",
-                "use": "Per allungare/accorciare i pezzi del cartamodello: disegna una linea perpendicolare la linea di allungamento di un pezzo del cartamodello, taglia fino alla linea di allungamento, quindi fai clic (o tocca) il pulsante \"movimento per lunghezza linea\" e continua a tagliare il pezzo. La direzione della linea disegnata dipenderà se stai allungando o accorciando il pezzo."
+                "use": "Per allungare/accorciare i pezzi del cartamodello: disegna una linea perpendicolare alla linea di allungamento di un pezzo del cartamodello, taglia fino alla linea di allungamento, quindi fai clic (o tocca) il pulsante \"sposta per lunghezza linea\" e continua a tagliare il pezzo. La direzione della linea disegnata dipenderà se stai allungando o accorciando il pezzo."
             },
-            "description": "Lo strumento linea può essere utilizzato per misurare le distanze, contrassegnare le linee, ruotare, riflettere e spostare il PDF. Fai clic (o tocca) sul pulsante della linea, quindi fai clic (o tocca) sul PDF e trascinare per disegnare una linea. Una volta tracciata una riga, un menu apparirà sul fondo dello schermo con le seguenti opzioni:"
+            "description": "Lo strumento linea può essere utilizzato per misurare le distanze, contrassegnare le linee, ruotare, riflettere e spostare il PDF. Fai clic (o tocca) sul pulsante linea, quindi fai clic (o tocca) sul PDF e trascina per disegnare una linea. Una volta tracciata una riga, un menu apparirà nella parte bassa dello schermo con le seguenti opzioni:"
         },
         "overlayOptions": {
             "border": {
@@ -136,17 +136,17 @@
             "description": "Le opzioni di sovrapposizione possono essere utilizzate per verificare la calibrazione durante la proiezione e come aiuto per tagliare i cartamodelli. Sono disponibili le seguenti opzioni:",
             "flippedPattern": {
                 "title": "Rovescio del cartamodello",
-                "description": "Mostra dei punti quando il rovescio del modello è proiettato."
+                "description": "Mostra dei punti quando viene proiettato il rovescio del modello."
             }
         },
         "faq": {
             "title": "FAQ",
             "wrongSizePdf": {
                 "question": "La proiezione del PDF è troppo grande o troppo piccola?",
-                "answer": "Lo strumento di calibrazione di Pattern Projector non ha zoom perché la scala della proiezione proviene dalle informazioni sulle dimensioni del PDF. I cartamodelli creati da designer di solito hanno la scala corretta, quindi un cambiamento di scala potrebbe essere stato introdotto aprendo il modello in Affinity Designer o Inkscape."
+                "answer": "Lo strumento di calibrazione di Pattern Projector non ha zoom perché la scala della proiezione proviene dalle informazioni sulle dimensioni del PDF. I cartamodelli creati da designer di solito hanno la scala corretta, un cambiamento di scala potrebbe essere stato introdotto aprendo il modello in Affinity Designer o Inkscape."
             },
             "annotationSupport": {
-                "question": "Hai il supporto per aggiungere annotazioni?",
+                "question": "C'è il supporto per aggiungere annotazioni?",
                 "answer": "Non ancora, ma è previsto un prossimo rilascio."
             },
             "mobileSupport": {
@@ -154,7 +154,7 @@
                 "answer": "Anche se è possibile visitare e utilizzare la pagina web su uno smartphone , la dimensione limitata dello schermo la rende difficile da usare. Un migliore supporto mobile è previsto in un prossimo rilascio."
             },
             "saveAsApp": {
-                "answer": "Pattern Projector è un Progressive Web App (PWA) quindi può essere salvato come app. Su un desktop, è possibile installarlo utilizzando <googleChromeLink>Chrome</googleChromeLink> o <microsoftEdgeLink>Edge</microsoftEdgeLink>. Su un tablet, apri il menu Condividi e tocca Aggiungi alla schermata iniziale."
+                "answer": "Pattern Projector è un Progressive Web App (PWA) quindi può essere salvato come app. È possibile installarlo su un computer desktop utilizzando <googleChromeLink>Chrome</googleChromeLink> o <microsoftEdgeLink>Edge</microsoftEdgeLink>. Su un tablet, apri il menu Condividi e tocca Aggiungi alla schermata iniziale."
             }
         },
         "resources": {
@@ -172,8 +172,8 @@
         },
         "contribute": {
             "develop": "Aiuta a implementare funzionalità e risolvere problemi su <githubLink>GitHub</githubLink>.",
-            "feedback": "Feedback e richieste funzionalità sono i benvenuti!",
-            "donation": "Se vuoi sostenere lo sviluppo di questo strumento, per favore, prendi in considerazione l'idea di<donateLink>comprarmi un caffè</donateLink>!",
+            "feedback": "Feedback e richieste di funzionalità sono i benvenuti!",
+            "donation": "Se vuoi sostenere lo sviluppo di questo strumento, per favore, prendi in considerazione l'idea di <donateLink>comprarmi un caffè</donateLink>!",
             "translate": "Traduci questo strumento in più lingue utilizzando <weblateLink>Weblate</weblateLink>.",
             "title": "Contribuisci al progetto"
         },
@@ -182,7 +182,7 @@
     "InstallButton": {
         "title": "Installa l'app",
         "ok": "OK",
-        "descriptionAndroid": "Per una migliore esperienza su Android, utilizza Firefox. Scarica l'applicazione toccando il pulsante altro <moreIcon></moreIcon> nel menu del browser e poi <addToHomeScreenIcon></addToHomeScreenIcon> aggiungi alla schermata iniziale.",
+        "descriptionAndroid": "Per una migliore esperienza su Android, utilizza Firefox. Scarica l'applicazione toccando il pulsante altro <moreIcon></moreIcon> nel menu del browser e poi <addToHomeScreenIcon></addToHomeScreenIcon> aggiungi a schermata principale.",
         "descriptionIOS": "Scarica l'applicazione toccando il pulsante di condivisione <shareIcon></shareIcon> nel menu del browser e poi Aggiungi alla schermata iniziale <addBoxIcon></addBoxIcon>.",
         "description": "Per una migliore esperienza, installa Pattern Projector utilizzando <chromeLink>Google Chrome</chromeLink>. In Chrome, scarica l'app toccando <installIcon></installIcon> nella barra degli indirizzi."
     },
@@ -222,7 +222,7 @@
         "measure": "Strumento Linea (L)",
         "calibrationAlert": "La dimensione della finestra è cambiata da quando è iniziata la proiezione, premi il pulsante schermo intero o ricalibra per risolvere questo problema.",
         "continue": "Salva la dimensione della finestra e continua",
-        "overlayOptionFliplines": "Rifletti linee",
+        "overlayOptionFliplines": "Linee di riflessione",
         "fourCornersOn": "Evidenzia tutti gli angoli",
         "fourCornersOff": "Evidenzia solo l'angolo selezionato",
         "fullscreen": "Entra in modalità schermo pieno",
@@ -231,7 +231,9 @@
         "stitchMenuHide": "Nascondi il menu cuci",
         "stitchMenuDisabled": "Apre il PDF per usare il menu cuci",
         "showMovement": "Mostra lo strumento muovi",
-        "hideMovement": "Nasconde lo strumento muovi"
+        "hideMovement": "Nasconde lo strumento muovi",
+        "magnify": "Ingrandisci (M)",
+        "zoomOut": "Zoom indietro (Z)"
     },
     "MeasureCanvas": {
         "flipAlong": "Rifletti lungo la linea",
@@ -240,8 +242,8 @@
         "rotateAndCenterNext": "Porta la linea successiva al centro",
         "deleteLine": "Cancella la linea",
         "translate": "Sposta il PDF della lunghezza della linea",
-        "line": "Linea",
-        "lines": "Linee"
+        "line": "linea",
+        "lines": "linee"
     },
     "StitchMenu": {
         "columnCount": "Colonne",
@@ -268,5 +270,9 @@
         "left": "Sinistra",
         "right": "Destra",
         "next": "Angolo successivo"
+    },
+    "OverlayCanvas": {
+        "magnifying": "clicca il PDF per smettere di ingrandire",
+        "zoomedOut": "clicca il PDF per zoomare in avanti"
     }
 }

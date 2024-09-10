@@ -248,7 +248,10 @@
         "calibrationAlert": "Størrelsen på vinduet har ændret sig siden mønstervisningen begyndte, tryk på \"fuld skærm\"-knappen for at rette problemet.",
         "continue": "Gem størrelse på vindue og fortsæt",
         "flipCenterOn": "Vend hen over midten",
-        "flipCenterOff": "Vend hen over midten slået fra"
+        "flipCenterOff": "Vend hen over midten slået fra",
+        "magnify": "Forstør (M)",
+        "zoomOut": "Zoom ud (Z)",
+        "stitchMenuDisabled": "Åbn PDF for at bruge samlemenu"
     },
     "StitchMenu": {
         "columnCount": "Kolonner",
@@ -287,5 +290,14 @@
         "description": "For bedste brugeroplevelse, installér Pattern Projector på <chromeLink>Google Chrome</chromeLink>.",
         "descriptionIOS": "Download app'en ved at trykke på share-knappen <shareIcon></shareIcon> i browsermenuen og derefter Add to Home Screen <addBoxIcon></addBoxIcon>/Tilføj til hjemmeskærm.",
         "descriptionAndroid": "For bedre brugeroplevelse på Android, brug Firefox. Download app'en ved at trykke på more-knappen <moreIcon></moreIcon> i browsermenuen og derefter <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen/Tilføj til hjemmeskærm."
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "klik på PDF'en for at zoome ind",
+        "magnifying": "klik på PDF'en for at stoppe med forstørre"
+    },
+    "SaveMenu": {
+        "save": "Eksportér PDF",
+        "saveTooltip": "Eksportér PDF med samlede sider og valgte lag",
+        "encryptedPDF": "Denne PDF er krypteret. Indtast venligst password for at gemme den samlede PDF."
     }
 }
