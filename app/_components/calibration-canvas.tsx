@@ -18,7 +18,6 @@ import useProgArrowKeyPoints from "@/_hooks/use-prog-arrow-key-points";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { KeyCode } from "@/_lib/key-code";
 import { PointAction } from "@/_reducers/pointsReducer";
-import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
 import { FullScreenHandle } from "react-full-screen";
 import Matrix from "ml-matrix";
 
@@ -37,6 +36,8 @@ export default function CalibrationCanvas({
   corners,
   setCorners,
   fullScreenHandle,
+  dragPoint,
+  setDragPoint,
 }: {
   className: string | undefined;
   points: Point[];
@@ -49,26 +50,22 @@ export default function CalibrationCanvas({
   corners: Set<number>;
   setCorners: Dispatch<SetStateAction<Set<number>>>;
   fullScreenHandle: FullScreenHandle;
+  dragPoint: Point | null;
+  setDragPoint: Dispatch<SetStateAction<Point | null>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [dragPoint, setDragPoint] = useState<Point | null>(null);
-  const [localPoints, setLocalPoints] = useState<Point[]>(points);
   const [hoverCorners, setHoverCorners] = useState<Set<number>>(new Set());
-
-  useEffect(() => {
-    setLocalPoints(points);
-  }, [points, setLocalPoints]);
 
   useEffect(() => {
     if (
       canvasRef !== null &&
       canvasRef.current !== null &&
-      localPoints &&
-      localPoints.length === maxPoints
+      points &&
+      points.length === maxPoints
     ) {
       /* All drawing is done in unitsOfMeasure, ptDensity = 1.0 */
       const perspectiveMatrix = getPerspectiveTransformFromPoints(
-        localPoints,
+        points,
         width,
         height,
         1.0,
@@ -84,7 +81,7 @@ export default function CalibrationCanvas({
         const cs = new CanvasState(
           ctx,
           { x: 0, y: 0 },
-          localPoints,
+          points,
           width,
           height,
           perspectiveMatrix,
@@ -105,7 +102,7 @@ export default function CalibrationCanvas({
       }
     }
   }, [
-    localPoints,
+    points,
     width,
     height,
     isCalibrating,
@@ -116,13 +113,13 @@ export default function CalibrationCanvas({
   ]);
 
   function isNearCenter(p: Point): boolean {
-    const sum = localPoints.reduce(
+    const sum = points.reduce(
       (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
       { x: 0, y: 0 },
     );
     const center = {
-      x: sum.x / localPoints.length,
-      y: sum.y / localPoints.length,
+      x: sum.x / points.length,
+      y: sum.y / points.length,
     };
     return sqrDist(center, p) < 4 * cornerMargin ** 2;
   }
@@ -143,18 +140,18 @@ export default function CalibrationCanvas({
   }
 
   function getNearbyEdge(p: Point): number[] {
-    const distances = localPoints.map((a, idx) =>
-      sqrDistToLine([a, localPoints[(idx + 1) % localPoints.length]], p),
+    const distances = points.map((a, idx) =>
+      sqrDistToLine([a, points[(idx + 1) % points.length]], p),
     );
     const edge = minIndex(distances);
     if (cornerMargin ** 2 > distances[edge]) {
-      return [edge, edge === localPoints.length - 1 ? 0 : edge + 1];
+      return [edge, edge === points.length - 1 ? 0 : edge + 1];
     }
     return [];
   }
 
   function getNearbyCorner(p: Point): number {
-    const distances = localPoints.map((a) => sqrDist(a, p));
+    const distances = points.map((a) => sqrDist(a, p));
     const corner = minIndex(distances);
     if (cornerMargin ** 2 > distances[corner]) {
       return corner;
@@ -197,15 +194,11 @@ export default function CalibrationCanvas({
 
   function handlePointerDown(e: React.PointerEvent) {
     const p = { x: e.clientX, y: e.clientY };
-    if (localPoints.length < maxPoints) {
-      setLocalPoints([...localPoints, p]);
-    } else {
-      const selectedCorners = selectCorners(p);
-      if (selectedCorners.size) {
-        setDragPoint(p);
-        setCorners(selectedCorners);
-        setHoverCorners(new Set());
-      }
+    const selectedCorners = selectCorners(p);
+    if (selectedCorners.size) {
+      setDragPoint(p);
+      setCorners(selectedCorners);
+      setHoverCorners(new Set());
     }
   }
 
@@ -214,7 +207,7 @@ export default function CalibrationCanvas({
     if (dragPoint === null) {
       setHoverCorners(selectCorners(p));
     } else if (corners.size) {
-      const newPoints = [...localPoints];
+      const newPoints = [...points];
       let dx = p.x - dragPoint.x;
       let dy = p.y - dragPoint.y;
       if (corners.size === 2) {
@@ -233,23 +226,8 @@ export default function CalibrationCanvas({
         };
       }
       setDragPoint(p);
-      setLocalPoints(newPoints);
+      dispatch({ type: "set", points: newPoints });
     }
-  }
-
-  function handlePointerUp(e: React.PointerEvent) {
-    /* Nothing to do. This short circuit is required to prevent setting
-     * the localStorage of the points to invalid values */
-    if (dragPoint === null) return;
-
-    localStorage.setItem(
-      "calibrationContext",
-      JSON.stringify(
-        getCalibrationContextUpdatedWithEvent(e, fullScreenHandle.active),
-      ),
-    );
-    dispatch({ type: "set", points: localPoints });
-    setDragPoint(null);
   }
 
   return (
@@ -260,7 +238,6 @@ export default function CalibrationCanvas({
       onKeyDown={handleKeyDown}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
-      onPointerUp={(e) => handlePointerUp(e)}
       style={{
         pointerEvents: isCalibrating ? "auto" : "none",
         cursor: dragPoint ? "none" : "grab",
