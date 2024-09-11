@@ -1,0 +1,9 @@
+{
+    "HomePage": {
+        "choose-language": "Språk",
+        "welcome": {
+            "title": "Välkommen till Pattern Projector!"
+        },
+        "calibrate": "Starta kalibrering"
+    }
+}

@@ -91,6 +91,14 @@
             "showMenu": {
                 "description": "Toon of verberg het menu bovenaan.",
                 "title": "Toon/verberg menu"
+            },
+            "magnify": {
+                "title": "Vergroot (M)",
+                "description": "Klik op de PDF om deze te vergroten. Klik opnieuw om te vergroten te stoppen."
+            },
+            "zoomOut": {
+                "title": "Uitzoomen (Z)",
+                "description": "Zoom uit om de hele PDF te zien. Klik op de PDF om de geselecteerde locatie te vergroten."
             }
         },
         "faq": {
@@ -113,7 +121,7 @@
             },
             "mobileSupport": {
                 "question": "Ondersteunen jullie mobiele telefoons en tablets?",
-                "answer": "Hoewel het mogelijk is om de webpagina te bezoeken en gebruiken met een smartphone, is het moeilijk te gebruiken door het kleine schermformaat. Betere ondersteuning voor kleine schermen is gepland voor een toekomstige versie."
+                "answer": "Hoewel het mogelijk is om de webpagina te bezoeken en gebruiken met een smartphone, is het moeilijk te gebruiken door het kleine schermformaat."
             }
         },
         "resources": {
@@ -131,7 +139,7 @@
         },
         "contribute": {
             "title": "Help dit project",
-            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink>!",
+            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink> of gebruik <payPalLink>PayPal</payPalLink>!",
             "develop": "Help verbeteringen toe te voegen en problemen op te lossen op <githubLink>GitHub</githubLink>.",
             "translate": "Vertaal deze software in meer talen met <weblateLink>Weblate</weblateLink>.",
             "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom (in het Engels)!"
@@ -249,7 +257,9 @@
         "checkCalibration": "Kalibratie nakijken",
         "measure": "Lijn gereedschap (L)",
         "stitchMenuDisabled": "Open PDF om het samenvoegen menu te gebruiken",
-        "overlayOptionFlippedPattern": "Verkeerde zijde"
+        "overlayOptionFlippedPattern": "Verkeerde zijde",
+        "magnify": "Vergroot (M)",
+        "zoomOut": "Uitzoomen (Z)"
     },
     "StitchMenu": {
         "columnCount": "Kolommen",
@@ -293,5 +303,13 @@
         "encryptedPDF": "Deze PDF is beveiligd. Voer het wachtwoord in om de samengevoegde PDF op te slaan.",
         "save": "Exporteer PDF",
         "saveTooltip": "Exporteer PDF met samengevoegde paginas en geselecteerde lagen"
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "klik PDF om in te zoomen",
+        "magnifying": "klik PDF om te stoppen met vergroten"
+    },
+    "PdfViewer": {
+        "error": "Niet gelukt om PDF te laden",
+        "noData": "Druk op de \"Open PDF\" knop om een PDF te laden"
     }
 }
