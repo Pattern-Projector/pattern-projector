@@ -84,7 +84,7 @@ export default function Home() {
               </a>
             ),
             payPalLink: (chunk) => (
-              <a href="https://www.paypal.com/donate?hosted_button_id=https://www.paypal.com/donate/?business=XNKEF57YX4E9Q&no_recurring=0&item_name=Support+the+development+of+Pattern+Projector%21&currency_code=CAD">
+              <a href="https://www.paypal.com/donate/?hosted_button_id=LF949PXS4RGYS">
                 {chunk}
               </a>
             ),
@@ -406,7 +406,7 @@ export default function Home() {
               </a>
             ),
             payPalLink: (chunk) => (
-              <a href="https://www.paypal.com/donate?hosted_button_id=https://www.paypal.com/donate/?business=XNKEF57YX4E9Q&no_recurring=0&item_name=Support+the+development+of+Pattern+Projector%21&currency_code=CAD">
+              <a href="https://www.paypal.com/donate/?hosted_button_id=LF949PXS4RGYS">
                 {chunk}
               </a>
             ),
