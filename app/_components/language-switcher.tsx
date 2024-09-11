@@ -24,6 +24,7 @@ export default function LanguageSwitcher({ ariaLabel }: { ariaLabel: string }) {
     nl: { flag: "\uD83C\uDDF3\uD83C\uDDF1", name: "Nederlands" }, // NL flag for Dutch
     it: { flag: "\uD83C\uDDEE\uD83C\uDDF9", name: "Italiano" }, // IT flag for Italian
     cs: { flag: "\uD83C\uDDE8\uD83C\uDDF7", name: "Čeština" }, // CZ flag for Czech
+    sv: { flag: "\uD83C\uDDF8\uD83C\uDDEA", name: "Svenska" }, // SE flag for Swedish
   };
 
   return (
