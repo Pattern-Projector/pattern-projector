@@ -65,6 +65,8 @@ import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import LoadingSpinner from "@/_icons/loading-spinner";
 import { Point } from "@/_lib/point";
+import TroubleshootingButton from "@/_components/troubleshooting-button";
+import { ButtonColor } from "@/_components/theme/colors";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -131,6 +133,10 @@ export default function Page() {
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
   const [dragPoint, setDragPoint] = useState<Point | null>(null);
+  const [troubleshooting, setTroubleshooting] = useState(false);
+  const [buttonColor, setButtonColor] = useState<ButtonColor>(
+    ButtonColor.PURPLE,
+  );
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -321,6 +327,14 @@ export default function Page() {
         theme: localSettings.theme ?? defaults.theme,
       });
     }
+
+    // const s = window.location.host.split(".")[0];
+    // if (s.localeCompare("beta") === 0) {
+    //   setButtonColor(ButtonColor.BLUE);
+    // }
+    // if (s.localeCompare("old") === 0) {
+    //   setButtonColor(ButtonColor.GREEN);
+    // }
   }, []);
 
   const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
@@ -635,8 +649,16 @@ export default function Page() {
                   setZoomedOut={setZoomedOut}
                   pdfLoadStatus={pdfLoadStatus}
                   lineThicknessStatus={lineThicknessStatus}
+                  buttonColor={buttonColor}
                 />
+                {isCalibrating && (
+                  <TroubleshootingButton
+                    troubleshooting={troubleshooting}
+                    setTroubleshooting={setTroubleshooting}
+                  />
+                )}
               </menu>
+
               <menu
                 className={`${visible(!isCalibrating && file !== null)} p-0`}
               >

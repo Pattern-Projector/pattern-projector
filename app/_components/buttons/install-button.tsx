@@ -9,6 +9,7 @@ import IosShareIcon from "@/_icons/ios-share-icon";
 import MoreVertIcon from "@/_icons/more-vert-icon";
 import AddToHomeScreenIcon from "@/_icons/add-to-home-screen-icon";
 import AddBoxIcon from "@/_icons/add-box-icon";
+import { Button } from "./button";
 
 export default function InstallButton() {
   const [installPrompt, setInstallPrompt] =
@@ -104,25 +105,21 @@ export default function InstallButton() {
     !chromeInstalled &&
     !iosInstalled && (
       <>
-        <button
-          className="flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center"
-          onClick={handleInstall}
-        >
+        <Button onClick={handleInstall}>
           <InstallDesktopIcon ariaLabel={t("title")} />
           {t("title")}
-        </button>
+        </Button>
         <Modal open={showModal}>
           <ModalTitle>{t("title")}</ModalTitle>
           <ModalText>{createDescription()}</ModalText>
           <ModalActions>
-            <button
-              className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+            <Button
               onClick={() => {
                 setShowModal(false);
               }}
             >
               {t("ok")}
-            </button>
+            </Button>
           </ModalActions>
         </Modal>
       </>

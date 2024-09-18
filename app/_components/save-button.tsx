@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import DownloadIcon from "@/_icons/download-icon";
 import Tooltip from "./tooltip/tooltip";
 import { Layers } from "@/_lib/layers";
+import { Button } from "./buttons/button";
 
 export default function SaveButton({
   file,
@@ -51,13 +52,10 @@ export default function SaveButton({
 
   return (
     <Tooltip description={t("saveTooltip")}>
-      <button
-        className="flex h-11 gap-2 items-center outline outline-purple-600 text-purple-600 dark:bg-black bg-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 hover:bg-purple-600 hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center"
-        onClick={handleSave}
-      >
+      <Button onClick={handleSave} className="flex gap-2 !px-3 items-center">
         <DownloadIcon ariaLabel={t("save")} />
         {t("save")}
-      </button>
+      </Button>
     </Tooltip>
   );
 }

@@ -62,6 +62,8 @@ import FullSceenExitIcon from "@/_icons/full-screen-exit-icon";
 import FullScreenIcon from "@/_icons/full-screen-icon";
 import LoadingSpinner from "@/_icons/loading-spinner";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
+import { ButtonStyle, getButtonStyleClasses } from "./theme/styles";
+import { ButtonColor, getColorClasses } from "./theme/colors";
 
 export default function Header({
   isCalibrating,
@@ -95,6 +97,7 @@ export default function Header({
   setZoomedOut,
   pdfLoadStatus,
   lineThicknessStatus,
+  buttonColor,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -127,6 +130,7 @@ export default function Header({
   setZoomedOut: Dispatch<SetStateAction<boolean>>;
   pdfLoadStatus: LoadStatusEnum;
   lineThicknessStatus: LoadStatusEnum;
+  buttonColor: ButtonColor;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const transformer = useTransformerContext();
@@ -134,9 +138,8 @@ export default function Header({
 
   const fileInputClassNames = useMemo(() => {
     if (!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING) {
-      return "outline-gray-50 text-gray-50 bg-gray-500";
+      return "outline-gray-50 !text-gray-50 !bg-gray-500";
     }
-    return "outline-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white";
   }, [isCalibrating, pdfLoadStatus]);
 
   function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
@@ -536,7 +539,7 @@ export default function Header({
             <label
               className={`${visible(
                 !isCalibrating,
-              )} flex gap-2 items-center outline outline-purple-600 text-purple-600 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  hover:bg-purple-600 dark:bg-black bg-white hover:text-white font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center ${fileInputClassNames} flex gap-2 items-center outline focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  font-medium rounded-lg text-sm px-2 py-1.5 hover:bg-none text-center`}
+              )} flex gap-2 items-center ${fileInputClassNames} ${getButtonStyleClasses(ButtonStyle.OUTLINE)} ${getColorClasses(buttonColor, ButtonStyle.OUTLINE)} !py-1.5 !px-3`}
             >
               <FileInput
                 disabled={
@@ -554,12 +557,14 @@ export default function Header({
               )}
               {t("openPDF")}
             </label>
-            <button
-              className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 flex align-middle"
+            <Button
               onClick={handleCalibrateProjectButtonClick}
+              className="flex align-middle"
+              style={ButtonStyle.FILLED}
+              color={buttonColor}
             >
               {isCalibrating ? t("project") : t("calibrate")}
-            </button>
+            </Button>
             <Tooltip description={t("info")} className={visible(isCalibrating)}>
               <IconButton href="/">
                 <InfoIcon ariaLabel={t("info")} />

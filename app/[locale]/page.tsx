@@ -36,6 +36,8 @@ import OverlayPaperIcon from "@/_icons/overlay-paper-icon";
 import { ReactNode } from "react";
 import MagnifyIcon from "@/_icons/magnify-icon";
 import ZoomOutIcon from "@/_icons/zoom-out-icon";
+import { Button } from "@/_components/buttons/button";
+import { ButtonStyle } from "@/_components/theme/styles";
 
 const DynamicInstallButton = dynamic(
   () => import("@/_components/buttons/install-button"),
@@ -56,12 +58,13 @@ export default function Home() {
 
         <menu className="flex items-center gap-2">
           <DynamicInstallButton />
-          <Link
-            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+          <Button
             href="/calibrate"
+            style={ButtonStyle.FILLED}
+            className="py-3.5"
           >
             {t("calibrate")}
-          </Link>
+          </Button>
           <LanguageSwitcher ariaLabel={t("choose-language")} />
         </menu>
       </nav>
