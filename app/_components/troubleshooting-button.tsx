@@ -19,7 +19,7 @@ export default function TroubleshootingButton({
   return (
     <>
       <Button
-        className="mt-2 mx-auto flex"
+        className="mt-2 absolute left-1/2 -translate-x-1/2"
         onClick={() => setTroubleshooting(true)}
       >
         {t("notMatching")}
