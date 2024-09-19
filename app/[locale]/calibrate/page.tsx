@@ -328,13 +328,13 @@ export default function Page() {
       });
     }
 
-    // const s = window.location.host.split(".")[0];
-    // if (s.localeCompare("beta") === 0) {
-    //   setButtonColor(ButtonColor.BLUE);
-    // }
-    // if (s.localeCompare("old") === 0) {
-    //   setButtonColor(ButtonColor.GREEN);
-    // }
+    const s = window.location.host.split(".")[0];
+    if (s.localeCompare("beta") === 0) {
+      setButtonColor(ButtonColor.BLUE);
+    }
+    if (s.localeCompare("old") === 0) {
+      setButtonColor(ButtonColor.GREEN);
+    }
   }, []);
 
   const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
