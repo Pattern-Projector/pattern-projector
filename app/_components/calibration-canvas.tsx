@@ -20,6 +20,7 @@ import { KeyCode } from "@/_lib/key-code";
 import { PointAction } from "@/_reducers/pointsReducer";
 import { FullScreenHandle } from "react-full-screen";
 import Matrix from "ml-matrix";
+import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const cornerMargin = 96;
@@ -36,8 +37,6 @@ export default function CalibrationCanvas({
   corners,
   setCorners,
   fullScreenHandle,
-  dragPoint,
-  setDragPoint,
 }: {
   className: string | undefined;
   points: Point[];
@@ -50,11 +49,10 @@ export default function CalibrationCanvas({
   corners: Set<number>;
   setCorners: Dispatch<SetStateAction<Set<number>>>;
   fullScreenHandle: FullScreenHandle;
-  dragPoint: Point | null;
-  setDragPoint: Dispatch<SetStateAction<Point | null>>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hoverCorners, setHoverCorners] = useState<Set<number>>(new Set());
+  const [dragPoint, setDragPoint] = useState<Point | null>(null);
 
   useEffect(() => {
     if (
@@ -230,6 +228,21 @@ export default function CalibrationCanvas({
     }
   }
 
+  function handlePointerEnd(e: React.PointerEvent) {
+    /* Nothing to do. This short circuit is required to prevent setting
+     * the localStorage of the points to invalid values */
+    if (dragPoint === null) return;
+
+    localStorage.setItem(
+      "calibrationContext",
+      JSON.stringify(
+        getCalibrationContextUpdatedWithEvent(e, fullScreenHandle.active),
+      ),
+    );
+    dispatch({ type: "set", points });
+    setDragPoint(null);
+  }
+
   return (
     <canvas
       tabIndex={0}
@@ -237,6 +250,9 @@ export default function CalibrationCanvas({
       className={`${className} outline-none`}
       onKeyDown={handleKeyDown}
       onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerEnd}
+      onPointerOut={handlePointerEnd}
+      onPointerLeave={handlePointerEnd}
       onPointerMove={handlePointerMove}
       style={{
         pointerEvents: isCalibrating ? "auto" : "none",
