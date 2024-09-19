@@ -92,7 +92,7 @@ export default function Draggable({
 
   useEffect(() => {
     setMatrix3d(toMatrix3d(calibrationTransform.mmul(transform)));
-  }, [transform, calibrationTransform]);
+  }, [transform]);
 
   function handleOnEnd(): void {
     setDragStart(null);
