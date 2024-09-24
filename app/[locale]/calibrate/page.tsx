@@ -627,7 +627,7 @@ export default function Page() {
                   lineThicknessStatus={lineThicknessStatus}
                   buttonColor={buttonColor}
                 />
-                {isCalibrating && <TroubleshootingButton />}
+                {isCalibrating && menuStates.nav && <TroubleshootingButton />}
               </menu>
 
               <menu
