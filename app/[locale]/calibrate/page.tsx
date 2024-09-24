@@ -133,7 +133,6 @@ export default function Page() {
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
 
-  const [troubleshooting, setTroubleshooting] = useState(false);
   const [buttonColor, setButtonColor] = useState<ButtonColor>(
     ButtonColor.PURPLE,
   );
@@ -630,12 +629,7 @@ export default function Page() {
                   lineThicknessStatus={lineThicknessStatus}
                   buttonColor={buttonColor}
                 />
-                {isCalibrating && (
-                  <TroubleshootingButton
-                    troubleshooting={troubleshooting}
-                    setTroubleshooting={setTroubleshooting}
-                  />
-                )}
+                {isCalibrating && <TroubleshootingButton />}
               </menu>
 
               <menu

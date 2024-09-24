@@ -1,5 +1,4 @@
 import { useTranslations } from "next-intl";
-import { Dispatch, SetStateAction } from "react";
 import Modal from "./modal/modal";
 import { ModalTitle } from "./modal/modal-title";
 import { ModalText } from "./modal/modal-text";
@@ -7,15 +6,12 @@ import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
 import TroubleshootingFigure from "./troubleshooting-image";
 import { ModalSubtitle } from "./modal/modal-subtitle";
+import { useState } from "react";
 
-export default function TroubleshootingButton({
-  troubleshooting,
-  setTroubleshooting,
-}: {
-  troubleshooting: boolean;
-  setTroubleshooting: Dispatch<SetStateAction<boolean>>;
-}) {
+export default function TroubleshootingButton() {
   const t = useTranslations("Troubleshooting");
+  const [troubleshooting, setTroubleshooting] = useState(false);
+
   return (
     <>
       <Button
