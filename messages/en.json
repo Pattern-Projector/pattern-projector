@@ -212,7 +212,7 @@
     "dimensionsSwapped": {
       "title": "Rectangles instead of squares?",
       "description": "If the projected grid looks like rectangles instead of squares, the width and height may be swapped. Simply swap the values in the fields.",
-      "caption": "The width and height are swapped: the width is 24 and the height is 18."
+      "caption": "The width and height are in the wrong boxes. The dimension should read 'W: 24' and 'H: 18'."
     },
     "close": "Close"
   },
