@@ -330,7 +330,7 @@ export default function Page() {
       setButtonColor(ButtonColor.BLUE);
     }
     if (s.localeCompare("old") === 0) {
-      setButtonColor(ButtonColor.GREEN);
+      setButtonColor(ButtonColor.GRAY);
     }
   }, []);
 

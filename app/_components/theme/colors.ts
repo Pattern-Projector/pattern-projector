@@ -2,7 +2,7 @@ import { ButtonStyle } from "./styles";
 
 export enum ButtonColor {
   BLUE = "blue",
-  GREEN = "green",
+  GRAY = "gray",
   PURPLE = "purple",
 }
 
@@ -22,10 +22,10 @@ export function getColorClasses(
         ? "text-blue-700 border-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:focus:ring-blue-800"
         : "bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800";
     }
-    case ButtonColor.GREEN: {
+    case ButtonColor.GRAY: {
       return style === ButtonStyle.OUTLINE
-        ? "text-green-700 border-green-700 hover:bg-green-800 focus:ring-green-300 dark:border-green-500 dark:text-green-500 dark:hover:bg-green-500 dark:focus:ring-green-800"
-        : "bg-green-700 hover:bg-green-800 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800";
+        ? "text-black border-gray-700 hover:bg-gray-800 focus:ring-gray-300 dark:border-gray-500 dark:text-gray-500 dark:hover:bg-gray-500 dark:focus:ring-gray-800"
+        : "bg-black hover:bg-gray-800 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800";
     }
     case ButtonColor.PURPLE: {
       return style === ButtonStyle.OUTLINE
