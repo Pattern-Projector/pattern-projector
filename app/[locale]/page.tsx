@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useMessages, useTranslations } from "next-intl";
-import Image from "next/image";
 
 import FullScreenIcon from "@/_icons/full-screen-icon";
 import FlipHorizontalIcon from "../_icons/flip-horizontal-icon";
