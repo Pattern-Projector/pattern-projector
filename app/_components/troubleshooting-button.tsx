@@ -23,6 +23,15 @@ export default function TroubleshootingButton() {
       <Modal open={troubleshooting}>
         <ModalTitle>{t("title")}</ModalTitle>
         <ModalSubtitle>{t("dragCorners.title")}</ModalSubtitle>
+        <div className="aspect-w-16 aspect-h-9 m-4">
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/EonY04Uu6gI?si=KcOn05_Cx4QZtUcF"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          ></iframe>
+        </div>
         <ModalText>{t("dragCorners.description")}</ModalText>
         <ModalText>{t("inputMeasurement")}</ModalText>
         <TroubleshootingFigure

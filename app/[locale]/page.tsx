@@ -123,6 +123,15 @@ export default function Home() {
         <a href="#calibration">
           <h2 id="calibration">{t("calibration.title")} #</h2>
         </a>
+        <div className="aspect-w-16 aspect-h-9">
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/EonY04Uu6gI?si=KcOn05_Cx4QZtUcF"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          ></iframe>
+        </div>
         <ol>
           <li>
             {t.rich("faq.saveAsApp.answer", {
@@ -158,7 +167,6 @@ export default function Home() {
               ),
             })}
           </li>
-          <Image src="/demo.gif" width={640} height={260} alt=""></Image>
           <li>{t("calibration.project")}</li>
         </ol>
 
