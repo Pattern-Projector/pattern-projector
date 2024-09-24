@@ -44,7 +44,6 @@ import pointsReducer from "@/_reducers/pointsReducer";
 import Filters from "@/_components/filters";
 import CalibrationContext, {
   getCalibrationContext,
-  getCalibrationContextUpdatedWithEvent,
   getIsInvalidatedCalibrationContext,
   getIsInvalidatedCalibrationContextWithPointerEvent,
   logCalibrationContextDifferences,
@@ -64,7 +63,8 @@ import useLayers from "@/_hooks/use-layers";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import LoadingSpinner from "@/_icons/loading-spinner";
-import { Point } from "@/_lib/point";
+import TroubleshootingButton from "@/_components/troubleshooting-button";
+import { ButtonColor } from "@/_components/theme/colors";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -130,7 +130,10 @@ export default function Page() {
   const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
-  const [dragPoint, setDragPoint] = useState<Point | null>(null);
+
+  const [buttonColor, setButtonColor] = useState<ButtonColor>(
+    ButtonColor.PURPLE,
+  );
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -321,6 +324,14 @@ export default function Page() {
         theme: localSettings.theme ?? defaults.theme,
       });
     }
+
+    const s = window.location.host.split(".")[0];
+    if (s.localeCompare("beta") === 0) {
+      setButtonColor(ButtonColor.BLUE);
+    }
+    if (s.localeCompare("old") === 0) {
+      setButtonColor(ButtonColor.GREEN);
+    }
   }, []);
 
   const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
@@ -360,25 +371,7 @@ export default function Page() {
     setMenusHidden(false);
   }
 
-  function handlePointerUp(e: React.PointerEvent) {
-    /* Nothing to do. This short circuit is required to prevent setting
-     * the localStorage of the points to invalid values */
-    if (dragPoint === null) return;
-
-    localStorage.setItem(
-      "calibrationContext",
-      JSON.stringify(
-        getCalibrationContextUpdatedWithEvent(e, fullScreenHandle.active),
-      ),
-    );
-    dispatch({ type: "set", points });
-    setDragPoint(null);
-  }
   function handlePointerMove(e: React.PointerEvent) {
-    if (e.buttons === 0 && dragPoint !== null) {
-      handlePointerUp(e);
-    }
-
     // Chromebook triggers move after menu hides #268
     if (e.movementX === 0 && e.movementY === 0) {
       return;
@@ -429,7 +422,6 @@ export default function Page() {
   return (
     <main
       onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
       onPointerMove={handlePointerMove}
       ref={noZoomRefCallback}
       className={`${menusHidden && "cursor-none"} ${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
@@ -481,8 +473,6 @@ export default function Page() {
               corners={corners}
               setCorners={setCorners}
               fullScreenHandle={fullScreenHandle}
-              dragPoint={dragPoint}
-              setDragPoint={setDragPoint}
             />
           )}
           {isCalibrating && showingMovePad && (
@@ -635,8 +625,11 @@ export default function Page() {
                   setZoomedOut={setZoomedOut}
                   pdfLoadStatus={pdfLoadStatus}
                   lineThicknessStatus={lineThicknessStatus}
+                  buttonColor={buttonColor}
                 />
+                {isCalibrating && menuStates.nav && <TroubleshootingButton />}
               </menu>
+
               <menu
                 className={`${visible(!isCalibrating && file !== null)} p-0`}
               >

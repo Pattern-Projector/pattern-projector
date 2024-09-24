@@ -2,11 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useMessages, useTranslations } from "next-intl";
-import Image from "next/image";
 
 import FullScreenIcon from "@/_icons/full-screen-icon";
-
-import { Link } from "../../navigation";
 import FlipHorizontalIcon from "../_icons/flip-horizontal-icon";
 import FlipVerticalIcon from "../_icons/flip-vertical-icon";
 import GithubIcon from "../_icons/github-icon";
@@ -36,6 +33,8 @@ import OverlayPaperIcon from "@/_icons/overlay-paper-icon";
 import { ReactNode } from "react";
 import MagnifyIcon from "@/_icons/magnify-icon";
 import ZoomOutIcon from "@/_icons/zoom-out-icon";
+import { Button } from "@/_components/buttons/button";
+import { ButtonStyle } from "@/_components/theme/styles";
 
 const DynamicInstallButton = dynamic(
   () => import("@/_components/buttons/install-button"),
@@ -56,12 +55,13 @@ export default function Home() {
 
         <menu className="flex items-center gap-2">
           <DynamicInstallButton />
-          <Link
-            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+          <Button
             href="/calibrate"
+            style={ButtonStyle.FILLED}
+            className="py-3.5"
           >
             {t("calibrate")}
-          </Link>
+          </Button>
           <LanguageSwitcher ariaLabel={t("choose-language")} />
         </menu>
       </nav>
@@ -122,6 +122,15 @@ export default function Home() {
         <a href="#calibration">
           <h2 id="calibration">{t("calibration.title")} #</h2>
         </a>
+        <div className="aspect-w-16 aspect-h-9">
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/EonY04Uu6gI?si=KcOn05_Cx4QZtUcF"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          ></iframe>
+        </div>
         <ol>
           <li>
             {t.rich("faq.saveAsApp.answer", {
@@ -157,7 +166,6 @@ export default function Home() {
               ),
             })}
           </li>
-          <Image src="/demo.gif" width={640} height={260} alt=""></Image>
           <li>{t("calibration.project")}</li>
         </ol>
 

@@ -190,6 +190,32 @@
     "descriptionIOS": "Download the app by tapping the share button <shareIcon></shareIcon> in the browser menu and then Add to Home Screen <addBoxIcon></addBoxIcon>.",
     "ok": "OK"
   },
+  "Troubleshooting": {
+    "notMatching": "Lines not matching your mat?",
+    "title": "Calibration Troubleshooting",
+    "dragCorners": {
+      "title": "How to calibrate",
+      "description": "Drag the corners of the grid to at least a 24x16 inch rectangle on your mat. The grid should be as large as possible but does not need to cover the entire mat.",
+      "caption": "A correctly calibrated grid."
+    },
+    "inputMeasurement": "Use a measuring tape to measure the width and height of the grid on your mat. Input these measurements into the width and height fields.",
+    "offByOne": {
+      "title": "Lines are straight but don’t align?",
+      "description": "If the projected lines are straight but don’t align with your mat, your width or height might be off by 1 inch/centimeter. Double-check your measurements with a measuring tape. Mat measurements can be confusing or inaccurate, so checking with a measuring tape is important.",
+      "caption": "The wrong measurements are input (23 x 17) instead of (24 x 18). The mat only shows numbers up to 23 and 17 so it is easy to confuse the measurements. Make sure you measure with a measuring tape!"
+    },
+    "unevenSurface": {
+      "title": "Curved lines?",
+      "description": "If the projected lines look curved, your mat or surface below the mat may not be flat. Try to flatten the mat but putting card stock under the low points or move to a different cutting surface.",
+      "caption": "This mat has a ruler under it causing the lines to curve in the center. A slight curve is ok but a large curve will cause issues."
+    },
+    "dimensionsSwapped": {
+      "title": "Rectangles instead of squares?",
+      "description": "If the projected grid looks like rectangles instead of squares, the width and height may be swapped. Simply swap the values in the fields.",
+      "caption": "The width and height are in the wrong boxes. The dimension should read 'W: 24' and 'H: 18'."
+    },
+    "close": "Close"
+  },
   "Header": {
     "openPDF": "Open PDF",
     "height": "H:",

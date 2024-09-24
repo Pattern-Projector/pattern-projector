@@ -138,8 +138,8 @@ export default function PdfViewer({
     <Document
       file={file}
       onLoadSuccess={onDocumentLoadSuccess}
-      noData={<p className="text-5xl">{t("noData")}</p>}
-      error={<p className="text-5xl">{t("error")}</p>}
+      noData={<p className="text-9xl">{t("noData")}</p>}
+      error={<p className="text-9xl">{t("error")}</p>}
       onLoadError={() => setPdfLoadStatus(LoadStatusEnum.FAILED)}
     >
       <div
