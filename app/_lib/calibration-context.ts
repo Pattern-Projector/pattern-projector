@@ -118,16 +118,16 @@ export function getIsInvalidatedCalibrationContextWithPointerEvent(
       return false;
     }
   }
-  // check if the difference is greater than 1 since the values sometimes fluctuate without the viewport changing
+  // check if the difference is greater than 3 since the values sometimes fluctuate without the viewport changing (Firefox on Desktop and Chrome on Android)
   // considered no difference if any values are null
   const topDiff =
     context.clientScreenTop === null || current.clientScreenTop === null
       ? false
-      : Math.abs(context.clientScreenTop - current.clientScreenTop) > 1;
+      : Math.abs(context.clientScreenTop - current.clientScreenTop) > 3;
   const leftDiff =
     context.clientScreenLeft === null || current.clientScreenLeft === null
       ? false
-      : Math.abs(context.clientScreenLeft - current.clientScreenLeft) > 1;
+      : Math.abs(context.clientScreenLeft - current.clientScreenLeft) > 3;
   if (context.clientScreenTop !== current.clientScreenTop) {
     console.log(
       "clientScreenTop:",
