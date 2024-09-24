@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled rendering of PDF links
 - A single page PDF is centered on load
 - Larger custom PDF viewer messages
+- Different button colors for subdomains: blue for beta, purple for main, and black/gray for old
 
 ### Fixed
 
