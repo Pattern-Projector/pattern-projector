@@ -74,8 +74,6 @@ export default function Draggable({
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
 
-  const [matrix3d, setMatrix3d] = useState<string>("");
-
   const transform = useTransformContext();
   const transformer = useTransformerContext();
 
@@ -89,10 +87,6 @@ export default function Draggable({
       transformer.setLocalTransform(matrix.mmul(transform));
     },
   );
-
-  useEffect(() => {
-    setMatrix3d(toMatrix3d(calibrationTransform.mmul(transform)));
-  }, [transform]);
 
   function handleOnEnd(): void {
     setDragStart(null);
@@ -268,7 +262,7 @@ export default function Draggable({
         <div
           className={"absolute"}
           style={{
-            transform: `${matrix3d}`,
+            transform: `${toMatrix3d(calibrationTransform.mmul(transform))}`,
             transformOrigin: "0 0",
           }}
         >
