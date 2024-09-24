@@ -44,7 +44,6 @@ import pointsReducer from "@/_reducers/pointsReducer";
 import Filters from "@/_components/filters";
 import CalibrationContext, {
   getCalibrationContext,
-  getCalibrationContextUpdatedWithEvent,
   getIsInvalidatedCalibrationContext,
   getIsInvalidatedCalibrationContextWithPointerEvent,
   logCalibrationContextDifferences,
@@ -64,7 +63,6 @@ import useLayers from "@/_hooks/use-layers";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import LoadingSpinner from "@/_icons/loading-spinner";
-import { Point } from "@/_lib/point";
 import TroubleshootingButton from "@/_components/troubleshooting-button";
 import { ButtonColor } from "@/_components/theme/colors";
 

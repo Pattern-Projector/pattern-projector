@@ -5,8 +5,6 @@ import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
 
 import FullScreenIcon from "@/_icons/full-screen-icon";
-
-import { Link } from "../../navigation";
 import FlipHorizontalIcon from "../_icons/flip-horizontal-icon";
 import FlipVerticalIcon from "../_icons/flip-vertical-icon";
 import GithubIcon from "../_icons/github-icon";
