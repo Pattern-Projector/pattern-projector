@@ -307,5 +307,31 @@
     "PdfViewer": {
         "error": "Error al cargar el PDF",
         "noData": "Pulsa el botón \"Abrir PDF\" para cargar un PDF"
+    },
+    "Troubleshooting": {
+        "title": "Solución de problemas de calibración",
+        "inputMeasurement": "Utilice una cinta métrica para medir el ancho y la altura de la cuadrícula de su tapete. Ingrese estas medidas en los campos de ancho y altura.",
+        "offByOne": {
+            "title": "¿Las líneas son rectas pero no se alinean?",
+            "description": "Si las líneas proyectadas son rectas pero no se alinean con el tapete, es posible que el ancho o la altura tengan una diferencia de 1 pulgada/centímetro. Verifique nuevamente las medidas con una cinta métrica. Las medidas del tapete pueden ser confusas o imprecisas, por lo que es importante verificarlas con una cinta métrica.",
+            "caption": "Se han introducido medidas incorrectas (23 x 17) en lugar de (24 x 18). El tapete solo muestra los números hasta el 23 y el 17, por lo que es fácil confundir las medidas. ¡Asegúrate de medir con una cinta métrica!"
+        },
+        "dragCorners": {
+            "title": "¿Cómo calibrar?",
+            "description": "Arrastre las esquinas de la cuadrícula hasta formar un rectángulo de al menos 24 x 16 pulgadas en el tapete. La cuadrícula debe ser lo más grande posible, pero no es necesario que cubra todo el tapete.",
+            "caption": "Una cuadrícula correctamente calibrada."
+        },
+        "unevenSurface": {
+            "title": "¿Tramos curvos?",
+            "description": "Si las líneas proyectadas parecen curvas, es posible que su alfombrilla o la superficie debajo de la alfombrilla no estén planas. Intente aplanar la alfombrilla colocando cartulina debajo de los puntos bajos o cambie a otra superficie de corte.",
+            "caption": "Esta alfombrilla tiene una regla debajo que hace que las líneas se curven en el centro. Una ligera curva está bien, pero una curva grande causará problemas."
+        },
+        "dimensionsSwapped": {
+            "title": "¿Rectángulos en lugar de cuadrados?",
+            "description": "Si la cuadrícula proyectada tiene forma de rectángulo en lugar de cuadrado, puede intercambiar la anchura y la altura. Basta con intercambiar los valores de los campos.",
+            "caption": "La anchura y la altura están en las casillas equivocadas. La dimensión debe ser \"An: 24\" y \"Al: 18\"."
+        },
+        "close": "Cerrar",
+        "notMatching": "¿Las líneas no coinciden con tu tapete?"
     }
 }
