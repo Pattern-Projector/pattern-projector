@@ -122,6 +122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Press and hold calibration corners to slow down movement
 
 [unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/main...beta
+[1.1.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.0
 [1.0.2]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.2
 [1.0.1]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.0
