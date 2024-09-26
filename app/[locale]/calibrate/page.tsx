@@ -1,11 +1,12 @@
 "use client";
 
-import { Matrix } from "ml-matrix";
-import {
+import { Matrix, inverse } from "ml-matrix";
+import React, {
   ChangeEvent,
   useCallback,
   useEffect,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -14,19 +15,19 @@ import CalibrationCanvas from "@/_components/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import {
-  getCenterPoint,
+  RestoreTransforms,
+  getCalibrationCenterPoint,
   getPerspectiveTransformFromPoints,
 } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
-  getDefaultDisplaySettings,
   DisplaySettings,
+  getDefaultDisplaySettings,
   isDarkTheme,
   themeFilter,
 } from "@/_lib/display-settings";
-import { IN, getPtDensity } from "@/_lib/unit";
-import { Layer } from "@/_lib/interfaces/layer";
+import { getPtDensity, IN } from "@/_lib/unit";
 import LayerMenu from "@/_components/layer-menu";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
@@ -45,6 +46,7 @@ import CalibrationContext, {
   getCalibrationContext,
   getIsInvalidatedCalibrationContext,
   getIsInvalidatedCalibrationContextWithPointerEvent,
+  logCalibrationContextDifferences,
 } from "@/_lib/calibration-context";
 import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
@@ -54,7 +56,15 @@ import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
-import FullscreenExitIcon from "@/_icons/fullscreen-exit-icon";
+import FullScreenExitIcon from "@/_icons/full-screen-exit-icon";
+import FullScreenIcon from "@/_icons/full-screen-icon";
+import { Layers } from "@/_lib/layers";
+import useLayers from "@/_hooks/use-layers";
+import ExpandMoreIcon from "@/_icons/expand-more-icon";
+import { LoadStatusEnum } from "@/_lib/load-status-enum";
+import LoadingSpinner from "@/_icons/loading-spinner";
+import TroubleshootingButton from "@/_components/troubleshooting-button";
+import { ButtonColor } from "@/_components/theme/colors";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -84,18 +94,33 @@ export default function Page() {
   const [width, setWidth] = useState(defaultWidthDimensionValue);
   const [height, setHeight] = useState(defaultHeightDimensionValue);
   const [isCalibrating, setIsCalibrating] = useState(true);
+  const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
+    LoadStatusEnum.DEFAULT,
+  );
+  const [lineThicknessStatus, setLineThicknessStatus] =
+    useState<LoadStatusEnum>(LoadStatusEnum.DEFAULT);
   const [perspective, setPerspective] = useState<Matrix>(Matrix.identity(3, 3));
   const [file, setFile] = useState<File | null>(null);
   const [calibrationTransform, setCalibrationTransform] = useState<Matrix>(
     Matrix.identity(3, 3),
   );
-  const [pageCount, setPageCount] = useState<number>(1);
+  const [restoreTransforms, setRestoreTransforms] =
+    useState<RestoreTransforms | null>(null);
+  const [pageCount, setPageCount] = useState<number>(0);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
-  const [layers, setLayers] = useState<Map<string, Layer>>(new Map());
+  const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
+  const setLayers = useCallback(
+    (l: Layers) => dispatchLayersAction({ type: "set-layers", layers: l }),
+    [dispatchLayersAction],
+  );
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [measuring, setMeasuring] = useState<boolean>(false);
+  const [magnifying, setMagnifying] = useState<boolean>(false);
+  const [zoomedOut, setZoomedOut] = useState<boolean>(false);
+  const [menusHidden, setMenusHidden] = useState<boolean>(false);
+  const [isIdle, setIsIdle] = useState(false);
 
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
@@ -106,7 +131,25 @@ export default function Page() {
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
 
+  const [buttonColor, setButtonColor] = useState<ButtonColor>(
+    ButtonColor.PURPLE,
+  );
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const t = useTranslations("Header");
+
+  const IDLE_TIMEOUT = 8000;
+
+  function resetIdle() {
+    setIsIdle(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      setIsIdle(true);
+    }, IDLE_TIMEOUT);
+  }
 
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
@@ -155,7 +198,45 @@ export default function Page() {
 
     if (files && files[0] && isValidPDF(files[0])) {
       setFile(files[0]);
-      setLineThickness(0);
+      setPdfLoadStatus(LoadStatusEnum.LOADING);
+      setRestoreTransforms(null);
+      setZoomedOut(false);
+      setMagnifying(false);
+      setMeasuring(false);
+      setPageCount(0);
+      const lineThicknessString = localStorage.getItem(
+        `lineThickness:${files[0].name}`,
+      );
+      if (lineThicknessString !== null) {
+        setLineThickness(Number(lineThicknessString));
+      } else {
+        setLineThickness(0);
+      }
+
+      const key = `stitchSettings:${files[0].name ?? "default"}`;
+      const stitchSettingsString = localStorage.getItem(key);
+      if (stitchSettingsString !== null) {
+        const stitchSettings = JSON.parse(stitchSettingsString);
+        dispatchStitchSettings({ type: "set", stitchSettings });
+      } else {
+        dispatchStitchSettings({
+          type: "set",
+          stitchSettings: {
+            ...defaultStitchSettings,
+            key,
+          },
+        });
+      }
+      const m = getPerspectiveTransformFromPoints(
+        points,
+        Number(width),
+        Number(height),
+        getPtDensity(unitOfMeasure),
+        false,
+      );
+
+      setCalibrationTransform(m);
+      setPerspective(inverse(m));
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -193,26 +274,19 @@ export default function Page() {
   }, [pageCount]);
 
   useEffect(() => {
-    // If the file changes, get stitch settings for that file from localStorage
-    if (!file) {
-      return;
+    if (points.length === maxPoints) {
+      const m = getPerspectiveTransformFromPoints(
+        points,
+        Number(width),
+        Number(height),
+        getPtDensity(unitOfMeasure),
+        false,
+      );
+
+      setCalibrationTransform(m);
+      setPerspective(inverse(m));
     }
-    setPageCount(0); // Reset page count while loading
-    const key = `stitchSettings:${file.name ?? "default"}`;
-    const stitchSettingsString = localStorage.getItem(key);
-    if (stitchSettingsString !== null) {
-      const stitchSettings = JSON.parse(stitchSettingsString);
-      dispatchStitchSettings({ type: "set", stitchSettings });
-      return;
-    }
-    dispatchStitchSettings({
-      type: "set",
-      stitchSettings: {
-        ...defaultStitchSettings,
-        key,
-      },
-    });
-  }, [file]);
+  }, [points, width, height, unitOfMeasure]);
 
   useEffect(() => {
     setMenuStates((m) => getMenuStatesFromLayers(m, layers));
@@ -221,9 +295,9 @@ export default function Page() {
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
-      dispatch({ type: "initialize", points: JSON.parse(localPoints) });
+      dispatch({ type: "set", points: JSON.parse(localPoints) });
     } else {
-      dispatch({ type: "initialize", points: getDefaultPoints() });
+      dispatch({ type: "set", points: getDefaultPoints() });
     }
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
@@ -250,31 +324,15 @@ export default function Page() {
         theme: localSettings.theme ?? defaults.theme,
       });
     }
-  }, []);
 
-  useEffect(() => {
-    const ptDensity = getPtDensity(unitOfMeasure);
-    const w = Number(width);
-    const h = Number(height);
-    if (points && points.length === maxPoints) {
-      const m = getPerspectiveTransformFromPoints(
-        points,
-        w,
-        h,
-        ptDensity,
-        true,
-      );
-      const n = getPerspectiveTransformFromPoints(
-        points,
-        w,
-        h,
-        ptDensity,
-        false,
-      );
-      setPerspective(m);
-      setCalibrationTransform(n);
+    const s = window.location.host.split(".")[0];
+    if (s.localeCompare("beta") === 0) {
+      setButtonColor(ButtonColor.BLUE);
     }
-  }, [points, width, height, unitOfMeasure]);
+    if (s.localeCompare("old") === 0) {
+      setButtonColor(ButtonColor.GRAY);
+    }
+  }, []);
 
   const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
     if (element === null) {
@@ -286,6 +344,7 @@ export default function Page() {
   }, []);
 
   function handlePointerDown(e: React.PointerEvent) {
+    resetIdle();
     if (fullScreenTooltipVisible) {
       setFullScreenTooltipVisible(false);
     }
@@ -303,10 +362,22 @@ export default function Page() {
             fullScreenHandle.active,
           )
         ) {
+          logCalibrationContextDifferences(expected, fullScreenHandle.active);
           setCalibrationValidated(false);
         }
       }
     }
+
+    setMenusHidden(false);
+  }
+
+  function handlePointerMove(e: React.PointerEvent) {
+    // Chromebook triggers move after menu hides #268
+    if (e.movementX === 0 && e.movementY === 0) {
+      return;
+    }
+    resetIdle();
+    setMenusHidden(false);
   }
 
   useEffect(() => {
@@ -314,6 +385,16 @@ export default function Page() {
       !isCalibrating && !calibrationValidated;
     setShowCalibrationAlert(projectingWithInvalidContext);
   }, [isCalibrating, calibrationValidated]);
+
+  useEffect(() => {
+    setMenusHidden(
+      isIdle &&
+        !isCalibrating &&
+        !zoomedOut &&
+        file !== null &&
+        pdfLoadStatus !== LoadStatusEnum.LOADING,
+    );
+  }, [isIdle, isCalibrating, zoomedOut, file, pdfLoadStatus]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -341,8 +422,9 @@ export default function Page() {
   return (
     <main
       onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
       ref={noZoomRefCallback}
-      className={`${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
+      className={`${menusHidden && "cursor-none"} ${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
       <div className="bg-white dark:bg-black dark:text-white w-screen h-screen ">
         <FullScreen
@@ -370,9 +452,9 @@ export default function Page() {
                   }
                 >
                   {fullScreenHandle.active ? (
-                    <FullscreenExitIcon ariaLabel={t("fullscreen")} />
+                    <FullScreenIcon ariaLabel={t("fullscreen")} />
                   ) : (
-                    <FullscreenExitIcon ariaLabel={t("fullscreenExit")} />
+                    <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
                   )}
                 </IconButton>
               </Tooltip>
@@ -402,7 +484,7 @@ export default function Page() {
             />
           )}
 
-          <Transformable>
+          <Transformable fileName={file?.name ?? "default"}>
             <MeasureCanvas
               className={visible(!isCalibrating)}
               perspective={perspective}
@@ -411,14 +493,38 @@ export default function Page() {
               measuring={measuring}
               setMeasuring={setMeasuring}
               file={file}
-              gridCenter={getCenterPoint(+width, +height, unitOfMeasure)}
+              gridCenter={getCalibrationCenterPoint(
+                +width,
+                +height,
+                unitOfMeasure,
+              )}
+              zoomedOut={zoomedOut}
+              menusHidden={menusHidden}
+              menuStates={menuStates}
             >
               <Draggable
-                className={`absolute`}
+                className={`absolute ${menusHidden && "!cursor-none"} `}
                 perspective={perspective}
                 isCalibrating={isCalibrating}
                 unitOfMeasure={unitOfMeasure}
                 calibrationTransform={calibrationTransform}
+                setCalibrationTransform={setCalibrationTransform}
+                setPerspective={setPerspective}
+                magnifying={magnifying}
+                setMagnifying={setMagnifying}
+                setRestoreTransforms={setRestoreTransforms}
+                restoreTransforms={restoreTransforms}
+                zoomedOut={zoomedOut}
+                setZoomedOut={setZoomedOut}
+                layoutWidth={layoutWidth}
+                layoutHeight={layoutHeight}
+                calibrationCenter={getCalibrationCenterPoint(
+                  +width,
+                  +height,
+                  unitOfMeasure,
+                )}
+                menuStates={menuStates}
+                file={file}
               >
                 <PdfViewer
                   file={file}
@@ -432,67 +538,101 @@ export default function Page() {
                   stitchSettings={stitchSettings}
                   filter={themeFilter(displaySettings.theme)}
                   dispatchStitchSettings={dispatchStitchSettings}
+                  setLineThicknessStatus={setLineThicknessStatus}
+                  setPdfLoadStatus={setPdfLoadStatus}
+                  magnifying={magnifying}
+                  gridCenter={getCalibrationCenterPoint(
+                    +width,
+                    +height,
+                    unitOfMeasure,
+                  )}
                 />
               </Draggable>
               <OverlayCanvas
-                className="absolute top-0 pointer-events-none"
+                className={`absolute top-0 pointer-events-none`}
                 points={points}
                 width={+width}
                 height={+height}
                 unitOfMeasure={unitOfMeasure}
                 displaySettings={displaySettings}
+                calibrationTransform={calibrationTransform}
+                zoomedOut={zoomedOut}
+                magnifying={magnifying}
+                restoreTransforms={restoreTransforms}
               />
             </MeasureCanvas>
 
-            <menu className={`absolute top-0 w-screen`}>
-              <Header
-                isCalibrating={isCalibrating}
-                setIsCalibrating={setIsCalibrating}
-                height={height}
-                width={width}
-                handleHeightChange={handleHeightChange}
-                handleWidthChange={handleWidthChange}
-                handleResetCalibration={() => {
-                  localStorage.setItem(
-                    "calibrationContext",
-                    JSON.stringify(
-                      getCalibrationContext(fullScreenHandle.active),
-                    ),
-                  );
-                  dispatch({ type: "set", points: getDefaultPoints() });
-                }}
-                handleFileChange={handleFileChange}
-                fullScreenHandle={fullScreenHandle}
-                unitOfMeasure={unitOfMeasure}
-                setUnitOfMeasure={(newUnit) => {
-                  setUnitOfMeasure(newUnit);
-                  updateLocalSettings({ unitOfMeasure: newUnit });
-                }}
-                displaySettings={displaySettings}
-                setDisplaySettings={(newSettings) => {
-                  setDisplaySettings(newSettings);
-                  if (newSettings) {
-                    updateLocalSettings(newSettings);
-                  }
-                }}
-                pageCount={pageCount}
-                layoutWidth={layoutWidth}
-                layoutHeight={layoutHeight}
-                lineThickness={lineThickness}
-                setLineThickness={setLineThickness}
-                setMenuStates={setMenuStates}
-                menuStates={menuStates}
-                measuring={measuring}
-                setMeasuring={setMeasuring}
-                showingMovePad={showingMovePad}
-                setShowingMovePad={(show) => {
-                  setShowingMovePad(show);
-                  updateLocalSettings({ showingMovePad: show });
-                }}
-                setCalibrationValidated={setCalibrationValidated}
-                fullScreenTooltipVisible={fullScreenTooltipVisible}
-              />
-              <menu className={`${visible(!isCalibrating && file !== null)}`}>
+            <menu
+              className={`absolute w-screen ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
+            >
+              <menu className="pointer-events-auto">
+                <Header
+                  isCalibrating={isCalibrating}
+                  setIsCalibrating={setIsCalibrating}
+                  height={height}
+                  width={width}
+                  handleHeightChange={handleHeightChange}
+                  handleWidthChange={handleWidthChange}
+                  handleResetCalibration={() => {
+                    localStorage.setItem(
+                      "calibrationContext",
+                      JSON.stringify(
+                        getCalibrationContext(fullScreenHandle.active),
+                      ),
+                    );
+                    dispatch({ type: "set", points: getDefaultPoints() });
+                  }}
+                  handleFileChange={handleFileChange}
+                  fullScreenHandle={fullScreenHandle}
+                  unitOfMeasure={unitOfMeasure}
+                  setUnitOfMeasure={(newUnit) => {
+                    setUnitOfMeasure(newUnit);
+                    updateLocalSettings({ unitOfMeasure: newUnit });
+                  }}
+                  displaySettings={displaySettings}
+                  setDisplaySettings={(newSettings) => {
+                    setDisplaySettings(newSettings);
+                    if (newSettings) {
+                      updateLocalSettings(newSettings);
+                    }
+                  }}
+                  layoutWidth={layoutWidth}
+                  layoutHeight={layoutHeight}
+                  lineThickness={lineThickness}
+                  setLineThickness={(newLineThickness) => {
+                    setLineThickness(newLineThickness);
+                    if (file) {
+                      localStorage.setItem(
+                        `lineThickness:${file.name}`,
+                        String(newLineThickness),
+                      );
+                    }
+                  }}
+                  setMenuStates={setMenuStates}
+                  menuStates={menuStates}
+                  measuring={measuring}
+                  setMeasuring={setMeasuring}
+                  showingMovePad={showingMovePad}
+                  setShowingMovePad={(show) => {
+                    setShowingMovePad(show);
+                    updateLocalSettings({ showingMovePad: show });
+                  }}
+                  setCalibrationValidated={setCalibrationValidated}
+                  fullScreenTooltipVisible={fullScreenTooltipVisible}
+                  magnifying={magnifying}
+                  setMagnifying={setMagnifying}
+                  zoomedOut={zoomedOut}
+                  setZoomedOut={setZoomedOut}
+                  pdfLoadStatus={pdfLoadStatus}
+                  lineThicknessStatus={lineThicknessStatus}
+                  buttonColor={buttonColor}
+                />
+                {isCalibrating && menuStates.nav && <TroubleshootingButton />}
+              </menu>
+
+              <menu
+                className={`${visible(!isCalibrating && file !== null)} p-0`}
+              >
                 <StitchMenu
                   className={`${menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
                   setShowMenu={(showMenu) =>
@@ -501,6 +641,10 @@ export default function Page() {
                   dispatchStitchSettings={dispatchStitchSettings}
                   stitchSettings={stitchSettings}
                   pageCount={pageCount}
+                  file={file}
+                  layers={layers}
+                  menuStates={menuStates}
+                  setMenuStates={setMenuStates}
                 />
                 <LayerMenu
                   visible={menuStates.layers}
@@ -508,10 +652,23 @@ export default function Page() {
                     setMenuStates({ ...menuStates, layers: visible })
                   }
                   layers={layers}
-                  setLayers={setLayers}
+                  dispatchLayerAction={dispatchLayersAction}
                 />
               </menu>
             </menu>
+            <IconButton
+              className={`${visible(!menusHidden)} !p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
+              onClick={() => setMenuStates({ ...menuStates, nav: true })}
+            >
+              <ExpandMoreIcon ariaLabel={t("menuShow")} />
+            </IconButton>
+            {!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING ? (
+              <LoadingSpinner
+                height={100}
+                width={100}
+                className="absolute left-1/2 top-1/2"
+              />
+            ) : null}
           </Transformable>
         </FullScreen>
       </div>

@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2024-09-26
+
+### Added
+
+- Export PDF button that saves the PDF with selected layers and stitched pages
+- Save visible layers by file per browser/device
+- Magnify button to zoom in PDF where tapped or clicked
+- Zoom out button to zoom the whole PDF to be shown on the screen, then click a spot on PDF to zoom into that point
+- Auto hide the menus after timeout
+- Status icons that indicate when a PDF is loading and for when line thickness is updated
+- A troubleshooting guide for when the calibration grid doesn't match the mat grid
+
+### Changed
+
+- Always show stitch menu button regardless of the number of pages in the PDF
+- Menus are translucent to see pattern through them
+- Stitch menu icon moved to the left (above the layer menu)
+- Stitch menu wraps on smaller devices
+- Disabled rendering of PDF links
+- A single page PDF is centered on load
+- Larger custom PDF viewer messages
+- Different button colors for subdomains: blue for beta, purple for main, and black/gray for old
+- Switched from Vercel Analytics to Google Analytics
+
+### Fixed
+
+- Close overlay options menu on click outside
+- Warning no longer flashes when dragging on Android, Chromebook, and in Firefox
+- Full screen icon enter/exit swapped to be correct versions
+- Calibration is saved on keyboard input (not just mouse click)
+- Calibration corners no longer stick to cursor on mouse up
+- Saving stitched PDF respects multiple copies of the same page (e.g. multiple empty pages)
+
+### Removed
+
+- Hide and show main nav (replaced by auto hide)
+
 ## [1.0.2] - 2024-05-25
 
 ### Changed
@@ -85,6 +122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Press and hold calibration corners to slow down movement
 
 [unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/main...beta
+[1.1.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.0
 [1.0.2]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.2
 [1.0.1]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.0.0

@@ -39,7 +39,7 @@
             "open": "Klik (of druk) op <pdficon></pdficon> om het PDF document te openen.",
             "move": "Leg je stof op je snijmat. Verplaats het geprojecteerde beeld door op de PDF te klikken en hem over het scherm te slepen. Zet zo het juiste deel van je patroon op de stof (en snijmat onder de stof).",
             "cut": "Snij, knip of teken langs het geprojecteerde beeld.",
-            "tools": "In projectiemodus zijn er verschillende gereedschappen beschikbaar:",
+            "tools": "In projectiemodus zijn er verschillende gereedschappen beschikbaar. Sommige hebben toetsenbord sneltoetsen, aangeduid tussen haakjes.",
             "showGrid": {
                 "title": "Toon/verberg raster",
                 "description": "Toont of verbergt een licht raster tijdens het projecteren. Handig om te controleren dat je kalibratie correct is."
@@ -49,15 +49,15 @@
                 "description": "Tijdens het projecteren is het meestal het makkelijkst om groene of witte lijnen op een zwarte achtergrond te zien. Maar met dit gereedschap kan je dat desgewensd omdraaien. Klik of druk één keer voor groene lijnen, twee keer voor witte lijnen, en drie keer om terug te gaan naar zwarte lijnen."
             },
             "flip": {
-                "title": "Spiegel vertikaal/horizontaal",
+                "title": "Spiegel vertikaal (V) of horizontaal (H)",
                 "description": "Handig om patronen op de vouw te spiegelen."
             },
             "rotate": {
-                "title": "Draai",
+                "title": "Draai (R)",
                 "description": "Draai het patroon 90 graden."
             },
             "recenter": {
-                "title": "Centreer PDF opnieuw en reset",
+                "title": "Centreer PDF opnieuw en reset (C)",
                 "description": "Plaatst het patroon in het midden van de snijmat en reset draaien/spiegelen."
             },
             "fullscreen": {
@@ -66,31 +66,39 @@
             },
             "moveTool": {
                 "description": "Het verplaatsgereedschap heeft vier pijlen om de hoeken en zijkanten van het calibratierooster te verplaatsen. Het heeft ook een knop in het midden om naar de volgende hoek of zijkant te gaan.",
-                "title": "Toon/verberg verplaats gereedschap"
+                "title": "Toon of verberg verplaats-gereedschap"
             },
             "overlayOptions": {
-                "title": "Toon/verberg overlay opties",
-                "description": "De overlays raster, rondom, blad papier en spiegellijnen kunnen getoond of verborgen worden. Het raster komt overeen met het calibratie raster, rondom is de rand van het calibratie raster, blad papier is een rechthoek zo groot als een Letter of A4 formaat blad, en spiegellijnen zijn lijnen die helpen bij het spiegelen van patronen."
+                "title": "Toon of verberg overlay opties",
+                "description": "De overlays raster, rondom, blad papier en spiegellijnen kunnen getoond of verborgen worden. Voor meer informatie, zie de <overlayOptionsLink>overlay opties sectie</overlayOptionsLink>."
             },
             "measure": {
-                "description": "Markeer lijnen op de PDF voor draaien, spiegelen, verplaatsen, meten of markeren.",
-                "title": "Lijn gereedschap"
+                "description": "Markeer lijnen op de PDF voor draaien, spiegelen, verplaatsen, meten of markeren. Voor een gedetailleerde beschrijving, zie de <lineToolLink>lijn gereedschap sectie</lineToolLink>.",
+                "title": "Lijn gereedschap (L)"
             },
             "lineWeight": {
                 "title": "Lijndikte",
                 "description": "Verandert de dikte van de lijnen in het PDF patroon."
             },
             "layers": {
-                "title": "Toon/verberg lagen",
+                "title": "Toon of verberg lagen",
                 "description": "Toont of verbergt de lagen in de PDF."
             },
             "stitch": {
-                "title": "Toon/verberg samenvoeg menu",
+                "title": "Toon of verberg samenvoeg menu",
                 "description": "Toont of verbergt het samenvoeg menu, waarmee je meerder paginas van een PDF patroon samen kan voegen."
             },
             "showMenu": {
                 "description": "Toon of verberg het menu bovenaan.",
                 "title": "Toon/verberg menu"
+            },
+            "magnify": {
+                "title": "Vergroot (M)",
+                "description": "Klik op de PDF om deze te vergroten. Klik opnieuw om te vergroten te stoppen."
+            },
+            "zoomOut": {
+                "title": "Uitzoomen (Z)",
+                "description": "Zoom uit om de hele PDF te zien. Klik op de PDF om de geselecteerde locatie te vergroten."
             }
         },
         "faq": {
@@ -113,7 +121,7 @@
             },
             "mobileSupport": {
                 "question": "Ondersteunen jullie mobiele telefoons en tablets?",
-                "answer": "Hoewel het mogelijk is om de webpagina te bezoeken en gebruiken met een smartphone, is het moeilijk te gebruiken door het kleine schermformaat. Betere ondersteuning voor kleine schermen is gepland voor een toekomstige versie."
+                "answer": "Hoewel het mogelijk is om de webpagina te bezoeken en gebruiken met een smartphone, is het moeilijk te gebruiken door het kleine schermformaat."
             }
         },
         "resources": {
@@ -131,12 +139,65 @@
         },
         "contribute": {
             "title": "Help dit project",
-            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink>!",
+            "donation": "Als je de ontwikkeling van deze software wil ondersteunen, overweeg dan om <donateLink>me een koffie te kopen</donateLink> of gebruik <payPalLink>PayPal</payPalLink>!",
             "develop": "Help verbeteringen toe te voegen en problemen op te lossen op <githubLink>GitHub</githubLink>.",
             "translate": "Vertaal deze software in meer talen met <weblateLink>Weblate</weblateLink>.",
             "feedback": "Commentaar en verzoeken om nieuwe functionaliteit zijn welkom (in het Engels)!"
         },
-        "contact": "Contact"
+        "contact": "Contact",
+        "lineTool": {
+            "delete": {
+                "title": "Verwijder lijn",
+                "description": "Verwijdert de geselecteerde lijn."
+            },
+            "title": "Lijn gereedschap",
+            "description": "Het lijn gereedschap kan gebruikt worden om afstanden te meten, lijnen te markeren, en om de PDF te draaien, spiegelen of verplaatsen. Klik (of tik) op de lijn gereedschap knop, en klik (of tik) dan op de PDF om een lijn te tekenen. Zodra de lijn getekend is, verschijnt er een menu op het scherm met de volgende opties:",
+            "rotate": {
+                "title": "Lijn uit op het midden",
+                "description": "Draait de PDF zodat de geselecteerde lijn horizontaal en uitgelijnd op het midden van de mat is.",
+                "use": "Om de draadrichting op een patroondeel uit te lijnen met de draadrichting van je stof: teken een lijn op de draadrichtinglijn van je patroondeel. Klik (of tik) dan op de 'Lijn uit op het midden' knop."
+            },
+            "previousNext": {
+                "title": "Breng de vorige of volgende lijn naar het midden",
+                "description": "Verplaatst de PDF zodat de vorige of volgende getekende lijn horizontaal en uitgelijnd op het midden van de mat is.",
+                "use": "Om tussen patroondelen te wisselen terwijl je aan het snijden bent: teken een lijn op de draadrichtinglijn van elke patroondeel. Navigeer tussen de patroondelen met deze knoppen. Verwijder lijnen tijdens het verwerken van alle delen, om bij te houden welke delen nog gesneden moeten worden."
+            },
+            "flip": {
+                "title": "Spiegel langs lijn",
+                "description": "Spiegelt de PDF langs de lijn.",
+                "use": "Om patroondelen uit te vouwen: teken een lijn op de vouwlijn van een patroondeel. Snij het deel tot aan de vouwlijn. Klik (of tik) op de 'spiegel langs lijn' knop, en snij dan de rest van het patroondeel."
+            },
+            "move": {
+                "title": "Verplaats PDF lijnlengte",
+                "description": "Verplaatst de PDF de lengte van de lijn.",
+                "use": "Om patroondelen langer of korter te maken: teken een lijn loodrecht op de te verlengen lijn van een patroondeel. Snij tot deze lijn. Klik (of tik) dan op de 'verplaats lijn lengte' knop, en ga dan door met het snijden van het patroondeel. De richting van de getekende lijn hangt af van of je het patroondeel wil verlengen of verkorten."
+            }
+        },
+        "tools": "Gereedschappen",
+        "overlayOptions": {
+            "title": "Overlay opties",
+            "description": "De overlay opties kunnen gebruikt worden om kalibratie te controleren terwijl je aan het projekteren bent, en om te helpen bij het snijden van patroondelen. De volgende opties zijn beschikbaar:",
+            "border": {
+                "title": "Rand",
+                "description": "Toont de rand van het kalibratie raster."
+            },
+            "grid": {
+                "title": "Raster",
+                "description": "Toont het kalibratie raster."
+            },
+            "paper": {
+                "title": "Blad papier",
+                "description": "Toont een rechthoek met de maat van een Letter of A4 stuk papier, om de kalibratie te controleren."
+            },
+            "flipLines": {
+                "title": "Spiegel lijnen",
+                "description": "Toont lijnen om te helpen met het uitvouwen van patroondelen. Zet de vouwlijn van een patroondeel op de spiegellijn en klik op spiegel horizontaal of vertikaal om het patroon te spiegelen."
+            },
+            "flippedPattern": {
+                "title": "Verkeerde zijde",
+                "description": "Toont puntjes als de foute zijde van het patroon wordt geprojecteerd."
+            }
+        }
     },
     "Header": {
         "projecting": "Projekteren",
@@ -194,7 +255,11 @@
         "calibrationAlertContinue": "De venstergrootte kan niet meer veranderd worden na de kalibratie. Om in volledig venster te projekteren, kalibreer in volledig venster. Als je de venstergrootte wil veranderen, kalibreer dan opnieuw.",
         "continue": "Sla venstergrootte op en ga door",
         "checkCalibration": "Kalibratie nakijken",
-        "measure": "Lijn gereedschap (L)"
+        "measure": "Lijn gereedschap (L)",
+        "stitchMenuDisabled": "Open PDF om het samenvoegen menu te gebruiken",
+        "overlayOptionFlippedPattern": "Verkeerde zijde",
+        "magnify": "Vergroot (M)",
+        "zoomOut": "Uitzoomen (Z)"
     },
     "StitchMenu": {
         "columnCount": "Kolommen",
@@ -215,7 +280,9 @@
         "deleteLine": "Verwijder lijn",
         "flipAlong": "Spiegel langs lijn",
         "rotateAndCenterPrevious": "Breng de vorige lijn naar het midden",
-        "rotateAndCenterNext": "Breng de volgende lijn naar het midden"
+        "rotateAndCenterNext": "Breng de volgende lijn naar het midden",
+        "line": "lijn",
+        "lines": "lijnen"
     },
     "LayerMenu": {
         "title": "Lagen",
@@ -228,8 +295,21 @@
     "InstallButton": {
         "title": "Installeer App",
         "ok": "OK",
-        "description": "Installeer Pattern Projector met <chromeLink>Google Chrome</chromeLink> voor de beste ervaring.",
-        "descriptionAndroid": "Download de app met de 'meer' knop <moreIcon></moreIcon> in het browsermenu en dan <addToHomeScreenIcon></addToHomeScreenIcon> ‘Zet in beginscherm’ (Add to home screen).",
+        "description": "Installeer Pattern Projector met <chromeLink>Google Chrome</chromeLink> voor de beste ervaring. In Chrome, download de app door op <installIcon></installIcon> in de adresbalk te klikken.",
+        "descriptionAndroid": "Gebruik Firefox voor de beste ervaring op Android. Download de app met de 'meer' knop <moreIcon></moreIcon> in het browsermenu en dan <addToHomeScreenIcon></addToHomeScreenIcon> ‘Zet in beginscherm’ (Add to home screen).",
         "descriptionIOS": "Dowload de app met de 'delen' knop <shareIcon></shareIcon> in het browsermenu, en dan met de <addToHomeScreenIcon></addToHomeScreenIcon> ‘Zet in beginscherm’ (Add to home screen) <addBoxIcon></addBoxIcon> knop."
+    },
+    "SaveMenu": {
+        "encryptedPDF": "Deze PDF is beveiligd. Voer het wachtwoord in om de samengevoegde PDF op te slaan.",
+        "save": "Exporteer PDF",
+        "saveTooltip": "Exporteer PDF met samengevoegde paginas en geselecteerde lagen"
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "klik PDF om in te zoomen",
+        "magnifying": "klik PDF om te stoppen met vergroten"
+    },
+    "PdfViewer": {
+        "error": "Niet gelukt om PDF te laden",
+        "noData": "Druk op de \"Open PDF\" knop om een PDF te laden"
     }
 }

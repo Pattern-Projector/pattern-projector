@@ -3,8 +3,7 @@ import "./globals.css";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import { Inter } from "next/font/google";
 
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import type { Metadata } from "next";
 const inter = Inter({ subsets: ["latin"] });
@@ -61,9 +60,8 @@ export default function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>
-        <Analytics />
-        <SpeedInsights />
       </body>
+      <GoogleAnalytics gaId="G-JP1MLBQSKC" />
     </html>
   );
 }
