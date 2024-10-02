@@ -4,7 +4,7 @@ import { ModalTitle } from "./modal/modal-title";
 import { ModalText } from "./modal/modal-text";
 import { ModalActions } from "./modal/modal-actions";
 import { Button } from "./buttons/button";
-import TroubleshootingFigure from "./troubleshooting-image";
+import ModalFigure from "./modal/modal-figure";
 import { ModalSubtitle } from "./modal/modal-subtitle";
 import { useState } from "react";
 
@@ -34,25 +34,19 @@ export default function TroubleshootingButton() {
         </div>
         <ModalText>{t("dragCorners.description")}</ModalText>
         <ModalText>{t("inputMeasurement")}</ModalText>
-        <TroubleshootingFigure
-          src="/correct.jpg"
-          caption={t("dragCorners.caption")}
-        />
+        <ModalFigure src="/correct.jpg" caption={t("dragCorners.caption")} />
         <ModalSubtitle>{t("offByOne.title")}</ModalSubtitle>
         <ModalText>{t("offByOne.description")}</ModalText>
-        <TroubleshootingFigure
-          src="/off-by-one.jpg"
-          caption={t("offByOne.caption")}
-        />
+        <ModalFigure src="/off-by-one.jpg" caption={t("offByOne.caption")} />
         <ModalSubtitle>{t("unevenSurface.title")}</ModalSubtitle>
         <ModalText>{t("unevenSurface.description")}</ModalText>
-        <TroubleshootingFigure
+        <ModalFigure
           src="/uneven-surface.jpg"
           caption={t("unevenSurface.caption")}
         />
         <ModalSubtitle>{t("dimensionsSwapped.title")}</ModalSubtitle>
         <ModalText>{t("dimensionsSwapped.description")}</ModalText>
-        <TroubleshootingFigure
+        <ModalFigure
           src="/dimensions-swapped.jpg"
           caption={t("dimensionsSwapped.caption")}
         />

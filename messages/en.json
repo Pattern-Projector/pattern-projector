@@ -190,6 +190,10 @@
     "descriptionIOS": "Download the app by tapping the share button <shareIcon></shareIcon> in the browser menu and then Add to Home Screen <addBoxIcon></addBoxIcon>.",
     "ok": "OK"
   },
+  "Mail": {
+      "title": "You've got mail",
+      "donate": "Donate"
+    },
   "Troubleshooting": {
     "notMatching": "Lines not matching your mat?",
     "title": "Calibration Troubleshooting",
@@ -214,6 +218,9 @@
       "description": "If the projected grid looks like rectangles instead of squares, the width and height may be swapped. Simply swap the values in the fields.",
       "caption": "The width and height are in the wrong boxes. The dimension should read 'W: 24' and 'H: 18'."
     },
+    "close": "Close"
+  },
+  "General": {
     "close": "Close"
   },
   "Header": {
@@ -263,7 +270,8 @@
     "showMovement": "Show move tool",
     "hideMovement": "Hide move tool",
     "magnify": "Magnify (M)",
-    "zoomOut": "Zoom out (Z)"
+    "zoomOut": "Zoom out (Z)",
+    "mail": "Mail from Courtney"
   },
   "StitchMenu": {
     "columnCount": "Columns",

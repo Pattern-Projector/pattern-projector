@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function TroubleshootingFigure({
+export default function ModalFigure({
   src,
   caption,
 }: {

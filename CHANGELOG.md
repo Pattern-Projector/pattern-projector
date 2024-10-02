@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Mail button for me to send messages
+
 ## [1.1.0] - 2024-09-26
 
 ### Added
