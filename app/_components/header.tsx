@@ -588,7 +588,10 @@ export default function Header({
               </IconButton>
             </Tooltip>
             <Tooltip description={t("mail")} className={visible(isCalibrating)}>
-              <IconButton onClick={() => handleOpenMail()} active={!mailRead}>
+              <IconButton
+                onClick={() => handleOpenMail()}
+                active={!mailRead.current}
+              >
                 <MailIcon ariaLabel={t("mail")} />
               </IconButton>
             </Tooltip>
