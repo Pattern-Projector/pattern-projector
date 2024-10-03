@@ -3,7 +3,9 @@ import {
   ChangeEvent,
   Dispatch,
   SetStateAction,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { FullScreenHandle } from "react-full-screen";
@@ -64,6 +66,7 @@ import LoadingSpinner from "@/_icons/loading-spinner";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { ButtonStyle, getButtonStyleClasses } from "./theme/styles";
 import { ButtonColor, getColorClasses } from "./theme/colors";
+import MailIcon from "@/_icons/mail-icon";
 
 export default function Header({
   isCalibrating,
@@ -98,6 +101,8 @@ export default function Header({
   pdfLoadStatus,
   lineThicknessStatus,
   buttonColor,
+  mailOpen,
+  setMailOpen,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -131,8 +136,11 @@ export default function Header({
   pdfLoadStatus: LoadStatusEnum;
   lineThicknessStatus: LoadStatusEnum;
   buttonColor: ButtonColor;
+  mailOpen: boolean;
+  setMailOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
+  const mailRead = useRef(true);
   const transformer = useTransformerContext();
   const t = useTranslations("Header");
 
@@ -208,6 +216,11 @@ export default function Header({
     );
   };
 
+  const handleOpenMail = () => {
+    setMailOpen(true);
+    localStorage.setItem("mailRead", Date.now().toString());
+  };
+
   const overlayOptions = {
     disabled: {
       icon: <GridOffIcon ariaLabel={t("overlayOptionDisabled")} />,
@@ -261,6 +274,10 @@ export default function Header({
       value: 5,
     },
   ];
+
+  useEffect(() => {
+    mailRead.current = localStorage.getItem("mailRead") ? true : false;
+  }, [mailOpen]);
 
   useKeyDown(() => {
     handleFlipHorizontal();
@@ -568,6 +585,14 @@ export default function Header({
             <Tooltip description={t("info")} className={visible(isCalibrating)}>
               <IconButton href="/">
                 <InfoIcon ariaLabel={t("info")} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip description={t("mail")} className={visible(isCalibrating)}>
+              <IconButton
+                onClick={() => handleOpenMail()}
+                active={!mailRead.current}
+              >
+                <MailIcon ariaLabel={t("mail")} />
               </IconButton>
             </Tooltip>
           </div>

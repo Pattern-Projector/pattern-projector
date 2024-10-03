@@ -65,6 +65,7 @@ import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import LoadingSpinner from "@/_icons/loading-spinner";
 import TroubleshootingButton from "@/_components/troubleshooting-button";
 import { ButtonColor } from "@/_components/theme/colors";
+import MailModal from "@/_components/mail-modal";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -134,6 +135,7 @@ export default function Page() {
   const [buttonColor, setButtonColor] = useState<ButtonColor>(
     ButtonColor.PURPLE,
   );
+  const [mailOpen, setMailOpen] = useState(false);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -626,8 +628,11 @@ export default function Page() {
                   pdfLoadStatus={pdfLoadStatus}
                   lineThicknessStatus={lineThicknessStatus}
                   buttonColor={buttonColor}
+                  mailOpen={mailOpen}
+                  setMailOpen={setMailOpen}
                 />
                 {isCalibrating && menuStates.nav && <TroubleshootingButton />}
+                <MailModal open={mailOpen} setOpen={setMailOpen} />
               </menu>
 
               <menu
