@@ -66,6 +66,12 @@ import LoadingSpinner from "@/_icons/loading-spinner";
 import TroubleshootingButton from "@/_components/troubleshooting-button";
 import { ButtonColor } from "@/_components/theme/colors";
 import MailModal from "@/_components/mail-modal";
+import Modal from "@/_components/modal/modal";
+import { ModalTitle } from "@/_components/modal/modal-title";
+import ModalContent from "@/_components/modal/modal-content";
+import { ModalText } from "@/_components/modal/modal-text";
+import { ModalActions } from "@/_components/modal/modal-actions";
+import { Button } from "@/_components/buttons/button";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -136,10 +142,12 @@ export default function Page() {
     ButtonColor.PURPLE,
   );
   const [mailOpen, setMailOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<null | string>(null);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const t = useTranslations("Header");
+  const g = useTranslations("General");
 
   const IDLE_TIMEOUT = 8000;
 
@@ -345,6 +353,15 @@ export default function Page() {
     });
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("error", (e) => {
+      setErrorMessage(
+        `${navigator.userAgent}|${e.filename}:${e.lineno}:${e.colno}:${e.message}`,
+      );
+      e.preventDefault();
+    });
+  }, []);
+
   function handlePointerDown(e: React.PointerEvent) {
     resetIdle();
     if (fullScreenTooltipVisible) {
@@ -462,6 +479,17 @@ export default function Page() {
               </Tooltip>
             </h2>
           ) : null}
+          <Modal open={errorMessage !== null}>
+            <ModalTitle>{g("error")}</ModalTitle>
+            <ModalContent>
+              <ModalText>{errorMessage}</ModalText>
+              <ModalActions>
+                <Button onClick={() => setErrorMessage(null)}>
+                  {g("close")}
+                </Button>
+              </ModalActions>
+            </ModalContent>
+          </Modal>
           {isCalibrating && (
             <CalibrationCanvas
               className={`absolute ${visible(isCalibrating)}`}

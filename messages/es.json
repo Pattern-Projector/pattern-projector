@@ -255,7 +255,8 @@
         "overlayOptionFlippedPattern": "Lado erróneo",
         "stitchMenuDisabled": "Abra PDF para usar el menú de unión",
         "magnify": "Aumentar (M)",
-        "zoomOut": "Alejar (Z)"
+        "zoomOut": "Alejar (Z)",
+        "mail": "Correo de Courtney"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
@@ -333,5 +334,12 @@
         },
         "close": "Cerrar",
         "notMatching": "¿Las líneas no coinciden con tu tapete?"
+    },
+    "Mail": {
+        "title": "¿Tienes un nuevo correo?",
+        "donate": "Donar"
+    },
+    "General": {
+        "close": "Cerrar"
     }
 }

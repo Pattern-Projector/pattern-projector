@@ -53,6 +53,14 @@
             "measure": {
                 "title": "Strumento Linea (L)",
                 "description": "Crea delle linee nel PDF per ruotare, specchiare, spostare, misurare o contrassegnare. Per una descrizione dettagliata dello strumento linea, visita la <lineToolLink>sezione strumento linea</lineToolLink>."
+            },
+            "magnify": {
+                "title": "Ingrandisci (M)",
+                "description": "Fai click (o tocca) sul PDF per ingrandirlo. Fai click (o tocca) di nuovo sul PDF per smettere di ingrandirlo."
+            },
+            "zoomOut": {
+                "title": "Zoom indietro (Z)",
+                "description": "Zooma indietro per vedere tutto il PDF. Clicca (o tocca) sul PDF per zoomare avanti sul punto desiderato."
             }
         },
         "calibration": {
@@ -151,7 +159,7 @@
             },
             "mobileSupport": {
                 "question": "Telefoni cellulari e tablet sono supportati?",
-                "answer": "Anche se è possibile visitare e utilizzare la pagina web su uno smartphone , la dimensione limitata dello schermo la rende difficile da usare. Un migliore supporto mobile è previsto in un prossimo rilascio."
+                "answer": "Anche se è possibile visitare e utilizzare la pagina web su uno smartphone , la dimensione limitata dello schermo la rende difficile da usare."
             },
             "saveAsApp": {
                 "answer": "Pattern Projector è un Progressive Web App (PWA) quindi può essere salvato come app. È possibile installarlo su un computer desktop utilizzando <googleChromeLink>Chrome</googleChromeLink> o <microsoftEdgeLink>Edge</microsoftEdgeLink>. Su un tablet, apri il menu Condividi e tocca Aggiungi alla schermata iniziale."
@@ -173,7 +181,7 @@
         "contribute": {
             "develop": "Aiuta a implementare funzionalità e risolvere problemi su <githubLink>GitHub</githubLink>.",
             "feedback": "Feedback e richieste di funzionalità sono i benvenuti!",
-            "donation": "Se vuoi sostenere lo sviluppo di questo strumento, per favore, prendi in considerazione l'idea di <donateLink>comprarmi un caffè</donateLink>!",
+            "donation": "Se Pattern Projector ti ha fatto risparmiare soldi in copisteria o ti ha liberato dall'abbonamento ad un'app per visualizzare PDF, per favore, prendi in considerazione l'idea di <donateLink>offrirmi un caffè</donateLink> o di supportarmi tramite <payPalLink>PayPal</payPalLink>!",
             "translate": "Traduci questo strumento in più lingue utilizzando <weblateLink>Weblate</weblateLink>.",
             "title": "Contribuisci al progetto"
         },
@@ -233,7 +241,8 @@
         "showMovement": "Mostra lo strumento muovi",
         "hideMovement": "Nasconde lo strumento muovi",
         "magnify": "Ingrandisci (M)",
-        "zoomOut": "Zoom indietro (Z)"
+        "zoomOut": "Zoom indietro (Z)",
+        "mail": "Messaggio da Courtney"
     },
     "MeasureCanvas": {
         "flipAlong": "Rifletti lungo la linea",
@@ -274,5 +283,42 @@
     "OverlayCanvas": {
         "magnifying": "clicca il PDF per smettere di ingrandire",
         "zoomedOut": "clicca il PDF per zoomare in avanti"
+    },
+    "Troubleshooting": {
+        "notMatching": "Le linee non coincidono col tuo tappetino?",
+        "offByOne": {
+            "title": "Le linee sono dritte ma non coincidono?",
+            "caption": "Sono inserite le misure sbagliate (23 x 17) anziché (24 x 18). Il tappetino mostra i numeri fino a 23 e 17, per questo è facile sbagliare le misure. Assicurati di misurare con un metro!",
+            "description": "Se le linee proiettate sono dritte ma non coincidono con quelle del tappetino, l'altezza o la larghezza potrebbero essere sbagliate di 1 pollice/ centimetro. Ricontrolla le misure con un metro. Le misure del tappetino possono essere imprecise, quindi è importante controllare con un metro."
+        },
+        "dragCorners": {
+            "description": "Trascina gli angoli della griglia almeno fino al rettangolo 24x16 sul tuo tappetino. La griglia dovrebbe essere più grande possibile ma non è necessario che copra l'intero tappetino.",
+            "title": "Come calibrare",
+            "caption": "Una griglia correttamente calibrata."
+        },
+        "title": "Risoluzione dei problemi di calibrazione",
+        "inputMeasurement": "Usa un metro per misurare altezza e larghezza del tuo tappetino. Scrivi queste misure nei campi altezza e larghezza.",
+        "unevenSurface": {
+            "caption": "Questo tappetino ha un righello sotto di esso e rende le linee incurvate al centro. Una lieve curvatura va bene ma una curvatura grande può causare problemi.",
+            "title": "Linee incurvate?",
+            "description": "Se le linee proiettate sono incurvate, il tappetino o la superfice sotto di esso possono non essere piatti. Cerca di appiattire il tappetino mettendo del cartone sotto i punti più bassi o spostandolo su una diversa superficie di taglio."
+        },
+        "dimensionsSwapped": {
+            "title": "Rettangoli anziché quadrati?",
+            "description": "Se la griglia proiettata sembra composta da rettangoli anziché quadrati, larghezza e altezza potrebbero essere invertite. Scambia i valori nei campi.",
+            "caption": "Larghezza e altezza sono nelle caselle sbagliate. Le dimensioni dovrebbero aprire come \"L: 24\" e \"A: 18\"."
+        },
+        "close": "Chiudi"
+    },
+    "General": {
+        "close": "Chiudi"
+    },
+    "Mail": {
+        "title": "Hai ricevuto un messaggio",
+        "donate": "Dona"
+    },
+    "PdfViewer": {
+        "error": "Impossibile caricare il PDF",
+        "noData": "Premi il pulsante \"Apri PDF\" per caricare un PDF"
     }
 }
