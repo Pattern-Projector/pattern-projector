@@ -340,6 +340,7 @@
         "donate": "Donar"
     },
     "General": {
-        "close": "Cerrar"
+        "close": "Cerrar",
+        "error": "Error"
     }
 }
