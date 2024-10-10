@@ -1,8 +1,8 @@
 import { useTranslations } from "next-intl";
-import { IconButton } from "./buttons/icon-button";
+import { IconButton } from "@/_components/buttons/icon-button";
 import RotateToHorizontalIcon from "@/_icons/rotate-to-horizontal";
-import { visible } from "./theme/css-functions";
-import Tooltip from "./tooltip/tooltip";
+import { visible } from "@/_components/theme/css-functions";
+import Tooltip from "@/_components/tooltip/tooltip";
 import KeyboardArrowRightIcon from "@/_icons/keyboard-arrow-right";
 import DeleteIcon from "@/_icons/delete-icon";
 import {

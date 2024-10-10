@@ -4,6 +4,7 @@ export interface MenuStates {
   nav: boolean;
   layers: boolean;
   stitch: boolean;
+  scale: boolean;
 }
 
 export function getDefaultMenuStates(): MenuStates {
@@ -11,6 +12,7 @@ export function getDefaultMenuStates(): MenuStates {
     nav: true,
     layers: false,
     stitch: false,
+    scale: false,
   };
 }
 

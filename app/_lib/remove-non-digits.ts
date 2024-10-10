@@ -17,6 +17,10 @@ export default function removeNonDigits(
   }
 }
 
+export function allowFloat(s: string) {
+  return s.replace(/[^.\d]/g, "");
+}
+
 export function allowInteger(
   s: string,
   allowNegative: boolean = false,

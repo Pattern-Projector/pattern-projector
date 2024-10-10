@@ -66,9 +66,9 @@ export default function InstallButton() {
         </a>
       ),
       installIcon: () => (
-        <div className="inline-block">
+        <span className="inline-block">
           <InstallDesktopIcon ariaLabel={""} />
-        </div>
+        </span>
       ),
     });
   }

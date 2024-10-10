@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch } from "react";
 import { useTranslations } from "next-intl";
 import Input from "@/_components/input";
 import { IconButton } from "@/_components/buttons/icon-button";
@@ -6,10 +6,9 @@ import StepperInput from "@/_components/stepper-input";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { allowInteger } from "@/_lib/remove-non-digits";
-import SaveButton from "./save-button";
+import SaveButton from "@/_components/save-button";
 import { Layers } from "@/_lib/layers";
-import Tooltip from "./tooltip/tooltip";
-import { MenuStates } from "@/_lib/menu-states";
+import Tooltip from "@/_components/tooltip/tooltip";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
 import KeyboardArrowLeftIcon from "@/_icons/keyboard-arrow-left";
 
@@ -17,22 +16,18 @@ export default function StitchMenu({
   dispatchStitchSettings,
   stitchSettings,
   pageCount,
-  className,
-  setShowMenu,
   file,
   layers,
-  menuStates,
-  setMenuStates,
+  visible,
+  setVisible,
 }: {
   dispatchStitchSettings: Dispatch<StitchSettingsAction>;
   stitchSettings: StitchSettings;
   pageCount: number;
-  className?: string;
-  setShowMenu: (showMenu: boolean) => void;
   file: File | null;
   layers: Layers;
-  menuStates: MenuStates;
-  setMenuStates: Dispatch<SetStateAction<MenuStates>>;
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
 }) {
   const t = useTranslations("StitchMenu");
   const h = useTranslations("Header");
@@ -52,11 +47,11 @@ export default function StitchMenu({
   return (
     <>
       <menu
-        className={`${className ?? ""} pointer-events-auto flex justify-between items-center left-0 transition-all duration-700 dark:bg-opacity-50 bg-opacity-60 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 py-2 pr-2`}
+        className={`pointer-events-auto flex justify-between items-center left-0 transition-all duration-700 dark:bg-opacity-50 bg-opacity-60 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 py-2 pr-2`}
       >
         <div className="gap-2 flex flex-wrap items-end">
           <Tooltip description={h("stitchMenuHide")} className="z-30">
-            <IconButton onClick={() => setShowMenu(false)} className="h-11">
+            <IconButton onClick={() => setVisible(false)} className="h-11">
               <KeyboardArrowLeftIcon ariaLabel="close" />
             </IconButton>
           </Tooltip>
@@ -135,11 +130,11 @@ export default function StitchMenu({
           />
         </div>
       </menu>
-      {!menuStates.stitch ? (
+      {!visible ? (
         <Tooltip
           className="ml-3 mt-2 w-10 z-30 pointer-events-auto"
           description={
-            menuStates.stitch
+            visible
               ? h("stitchMenuHide")
               : pageCount === 0
                 ? h("stitchMenuDisabled")
@@ -149,15 +144,11 @@ export default function StitchMenu({
           <IconButton
             border={true}
             disabled={pageCount === 0}
-            onClick={() =>
-              setMenuStates({ ...menuStates, stitch: !menuStates.stitch })
-            }
-            className={`${menuStates.stitch ? "!bg-gray-300 dark:!bg-gray-600" : ""}`}
+            onClick={() => setVisible(true)}
+            className={`${visible ? "!bg-gray-300 dark:!bg-gray-600" : ""}`}
           >
             <FlexWrapIcon
-              ariaLabel={
-                menuStates.stitch ? h("stitchMenuHide") : h("stitchMenuShow")
-              }
+              ariaLabel={visible ? h("stitchMenuHide") : h("stitchMenuShow")}
             />
           </IconButton>
         </Tooltip>

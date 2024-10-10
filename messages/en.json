@@ -273,6 +273,10 @@
     "zoomOut": "Zoom out (Z)",
     "mail": "Mail from Courtney"
   },
+  "ScaleMenu": {
+    "scale": "Scale Pattern",
+    "hide": "Hide scale menu"
+  },
   "StitchMenu": {
     "columnCount": "Columns",
     "pageRange": "Stitch Pages",

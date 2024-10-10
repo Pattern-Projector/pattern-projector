@@ -28,10 +28,10 @@ import {
   themeFilter,
 } from "@/_lib/display-settings";
 import { getPtDensity, IN } from "@/_lib/unit";
-import LayerMenu from "@/_components/layer-menu";
+import LayerMenu from "@/_components/menus/layer-menu";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
-import StitchMenu from "@/_components/stitch-menu";
+import StitchMenu from "@/_components/menus/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
 import {
   getDefaultMenuStates,
@@ -66,6 +66,7 @@ import LoadingSpinner from "@/_icons/loading-spinner";
 import TroubleshootingButton from "@/_components/troubleshooting-button";
 import { ButtonColor } from "@/_components/theme/colors";
 import MailModal from "@/_components/mail-modal";
+import ScaleMenu from "@/_components/menus/scale-menu";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -131,7 +132,7 @@ export default function Page() {
   const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
-
+  const [patternScale, setPatternScale] = useState<number>(1);
   const [buttonColor, setButtonColor] = useState<ButtonColor>(
     ButtonColor.PURPLE,
   );
@@ -248,6 +249,10 @@ export default function Page() {
         fullScreenHandle.enter();
       }
     }
+  }
+
+  function handleScaleChange(e: ChangeEvent<HTMLInputElement>) {
+    setPatternScale(Number(e.target.value) / 100);
   }
 
   // EFFECTS
@@ -635,31 +640,37 @@ export default function Page() {
                 <MailModal open={mailOpen} setOpen={setMailOpen} />
               </menu>
 
-              <menu
-                className={`${visible(!isCalibrating && file !== null)} p-0`}
-              >
-                <StitchMenu
-                  className={`${menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
-                  setShowMenu={(showMenu) =>
-                    setMenuStates({ ...menuStates, stitch: showMenu })
-                  }
-                  dispatchStitchSettings={dispatchStitchSettings}
-                  stitchSettings={stitchSettings}
-                  pageCount={pageCount}
-                  file={file}
-                  layers={layers}
-                  menuStates={menuStates}
-                  setMenuStates={setMenuStates}
-                />
-                <LayerMenu
-                  visible={menuStates.layers}
-                  setVisible={(visible) =>
-                    setMenuStates({ ...menuStates, layers: visible })
-                  }
-                  layers={layers}
-                  dispatchLayerAction={dispatchLayersAction}
-                />
-              </menu>
+              {/* <menu
+                className={`${visible(!isCalibrating && file !== null)} p-0 flex flex-col`}
+              > */}
+              {/* <StitchMenu
+                dispatchStitchSettings={dispatchStitchSettings}
+                stitchSettings={stitchSettings}
+                pageCount={pageCount}
+                file={file}
+                layers={layers}
+                visible={menuStates.stitch}
+                setVisible={(visible) =>
+                  setMenuStates({ ...menuStates, stitch: visible })
+                }
+              />
+              <ScaleMenu
+                patternScale={patternScale}
+                setPatternScale={setPatternScale}
+                visible={menuStates.scale}
+                setVisible={(visible) =>
+                  setMenuStates({ ...menuStates, scale: visible })
+                }
+              />
+              <LayerMenu
+                dispatchLayerAction={dispatchLayersAction}
+                layers={layers}
+                visible={menuStates.layers}
+                setVisible={(visible) =>
+                  setMenuStates({ ...menuStates, layers: visible })
+                }
+              /> */}
+              {/* </menu> */}
             </menu>
             <IconButton
               className={`${visible(!menusHidden)} !p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}

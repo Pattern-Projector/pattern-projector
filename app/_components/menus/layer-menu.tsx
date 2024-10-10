@@ -2,7 +2,7 @@ import { Dispatch } from "react";
 import { IconButton } from "@/_components/buttons/icon-button";
 import { useTranslations } from "next-intl";
 import KeyboardArrowLeftIcon from "@/_icons/keyboard-arrow-left";
-import Tooltip from "./tooltip/tooltip";
+import Tooltip from "@/_components/tooltip/tooltip";
 import LayersIcon from "@/_icons/layers-icon";
 import { Layers } from "@/_lib/layers";
 import { LayerAction } from "@/_reducers/layersReducer";
@@ -86,7 +86,7 @@ export default function LayerMenu({
       {!visible ? (
         <Tooltip
           description={hasLayers ? t("layersOn") : t("noLayers")}
-          className="ml-3 mt-2 w-10 !absolute z-10 pointer-events-auto"
+          className="ml-3 mt-2 w-10 z-10 pointer-events-auto"
         >
           <IconButton
             border={true}
