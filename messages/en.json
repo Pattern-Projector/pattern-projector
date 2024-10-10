@@ -221,7 +221,8 @@
     "close": "Close"
   },
   "General": {
-    "close": "Close"
+    "close": "Close",
+    "error": "Error"
   },
   "Header": {
     "openPDF": "Open PDF",
