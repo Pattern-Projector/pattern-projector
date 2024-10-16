@@ -34,6 +34,7 @@ import MeasureCanvas from "@/_components/measure-canvas";
 import {
   getDefaultMenuStates,
   getMenuStatesFromLayers,
+  getMenuStatesFromPageCount,
   MenuStates,
 } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
@@ -288,8 +289,12 @@ export default function Page() {
   }, [points, width, height, unitOfMeasure]);
 
   useEffect(() => {
+    setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
+  }, [pageCount]);
+
+  useEffect(() => {
     setMenuStates((m) => getMenuStatesFromLayers(m, layers));
-  }, [layers]);
+  }, [layers, menuStates.stitch]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");

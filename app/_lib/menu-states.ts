@@ -13,7 +13,7 @@ export enum SideMenuType {
   scale = "scale",
 }
 
-export function getNewSideMenuStates(
+export function toggleSideMenuStates(
   menuStates: MenuStates,
   menu: SideMenuType,
 ) {
@@ -39,9 +39,29 @@ export function getDefaultMenuStates(): MenuStates {
   };
 }
 
+export function getMenuStatesFromPageCount(
+  menuStates: MenuStates,
+  pageCount: number,
+) {
+  if (pageCount > 1) {
+    return { nav: true, layers: false, scale: false, stitch: true };
+  } else {
+    return menuStates;
+  }
+}
+
 export function getMenuStatesFromLayers(
   menuStates: MenuStates,
   layers: Layers,
 ) {
-  return { ...menuStates, layers: Object.keys(layers).length > 0 };
+  if (menuStates.stitch) {
+    return menuStates;
+  } else {
+    return {
+      nav: true,
+      stitch: false,
+      scale: false,
+      layers: Object.keys(layers).length > 0,
+    };
+  }
 }

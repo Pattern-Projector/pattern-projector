@@ -1,7 +1,7 @@
 import {
   MenuStates,
   SideMenuType,
-  getNewSideMenuStates,
+  toggleSideMenuStates,
 } from "@/_lib/menu-states";
 import Tooltip from "../tooltip/tooltip";
 import { IconButton } from "../buttons/icon-button";
@@ -51,18 +51,44 @@ export default function SideMenu({
   return (
     <menu className="pointer-events-auto flex w-fit">
       {/* reverse so the tooltips show on top */}
-      <menu className="flex flex-col-reverse justify-end gap-2 p-2 bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black left-0 border-b dark:border-gray-700 transition-all duration-500">
-        <Tooltip description={menuStates.scale ? sc("scale") : sc("hide")}>
+      <menu className="flex flex-col-reverse justify-end gap-2 p-2 bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black left-0 border-b border-r dark:border-gray-700 transition-all duration-500">
+        <Tooltip description={menuStates.scale ? sc("hide") : sc("show")}>
           <IconButton
+            border={menuStates.scale}
             onClick={() =>
               setMenuStates(
-                getNewSideMenuStates(menuStates, SideMenuType.scale),
+                toggleSideMenuStates(menuStates, SideMenuType.scale),
               )
             }
           >
-            <MagnifyIcon ariaLabel={sc("scale")} />
+            <MagnifyIcon
+              ariaLabel={menuStates.scale ? sc("hide") : sc("show")}
+            />
           </IconButton>
         </Tooltip>
+
+        <Tooltip
+          description={
+            numberOfLayers > 0
+              ? menuStates.layers
+                ? l("layersOff")
+                : l("layersOn")
+              : l("noLayers")
+          }
+        >
+          <IconButton
+            border={menuStates.layers}
+            onClick={() =>
+              setMenuStates(
+                toggleSideMenuStates(menuStates, SideMenuType.layers),
+              )
+            }
+            disabled={numberOfLayers === 0}
+          >
+            <LayersIcon ariaLabel="layers" />
+          </IconButton>
+        </Tooltip>
+
         <Tooltip
           description={
             menuStates.stitch
@@ -73,10 +99,11 @@ export default function SideMenu({
           }
         >
           <IconButton
+            border={menuStates.stitch}
             disabled={pageCount === 0}
             onClick={() =>
               setMenuStates(
-                getNewSideMenuStates(menuStates, SideMenuType.stitch),
+                toggleSideMenuStates(menuStates, SideMenuType.stitch),
               )
             }
           >
@@ -85,20 +112,6 @@ export default function SideMenu({
                 menuStates.stitch ? h("stitchMenuHide") : h("stitchMenuShow")
               }
             />
-          </IconButton>
-        </Tooltip>
-        <Tooltip
-          description={numberOfLayers > 0 ? l("layersOn") : l("noLayers")}
-        >
-          <IconButton
-            onClick={() =>
-              setMenuStates(
-                getNewSideMenuStates(menuStates, SideMenuType.layers),
-              )
-            }
-            disabled={numberOfLayers === 0}
-          >
-            <LayersIcon ariaLabel="layers" />
           </IconButton>
         </Tooltip>
       </menu>

@@ -8,6 +8,7 @@ import { allowInteger } from "@/_lib/remove-non-digits";
 import SaveButton from "@/_components/save-button";
 import { Layers } from "@/_lib/layers";
 import { sideMenuStyles } from "@/_components/theme/styles";
+import Tooltip from "@/_components/tooltip/tooltip";
 
 export default function StitchMenu({
   dispatchStitchSettings,
@@ -39,17 +40,19 @@ export default function StitchMenu({
   return (
     <>
       <menu className={`${sideMenuStyles}`}>
-        <Input
-          inputClassName="w-36"
-          handleChange={(e) =>
-            dispatchStitchSettings({
-              type: "set-page-range",
-              pageRange: e.target.value,
-            })
-          }
-          label={t("pageRange")}
-          value={stitchSettings.pageRange}
-        />
+        <Tooltip description={t("zeros")}>
+          <Input
+            inputClassName="w-36"
+            handleChange={(e) =>
+              dispatchStitchSettings({
+                type: "set-page-range",
+                pageRange: e.target.value,
+              })
+            }
+            label={t("pageRange")}
+            value={stitchSettings.pageRange}
+          />
+        </Tooltip>
         <StepperInput
           inputClassName="w-12"
           handleChange={(e) =>
