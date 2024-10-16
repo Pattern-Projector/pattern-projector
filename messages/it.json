@@ -311,7 +311,8 @@
         "close": "Chiudi"
     },
     "General": {
-        "close": "Chiudi"
+        "close": "Chiudi",
+        "error": "Errore"
     },
     "Mail": {
         "title": "Hai ricevuto un messaggio",
