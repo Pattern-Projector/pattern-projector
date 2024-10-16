@@ -7,6 +7,29 @@ export interface MenuStates {
   scale: boolean;
 }
 
+export enum SideMenuType {
+  layers = "layers",
+  stitch = "stitch",
+  scale = "scale",
+}
+
+export function getNewSideMenuStates(
+  menuStates: MenuStates,
+  menu: SideMenuType,
+) {
+  const visible = !menuStates[menu];
+  let newMenuStates = { ...menuStates, [menu]: visible };
+  if (visible) {
+    for (const m in SideMenuType) {
+      if (m !== menu) {
+        newMenuStates = { ...newMenuStates, [m]: false };
+      }
+    }
+  }
+
+  return newMenuStates;
+}
+
 export function getDefaultMenuStates(): MenuStates {
   return {
     nav: true,
@@ -14,19 +37,6 @@ export function getDefaultMenuStates(): MenuStates {
     stitch: false,
     scale: false,
   };
-}
-
-export function getMenuStatesFromPageCount(
-  menuStates: MenuStates,
-  pageCount: number,
-) {
-  let showStitch: boolean = menuStates.stitch;
-  if (pageCount === 1) {
-    showStitch = false;
-  } else if (pageCount > 1) {
-    showStitch = true;
-  }
-  return { ...menuStates, stitch: showStitch };
 }
 
 export function getMenuStatesFromLayers(
