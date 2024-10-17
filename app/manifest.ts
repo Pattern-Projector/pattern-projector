@@ -24,5 +24,13 @@ export default function manifest(): MetadataRoute.Manifest {
     description:
       "Calibrates projectors for projecting sewing patterns with accurate scaling and without perspective distortion",
     theme_color: "#fff",
+    file_handlers: [
+      {
+        action: "/calibrate",
+        accept: {
+          "application/pdf": [".pdf"],
+        },
+      },
+    ],
   };
 }
