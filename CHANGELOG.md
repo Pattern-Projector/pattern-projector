@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Side menu for stitch, layers, and scale menus
+- Scale menu for changing the pattern scale
+- Open with Pattern Projector using the desktop file browser "Open With"
+
+### Changed
+
+- Hide all layers button only switches to show all when all layers are hidden
+- Line menu tools are horizontal and below the header
+- Stitch menu is opened when the file has multiple pages, or the layer menu is opened if only one page & layers
+
 ## [1.1.1] - 2024-10-03
 
 ### Added
