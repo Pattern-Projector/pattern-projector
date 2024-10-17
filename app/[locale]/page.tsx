@@ -35,6 +35,7 @@ import ZoomOutIcon from "@/_icons/zoom-out-icon";
 import { Button } from "@/_components/buttons/button";
 import { ButtonStyle } from "@/_components/theme/styles";
 import ZoomInIcon from "@/_icons/zoom-in-icon";
+import TuneIcon from "@/_icons/tune-icon";
 
 const DynamicInstallButton = dynamic(
   () => import("@/_components/buttons/install-button"),
@@ -192,24 +193,28 @@ export default function Home() {
           >
             {t("project.fullscreen.description")}
           </Definition>
+
           <Definition
             icon={<ExpandLessIcon ariaLabel="" />}
             title={t("project.showMenu.title")}
           >
             {t("project.showMenu.description")}
           </Definition>
+
           <Definition
             icon={<InvertColorIcon ariaLabel="" />}
             title={t("project.invert.title")}
           >
             {t("project.invert.description")}
           </Definition>
+
           <Definition
             icon={<MoveIcon ariaLabel="" />}
             title={t("project.moveTool.title")}
           >
             {t("project.moveTool.description")}
           </Definition>
+
           <Definition
             icon={<GridOnIcon ariaLabel="" />}
             title={t("project.overlayOptions.title")}
@@ -220,12 +225,14 @@ export default function Home() {
               ),
             })}
           </Definition>
+
           <Definition
             icon={<LineWeightIcon ariaLabel="" />}
             title={t("project.lineWeight.title")}
           >
             {t("project.lineWeight.description")}
           </Definition>
+
           <Definition
             icon={
               <>
@@ -237,30 +244,35 @@ export default function Home() {
           >
             {t("project.flip.description")}
           </Definition>
+
           <Definition
             icon={<Rotate90DegreesCWIcon ariaLabel="" />}
             title={t("project.rotate.title")}
           >
             {t("project.rotate.description")}
           </Definition>
+
           <Definition
             icon={<RecenterIcon ariaLabel="" />}
             title={t("project.recenter.title")}
           >
             {t("project.recenter.description")}
           </Definition>
+
           <Definition
             icon={<ZoomInIcon ariaLabel="" />}
             title={t("project.magnify.title")}
           >
             {t("project.magnify.description")}
           </Definition>
+
           <Definition
             icon={<ZoomOutIcon ariaLabel="" />}
             title={t("project.zoomOut.title")}
           >
             {t("project.zoomOut.description")}
           </Definition>
+
           <Definition
             icon={<MarkAndMeasureIcon ariaLabel="" />}
             title={t("project.measure.title")}
@@ -269,17 +281,26 @@ export default function Home() {
               lineToolLink: (chunk) => <a href="#line-tool">{chunk}</a>,
             })}
           </Definition>
+
+          <Definition
+            icon={<FlexWrapIcon ariaLabel="" />}
+            title={t("project.stitch.title")}
+          >
+            {t("project.stitch.description")}
+          </Definition>
+
           <Definition
             icon={<LayersIcon ariaLabel="" />}
             title={t("project.layers.title")}
           >
             {t("project.layers.description")}
           </Definition>
+
           <Definition
-            icon={<FlexWrapIcon ariaLabel="" />}
-            title={t("project.stitch.title")}
+            icon={<TuneIcon ariaLabel="" />}
+            title={t("project.scale.title")}
           >
-            {t("project.stitch.description")}
+            {t("project.scale.description")}
           </Definition>
         </dl>
 
@@ -294,24 +315,28 @@ export default function Home() {
           >
             {t("overlayOptions.border.description")}
           </Definition>
+
           <Definition
             icon={<GridOnIcon ariaLabel="" />}
             title={t("overlayOptions.grid.title")}
           >
             {t("overlayOptions.grid.description")}
           </Definition>
+
           <Definition
             icon={<OverlayPaperIcon ariaLabel="" />}
             title={t("overlayOptions.paper.title")}
           >
             {t("overlayOptions.paper.description")}
           </Definition>
+
           <Definition
             icon={<FlipCenterOnIcon ariaLabel="" />}
             title={t("overlayOptions.flipLines.title")}
           >
             {t("overlayOptions.flipLines.description")}
           </Definition>
+
           <Definition
             icon={<FlippedPatternIcon ariaLabel="" />}
             title={t("overlayOptions.flippedPattern.title")}

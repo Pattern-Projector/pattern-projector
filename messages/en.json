@@ -89,6 +89,10 @@
         "title": "Show or hide stitch menu",
         "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
       },
+      "scale": {
+        "title": "Show or hide the scale menu",
+        "description": "Change size of the pattern by entering a multiplier: between 0-1 will make the pattern smaller and greater than 1 will make the pattern larger."
+      },
       "measure": {
         "title": "Line tool (L)",
         "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking. For a detailed description of the line tool, see the <lineToolLink>line tool section</lineToolLink>."
