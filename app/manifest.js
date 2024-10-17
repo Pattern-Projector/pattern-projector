@@ -1,6 +1,4 @@
-import { MetadataRoute } from "next";
-
-export default function manifest(): MetadataRoute.Manifest {
+export default function manifest() {
   return {
     name: "Pattern Projector",
     short_name: "PatternProjector",
