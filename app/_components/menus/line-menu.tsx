@@ -61,7 +61,7 @@ export default function LineMenu({
     onClick: () => void;
   }) {
     return (
-      <Tooltip description={description} top={true}>
+      <Tooltip description={description}>
         <IconButton
           border={true}
           onClick={() => {
