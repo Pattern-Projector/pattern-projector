@@ -148,7 +148,7 @@ export function drawOverlays(cs: CanvasState) {
     if (flippedPattern && cs.isFlipped) {
       drawFlippedPattern(cs);
     }
-    if (patternScale && patternScale.localeCompare("1") !== 0) {
+    if (patternScale && Number(patternScale) !== 1) {
       drawMessage(
         cs,
         t.rich("scaled", {
