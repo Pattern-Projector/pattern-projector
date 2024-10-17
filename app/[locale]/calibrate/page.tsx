@@ -28,17 +28,10 @@ import {
   themeFilter,
 } from "@/_lib/display-settings";
 import { getPtDensity, IN } from "@/_lib/unit";
-import LayerMenu from "@/_components/layer-menu";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
-import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
-import {
-  getDefaultMenuStates,
-  getMenuStatesFromLayers,
-  getMenuStatesFromPageCount,
-  MenuStates,
-} from "@/_lib/menu-states";
+import { getDefaultMenuStates, MenuStates } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import Filters from "@/_components/filters";
@@ -66,6 +59,8 @@ import LoadingSpinner from "@/_icons/loading-spinner";
 import TroubleshootingButton from "@/_components/troubleshooting-button";
 import { ButtonColor } from "@/_components/theme/colors";
 import MailModal from "@/_components/mail-modal";
+import SideMenu from "@/_components/menus/side-menu";
+import PatternScaleReducer from "@/_reducers/patternScaleReducer";
 import Modal from "@/_components/modal/modal";
 import { ModalTitle } from "@/_components/modal/modal-title";
 import ModalContent from "@/_components/modal/modal-content";
@@ -88,11 +83,6 @@ export default function Page() {
 
   const fullScreenHandle = useFullScreenHandle();
 
-  const [points, dispatch] = useReducer(pointsReducer, []);
-  const [stitchSettings, dispatchStitchSettings] = useReducer(
-    stitchSettingsReducer,
-    defaultStitchSettings,
-  );
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
@@ -115,11 +105,6 @@ export default function Page() {
     useState<RestoreTransforms | null>(null);
   const [pageCount, setPageCount] = useState<number>(0);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
-  const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
-  const setLayers = useCallback(
-    (l: Layers) => dispatchLayersAction({ type: "set-layers", layers: l }),
-    [dispatchLayersAction],
-  );
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
@@ -128,7 +113,6 @@ export default function Page() {
   const [zoomedOut, setZoomedOut] = useState<boolean>(false);
   const [menusHidden, setMenusHidden] = useState<boolean>(false);
   const [isIdle, setIsIdle] = useState(false);
-
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
   );
@@ -137,12 +121,26 @@ export default function Page() {
   const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
-
   const [buttonColor, setButtonColor] = useState<ButtonColor>(
     ButtonColor.PURPLE,
   );
   const [mailOpen, setMailOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
+  
+  const [points, dispatch] = useReducer(pointsReducer, []);
+  const [stitchSettings, dispatchStitchSettings] = useReducer(
+    stitchSettingsReducer,
+    defaultStitchSettings,
+  );
+  const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
+  const setLayers = useCallback(
+    (l: Layers) => dispatchLayersAction({ type: "set-layers", layers: l }),
+    [dispatchLayersAction],
+  );
+  const [patternScale, dispatchPatternScaleAction] = useReducer(
+    PatternScaleReducer,
+    "1",
+  );
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -214,6 +212,7 @@ export default function Page() {
       setMagnifying(false);
       setMeasuring(false);
       setPageCount(0);
+      dispatchPatternScaleAction({ type: "set", scale: "1" });
       const lineThicknessString = localStorage.getItem(
         `lineThickness:${files[0].name}`,
       );
@@ -260,6 +259,18 @@ export default function Page() {
 
   // EFFECTS
 
+  useEffect(() => {
+    if (pageCount === 1) {
+      if (Object.entries(layers).length > 1) {
+        setMenuStates({ ...getDefaultMenuStates(), layers: true });
+      } else {
+        setMenuStates(getDefaultMenuStates());
+      }
+    } else {
+      setMenuStates({ ...getDefaultMenuStates(), stitch: true });
+    }
+  }, [pageCount, layers]);
+
   const requestWakeLock = useCallback(async () => {
     if ("wakeLock" in navigator) {
       try {
@@ -270,6 +281,19 @@ export default function Page() {
 
   useEffect(() => {
     requestWakeLock();
+    if ("launchQueue" in window) {
+      window.launchQueue.setConsumer(
+        async (launchParams: { files: [FileSystemHandle] }) => {
+          for (const handle of launchParams.files) {
+            if (handle.kind == "file") {
+              const file = await (handle as FileSystemFileHandle).getFile();
+              setFile(file);
+              return;
+            }
+          }
+        },
+      );
+    }
   });
 
   useEffect(() => {
@@ -278,10 +302,6 @@ export default function Page() {
       element.style.display = "none";
     }
   }, []);
-
-  useEffect(() => {
-    setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
-  }, [pageCount]);
 
   useEffect(() => {
     if (points.length === maxPoints) {
@@ -297,10 +317,6 @@ export default function Page() {
       setPerspective(inverse(m));
     }
   }, [points, width, height, unitOfMeasure]);
-
-  useEffect(() => {
-    setMenuStates((m) => getMenuStatesFromLayers(m, layers));
-  }, [layers]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -576,6 +592,7 @@ export default function Page() {
                     +height,
                     unitOfMeasure,
                   )}
+                  patternScale={Number(patternScale)}
                 />
               </Draggable>
               <OverlayCanvas
@@ -589,6 +606,7 @@ export default function Page() {
                 zoomedOut={zoomedOut}
                 magnifying={magnifying}
                 restoreTransforms={restoreTransforms}
+                patternScale={patternScale}
               />
             </MeasureCanvas>
 
@@ -658,36 +676,26 @@ export default function Page() {
                   buttonColor={buttonColor}
                   mailOpen={mailOpen}
                   setMailOpen={setMailOpen}
+                  patternScale={patternScale}
                 />
                 {isCalibrating && menuStates.nav && <TroubleshootingButton />}
                 <MailModal open={mailOpen} setOpen={setMailOpen} />
               </menu>
 
-              <menu
-                className={`${visible(!isCalibrating && file !== null)} p-0`}
-              >
-                <StitchMenu
-                  className={`${menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
-                  setShowMenu={(showMenu) =>
-                    setMenuStates({ ...menuStates, stitch: showMenu })
-                  }
-                  dispatchStitchSettings={dispatchStitchSettings}
-                  stitchSettings={stitchSettings}
-                  pageCount={pageCount}
-                  file={file}
-                  layers={layers}
+              {!isCalibrating && file !== null && (
+                <SideMenu
                   menuStates={menuStates}
                   setMenuStates={setMenuStates}
-                />
-                <LayerMenu
-                  visible={menuStates.layers}
-                  setVisible={(visible) =>
-                    setMenuStates({ ...menuStates, layers: visible })
-                  }
+                  pageCount={pageCount}
                   layers={layers}
-                  dispatchLayerAction={dispatchLayersAction}
+                  dispatchLayersAction={dispatchLayersAction}
+                  file={file}
+                  stitchSettings={stitchSettings}
+                  dispatchStitchSettings={dispatchStitchSettings}
+                  patternScale={patternScale}
+                  dispatchPatternScaleAction={dispatchPatternScaleAction}
                 />
-              </menu>
+              )}
             </menu>
             <IconButton
               className={`${visible(!menusHidden)} !p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}

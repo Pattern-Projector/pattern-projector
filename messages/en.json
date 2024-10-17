@@ -89,6 +89,10 @@
         "title": "Show or hide stitch menu",
         "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
       },
+      "scale": {
+        "title": "Show or hide the scale menu",
+        "description": "Change size of the pattern by entering a multiplier: between 0-1 will make the pattern smaller and greater than 1 will make the pattern larger."
+      },
       "measure": {
         "title": "Line tool (L)",
         "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking. For a detailed description of the line tool, see the <lineToolLink>line tool section</lineToolLink>."
@@ -274,11 +278,17 @@
     "zoomOut": "Zoom out (Z)",
     "mail": "Mail from Courtney"
   },
+  "ScaleMenu": {
+    "scale": "Scale Pattern",
+    "hide": "Hide scale menu",
+    "show": "Show scale menu"
+  },
   "StitchMenu": {
     "columnCount": "Columns",
     "pageRange": "Stitch Pages",
     "horizontal": "Horizontal",
-    "vertical": "Vertical"
+    "vertical": "Vertical",
+    "zeros": "Add 0s for blank pages, e.g. 1-3,0,0,4"
   },
   "SaveMenu": {
     "save": "Export PDF",
@@ -312,7 +322,8 @@
   },
   "OverlayCanvas": {
     "zoomedOut": "click PDF to zoom in",
-    "magnifying": "click PDF to stop magnifying"
+    "magnifying": "click PDF to stop magnifying",
+    "scaled": "<scale></scale>× scale"
   },
   "PdfViewer": {
     "error": "Failed to load PDF",

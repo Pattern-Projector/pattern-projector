@@ -1,6 +1,4 @@
-import { MetadataRoute } from "next";
-
-export default function manifest(): MetadataRoute.Manifest {
+export default function manifest() {
   return {
     name: "Pattern Projector",
     short_name: "PatternProjector",
@@ -24,5 +22,13 @@ export default function manifest(): MetadataRoute.Manifest {
     description:
       "Calibrates projectors for projecting sewing patterns with accurate scaling and without perspective distortion",
     theme_color: "#fff",
+    file_handlers: [
+      {
+        action: "/calibrate",
+        accept: {
+          "application/pdf": [".pdf"],
+        },
+      },
+    ],
   };
 }
