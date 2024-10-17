@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
 - Side menu for stitch, layers, and scale menus
 - Scale menu for changing the pattern scale
-- Open with Pattern Projector using the desktop file browser "Open With"
+- "Open With Pattern Projector" for PDF files on desktop, when installed with Chrome/Edge
+- Show a pop up when there's an error
 
 ### Changed
 
