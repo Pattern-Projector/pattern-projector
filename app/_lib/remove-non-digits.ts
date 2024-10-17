@@ -10,6 +10,9 @@ export default function removeNonDigits(
 ): string {
   const num = newString.replace(/[^.\d]/g, "");
   const decimalCount = (num.match(/\./g) || []).length;
+  if (num.localeCompare(".") === 0) {
+    return "0.";
+  }
   if (decimalCount > 1) {
     return oldString;
   } else {

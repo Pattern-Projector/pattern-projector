@@ -21,7 +21,7 @@ import { useTransformContext } from "@/_hooks/use-transform-context";
 import { Line } from "@/_lib/interfaces/line";
 
 import { KeyCode } from "@/_lib/key-code";
-import LineMenu from "./line-menu";
+import LineMenu from "@/_components/menus/line-menu";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { useKeyUp } from "@/_hooks/use-key-up";
 import { CM } from "@/_lib/unit";

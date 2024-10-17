@@ -58,7 +58,6 @@ import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
-import MagnifyIcon from "@/_icons/magnify-icon";
 import ZoomOutIcon from "@/_icons/zoom-out-icon";
 import FullSceenExitIcon from "@/_icons/full-screen-exit-icon";
 import FullScreenIcon from "@/_icons/full-screen-icon";
@@ -67,6 +66,7 @@ import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { ButtonStyle, getButtonStyleClasses } from "./theme/styles";
 import { ButtonColor, getColorClasses } from "./theme/colors";
 import MailIcon from "@/_icons/mail-icon";
+import ZoomInIcon from "@/_icons/zoom-in-icon";
 
 export default function Header({
   isCalibrating,
@@ -103,6 +103,7 @@ export default function Header({
   buttonColor,
   mailOpen,
   setMailOpen,
+  patternScale,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -138,6 +139,7 @@ export default function Header({
   buttonColor: ButtonColor;
   mailOpen: boolean;
   setMailOpen: Dispatch<SetStateAction<boolean>>;
+  patternScale: string;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const mailRead = useRef(true);
@@ -274,6 +276,10 @@ export default function Header({
       value: 5,
     },
   ];
+
+  useEffect(() => {
+    handleRecenter();
+  }, [patternScale]);
 
   useEffect(() => {
     mailRead.current = localStorage.getItem("mailRead") ? true : false;
@@ -530,7 +536,7 @@ export default function Header({
                 active={magnifying}
                 disabled={zoomedOut}
               >
-                <MagnifyIcon ariaLabel={t("magnify")} />
+                <ZoomInIcon ariaLabel={t("magnify")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("zoomOut")}>
