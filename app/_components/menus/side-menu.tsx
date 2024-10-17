@@ -54,7 +54,7 @@ export default function SideMenu({
       <menu className="w-16 flex flex-col-reverse justify-end gap-2 p-2 bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black left-0 border-b border-r dark:border-gray-700 transition-all duration-500">
         <Tooltip description={menuStates.scale ? sc("hide") : sc("show")}>
           <IconButton
-            border={menuStates.scale}
+            active={menuStates.scale}
             onClick={() =>
               setMenuStates(
                 toggleSideMenuStates(menuStates, SideMenuType.scale),
@@ -78,7 +78,7 @@ export default function SideMenu({
         >
           <IconButton
             className="pointer-events-auto"
-            border={menuStates.layers}
+            active={menuStates.layers}
             onClick={() =>
               setMenuStates(
                 toggleSideMenuStates(menuStates, SideMenuType.layers),
@@ -102,7 +102,7 @@ export default function SideMenu({
         >
           <IconButton
             className="pointer-events-auto"
-            border={menuStates.stitch}
+            active={menuStates.stitch}
             disabled={pageCount === 0}
             onClick={() =>
               setMenuStates(
