@@ -29,7 +29,7 @@ export default function ScaleMenu({
         onStep={(delta) =>
           dispatchPatternScaleAction({ type: "delta", delta: delta })
         }
-        step={0.01}
+        step={0.1}
       ></StepperInput>
     </menu>
   );
