@@ -19,7 +19,7 @@ export default function PatternScaleReducer(
       return action.scale;
     }
     case "delta": {
-      return String((action.delta + Number(patternScale)).toFixed(2));
+      return String((action.delta + Number(patternScale)).toFixed(1));
     }
   }
 }
