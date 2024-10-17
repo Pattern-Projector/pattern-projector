@@ -647,6 +647,7 @@ export default function Page() {
                   buttonColor={buttonColor}
                   mailOpen={mailOpen}
                   setMailOpen={setMailOpen}
+                  patternScale={patternScale}
                 />
                 {isCalibrating && menuStates.nav && <TroubleshootingButton />}
                 <MailModal open={mailOpen} setOpen={setMailOpen} />

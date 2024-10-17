@@ -103,6 +103,7 @@ export default function Header({
   buttonColor,
   mailOpen,
   setMailOpen,
+  patternScale,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -138,6 +139,7 @@ export default function Header({
   buttonColor: ButtonColor;
   mailOpen: boolean;
   setMailOpen: Dispatch<SetStateAction<boolean>>;
+  patternScale: string;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const mailRead = useRef(true);
@@ -274,6 +276,10 @@ export default function Header({
       value: 5,
     },
   ];
+
+  useEffect(() => {
+    handleRecenter();
+  }, [patternScale]);
 
   useEffect(() => {
     mailRead.current = localStorage.getItem("mailRead") ? true : false;
