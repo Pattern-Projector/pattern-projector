@@ -31,12 +31,7 @@ import { getPtDensity, IN } from "@/_lib/unit";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
 import MeasureCanvas from "@/_components/measure-canvas";
-import {
-  getDefaultMenuStates,
-  getMenuStatesFromLayers,
-  getMenuStatesFromPageCount,
-  MenuStates,
-} from "@/_lib/menu-states";
+import { getDefaultMenuStates, MenuStates } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import Filters from "@/_components/filters";
@@ -136,7 +131,7 @@ export default function Page() {
   );
   const [patternScale, dispatchPatternScaleAction] = useReducer(
     PatternScaleReducer,
-    1,
+    "1",
   );
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -208,6 +203,7 @@ export default function Page() {
       setMagnifying(false);
       setMeasuring(false);
       setPageCount(0);
+      dispatchPatternScaleAction({ type: "set", scale: "1" });
       const lineThicknessString = localStorage.getItem(
         `lineThickness:${files[0].name}`,
       );
@@ -254,6 +250,18 @@ export default function Page() {
 
   // EFFECTS
 
+  useEffect(() => {
+    if (pageCount === 1) {
+      if (Object.entries(layers).length > 1) {
+        setMenuStates({ ...getDefaultMenuStates(), layers: true });
+      } else {
+        setMenuStates(getDefaultMenuStates());
+      }
+    } else {
+      setMenuStates({ ...getDefaultMenuStates(), stitch: true });
+    }
+  }, [pageCount, layers]);
+
   const requestWakeLock = useCallback(async () => {
     if ("wakeLock" in navigator) {
       try {
@@ -264,6 +272,19 @@ export default function Page() {
 
   useEffect(() => {
     requestWakeLock();
+    if ("launchQueue" in window) {
+      window.launchQueue.setConsumer(
+        async (launchParams: { files: [FileSystemHandle] }) => {
+          for (const handle of launchParams.files) {
+            if (handle.kind == "file") {
+              const file = await (handle as FileSystemFileHandle).getFile();
+              setFile(file);
+              return;
+            }
+          }
+        },
+      );
+    }
   });
 
   useEffect(() => {
@@ -287,14 +308,6 @@ export default function Page() {
       setPerspective(inverse(m));
     }
   }, [points, width, height, unitOfMeasure]);
-
-  useEffect(() => {
-    setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
-  }, [pageCount]);
-
-  useEffect(() => {
-    setMenuStates((m) => getMenuStatesFromLayers(m, layers));
-  }, [layers, menuStates.stitch]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
@@ -550,6 +563,7 @@ export default function Page() {
                     +height,
                     unitOfMeasure,
                   )}
+                  patternScale={Number(patternScale)}
                 />
               </Draggable>
               <OverlayCanvas
@@ -563,6 +577,7 @@ export default function Page() {
                 zoomedOut={zoomedOut}
                 magnifying={magnifying}
                 restoreTransforms={restoreTransforms}
+                patternScale={patternScale}
               />
             </MeasureCanvas>
 

@@ -5,21 +5,21 @@ interface DeltaAction {
 
 interface SetAction {
   type: "set";
-  scale: number;
+  scale: string;
 }
 
 export type PatternScaleAction = DeltaAction | SetAction;
 
 export default function PatternScaleReducer(
-  patternScale: number,
+  patternScale: string,
   action: PatternScaleAction,
-): number {
+): string {
   switch (action.type) {
     case "set": {
       return action.scale;
     }
     case "delta": {
-      return action.delta + patternScale;
+      return String((action.delta + Number(patternScale)).toFixed(2));
     }
   }
 }

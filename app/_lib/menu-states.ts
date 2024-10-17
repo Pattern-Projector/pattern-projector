@@ -18,15 +18,8 @@ export function toggleSideMenuStates(
   menu: SideMenuType,
 ) {
   const visible = !menuStates[menu];
-  let newMenuStates = { ...menuStates, [menu]: visible };
-  if (visible) {
-    for (const m in SideMenuType) {
-      if (m !== menu) {
-        newMenuStates = { ...newMenuStates, [m]: false };
-      }
-    }
-  }
-
+  const newMenuStates = getDefaultMenuStates();
+  newMenuStates[menu] = visible;
   return newMenuStates;
 }
 
@@ -64,4 +57,13 @@ export function getMenuStatesFromLayers(
       layers: Object.keys(layers).length > 0,
     };
   }
+}
+
+export function sideMenuOpen(menuStates: MenuStates) {
+  for (const m in SideMenuType) {
+    if (menuStates[m as SideMenuType]) {
+      return true;
+    }
+  }
+  return false;
 }

@@ -4,14 +4,14 @@ import dynamic from "next/dynamic";
 import { useMessages, useTranslations } from "next-intl";
 
 import FullScreenIcon from "@/_icons/full-screen-icon";
-import FlipHorizontalIcon from "../_icons/flip-horizontal-icon";
-import FlipVerticalIcon from "../_icons/flip-vertical-icon";
-import GithubIcon from "../_icons/github-icon";
-import GridOnIcon from "../_icons/grid-on-icon";
-import InvertColorIcon from "../_icons/invert-color-icon";
-import PatternProjectorIcon from "../_icons/pattern-projector-icon";
-import PdfIcon from "../_icons/pdf-icon";
-import Rotate90DegreesCWIcon from "../_icons/rotate-90-degrees-cw-icon";
+import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
+import FlipVerticalIcon from "@/_icons/flip-vertical-icon";
+import GithubIcon from "@/_icons/github-icon";
+import GridOnIcon from "@/_icons/grid-on-icon";
+import InvertColorIcon from "@/_icons/invert-color-icon";
+import PatternProjectorIcon from "@/_icons/pattern-projector-icon";
+import PdfIcon from "@/_icons/pdf-icon";
+import Rotate90DegreesCWIcon from "@/_icons/rotate-90-degrees-cw-icon";
 import RecenterIcon from "@/_icons/recenter-icon";
 import LanguageSwitcher from "@/_components/language-switcher";
 import { IconButton } from "@/_components/buttons/icon-button";
@@ -31,10 +31,10 @@ import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
 import FlipCenterOnIcon from "@/_icons/flip-center-on-icon";
 import OverlayPaperIcon from "@/_icons/overlay-paper-icon";
 import { ReactNode } from "react";
-import MagnifyIcon from "@/_icons/magnify-icon";
 import ZoomOutIcon from "@/_icons/zoom-out-icon";
 import { Button } from "@/_components/buttons/button";
 import { ButtonStyle } from "@/_components/theme/styles";
+import ZoomInIcon from "@/_icons/zoom-in-icon";
 
 const DynamicInstallButton = dynamic(
   () => import("@/_components/buttons/install-button"),
@@ -250,7 +250,7 @@ export default function Home() {
             {t("project.recenter.description")}
           </Definition>
           <Definition
-            icon={<MagnifyIcon ariaLabel="" />}
+            icon={<ZoomInIcon ariaLabel="" />}
             title={t("project.magnify.title")}
           >
             {t("project.magnify.description")}

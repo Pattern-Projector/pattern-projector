@@ -3,13 +3,12 @@ import {
   SideMenuType,
   toggleSideMenuStates,
 } from "@/_lib/menu-states";
-import Tooltip from "../tooltip/tooltip";
-import { IconButton } from "../buttons/icon-button";
+import Tooltip from "@/_components/tooltip/tooltip";
+import { IconButton } from "@/_components/buttons/icon-button";
 import { useTranslations } from "next-intl";
-import MagnifyIcon from "@/_icons/magnify-icon";
-import StitchMenu from "./stitch-menu";
-import ScaleMenu from "./scale-menu";
-import LayerMenu from "./layer-menu";
+import StitchMenu from "@/_components/menus/stitch-menu";
+import ScaleMenu from "@/_components/menus/scale-menu";
+import LayerMenu from "@/_components/menus/layer-menu";
 import { Dispatch, SetStateAction } from "react";
 import LayersIcon from "@/_icons/layers-icon";
 import FlexWrapIcon from "@/_icons/flex-wrap-icon";
@@ -18,6 +17,7 @@ import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { LayerAction } from "@/_reducers/layersReducer";
 import { PatternScaleAction } from "@/_reducers/patternScaleReducer";
+import TuneIcon from "@/_icons/tune-icon";
 
 export default function SideMenu({
   menuStates,
@@ -39,7 +39,7 @@ export default function SideMenu({
   file: File | null;
   dispatchStitchSettings: Dispatch<StitchSettingsAction>;
   stitchSettings: StitchSettings;
-  patternScale: number;
+  patternScale: string;
   dispatchPatternScaleAction: Dispatch<PatternScaleAction>;
 }) {
   const sc = useTranslations("ScaleMenu");
@@ -51,7 +51,7 @@ export default function SideMenu({
   return (
     <menu className="pointer-events-auto flex w-fit">
       {/* reverse so the tooltips show on top */}
-      <menu className="flex flex-col-reverse justify-end gap-2 p-2 bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black left-0 border-b border-r dark:border-gray-700 transition-all duration-500">
+      <menu className="w-16 flex flex-col-reverse justify-end gap-2 p-2 bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black left-0 border-b border-r dark:border-gray-700 transition-all duration-500">
         <Tooltip description={menuStates.scale ? sc("hide") : sc("show")}>
           <IconButton
             border={menuStates.scale}
@@ -61,13 +61,13 @@ export default function SideMenu({
               )
             }
           >
-            <MagnifyIcon
-              ariaLabel={menuStates.scale ? sc("hide") : sc("show")}
-            />
+            <TuneIcon ariaLabel={menuStates.scale ? sc("hide") : sc("show")} />
           </IconButton>
         </Tooltip>
 
         <Tooltip
+          // to make button underneath clickable
+          className="pointer-events-none"
           description={
             numberOfLayers > 0
               ? menuStates.layers
@@ -77,6 +77,7 @@ export default function SideMenu({
           }
         >
           <IconButton
+            className="pointer-events-auto"
             border={menuStates.layers}
             onClick={() =>
               setMenuStates(
@@ -90,6 +91,7 @@ export default function SideMenu({
         </Tooltip>
 
         <Tooltip
+          className="pointer-events-none"
           description={
             menuStates.stitch
               ? h("stitchMenuHide")
@@ -99,6 +101,7 @@ export default function SideMenu({
           }
         >
           <IconButton
+            className="pointer-events-auto"
             border={menuStates.stitch}
             disabled={pageCount === 0}
             onClick={() =>

@@ -24,7 +24,7 @@ export default function LayerMenu({
 
   return (
     <div
-      className={`${className ?? ""} ${sideMenuStyles} ${hasLayers && numberOfLayers * 40 < 200 ? "h-fit" : "h-[calc(100vh-12rem)]"} text-sm font-medium border-top-0`}
+      className={`${className ?? ""} ${sideMenuStyles} ${hasLayers && numberOfLayers * 40 < 200 ? "h-fit" : "h-[calc(100vh-8rem)]"} text-sm font-medium border-top-0`}
     >
       <menu
         key="global"
@@ -44,7 +44,7 @@ export default function LayerMenu({
       </menu>
 
       <menu
-        className={`w-full ${hasLayers && numberOfLayers * 40 > 200 ? "h-[calc(100vh-15rem)] overflow-y-auto scrollbar" : ""}`}
+        className={`w-full ${hasLayers && numberOfLayers * 40 > 200 ? "h-[calc(100vh-12rem)] overflow-y-auto scrollbar" : ""}`}
       >
         {Object.entries(layers).map(([key, layer]) => (
           <li key={key} className="w-full  rounded-t-lg">

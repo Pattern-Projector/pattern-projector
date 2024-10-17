@@ -37,9 +37,15 @@ export default function StitchMenu({
     dispatchStitchSettings({ type: "set-edge-insets", edgeInsets });
   }
 
+  const vh = Math.max(
+    document.documentElement.clientHeight || 0,
+    window.innerHeight || 0,
+  );
   return (
     <>
-      <menu className={`${sideMenuStyles}`}>
+      <menu
+        className={`${sideMenuStyles} ${vh < 478 ? "h-[calc(100vh-8rem)] overflow-y-auto scrollbar" : "h-fit"}`}
+      >
         <Tooltip description={t("zeros")}>
           <Input
             inputClassName="w-36"
