@@ -322,7 +322,7 @@
   "OverlayCanvas": {
     "zoomedOut": "click PDF to zoom in",
     "magnifying": "click PDF to stop magnifying",
-    "scaled": "scale <scale></scale>×"
+    "scaled": "<scale></scale>× scale"
   },
   "PdfViewer": {
     "error": "Failed to load PDF",
