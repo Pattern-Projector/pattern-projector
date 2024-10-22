@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Side menu for stitch, layers, and scale menus
 - Scale menu for changing the pattern scale
 - "Open With Pattern Projector" for PDF files on desktop, when installed with Chrome/Edge
@@ -18,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hide all layers button only switches to show all when all layers are hidden
 - Line menu tools are horizontal and below the header
 - Stitch menu is opened when the file has multiple pages, or the layer menu is opened if only one page & layers
+
+### Fixed
+
+- Do not allow 0 for width and height input to stop app from crashing when entered
 
 ## [1.1.1] - 2024-10-03
 

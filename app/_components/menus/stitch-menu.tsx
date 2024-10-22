@@ -4,7 +4,7 @@ import Input from "@/_components/input";
 import StepperInput from "@/_components/stepper-input";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
-import { allowInteger } from "@/_lib/remove-non-digits";
+import { allowInteger } from "@/_lib/parsing";
 import SaveButton from "@/_components/save-button";
 import { Layers } from "@/_lib/layers";
 import { sideMenuStyles } from "@/_components/theme/styles";

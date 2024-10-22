@@ -1,23 +1,29 @@
 /**
- * Globally removes non digits from a string while allowing decimal numbers
+ * Allows floating point numbers to be input
  * @param newString - string to remove non digits from
  * @param oldString - previous string
- * @returns - a new string with only digits or decimals in the order they appear in s
+ * @param allowNegative - boolean to permit negative numbers or not
+ * @returns - a new floating point number string
  */
-export default function removeNonDigits(
+export default function allowFloat(
   newString: string,
   oldString: string,
+  allowNegative: boolean = false,
 ): string {
-  const num = newString.replace(/[^.\d]/g, "");
+  let num = newString.replace(/[^.\d]/g, "");
   const decimalCount = (num.match(/\./g) || []).length;
   if (num.localeCompare(".") === 0) {
     return "0.";
   }
   if (decimalCount > 1) {
     return oldString;
-  } else {
-    return num;
   }
+
+  if (allowNegative && newString.charAt(0) === "-") {
+    return `-${num}`;
+  }
+
+  return num;
 }
 
 export function allowInteger(
