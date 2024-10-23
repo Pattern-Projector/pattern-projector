@@ -20,6 +20,7 @@ import {
   getPerspectiveTransformFromPoints,
 } from "@/_lib/geometry";
 import isValidPDF from "@/_lib/is-valid-pdf";
+import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   DisplaySettings,
   getDefaultDisplaySettings,
@@ -66,7 +67,6 @@ import ModalContent from "@/_components/modal/modal-content";
 import { ModalText } from "@/_components/modal/modal-text";
 import { ModalActions } from "@/_components/modal/modal-actions";
 import { Button } from "@/_components/buttons/button";
-import allowFloat from "@/_lib/parsing";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -126,7 +126,7 @@ export default function Page() {
   );
   const [mailOpen, setMailOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
-
+  
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [stitchSettings, dispatchStitchSettings] = useReducer(
     stitchSettingsReducer,
@@ -190,19 +190,15 @@ export default function Page() {
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
-    const h = allowFloat(e.target.value, height);
-    if (Number(h) !== 0) {
-      setHeight(h);
-      updateLocalSettings({ height: h });
-    }
+    const h = removeNonDigits(e.target.value, height);
+    setHeight(h);
+    updateLocalSettings({ height: h });
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
-    const w = allowFloat(e.target.value, width);
-    if (Number(w) !== 0) {
-      setWidth(w);
-      updateLocalSettings({ width: w });
-    }
+    const w = removeNonDigits(e.target.value, width);
+    setWidth(w);
+    updateLocalSettings({ width: w });
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -311,12 +307,8 @@ export default function Page() {
     if (points.length === maxPoints) {
       const m = getPerspectiveTransformFromPoints(
         points,
-        Number(width) === 0
-          ? Number(defaultWidthDimensionValue)
-          : Number(width),
-        Number(height) === 0
-          ? Number(defaultHeightDimensionValue)
-          : Number(height),
+        Number(width),
+        Number(height),
         getPtDensity(unitOfMeasure),
         false,
       );
@@ -336,15 +328,11 @@ export default function Page() {
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
       const localSettings = JSON.parse(localSettingString);
-      if (localSettings.height && localSettings.height !== 0) {
+      if (localSettings.height) {
         setHeight(localSettings.height);
-      } else {
-        setHeight(defaultHeightDimensionValue);
       }
-      if (localSettings.width && localSettings.width !== 0) {
+      if (localSettings.width) {
         setWidth(localSettings.width);
-      } else {
-        setWidth(defaultWidthDimensionValue);
       }
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);

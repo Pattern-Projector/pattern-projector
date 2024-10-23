@@ -1,9 +1,9 @@
 import StepperInput from "@/_components/stepper-input";
 import { Dispatch } from "react";
+import removeNonDigits from "@/_lib/remove-non-digits";
 import { useTranslations } from "next-intl";
 import { PatternScaleAction } from "@/_reducers/patternScaleReducer";
 import { sideMenuStyles } from "../theme/styles";
-import allowFloat from "@/_lib/parsing";
 
 export default function ScaleMenu({
   patternScale,
@@ -21,7 +21,7 @@ export default function ScaleMenu({
         handleChange={(e) =>
           dispatchPatternScaleAction({
             type: "set",
-            scale: allowFloat(e.target.value, patternScale),
+            scale: removeNonDigits(e.target.value, patternScale),
           })
         }
         label={t("scale")}
