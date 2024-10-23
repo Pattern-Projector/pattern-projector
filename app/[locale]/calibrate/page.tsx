@@ -126,7 +126,7 @@ export default function Page() {
   );
   const [mailOpen, setMailOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
-  
+
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [stitchSettings, dispatchStitchSettings] = useReducer(
     stitchSettingsReducer,
@@ -596,7 +596,9 @@ export default function Page() {
                     +height,
                     unitOfMeasure,
                   )}
-                  patternScale={Number(patternScale)}
+                  patternScale={
+                    Number(patternScale) === 0 ? 1 : Number(patternScale)
+                  }
                 />
               </Draggable>
               <OverlayCanvas
@@ -610,7 +612,7 @@ export default function Page() {
                 zoomedOut={zoomedOut}
                 magnifying={magnifying}
                 restoreTransforms={restoreTransforms}
-                patternScale={patternScale}
+                patternScale={Number(patternScale) === 0 ? "1" : patternScale}
               />
             </MeasureCanvas>
 

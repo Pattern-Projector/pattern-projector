@@ -1,9 +1,3 @@
-/**
- * Globally removes non digits from a string while allowing decimal numbers
- * @param newString - string to remove non digits from
- * @param oldString - previous string
- * @returns - a new string with only digits or decimals in the order they appear in s
- */
 export default function removeNonDigits(
   newString: string,
   oldString: string,

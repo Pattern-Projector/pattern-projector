@@ -19,7 +19,9 @@ export default function PatternScaleReducer(
       return action.scale;
     }
     case "delta": {
-      return String((action.delta + Number(patternScale)).toFixed(1));
+      const n = action.delta + Number(patternScale);
+      const hm = n > 0 ? String(n.toFixed(1)) : patternScale;
+      return hm;
     }
   }
 }
