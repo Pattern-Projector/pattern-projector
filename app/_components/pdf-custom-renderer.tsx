@@ -12,7 +12,7 @@ import { erodeImageData, erosionFilter } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 
 export default function CustomRenderer() {
-  const { erosions, layers, magnifying, onPageRenderSuccess } =
+  const { erosions, layers, magnifying, onPageRenderSuccess, patternScale } =
     useRenderContext();
   const pageContext = usePageContext();
 
@@ -46,9 +46,14 @@ export default function CustomRenderer() {
   const renderViewport = useMemo(
     () =>
       page.getViewport({
-        scale: getScale(viewport.width, viewport.height, userUnit),
+        scale: getScale(
+          viewport.width,
+          viewport.height,
+          userUnit,
+          patternScale,
+        ),
       }),
-    [page, viewport, userUnit],
+    [page, viewport, userUnit, patternScale],
   );
 
   const renderWidth = Math.floor(renderViewport.width);
@@ -155,17 +160,27 @@ export default function CustomRenderer() {
       width={renderWidth}
       height={renderHeight}
       style={{
-        width: Math.floor(viewport.width * PDF_TO_CSS_UNITS * userUnit) + "px",
+        width:
+          Math.floor(
+            viewport.width * PDF_TO_CSS_UNITS * userUnit * patternScale,
+          ) + "px",
         height:
-          Math.floor(viewport.height * PDF_TO_CSS_UNITS * userUnit) + "px",
+          Math.floor(
+            viewport.height * PDF_TO_CSS_UNITS * userUnit * patternScale,
+          ) + "px",
       }}
     />
   );
 }
 
-function getScale(w: number, h: number, userUnit: number): number {
+function getScale(
+  w: number,
+  h: number,
+  userUnit: number,
+  patternScale: number,
+): number {
   const dpr = window.devicePixelRatio;
-  const dpi = dpr * userUnit * PDF_TO_CSS_UNITS;
+  const dpi = dpr * userUnit * PDF_TO_CSS_UNITS * patternScale;
   const renderArea = dpi * w * dpi * h;
   const maxArea = 16_777_216; // limit for iOS or Android device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
   let scale = dpi;

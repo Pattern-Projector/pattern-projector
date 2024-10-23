@@ -7,6 +7,7 @@ export interface RenderContextType {
   layers: Layers;
   magnifying: boolean;
   onPageRenderSuccess: () => void;
+  patternScale: number;
 }
 
 export const RenderContext = createContext<RenderContextType>({
@@ -14,6 +15,7 @@ export const RenderContext = createContext<RenderContextType>({
   layers: {},
   magnifying: false,
   onPageRenderSuccess: () => {},
+  patternScale: 1,
 });
 
 export default function useRenderContext() {

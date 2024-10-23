@@ -92,6 +92,10 @@
             "magnify": {
                 "title": "Přiblížit (M)",
                 "description": "Pro přiblížení klikněte na PDF. Klikněte znovu pro zrušení přiblížení."
+            },
+            "scale": {
+                "title": "Zobrazit nebo skrýt menu měřítko",
+                "description": "Změňte velikost střihu zadáním násobitele: mezi 0-1 střih zmenší a větší než 1 střih zvětší."
             }
         },
         "tools": "Nástroje",
@@ -241,13 +245,15 @@
         "stitchMenuShow": "Zobrazit spojovací menu",
         "showMovement": "Zobrazit nástroj posun",
         "stitchMenuHide": "Schovat spojovací menu",
-        "measure": "Nástroj čára (L)"
+        "measure": "Nástroj čára (L)",
+        "mail": "Zpráva od Courtney"
     },
     "StitchMenu": {
         "columnCount": "Sloupce",
         "pageRange": "Spojit strany",
         "horizontal": "Horizontální",
-        "vertical": "Vertikální"
+        "vertical": "Vertikální",
+        "zeros": "Přidat 0 pro prázdné stránky, např. 1-3,0,0,4"
     },
     "LayerMenu": {
         "layersOn": "Zobrazit menu vrstvy",
@@ -281,10 +287,50 @@
     },
     "OverlayCanvas": {
         "zoomedOut": "Klidněte na PDF pro přiblížení",
-        "magnifying": "Klidněte na PDF pro zrušení přiblížení"
+        "magnifying": "Klidněte na PDF pro zrušení přiblížení",
+        "scaled": "<scale></scale>× měřítko"
     },
     "PdfViewer": {
         "error": "Načítání PDF selhalo",
         "noData": "Pro načtení PDF stiskněte tlačítko \"Otevřít PDF\""
+    },
+    "Troubleshooting": {
+        "notMatching": "Čáry neodpovídají čarám na vaší podložce?",
+        "title": "Odstranění problémů kalibrace",
+        "dragCorners": {
+            "title": "Jak kalibrovat",
+            "description": "Přetáhněte rohy mřížky na obdélní na vaší podložce velký alespoň 24x16 inchů (cca . 61 na 41 cm). Mřížka bz měla být co největší možná, ale nemusí pokrývat celou podložku.",
+            "caption": "Správně zkalibrovaná mřížka."
+        },
+        "offByOne": {
+            "title": "Čáry jsou rovné, ale nepřekrývají se s těmi na podložce?",
+            "caption": "Byly zadány chybné rozměry 23x17, místo 24x18. Na podložce jsou zobrazena čísla do 23 a 17, takže je snadné zmílit se v rozměrech. Použijte metr na přeměření!",
+            "description": "Pokud jsou promítané čáry rovné, ale neshodují se s těmi na vaší podložce, může se vaše šířka nebo výška lišit o 1 cm/inch. Znovu překontrolujte vaše rozměry pomocí metru. Rozměry podložky mohou být matoucí nebo chybné, takže je důležité je přeměřit metrem."
+        },
+        "inputMeasurement": "Použijte metr na změření šířky a výšky mřížky na vaší podložce. Tyto hodnoty zadejte do polí šířka a výška.",
+        "unevenSurface": {
+            "description": "Pokud jsou promítnuté čáry zakřivené, nemusí být vaše podložka nebo podklad rovné. Zkuste srovnat vaši podložku pomocí kartonu pod prohnutými částmi nebo zvolte jiný povrch pro řezání/ stříhání.",
+            "title": "Zakřivené čáry?",
+            "caption": "Tato podložka má pod sebou pravítko, což způsobuje zakřivení čar. Malé zakřivení je v pořádku, ale velké zakřivení způsobuje problémy."
+        },
+        "dimensionsSwapped": {
+            "title": "Obdélníky místo čtverců?",
+            "caption": "Šířka a výška jsou ve špatných polích. Rozměry by měly být Š:24 a V:18.",
+            "description": "Pokud promítaná mřížka vypadá jako obdélníky místo čtverců, možná jste prohodili výšku a šířku. Prohoď te zadané hodnoty."
+        },
+        "close": "Zavřít"
+    },
+    "ScaleMenu": {
+        "hide": "Skrýt menu měřítko",
+        "scale": "Měřítko střihu",
+        "show": "Zobrazit menu měřítko"
+    },
+    "General": {
+        "close": "Zavřít",
+        "error": "Chyba"
+    },
+    "Mail": {
+        "title": "Máte zprávu",
+        "donate": "Přispět"
     }
 }

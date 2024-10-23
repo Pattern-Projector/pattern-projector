@@ -1,8 +1,8 @@
 import { useTranslations } from "next-intl";
-import { IconButton } from "./buttons/icon-button";
+import { IconButton } from "@/_components/buttons/icon-button";
 import RotateToHorizontalIcon from "@/_icons/rotate-to-horizontal";
-import { visible } from "./theme/css-functions";
-import Tooltip from "./tooltip/tooltip";
+import { visible } from "@/_components/theme/css-functions";
+import Tooltip from "@/_components/tooltip/tooltip";
 import KeyboardArrowRightIcon from "@/_icons/keyboard-arrow-right";
 import DeleteIcon from "@/_icons/delete-icon";
 import {
@@ -17,7 +17,7 @@ import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import KeyboardArrowLeftIcon from "@/_icons/keyboard-arrow-left";
 import ShiftIcon from "@/_icons/shift-icon";
 import { subtract } from "@/_lib/point";
-import { MenuStates } from "@/_lib/menu-states";
+import { MenuStates, sideMenuOpen } from "@/_lib/menu-states";
 
 export default function LineMenu({
   selectedLine,
@@ -61,7 +61,7 @@ export default function LineMenu({
     onClick: () => void;
   }) {
     return (
-      <Tooltip description={description} top={true}>
+      <Tooltip description={description}>
         <IconButton
           border={true}
           onClick={() => {
@@ -79,10 +79,11 @@ export default function LineMenu({
     gridCenter,
     { x: gridCenter.x + 1, y: gridCenter.y },
   ];
+
   return (
     // center menu items horizontally
     <menu
-      className={`absolute flex-col justify-center items-center ${menuStates.layers ? "left-48 top-36" : "left-0 top-44"} flex gap-2 p-2 ${visible(selectedLine >= 0 && !menusHidden)}`}
+      className={`absolute justify-center items-center ${sideMenuOpen(menuStates) ? "left-64" : "left-16"} top-16 flex gap-2 p-2 ${visible(selectedLine >= 0 && !menusHidden)}`}
     >
       <div className="flex flex-col items-center">
         <span>{lines.length}</span>
