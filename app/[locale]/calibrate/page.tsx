@@ -185,14 +185,18 @@ export default function Page() {
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
-    setHeight(h);
-    updateLocalSettings({ height: h });
+    if (Number(h) > 0) {
+      setHeight(h);
+      updateLocalSettings({ height: h });
+    }
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
-    setWidth(w);
-    updateLocalSettings({ width: w });
+    if (Number(w) > 0) {
+      setWidth(w);
+      updateLocalSettings({ width: w });
+    }
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -304,10 +308,10 @@ export default function Page() {
     const localSettingString = localStorage.getItem("canvasSettings");
     if (localSettingString !== null) {
       const localSettings = JSON.parse(localSettingString);
-      if (localSettings.height) {
+      if (localSettings.height && Number(localSettings.height) > 0) {
         setHeight(localSettings.height);
       }
-      if (localSettings.width) {
+      if (localSettings.width && Number(localSettings.width) > 0) {
         setWidth(localSettings.width);
       }
       if (localSettings.unitOfMeasure) {
