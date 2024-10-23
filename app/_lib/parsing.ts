@@ -10,7 +10,7 @@ export default function allowFloat(
   oldString: string,
   allowNegative: boolean = false,
 ): string {
-  const num = newString.replace(/[^.\d]/g, "");
+  let num = newString.replace(/[^.\d]/g, "");
   const decimalCount = (num.match(/\./g) || []).length;
   if (num.localeCompare(".") === 0) {
     return "0.";
