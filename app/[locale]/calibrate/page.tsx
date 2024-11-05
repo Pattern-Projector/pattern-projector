@@ -684,7 +684,11 @@ export default function Page() {
                   setMailOpen={setMailOpen}
                   patternScale={patternScale}
                 />
-                {isCalibrating && menuStates.nav && <TroubleshootingButton />}
+                {isCalibrating && menuStates.nav && (
+                  <TroubleshootingButton
+                    isDarkTheme={isDarkTheme(displaySettings.theme)}
+                  />
+                )}
                 <MailModal open={mailOpen} setOpen={setMailOpen} />
               </menu>
 

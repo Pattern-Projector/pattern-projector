@@ -562,7 +562,7 @@ export default function Header({
             <label
               className={`${visible(
                 !isCalibrating,
-              )} flex gap-2 items-center ${fileInputClassNames} ${getButtonStyleClasses(ButtonStyle.OUTLINE)} ${getColorClasses(buttonColor, ButtonStyle.OUTLINE)} !py-1.5 !px-3`}
+              )} flex gap-2 items-center ${isDarkTheme(displaySettings.theme) ? "bg-black" : "bg-white"} ${fileInputClassNames} ${getButtonStyleClasses(ButtonStyle.OUTLINE)} ${getColorClasses(buttonColor, ButtonStyle.OUTLINE)} !py-1.5 !px-3`}
             >
               <FileInput
                 disabled={
