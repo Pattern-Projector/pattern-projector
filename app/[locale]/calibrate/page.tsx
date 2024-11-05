@@ -720,7 +720,7 @@ export default function Page() {
                 className="absolute left-1/2 top-1/2"
               />
             ) : null}
-            <p className="absolute z-[150] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-black">
+            <p className="absolute z-[150] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-black text-white">
               {calibrationInformation}
             </p>
           </Transformable>
