@@ -141,6 +141,7 @@ export default function Page() {
     PatternScaleReducer,
     "1",
   );
+  const [calibrationInformation, setCalibrationInformation] = useState("");
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -411,6 +412,9 @@ export default function Page() {
   }
 
   function handlePointerMove(e: React.PointerEvent) {
+    setCalibrationInformation(
+      `calibration grid corners: (1x: ${points[0].x} 1y: ${points[0].y}) (2x: ${points[1].x} 2y: ${points[1].y}) (3x: ${points[2].x} 3y: ${points[2].y}) (4x: ${points[3].x} 4y: ${points[3].y}) window.innerWidth: ${window.innerWidth} window.innerHeight: ${window.innerHeight} window.screenTop: ${window.screenTop} window.screenLeft: ${window.screenLeft} window.devicePixelRatio: ${window.devicePixelRatio} fullScreen.active: ${fullScreenHandle.active} clientScreenTop: ${e.screenY - e.clientY} clientScreenLeft: ${e.screenX - e.clientX}`,
+    );
     // Chromebook triggers move after menu hides #268
     if (e.movementX === 0 && e.movementY === 0) {
       return;
@@ -716,6 +720,9 @@ export default function Page() {
                 className="absolute left-1/2 top-1/2"
               />
             ) : null}
+            <p className="absolute z-[150] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-black">
+              {calibrationInformation}
+            </p>
           </Transformable>
         </FullScreen>
       </div>
