@@ -1,0 +1,26 @@
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build ladle
+        run: yarn build
+
+      - name: Serve ladle
+        run: yarn serve &
+
+      - name: Lost Pixel
+        uses: lost-pixel/lost-pixel@v3.4.0
