@@ -16,14 +16,11 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Build ladle
+      - name: Build NextJS
         run: yarn build
 
-      - name: Serve ladle
-        run: yarn serve &
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      - name: Serve NextJS
+        run: yarn start &
 
       - name: Lost Pixel
         uses: lost-pixel/lost-pixel@v3.4.0
