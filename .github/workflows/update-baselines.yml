@@ -16,11 +16,11 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Build ladle
+      - name: Build NextJS
         run: yarn build
 
-      - name: Serve ladle
-        run: yarn serve &
+      - name: Serve NextJS
+        run: yarn start &
 
       - name: Lost Pixel
         id: lp
