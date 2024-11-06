@@ -22,5 +22,8 @@ jobs:
       - name: Serve ladle
         run: yarn serve &
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Lost Pixel
         uses: lost-pixel/lost-pixel@v3.4.0
