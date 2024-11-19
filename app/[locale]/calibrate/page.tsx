@@ -185,18 +185,14 @@ export default function Page() {
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, height);
-    if (Number(h) > 0) {
-      setHeight(h);
-      updateLocalSettings({ height: h });
-    }
+    setHeight(h);
+    updateLocalSettings({ height: h });
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, width);
-    if (Number(w) > 0) {
-      setWidth(w);
-      updateLocalSettings({ width: w });
-    }
+    setWidth(w);
+    updateLocalSettings({ width: w });
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -235,8 +231,8 @@ export default function Page() {
       }
       const m = getPerspectiveTransformFromPoints(
         points,
-        Number(width),
-        Number(height),
+        Number(width) > 0 ? Number(width) : 1,
+        Number(height) > 0 ? Number(height) : 1,
         getPtDensity(unitOfMeasure),
         false,
       );
@@ -283,8 +279,8 @@ export default function Page() {
     if (points.length === maxPoints) {
       const m = getPerspectiveTransformFromPoints(
         points,
-        Number(width),
-        Number(height),
+        Number(width) > 0 ? Number(width) : 1,
+        Number(height) > 0 ? Number(height) : 1,
         getPtDensity(unitOfMeasure),
         false,
       );
