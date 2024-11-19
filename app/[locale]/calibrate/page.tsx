@@ -687,6 +687,7 @@ export default function Page() {
                   mailOpen={mailOpen}
                   setMailOpen={setMailOpen}
                   patternScale={patternScale}
+                  setPoints={() => dispatch({ type: "set", points })}
                 />
                 {isCalibrating && menuStates.nav && <TroubleshootingButton />}
                 <MailModal open={mailOpen} setOpen={setMailOpen} />
