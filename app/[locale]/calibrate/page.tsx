@@ -92,8 +92,10 @@ export default function Page() {
   );
   const [calibrationValidated, setCalibrationValidated] =
     useState<boolean>(false);
-  const [width, setWidth] = useState(defaultWidthDimensionValue);
-  const [height, setHeight] = useState(defaultHeightDimensionValue);
+  const [widthInput, setWidthInput] = useState(defaultWidthDimensionValue);
+  const [heightInput, setHeightInput] = useState(defaultHeightDimensionValue);
+  const width = Number(widthInput) > 0 ? Number(widthInput) : 1;
+  const height = Number(heightInput) > 0 ? Number(heightInput) : 1;
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
@@ -184,14 +186,14 @@ export default function Page() {
   // HANDLERS
 
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
-    const h = removeNonDigits(e.target.value, height);
-    setHeight(h);
+    const h = removeNonDigits(e.target.value, heightInput);
+    setHeightInput(h);
     updateLocalSettings({ height: h });
   }
 
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
-    const w = removeNonDigits(e.target.value, width);
-    setWidth(w);
+    const w = removeNonDigits(e.target.value, widthInput);
+    setWidthInput(w);
     updateLocalSettings({ width: w });
   }
 
@@ -231,8 +233,8 @@ export default function Page() {
       }
       const m = getPerspectiveTransformFromPoints(
         points,
-        Number(width) > 0 ? Number(width) : 1,
-        Number(height) > 0 ? Number(height) : 1,
+        width,
+        height,
         getPtDensity(unitOfMeasure),
         false,
       );
@@ -279,8 +281,8 @@ export default function Page() {
     if (points.length === maxPoints) {
       const m = getPerspectiveTransformFromPoints(
         points,
-        Number(width) > 0 ? Number(width) : 1,
-        Number(height) > 0 ? Number(height) : 1,
+        width,
+        height,
         getPtDensity(unitOfMeasure),
         false,
       );
@@ -305,10 +307,10 @@ export default function Page() {
     if (localSettingString !== null) {
       const localSettings = JSON.parse(localSettingString);
       if (localSettings.height && Number(localSettings.height) > 0) {
-        setHeight(localSettings.height);
+        setHeightInput(localSettings.height);
       }
       if (localSettings.width && Number(localSettings.width) > 0) {
-        setWidth(localSettings.width);
+        setWidthInput(localSettings.width);
       }
       if (localSettings.unitOfMeasure) {
         setUnitOfMeasure(localSettings.unitOfMeasure);
@@ -467,8 +469,8 @@ export default function Page() {
               className={`absolute ${visible(isCalibrating)}`}
               points={points}
               dispatch={dispatch}
-              width={+width}
-              height={+height}
+              width={width}
+              height={height}
               isCalibrating={isCalibrating}
               unitOfMeasure={unitOfMeasure}
               displaySettings={displaySettings}
@@ -496,8 +498,8 @@ export default function Page() {
               setMeasuring={setMeasuring}
               file={file}
               gridCenter={getCalibrationCenterPoint(
-                +width,
-                +height,
+                width,
+                height,
                 unitOfMeasure,
               )}
               zoomedOut={zoomedOut}
@@ -521,8 +523,8 @@ export default function Page() {
                 layoutWidth={layoutWidth}
                 layoutHeight={layoutHeight}
                 calibrationCenter={getCalibrationCenterPoint(
-                  +width,
-                  +height,
+                  width,
+                  height,
                   unitOfMeasure,
                 )}
                 menuStates={menuStates}
@@ -544,8 +546,8 @@ export default function Page() {
                   setPdfLoadStatus={setPdfLoadStatus}
                   magnifying={magnifying}
                   gridCenter={getCalibrationCenterPoint(
-                    +width,
-                    +height,
+                    width,
+                    height,
                     unitOfMeasure,
                   )}
                 />
@@ -553,8 +555,8 @@ export default function Page() {
               <OverlayCanvas
                 className={`absolute top-0 pointer-events-none`}
                 points={points}
-                width={+width}
-                height={+height}
+                width={width}
+                height={height}
                 unitOfMeasure={unitOfMeasure}
                 displaySettings={displaySettings}
                 calibrationTransform={calibrationTransform}
@@ -571,8 +573,10 @@ export default function Page() {
                 <Header
                   isCalibrating={isCalibrating}
                   setIsCalibrating={setIsCalibrating}
-                  height={height}
+                  widthInput={widthInput}
+                  heightInput={heightInput}
                   width={width}
+                  height={height}
                   handleHeightChange={handleHeightChange}
                   handleWidthChange={handleWidthChange}
                   handleResetCalibration={() => {

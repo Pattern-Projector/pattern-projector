@@ -159,8 +159,8 @@ function getDstVertices(
   height: number,
   ptDensity: number,
 ): Point[] {
-  const dx = +width * ptDensity;
-  const dy = +height * ptDensity;
+  const dx = width * ptDensity;
+  const dy = height * ptDensity;
   return rectCorners(dx, dy);
 }
 

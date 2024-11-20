@@ -71,8 +71,10 @@ import MailIcon from "@/_icons/mail-icon";
 export default function Header({
   isCalibrating,
   setIsCalibrating,
-  height,
+  widthInput,
+  heightInput,
   width,
+  height,
   handleHeightChange,
   handleWidthChange,
   handleResetCalibration,
@@ -106,8 +108,10 @@ export default function Header({
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
-  height: string;
-  width: string;
+  widthInput: string;
+  heightInput: string;
+  width: number;
+  height: number;
   handleHeightChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleWidthChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -191,26 +195,26 @@ export default function Header({
 
   const handleRotate90 = () => {
     transformer.rotate(
-      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+      getCalibrationCenterPoint(width, height, unitOfMeasure),
       90,
     );
   };
 
   const handleFlipHorizontal = () => {
     transformer.flipHorizontal(
-      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+      getCalibrationCenterPoint(width, height, unitOfMeasure),
     );
   };
 
   const handleFlipVertical = () => {
     transformer.flipVertical(
-      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+      getCalibrationCenterPoint(width, height, unitOfMeasure),
     );
   };
 
   const handleRecenter = () => {
     transformer.recenter(
-      getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+      getCalibrationCenterPoint(width, height, unitOfMeasure),
       layoutWidth,
       layoutHeight,
     );
@@ -432,7 +436,7 @@ export default function Header({
                 label={t("width")}
                 labelRight={unitOfMeasure.toLocaleLowerCase()}
                 name="width"
-                value={width}
+                value={widthInput}
                 type="number"
                 min="0"
               />
@@ -444,7 +448,7 @@ export default function Header({
                 label={t("height")}
                 labelRight={unitOfMeasure.toLocaleLowerCase()}
                 name="height"
-                value={height}
+                value={heightInput}
                 type="number"
                 min="0"
               />
@@ -515,7 +519,7 @@ export default function Header({
                 onClick={() => {
                   transformer.reset();
                   transformer.recenter(
-                    getCalibrationCenterPoint(+width, +height, unitOfMeasure),
+                    getCalibrationCenterPoint(width, height, unitOfMeasure),
                     layoutWidth,
                     layoutHeight,
                   );
