@@ -33,10 +33,13 @@ function trimmedPageSize(
   let width = 0;
   let height = 0;
   for (const page of pages) {
-    const p = inDoc.getPage(page - 1);
-    const pageSize = p.getTrimBox() || p.getMediaBox();
-    width = Math.max(width, pageSize.width - settings.edgeInsets.horizontal);
-    height = Math.max(height, pageSize.height - settings.edgeInsets.vertical);
+    // Filter out blank pages specified by a 0
+    if (page > 0) {
+      const p = inDoc.getPage(page - 1);
+      const pageSize = p.getTrimBox() || p.getMediaBox();
+      width = Math.max(width, pageSize.width - settings.edgeInsets.horizontal);
+      height = Math.max(height, pageSize.height - settings.edgeInsets.vertical);
+    }
   }
 
   return { width, height };
