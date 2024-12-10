@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Don't allow zero for width and height
+- Export with the largest page size to avoid incorrect overlap when different sized pages in range
 
 ## [1.1.1] - 2024-10-03
 
