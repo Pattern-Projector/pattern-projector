@@ -106,6 +106,7 @@ export default function Header({
   mailOpen,
   setMailOpen,
   patternScale,
+  setPoints,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -144,6 +145,7 @@ export default function Header({
   mailOpen: boolean;
   setMailOpen: Dispatch<SetStateAction<boolean>>;
   patternScale: string;
+  setPoints: () => void;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const mailRead = useRef(true);
@@ -170,6 +172,7 @@ export default function Header({
     e: React.PointerEvent<HTMLButtonElement>,
   ) {
     if (isCalibrating) {
+      setPoints();
       const expectedContext = localStorage.getItem("calibrationContext");
       if (expectedContext) {
         const expected = JSON.parse(expectedContext);
