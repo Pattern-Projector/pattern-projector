@@ -94,8 +94,14 @@ export default function Page() {
     useState<boolean>(false);
   const [widthInput, setWidthInput] = useState(defaultWidthDimensionValue);
   const [heightInput, setHeightInput] = useState(defaultHeightDimensionValue);
-  const width = Number(widthInput) > 0 ? Number(widthInput) : 1;
-  const height = Number(heightInput) > 0 ? Number(heightInput) : 1;
+  const width =
+    Number(widthInput) > 0 && !Number.isNaN(widthInput)
+      ? Number(widthInput)
+      : 1;
+  const height =
+    Number(heightInput) > 0 && !Number.isNaN(heightInput)
+      ? Number(heightInput)
+      : 1;
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
