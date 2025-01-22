@@ -90,14 +90,8 @@ export default function Page() {
     useState<boolean>(false);
   const [widthInput, setWidthInput] = useState(defaultWidthDimensionValue);
   const [heightInput, setHeightInput] = useState(defaultHeightDimensionValue);
-  const width =
-    Number(widthInput) > 0 && !Number.isNaN(widthInput)
-      ? Number(widthInput)
-      : 1;
-  const height =
-    Number(heightInput) > 0 && !Number.isNaN(heightInput)
-      ? Number(heightInput)
-      : 1;
+  const width = Number(widthInput) > 0 ? Number(widthInput) : 1;
+  const height = Number(heightInput) > 0 ? Number(heightInput) : 1;
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
@@ -244,16 +238,7 @@ export default function Page() {
           },
         });
       }
-      const m = getPerspectiveTransformFromPoints(
-        points,
-        width,
-        height,
-        getPtDensity(unitOfMeasure),
-        false,
-      );
-
-      setCalibrationTransform(m);
-      setPerspective(inverse(m));
+      handleCalibration();
     }
 
     const expectedContext = localStorage.getItem("calibrationContext");
@@ -264,6 +249,27 @@ export default function Page() {
       }
     }
   }
+
+  const handleCalibration = useCallback(() => {
+    if (points.length === maxPoints) {
+      try {
+        const m = getPerspectiveTransformFromPoints(
+          points,
+          width,
+          height,
+          getPtDensity(unitOfMeasure),
+          false,
+        );
+
+        setCalibrationTransform(m);
+        setPerspective(inverse(m));
+      } catch (e) {
+        setCalibrationTransform(Matrix.identity(3, 3));
+        setPerspective(Matrix.identity(3, 3));
+        dispatch({ type: "set", points: getDefaultPoints() }); // Fixes #363: on Chrome sometimes the points are set as zeros in localStorage
+      }
+    }
+  }, [points, width, height, unitOfMeasure]);
 
   // EFFECTS
 
@@ -312,19 +318,8 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (points.length === maxPoints) {
-      const m = getPerspectiveTransformFromPoints(
-        points,
-        width,
-        height,
-        getPtDensity(unitOfMeasure),
-        false,
-      );
-
-      setCalibrationTransform(m);
-      setPerspective(inverse(m));
-    }
-  }, [points, width, height, unitOfMeasure]);
+    handleCalibration();
+  }, [points, width, height, unitOfMeasure, handleCalibration]);
 
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
