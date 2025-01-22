@@ -151,6 +151,9 @@ export default function Page() {
 
   const IDLE_TIMEOUT = 8000;
 
+  // HELPER FUNCTIONS
+
+  // Manage the timeout used for hiding menus when the user hasn't interacted with the site for the specified timeout
   function resetIdle() {
     setIsIdle(false);
     if (timeoutRef.current) {
@@ -161,6 +164,7 @@ export default function Page() {
     }, IDLE_TIMEOUT);
   }
 
+  // Create a default calibration grid that fits within the viewport with a bit of a border
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
     const minX = innerWidth * 0.2;
@@ -175,6 +179,7 @@ export default function Page() {
     ];
   }
 
+  // Merge new settings (i.e. width x height, theme, overlays) with settings from localStorage
   function updateLocalSettings(newSettings: {}) {
     const settingString = localStorage.getItem("canvasSettings");
     let currSettings = {};
@@ -189,20 +194,66 @@ export default function Page() {
     localStorage.setItem("canvasSettings", JSON.stringify(merged));
   }
 
+  // CALLBACKS
+
+  // Get the calibration and perspective transform matrices from the user's calibration grid points, width x height, and unit of measure.
+  const calibrationCallback = useCallback(() => {
+    if (points.length === maxPoints) {
+      try {
+        const m = getPerspectiveTransformFromPoints(
+          points,
+          width,
+          height,
+          getPtDensity(unitOfMeasure),
+          false,
+        );
+
+        setCalibrationTransform(m);
+        setPerspective(inverse(m));
+      } catch (e) {
+        setCalibrationTransform(Matrix.identity(3, 3));
+        setPerspective(Matrix.identity(3, 3));
+        dispatch({ type: "set", points: getDefaultPoints() }); // Fixes #363: on Chrome sometimes the points are set as zeros in localStorage
+      }
+    }
+  }, [points, width, height, unitOfMeasure]);
+
+  // Prevent the user from zooming
+  const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
+    if (element === null) {
+      return;
+    }
+    element.addEventListener("wheel", (e) => e.ctrlKey && e.preventDefault(), {
+      passive: false,
+    });
+  }, []);
+
+  // If possible, stop the device from going to sleep
+  const requestWakeLock = useCallback(async () => {
+    if ("wakeLock" in navigator) {
+      try {
+        await navigator.wakeLock.request("screen");
+      } catch (e) {}
+    }
+  }, []);
+
   // HANDLERS
 
+  // Save valid calibration grid height in localStorage
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, heightInput);
     setHeightInput(h);
     updateLocalSettings({ height: h });
   }
 
+  // Save valid calibration grid width in localStorage
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, widthInput);
     setWidthInput(w);
     updateLocalSettings({ width: w });
   }
 
+  // Set new file; reset file based state; and if available, load file based state from localStorage
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
     const { files } = e.target;
 
@@ -238,9 +289,10 @@ export default function Page() {
           },
         });
       }
-      handleCalibration();
+      calibrationCallback();
     }
 
+    // If the user calibrated in full screen, try to go back into full screen after opening the file: some browsers pop users out of full screen when selecting a file
     const expectedContext = localStorage.getItem("calibrationContext");
     if (expectedContext !== null) {
       const expected = JSON.parse(expectedContext) as CalibrationContext;
@@ -250,29 +302,52 @@ export default function Page() {
     }
   }
 
-  const handleCalibration = useCallback(() => {
-    if (points.length === maxPoints) {
-      try {
-        const m = getPerspectiveTransformFromPoints(
-          points,
-          width,
-          height,
-          getPtDensity(unitOfMeasure),
-          false,
-        );
+  function handlePointerDown(e: React.PointerEvent) {
+    resetIdle();
 
-        setCalibrationTransform(m);
-        setPerspective(inverse(m));
-      } catch (e) {
-        setCalibrationTransform(Matrix.identity(3, 3));
-        setPerspective(Matrix.identity(3, 3));
-        dispatch({ type: "set", points: getDefaultPoints() }); // Fixes #363: on Chrome sometimes the points are set as zeros in localStorage
+    // Subtle reminder to enter full screen when calibrating
+    if (fullScreenTooltipVisible) {
+      setFullScreenTooltipVisible(false);
+    }
+
+    // Check if the calibration context (e.g. viewport location, device pixel ratio, etc.) has changed since the last calibration
+    // Used to prompt the user if there has been a context change so they can verify that the calibration is still accurate
+    if (calibrationValidated) {
+      const expectedContext = localStorage.getItem("calibrationContext");
+      if (expectedContext === null) {
+        setCalibrationValidated(false);
+      } else {
+        const expected = JSON.parse(expectedContext) as CalibrationContext;
+        if (
+          getIsInvalidatedCalibrationContextWithPointerEvent(
+            expected,
+            e,
+            fullScreenHandle.active,
+          )
+        ) {
+          logCalibrationContextDifferences(expected, fullScreenHandle.active);
+          setCalibrationValidated(false);
+        }
       }
     }
-  }, [points, width, height, unitOfMeasure]);
+
+    setMenusHidden(false);
+  }
+
+  function handlePointerMove(e: React.PointerEvent) {
+    // Chromebook triggers move after menu hides #268
+    if (e.movementX === 0 && e.movementY === 0) {
+      return;
+    }
+
+    // Show menus when the user interacts with the app
+    resetIdle();
+    setMenusHidden(false);
+  }
 
   // EFFECTS
 
+  // Choose which side menu to show based on the number of pages and layers in the PDF
   useEffect(() => {
     if (pageCount === 1) {
       if (Object.entries(layers).length > 1) {
@@ -285,14 +360,7 @@ export default function Page() {
     }
   }, [pageCount, layers]);
 
-  const requestWakeLock = useCallback(async () => {
-    if ("wakeLock" in navigator) {
-      try {
-        await navigator.wakeLock.request("screen");
-      } catch (e) {}
-    }
-  }, []);
-
+  // Allow the user to open the file from their file browser, e.g., "Open With"
   useEffect(() => {
     requestWakeLock();
     if ("launchQueue" in window) {
@@ -310,6 +378,7 @@ export default function Page() {
     }
   });
 
+  // Remove buy me a coffee button when calibrating and projecting
   useEffect(() => {
     const element = document.getElementById("bmc-wbtn");
     if (element) {
@@ -317,10 +386,12 @@ export default function Page() {
     }
   }, []);
 
+  // Set calibration and perspective transforms
   useEffect(() => {
-    handleCalibration();
-  }, [points, width, height, unitOfMeasure, handleCalibration]);
+    calibrationCallback();
+  }, [points, width, height, unitOfMeasure, calibrationCallback]);
 
+  // Load data from localStorage
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
@@ -353,7 +424,10 @@ export default function Page() {
         theme: localSettings.theme ?? defaults.theme,
       });
     }
+  }, []);
 
+  // Set button color style based on URL: blue for the beta site and gray for old site
+  useEffect(() => {
     const s = window.location.host.split(".")[0];
     if (s.localeCompare("beta") === 0) {
       setButtonColor(ButtonColor.BLUE);
@@ -363,15 +437,7 @@ export default function Page() {
     }
   }, []);
 
-  const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
-    if (element === null) {
-      return;
-    }
-    element.addEventListener("wheel", (e) => e.ctrlKey && e.preventDefault(), {
-      passive: false,
-    });
-  }, []);
-
+  // Show a helpful error message when there is a client side error
   useEffect(() => {
     window.addEventListener("error", (e) => {
       setErrorMessage(
@@ -381,49 +447,14 @@ export default function Page() {
     });
   }, []);
 
-  function handlePointerDown(e: React.PointerEvent) {
-    resetIdle();
-    if (fullScreenTooltipVisible) {
-      setFullScreenTooltipVisible(false);
-    }
-
-    if (calibrationValidated) {
-      const expectedContext = localStorage.getItem("calibrationContext");
-      if (expectedContext === null) {
-        setCalibrationValidated(false);
-      } else {
-        const expected = JSON.parse(expectedContext) as CalibrationContext;
-        if (
-          getIsInvalidatedCalibrationContextWithPointerEvent(
-            expected,
-            e,
-            fullScreenHandle.active,
-          )
-        ) {
-          logCalibrationContextDifferences(expected, fullScreenHandle.active);
-          setCalibrationValidated(false);
-        }
-      }
-    }
-
-    setMenusHidden(false);
-  }
-
-  function handlePointerMove(e: React.PointerEvent) {
-    // Chromebook triggers move after menu hides #268
-    if (e.movementX === 0 && e.movementY === 0) {
-      return;
-    }
-    resetIdle();
-    setMenusHidden(false);
-  }
-
+  // Show a calibration warning when the calibration context is different than what was calibrated in
   useEffect(() => {
     const projectingWithInvalidContext =
       !isCalibrating && !calibrationValidated;
     setShowCalibrationAlert(projectingWithInvalidContext);
   }, [isCalibrating, calibrationValidated]);
 
+  // Hide menus after a timeout as long ad they aren't calibrating, zoomed out, haven't loaded a file yet or are in the process of loading a file
   useEffect(() => {
     setMenusHidden(
       isIdle &&
@@ -434,6 +465,7 @@ export default function Page() {
     );
   }, [isIdle, isCalibrating, zoomedOut, file, pdfLoadStatus]);
 
+  // Continually check the calibration context because the user could change the viewport size at any time and ruin their calibration
   useEffect(() => {
     const interval = setInterval(() => {
       const calibrationContext = localStorage.getItem("calibrationContext");
