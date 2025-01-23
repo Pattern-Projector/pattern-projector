@@ -105,6 +105,7 @@ export default function Header({
   buttonColor,
   mailOpen,
   setMailOpen,
+  invalidCalibration,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -142,6 +143,7 @@ export default function Header({
   buttonColor: ButtonColor;
   mailOpen: boolean;
   setMailOpen: Dispatch<SetStateAction<boolean>>;
+  invalidCalibration: boolean;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const mailRead = useRef(true);
@@ -169,7 +171,9 @@ export default function Header({
   ) {
     if (isCalibrating) {
       const expectedContext = localStorage.getItem("calibrationContext");
-      if (expectedContext) {
+      if (invalidCalibration) {
+        setCalibrationAlert(t("invalidCalibration"));
+      } else if (expectedContext) {
         const expected = JSON.parse(expectedContext);
         if (
           getIsInvalidatedCalibrationContextWithPointerEvent(
@@ -317,22 +321,36 @@ export default function Header({
         <ModalTitle>{t("calibrationAlertTitle")}</ModalTitle>
         <ModalText>{calibrationAlert}</ModalText>
         <ModalActions>
-          <Button
-            onClick={(e) => {
-              saveContextAndProject(e);
-              setCalibrationAlert("");
-            }}
-          >
-            {t("continue")}
-          </Button>
-          <Button
-            onClick={() => {
-              setIsCalibrating(true);
-              setCalibrationAlert("");
-            }}
-          >
-            {t("checkCalibration")}
-          </Button>
+          {invalidCalibration ? (
+            <Button
+              onClick={() => {
+                handleResetCalibration();
+                setCalibrationAlert("");
+              }}
+            >
+              <DeleteIcon ariaLabel={t("delete")} />
+              {t("delete")}
+            </Button>
+          ) : (
+            <>
+              <Button
+                onClick={(e) => {
+                  saveContextAndProject(e);
+                  setCalibrationAlert("");
+                }}
+              >
+                {t("continue")}
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsCalibrating(true);
+                  setCalibrationAlert("");
+                }}
+              >
+                {t("checkCalibration")}
+              </Button>
+            </>
+          )}
         </ModalActions>
       </Modal>
       <header

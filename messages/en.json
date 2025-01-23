@@ -276,7 +276,8 @@
     "hideMovement": "Hide move tool",
     "magnify": "Magnify (M)",
     "zoomOut": "Zoom out (Z)",
-    "mail": "Mail from Courtney"
+    "mail": "Mail from Courtney",
+    "invalidCalibration": "The calibration grid is not valid. Press 'Reset calibration' to try again."
   },
   "ScaleMenu": {
     "scale": "Scale Pattern",

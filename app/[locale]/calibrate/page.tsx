@@ -16,6 +16,7 @@ import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import {
   RestoreTransforms,
+  checkIsConcave,
   getCalibrationCenterPoint,
   getPerspectiveTransformFromPoints,
 } from "@/_lib/geometry";
@@ -715,6 +716,7 @@ export default function Page() {
                   buttonColor={buttonColor}
                   mailOpen={mailOpen}
                   setMailOpen={setMailOpen}
+                  invalidCalibration={checkIsConcave(points)}
                 />
                 {isCalibrating && menuStates.nav && (
                   <TroubleshootingButton
