@@ -503,33 +503,30 @@ export default function Page() {
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
           {showCalibrationAlert ? (
-            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
-              <div className="flex">
-                <WarningIcon ariaLabel="warning" />
-              </div>
-              {t("calibrationAlert")}
-              <Tooltip
-                description={
+            <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
+              <WarningIcon ariaLabel="warning" />
+              <p>{t("calibrationAlert")}</p>
+              <Button
+                className="flex items-center justify-center"
+                onClick={
                   fullScreenHandle.active
-                    ? t("fullscreenExit")
-                    : t("fullscreen")
+                    ? fullScreenHandle.exit
+                    : fullScreenHandle.enter
                 }
               >
-                <IconButton
-                  onClick={
-                    fullScreenHandle.active
-                      ? fullScreenHandle.exit
-                      : fullScreenHandle.enter
-                  }
-                >
+                <span className="mr-1 -mt-1.5 w-4 h-4">
                   {fullScreenHandle.active ? (
                     <FullScreenIcon ariaLabel={t("fullscreen")} />
                   ) : (
                     <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
                   )}
-                </IconButton>
-              </Tooltip>
-            </h2>
+                </span>
+                {fullScreenHandle.active
+                  ? t("fullscreenExit")
+                  : t("fullscreen")}
+              </Button>
+              <p>{t("calibrationAlertContinue")}</p>
+            </div>
           ) : null}
           <Modal open={errorMessage !== null}>
             <ModalTitle>{g("error")}</ModalTitle>
