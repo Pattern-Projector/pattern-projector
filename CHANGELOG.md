@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.4] - 2025-01-25
+
+### Fixed
+
+- Fixes bug on international keyboards that was causing key collisions (comma key was triggering magnify tool)
+
 ## [1.1.3] - 2024-11-19
 
 ### Fixed
