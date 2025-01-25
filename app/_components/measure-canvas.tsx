@@ -212,11 +212,11 @@ export default function MeasureCanvas({
 
   useKeyDown(() => {
     setAxisConstrained(true);
-  }, [KeyCode.ShiftLeft, KeyCode.ShiftRight]);
+  }, [KeyCode.Shift]);
 
   useKeyUp(() => {
     setAxisConstrained(false);
-  }, [KeyCode.ShiftLeft, KeyCode.ShiftRight]);
+  }, [KeyCode.Shift]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
