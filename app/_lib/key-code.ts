@@ -10,6 +10,7 @@ export enum KeyCode {
   KeyV = "KeyV",
   Escape = "Escape",
   Tab = "Tab",
+  Enter = "Enter",
   Backspace = "Backspace",
   ShiftLeft = "ShiftLeft",
   ShiftRight = "ShiftRight",

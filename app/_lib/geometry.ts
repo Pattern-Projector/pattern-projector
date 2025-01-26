@@ -45,6 +45,7 @@ import { Point, subtract } from "@/_lib/point";
 import { AbstractMatrix, Matrix, solve } from "ml-matrix";
 import { getPtDensity } from "./unit";
 import { Line } from "./interfaces/line";
+import { Vector } from "@/_lib/interfaces/vector";
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
@@ -175,6 +176,13 @@ export function getPerspectiveTransformFromPoints(
       points,
     );
   }
+}
+
+export function getLineFromVector(vector: Vector): Line {
+  const angleInRadians = -(vector[2] * Math.PI) / 180;
+  const x2 = vector[0].x + vector[1] * Math.cos(angleInRadians);
+  const y2 = vector[0].y + vector[1] * Math.sin(angleInRadians);
+  return [vector[0], { x: x2, y: y2 }];
 }
 
 export function transformLine(line: Line, m: Matrix): Line {

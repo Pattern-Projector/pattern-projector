@@ -3,6 +3,7 @@ import {
   constrained,
   dist,
   distToLine,
+  getLineFromVector,
   transformLine,
   transformPoint,
 } from "@/_lib/geometry";
@@ -11,12 +12,14 @@ import { Point } from "@/_lib/point";
 import Matrix, { inverse } from "ml-matrix";
 import React, {
   Dispatch,
+  ReactNode,
   SetStateAction,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
-import { drawLine, drawArrow, drawCircle } from "@/_lib/drawing";
+import { drawArrow, drawCircle, drawLine } from "@/_lib/drawing";
 import { useTransformContext } from "@/_hooks/use-transform-context";
 import { Line } from "@/_lib/interfaces/line";
 
@@ -25,6 +28,8 @@ import LineMenu from "./line-menu";
 import { useKeyDown } from "@/_hooks/use-key-down";
 import { useKeyUp } from "@/_hooks/use-key-up";
 import { CM } from "@/_lib/unit";
+import { Vector } from "@/_lib/interfaces/vector";
+import InlineInput from "@/_components/inline-input";
 
 export default function MeasureCanvas({
   perspective,
@@ -53,13 +58,130 @@ export default function MeasureCanvas({
   const [selectedLine, setSelectedLine] = useState<number>(-1);
   const [lines, setLines] = useState<Line[]>([]); // pattern space coordinates.
   const [axisConstrained, setAxisConstrained] = useState<boolean>(false);
-
+  const [angleValue, setAngleValue] = useState<string>("0");
+  const [distanceValue, setDistanceValue] = useState<string>("1");
+  const [nextFocusIdx, setNextFocusIdx] = useState<number>(-1);
+  const [clientLine, setClientLine] = useState<Line | null>(null);
+  const [matLine, setMatLine] = useState<Line | null>(null);
+  const lengthInputRef = useRef<HTMLInputElement>(null);
+  const angleInputRef = useRef<HTMLInputElement>(null);
   const transform = useTransformContext();
 
   const disablePointer = measuring || dragOffset.current;
 
   const endCircleRadius = 24;
   const lineTouchRadius = 48;
+
+  // Update the authoritative line data from the currently selected line
+  // if it exists, including matrix transforms and all
+  useEffect(() => {
+    if (lines.length > 0 && selectedLine >= 0) {
+      const patternLine = lines[selectedLine];
+      const newMatLine = transformLine(patternLine, transform);
+      if (axisConstrained && dragOffset.current) {
+        newMatLine[1] = constrained(newMatLine[1], newMatLine[0]);
+      }
+
+      setMatLine(newMatLine);
+      setClientLine(transformLine(newMatLine, calibrationTransform));
+    } else {
+      setClientLine(null);
+      setMatLine(null);
+    }
+  }, [lines, selectedLine, transform, axisConstrained, calibrationTransform]);
+
+  useEffect(() => {
+    if (
+      nextFocusIdx === 0 &&
+      lengthInputRef.current &&
+      document.activeElement !== lengthInputRef.current
+    ) {
+      lengthInputRef.current.focus();
+      lengthInputRef.current.select();
+    } else if (
+      nextFocusIdx === 1 &&
+      angleInputRef.current &&
+      document.activeElement !== angleInputRef.current
+    ) {
+      angleInputRef.current.focus();
+      angleInputRef.current.select();
+    }
+  }, [nextFocusIdx]);
+
+  // Tab key is forced to switch between line inputs
+  // until either escape or enter is pressed
+  useKeyDown(
+    (e: KeyboardEvent) => {
+      // Only if there's a selected line
+      // and only if the input is valid
+      if (
+        +distanceValue > 0 &&
+        +distanceValue < 1000 &&
+        +angleValue >= 0 &&
+        +angleValue <= 360 &&
+        selectedLine >= 0
+      ) {
+        e.preventDefault();
+        // Update the focus
+        if (nextFocusIdx === 1 || nextFocusIdx === -1) {
+          setNextFocusIdx(0);
+        } else if (nextFocusIdx === 0) {
+          setNextFocusIdx(1);
+        }
+
+        // Update the line
+        if (matLine && distanceValue && angleValue) {
+          let distance = +distanceValue * CSS_PIXELS_PER_INCH;
+          if (unitOfMeasure === CM) {
+            distance /= 2.54;
+          }
+          const currentVector: Vector = [matLine[0], distance, +angleValue];
+          const newLine = getLineFromVector(currentVector);
+          const newMatLine = transformLine(newLine, transform);
+          setMatLine(newMatLine);
+          setClientLine(transformLine(newMatLine, calibrationTransform));
+        }
+      }
+    },
+    [KeyCode.Tab],
+  );
+
+  const saveVectorLine = () => {
+    if (matLine && distanceValue && angleValue) {
+      let distance = +distanceValue * CSS_PIXELS_PER_INCH;
+      if (unitOfMeasure === CM) {
+        distance /= 2.54;
+      }
+      const currentVector: Vector = [matLine[0], distance, +angleValue];
+      lines.splice(selectedLine, 1, getLineFromVector(currentVector));
+    }
+  };
+
+  // If we are actively editing a line
+  // via text inputs, then apply the values
+  // and remove focus
+  useKeyDown(() => {
+    if (selectedLine >= 0 && nextFocusIdx > -1) {
+      saveVectorLine();
+      // Deselect the line - we have applied the changes
+      setSelectedLine(-1);
+    }
+  }, [KeyCode.Enter]);
+
+  // Cancel text input operation
+  useKeyDown(() => {
+    if (selectedLine >= 0) {
+      // Deselect the line - no changes on escape
+      setSelectedLine(-1);
+    }
+  }, [KeyCode.Escape]);
+
+  // useKeyDown(() => {
+  //   if (selectedLine >= 0 && nextFocusIdx === -1) {
+  //     // Deselect the line - we have applied the changes
+  //     handleDeleteLine();
+  //   }
+  // }, [KeyCode.Backspace]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -69,13 +191,13 @@ export default function MeasureCanvas({
     // Possibly select a line.
     for (let i = 0; i < lines.length; i++) {
       const patternLine = lines[i];
-      const clientLine = transformLine(patternLine, patternToClient);
+      const newClientLine = transformLine(patternLine, patternToClient);
       // Start dragging one end of the selected line?
       if (selectedLine == i) {
         let minDist = lineTouchRadius;
         let minEnd = -1;
         for (const end of [0, 1]) {
-          const clientEnd = clientLine[end];
+          const clientEnd = newClientLine[end];
           const d = dist(clientEnd, client);
           if (d < minDist) {
             minDist = d;
@@ -96,7 +218,7 @@ export default function MeasureCanvas({
         }
       }
 
-      if (distToLine(clientLine, client) < endCircleRadius) {
+      if (distToLine(newClientLine, client) < endCircleRadius) {
         // select/deselect the line.
         setSelectedLine(i == selectedLine ? -1 : i);
         e.stopPropagation();
@@ -104,7 +226,8 @@ export default function MeasureCanvas({
       }
     }
 
-    // Nothing selected.
+    // Nothing selected. Save text input changes
+    saveVectorLine();
     setSelectedLine(-1);
     dragOffset.current = null;
 
@@ -201,6 +324,14 @@ export default function MeasureCanvas({
     }
   }, [measuring, lines.length, selectedLine]);
 
+  useEffect(() => {
+    if (selectedLine >= 0) {
+      setNextFocusIdx(0);
+    } else {
+      setNextFocusIdx(-1);
+    }
+  }, [selectedLine]);
+
   useKeyDown(() => {
     setAxisConstrained(true);
   }, [KeyCode.ShiftLeft, KeyCode.ShiftRight]);
@@ -209,6 +340,18 @@ export default function MeasureCanvas({
     setAxisConstrained(false);
   }, [KeyCode.ShiftLeft, KeyCode.ShiftRight]);
 
+  useEffect(() => {
+    if (matLine) {
+      setAngleValue(Math.round(getAngle(matLine)).toString(10));
+      setDistanceValue(
+        (Math.round(getDistance(matLine, unitOfMeasure) * 100) / 100).toString(
+          10,
+        ),
+      );
+    }
+  }, [matLine, unitOfMeasure]);
+
+  // Draw line canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -227,13 +370,13 @@ export default function MeasureCanvas({
             drawLine(ctx, transformLine(lines[i], patternToClient));
           }
         }
-        if (lines.length > 0 && selectedLine >= 0) {
-          const patternLine = lines[selectedLine];
-          const matLine = transformLine(patternLine, transform);
-          if (axisConstrained && dragOffset.current) {
-            matLine[1] = constrained(matLine[1], matLine[0]);
-          }
-          const clientLine = transformLine(matLine, calibrationTransform);
+        if (lines.length > 0 && clientLine && matLine) {
+          // const patternLine = lines[selectedLine];
+          // const matLine = transformLine(patternLine, transform);
+          // if (axisConstrained && dragOffset.current) {
+          //   matLine[1] = constrained(matLine[1], matLine[0]);
+          // }
+          // const clientLine = transformLine(matLine, calibrationTransform);
           drawArrow(ctx, clientLine);
           drawCircle(ctx, clientLine[0], endCircleRadius);
           drawCircle(ctx, clientLine[1], endCircleRadius);
@@ -267,12 +410,63 @@ export default function MeasureCanvas({
     transform,
     selectedLine,
     measuring,
+    matLine,
   ]);
 
   useEffect(() => {
     setLines([]);
     setSelectedLine(-1);
   }, [file]);
+
+  const InputNodes: ReactNode = useMemo(() => {
+    if (clientLine) {
+      const location = {
+        x: clientLine[1].x + endCircleRadius + 8,
+        y: clientLine[1].y,
+      };
+      return (
+        <div
+          style={{ position: "absolute", left: location.x, top: location.y }}
+        >
+          <InlineInput
+            className="relative flex flex-col w-18 mb-0.5"
+            inputClassName="pl-2 pr-10"
+            inputRef={lengthInputRef}
+            value={distanceValue}
+            handleChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              if (
+                (/^\d*\.?\d*$/.test(e.target.value) &&
+                  +e.target.value > 0 &&
+                  +e.target.value < 1000) ||
+                e.target.value === ""
+              ) {
+                setDistanceValue(e.target.value);
+              }
+            }}
+            labelRight={unitOfMeasure === CM ? "cm" : "in"}
+          />
+          <InlineInput
+            className="relative flex flex-col w-18 mb-0.5"
+            inputClassName="pl-2 pr-10"
+            inputRef={angleInputRef}
+            value={angleValue}
+            handleChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              if (
+                (/^\d*\.?\d*$/.test(e.target.value) &&
+                  +e.target.value >= 0 &&
+                  +e.target.value <= 360) ||
+                e.target.value === ""
+              ) {
+                setAngleValue(e.target.value);
+              }
+            }}
+            labelRight="&deg;"
+          />
+        </div>
+      );
+    }
+    return null;
+  }, [angleValue, clientLine, distanceValue]);
 
   return (
     <div className={className}>
@@ -285,6 +479,7 @@ export default function MeasureCanvas({
         <div className={`${disablePointer ? "pointer-events-none" : ""}`}>
           {children}
         </div>
+        {InputNodes}
         <canvas
           ref={canvasRef}
           className={`absolute top-0 inset-0 w-full h-full pointer-events-none`}
@@ -302,11 +497,17 @@ export default function MeasureCanvas({
     </div>
   );
 }
-function measurementsString(line: Line, unitOfMeasure: string): string {
+
+function getAngle(line: Line): number {
   let a = -angleDeg(line);
   if (a < 0) {
     a += 360;
   }
+  return a;
+}
+
+function measurementsString(line: Line, unitOfMeasure: string): string {
+  const a = getAngle(line);
   let label = a.toFixed(0);
   if (label == "360") {
     label = "0";
@@ -315,11 +516,16 @@ function measurementsString(line: Line, unitOfMeasure: string): string {
   return `${d} ${label}°`;
 }
 
-function distanceString(line: Line, unitOfMeasure: string): string {
+function getDistance(line: Line, unitOfMeasure: string): number {
   let d = dist(...line) / CSS_PIXELS_PER_INCH;
   if (unitOfMeasure == CM) {
     d *= 2.54;
   }
+  return d;
+}
+
+function distanceString(line: Line, unitOfMeasure: string): string {
+  const d = getDistance(line, unitOfMeasure);
   const unit = unitOfMeasure == CM ? "cm" : '"';
   return `${d.toFixed(2)}${unit}`;
 }
