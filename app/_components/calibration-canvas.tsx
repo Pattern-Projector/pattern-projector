@@ -95,6 +95,7 @@ export default function CalibrationCanvas({
           false,
           null,
           null,
+          null,
         );
         draw(cs);
       }

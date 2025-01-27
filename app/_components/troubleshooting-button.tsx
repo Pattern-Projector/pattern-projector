@@ -8,14 +8,18 @@ import ModalFigure from "./modal/modal-figure";
 import { ModalSubtitle } from "./modal/modal-subtitle";
 import { useState } from "react";
 
-export default function TroubleshootingButton() {
+export default function TroubleshootingButton({
+  isDarkTheme,
+}: {
+  isDarkTheme: boolean;
+}) {
   const t = useTranslations("Troubleshooting");
   const [troubleshooting, setTroubleshooting] = useState(false);
 
   return (
     <>
       <Button
-        className="mt-2 absolute left-1/2 -translate-x-1/2"
+        className={`${isDarkTheme ? "bg-black" : "bg-white"} mt-2 absolute left-1/2 -translate-x-1/2`}
         onClick={() => setTroubleshooting(true)}
       >
         {t("notMatching")}

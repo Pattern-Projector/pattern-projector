@@ -1,0 +1,26 @@
+{
+    "HomePage": {
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "github": "Lásd a forráskódot",
+        "calibrate": "Kezdje el a kalibrálást",
+        "choose-language": "Nyelv",
+        "welcome": {
+            "title": "Üdvözöljük a Pattern Projector-ban!",
+            "description": "Pattern Projector (Szabásminta kivetítő) egy ingyenes és nyílt forráskódú internetes applikáció, ami gyorsan kalibrál bármilyen projektort a szabásminták kivetítéséhez. Ezen kívül olyan eszközöket is tartalmaz, melyek segítségével össze lehet fűzni a több oldalból álló szabásmintákat, meg lehet változtatni a vonalak vastagságát, meg lehet cserélni a színeket, tükrözni és forgatni lehet a szabásmintákat, stb. A legújabb frissítésekről a <changeLogLink>frissítések</changeLogLink>menüpontban lehet többet megtudni."
+        },
+        "requirements": {
+            "title": "Amire szükség lesz",
+            "projector": "Projektor: legalább 720p felbontású ajánlott",
+            "mat": "Rácsos vágólap (opcionális)",
+            "mount": "Állvány, vagy falra/polcra/asztalra szerelhető projektor konzol",
+            "computer": "Számítógép vagy táblagép amivel a projektorhoz lehet csatlakozni",
+            "pattern": "PDF szabásminta"
+        },
+        "setup": {
+            "title": "Beállítás",
+            "place": "Helyezze a projektort közvetlenül a vágólap fölé úgy, hogy az közvetlenül a vágólapra vetítsen. Hogyha nincs vágólapja, akkor papírral vagy maszkolószalaggal (fedőszalag) is kijelölhet egy rácsot/téglalapot az asztalon vagy a földön.",
+            "connect": "Csatlakoztassa a számítógépét vagy táblagépét a projektorhoz, és vagy kettőzze meg vagy terjessze ki a kijelzőt úgy, hogy a számítógépen vagy táblagépen található képet vetítse ki a projektor.",
+            "focus": "Állítsa be a fókuszt a projektoron addig, amíg nem lesz teljesen éles a kivetített kép közepén található szöveg. Amennyiben sehogyan sem lesz éles a kép, ellenőrizze, hogy a projektor és a vágólap közötti távolság a gyártó által ajánlott értékek között van-e."
+        }
+    }
+}

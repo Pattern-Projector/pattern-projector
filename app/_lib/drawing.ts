@@ -41,6 +41,7 @@ export class CanvasState {
     public magnifying: boolean,
     public restoreTransforms: RestoreTransforms | null,
     public t: any,
+    public patternScale: string | null,
   ) {
     this.isConcave = checkIsConcave(this.points);
   }
@@ -107,8 +108,15 @@ export function drawPolygon(
 }
 
 export function drawOverlays(cs: CanvasState) {
-  const { ctx, displaySettings, zoomedOut, t, magnifying, restoreTransforms } =
-    cs;
+  const {
+    ctx,
+    displaySettings,
+    zoomedOut,
+    t,
+    magnifying,
+    restoreTransforms,
+    patternScale,
+  } = cs;
   const { grid, border, paper, flipLines, flippedPattern, disabled } =
     displaySettings.overlay;
   const { theme } = displaySettings;
@@ -140,6 +148,14 @@ export function drawOverlays(cs: CanvasState) {
     if (flippedPattern && cs.isFlipped) {
       drawFlippedPattern(cs);
     }
+    if (patternScale && Number(patternScale) !== 1) {
+      drawMessage(
+        cs,
+        t.rich("scaled", {
+          scale: () => patternScale,
+        }),
+      );
+    }
   }
 }
 
@@ -153,7 +169,7 @@ function drawMessage(cs: CanvasState, message: string) {
   const center = transformPoint(
     {
       x: width * 0.5,
-      y: 1,
+      y: 0,
     },
     perspective,
   );
