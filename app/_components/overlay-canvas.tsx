@@ -22,6 +22,7 @@ export default function OverlayCanvas({
   zoomedOut,
   magnifying,
   restoreTransforms,
+  patternScale,
 }: {
   className: string | undefined;
   points: Point[];
@@ -33,6 +34,7 @@ export default function OverlayCanvas({
   zoomedOut: boolean;
   magnifying: boolean;
   restoreTransforms: RestoreTransforms | null;
+  patternScale: string;
 }) {
   const flipped = isFlipped(useTransformContext());
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -72,6 +74,7 @@ export default function OverlayCanvas({
           magnifying,
           restoreTransforms,
           t,
+          patternScale,
         );
         drawOverlays(cs);
       }
@@ -88,6 +91,7 @@ export default function OverlayCanvas({
     magnifying,
     restoreTransforms,
     t,
+    patternScale,
   ]);
   return (
     <canvas

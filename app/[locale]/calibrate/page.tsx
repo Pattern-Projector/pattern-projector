@@ -16,6 +16,7 @@ import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import {
   RestoreTransforms,
+  checkIsConcave,
   getCalibrationCenterPoint,
   getPerspectiveTransformFromPoints,
 } from "@/_lib/geometry";
@@ -28,17 +29,10 @@ import {
   themeFilter,
 } from "@/_lib/display-settings";
 import { getPtDensity, IN } from "@/_lib/unit";
-import LayerMenu from "@/_components/layer-menu";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
-import StitchMenu from "@/_components/stitch-menu";
 import MeasureCanvas from "@/_components/measure-canvas";
-import {
-  getDefaultMenuStates,
-  getMenuStatesFromLayers,
-  getMenuStatesFromPageCount,
-  MenuStates,
-} from "@/_lib/menu-states";
+import { getDefaultMenuStates, MenuStates } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import Filters from "@/_components/filters";
@@ -66,6 +60,14 @@ import LoadingSpinner from "@/_icons/loading-spinner";
 import TroubleshootingButton from "@/_components/troubleshooting-button";
 import { ButtonColor } from "@/_components/theme/colors";
 import MailModal from "@/_components/mail-modal";
+import SideMenu from "@/_components/menus/side-menu";
+import PatternScaleReducer from "@/_reducers/patternScaleReducer";
+import Modal from "@/_components/modal/modal";
+import { ModalTitle } from "@/_components/modal/modal-title";
+import ModalContent from "@/_components/modal/modal-content";
+import { ModalText } from "@/_components/modal/modal-text";
+import { ModalActions } from "@/_components/modal/modal-actions";
+import { Button } from "@/_components/buttons/button";
 
 const defaultStitchSettings = {
   columnCount: 1,
@@ -82,11 +84,6 @@ export default function Page() {
 
   const fullScreenHandle = useFullScreenHandle();
 
-  const [points, dispatch] = useReducer(pointsReducer, []);
-  const [stitchSettings, dispatchStitchSettings] = useReducer(
-    stitchSettingsReducer,
-    defaultStitchSettings,
-  );
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(
     getDefaultDisplaySettings(),
   );
@@ -94,14 +91,8 @@ export default function Page() {
     useState<boolean>(false);
   const [widthInput, setWidthInput] = useState(defaultWidthDimensionValue);
   const [heightInput, setHeightInput] = useState(defaultHeightDimensionValue);
-  const width =
-    Number(widthInput) > 0 && !Number.isNaN(widthInput)
-      ? Number(widthInput)
-      : 1;
-  const height =
-    Number(heightInput) > 0 && !Number.isNaN(heightInput)
-      ? Number(heightInput)
-      : 1;
+  const width = Number(widthInput) > 0 ? Number(widthInput) : 1;
+  const height = Number(heightInput) > 0 ? Number(heightInput) : 1;
   const [isCalibrating, setIsCalibrating] = useState(true);
   const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
@@ -117,11 +108,6 @@ export default function Page() {
     useState<RestoreTransforms | null>(null);
   const [pageCount, setPageCount] = useState<number>(0);
   const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
-  const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
-  const setLayers = useCallback(
-    (l: Layers) => dispatchLayersAction({ type: "set-layers", layers: l }),
-    [dispatchLayersAction],
-  );
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
@@ -130,7 +116,6 @@ export default function Page() {
   const [zoomedOut, setZoomedOut] = useState<boolean>(false);
   const [menusHidden, setMenusHidden] = useState<boolean>(false);
   const [isIdle, setIsIdle] = useState(false);
-
   const [menuStates, setMenuStates] = useState<MenuStates>(
     getDefaultMenuStates(),
   );
@@ -139,18 +124,37 @@ export default function Page() {
   const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
-
   const [buttonColor, setButtonColor] = useState<ButtonColor>(
     ButtonColor.PURPLE,
   );
   const [mailOpen, setMailOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<null | string>(null);
+
+  const [points, dispatch] = useReducer(pointsReducer, []);
+  const [stitchSettings, dispatchStitchSettings] = useReducer(
+    stitchSettingsReducer,
+    defaultStitchSettings,
+  );
+  const { layers, dispatchLayersAction } = useLayers(file?.name ?? "default");
+  const setLayers = useCallback(
+    (l: Layers) => dispatchLayersAction({ type: "set-layers", layers: l }),
+    [dispatchLayersAction],
+  );
+  const [patternScale, dispatchPatternScaleAction] = useReducer(
+    PatternScaleReducer,
+    "1",
+  );
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const t = useTranslations("Header");
+  const g = useTranslations("General");
 
   const IDLE_TIMEOUT = 8000;
 
+  // HELPER FUNCTIONS
+
+  // Manage the timeout used for hiding menus when the user hasn't interacted with the site for the specified timeout
   function resetIdle() {
     setIsIdle(false);
     if (timeoutRef.current) {
@@ -161,6 +165,7 @@ export default function Page() {
     }, IDLE_TIMEOUT);
   }
 
+  // Create a default calibration grid that fits within the viewport with a bit of a border
   function getDefaultPoints() {
     const { innerWidth, innerHeight } = window;
     const minX = innerWidth * 0.2;
@@ -175,6 +180,7 @@ export default function Page() {
     ];
   }
 
+  // Merge new settings (i.e. width x height, theme, overlays) with settings from localStorage
   function updateLocalSettings(newSettings: {}) {
     const settingString = localStorage.getItem("canvasSettings");
     let currSettings = {};
@@ -189,20 +195,66 @@ export default function Page() {
     localStorage.setItem("canvasSettings", JSON.stringify(merged));
   }
 
+  // CALLBACKS
+
+  // Get the calibration and perspective transform matrices from the user's calibration grid points, width x height, and unit of measure.
+  const calibrationCallback = useCallback(() => {
+    if (points.length === maxPoints) {
+      try {
+        const m = getPerspectiveTransformFromPoints(
+          points,
+          width,
+          height,
+          getPtDensity(unitOfMeasure),
+          false,
+        );
+
+        setCalibrationTransform(m);
+        setPerspective(inverse(m));
+      } catch (e) {
+        setCalibrationTransform(Matrix.identity(3, 3));
+        setPerspective(Matrix.identity(3, 3));
+        dispatch({ type: "set", points: getDefaultPoints() }); // Fixes #363: on Chrome sometimes the points are set as zeros in localStorage
+      }
+    }
+  }, [points, width, height, unitOfMeasure]);
+
+  // Prevent the user from zooming
+  const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
+    if (element === null) {
+      return;
+    }
+    element.addEventListener("wheel", (e) => e.ctrlKey && e.preventDefault(), {
+      passive: false,
+    });
+  }, []);
+
+  // If possible, stop the device from going to sleep
+  const requestWakeLock = useCallback(async () => {
+    if ("wakeLock" in navigator) {
+      try {
+        await navigator.wakeLock.request("screen");
+      } catch (e) {}
+    }
+  }, []);
+
   // HANDLERS
 
+  // Save valid calibration grid height in localStorage
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
     const h = removeNonDigits(e.target.value, heightInput);
     setHeightInput(h);
     updateLocalSettings({ height: h });
   }
 
+  // Save valid calibration grid width in localStorage
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
     const w = removeNonDigits(e.target.value, widthInput);
     setWidthInput(w);
     updateLocalSettings({ width: w });
   }
 
+  // Set new file; reset file based state; and if available, load file based state from localStorage
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
     const { files } = e.target;
 
@@ -214,6 +266,7 @@ export default function Page() {
       setMagnifying(false);
       setMeasuring(false);
       setPageCount(0);
+      dispatchPatternScaleAction({ type: "set", scale: "1" });
       const lineThicknessString = localStorage.getItem(
         `lineThickness:${files[0].name}`,
       );
@@ -237,18 +290,11 @@ export default function Page() {
           },
         });
       }
-      const m = getPerspectiveTransformFromPoints(
-        points,
-        width,
-        height,
-        getPtDensity(unitOfMeasure),
-        false,
-      );
 
-      setCalibrationTransform(m);
-      setPerspective(inverse(m));
+      calibrationCallback();
     }
 
+    // If the user calibrated in full screen, try to go back into full screen after opening the file: some browsers pop users out of full screen when selecting a file
     const expectedContext = localStorage.getItem("calibrationContext");
     if (expectedContext !== null) {
       const expected = JSON.parse(expectedContext) as CalibrationContext;
@@ -258,20 +304,83 @@ export default function Page() {
     }
   }
 
+  function handlePointerDown(e: React.PointerEvent) {
+    resetIdle();
+
+    // Subtle reminder to enter full screen when calibrating
+    if (fullScreenTooltipVisible) {
+      setFullScreenTooltipVisible(false);
+    }
+
+    // Check if the calibration context (e.g. viewport location, device pixel ratio, etc.) has changed since the last calibration
+    // Used to prompt the user if there has been a context change so they can verify that the calibration is still accurate
+    if (calibrationValidated) {
+      const expectedContext = localStorage.getItem("calibrationContext");
+      if (expectedContext === null) {
+        setCalibrationValidated(false);
+      } else {
+        const expected = JSON.parse(expectedContext) as CalibrationContext;
+        if (
+          getIsInvalidatedCalibrationContextWithPointerEvent(
+            expected,
+            e,
+            fullScreenHandle.active,
+          )
+        ) {
+          logCalibrationContextDifferences(expected, fullScreenHandle.active);
+          setCalibrationValidated(false);
+        }
+      }
+    }
+
+    setMenusHidden(false);
+  }
+
+  function handlePointerMove(e: React.PointerEvent) {
+    // Chromebook triggers move after menu hides #268
+    if (e.movementX === 0 && e.movementY === 0) {
+      return;
+    }
+
+    // Show menus when the user interacts with the app
+    resetIdle();
+    setMenusHidden(false);
+  }
+
   // EFFECTS
 
-  const requestWakeLock = useCallback(async () => {
-    if ("wakeLock" in navigator) {
-      try {
-        await navigator.wakeLock.request("screen");
-      } catch (e) {}
+  // Choose which side menu to show based on the number of pages and layers in the PDF
+  useEffect(() => {
+    if (pageCount === 1) {
+      if (Object.entries(layers).length > 1) {
+        setMenuStates({ ...getDefaultMenuStates(), layers: true });
+      } else {
+        setMenuStates(getDefaultMenuStates());
+      }
+    } else {
+      setMenuStates({ ...getDefaultMenuStates(), stitch: true });
     }
-  }, []);
+  }, [pageCount, layers]);
 
+  // Allow the user to open the file from their file browser, e.g., "Open With"
   useEffect(() => {
     requestWakeLock();
+    if ("launchQueue" in window) {
+      window.launchQueue.setConsumer(
+        async (launchParams: { files: [FileSystemHandle] }) => {
+          for (const handle of launchParams.files) {
+            if (handle.kind == "file") {
+              const file = await (handle as FileSystemFileHandle).getFile();
+              setFile(file);
+              return;
+            }
+          }
+        },
+      );
+    }
   });
 
+  // Remove buy me a coffee button when calibrating and projecting
   useEffect(() => {
     const element = document.getElementById("bmc-wbtn");
     if (element) {
@@ -279,29 +388,12 @@ export default function Page() {
     }
   }, []);
 
+// Set calibration and perspective transforms
   useEffect(() => {
-    setMenuStates((m) => getMenuStatesFromPageCount(m, pageCount));
-  }, [pageCount]);
+    calibrationCallback();
+  }, [points, width, height, unitOfMeasure, calibrationCallback]);
 
-  useEffect(() => {
-    if (points.length === maxPoints) {
-      const m = getPerspectiveTransformFromPoints(
-        points,
-        width,
-        height,
-        getPtDensity(unitOfMeasure),
-        false,
-      );
-
-      setCalibrationTransform(m);
-      setPerspective(inverse(m));
-    }
-  }, [points, width, height, unitOfMeasure]);
-
-  useEffect(() => {
-    setMenuStates((m) => getMenuStatesFromLayers(m, layers));
-  }, [layers]);
-
+  // Load data from localStorage
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
     if (localPoints !== null) {
@@ -334,7 +426,10 @@ export default function Page() {
         theme: localSettings.theme ?? defaults.theme,
       });
     }
+  }, []);
 
+  // Set button color style based on URL: blue for the beta site and gray for old site
+  useEffect(() => {
     const s = window.location.host.split(".")[0];
     if (s.localeCompare("beta") === 0) {
       setButtonColor(ButtonColor.BLUE);
@@ -344,58 +439,24 @@ export default function Page() {
     }
   }, []);
 
-  const noZoomRefCallback = useCallback((element: HTMLElement | null) => {
-    if (element === null) {
-      return;
-    }
-    element.addEventListener("wheel", (e) => e.ctrlKey && e.preventDefault(), {
-      passive: false,
+  // Show a helpful error message when there is a client side error
+  useEffect(() => {
+    window.addEventListener("error", (e) => {
+      setErrorMessage(
+        `${navigator.userAgent}|${e.filename}:${e.lineno}:${e.colno}:${e.message}`,
+      );
+      e.preventDefault();
     });
   }, []);
 
-  function handlePointerDown(e: React.PointerEvent) {
-    resetIdle();
-    if (fullScreenTooltipVisible) {
-      setFullScreenTooltipVisible(false);
-    }
-
-    if (calibrationValidated) {
-      const expectedContext = localStorage.getItem("calibrationContext");
-      if (expectedContext === null) {
-        setCalibrationValidated(false);
-      } else {
-        const expected = JSON.parse(expectedContext) as CalibrationContext;
-        if (
-          getIsInvalidatedCalibrationContextWithPointerEvent(
-            expected,
-            e,
-            fullScreenHandle.active,
-          )
-        ) {
-          logCalibrationContextDifferences(expected, fullScreenHandle.active);
-          setCalibrationValidated(false);
-        }
-      }
-    }
-
-    setMenusHidden(false);
-  }
-
-  function handlePointerMove(e: React.PointerEvent) {
-    // Chromebook triggers move after menu hides #268
-    if (e.movementX === 0 && e.movementY === 0) {
-      return;
-    }
-    resetIdle();
-    setMenusHidden(false);
-  }
-
+  // Show a calibration warning when the calibration context is different than what was calibrated in
   useEffect(() => {
     const projectingWithInvalidContext =
       !isCalibrating && !calibrationValidated;
     setShowCalibrationAlert(projectingWithInvalidContext);
   }, [isCalibrating, calibrationValidated]);
 
+  // Hide menus after a timeout as long ad they aren't calibrating, zoomed out, haven't loaded a file yet or are in the process of loading a file
   useEffect(() => {
     setMenusHidden(
       isIdle &&
@@ -406,6 +467,7 @@ export default function Page() {
     );
   }, [isIdle, isCalibrating, zoomedOut, file, pdfLoadStatus]);
 
+  // Continually check the calibration context because the user could change the viewport size at any time and ruin their calibration
   useEffect(() => {
     const interval = setInterval(() => {
       const calibrationContext = localStorage.getItem("calibrationContext");
@@ -442,34 +504,42 @@ export default function Page() {
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
           {showCalibrationAlert ? (
-            <h2 className="flex items-center gap-4 absolute left-1/4 top-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
-              <div className="flex">
-                <WarningIcon ariaLabel="warning" />
-              </div>
-              {t("calibrationAlert")}
-              <Tooltip
-                description={
+            <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
+              <WarningIcon ariaLabel="warning" />
+              <p>{t("calibrationAlert")}</p>
+              <Button
+                className="flex items-center justify-center"
+                onClick={
                   fullScreenHandle.active
-                    ? t("fullscreenExit")
-                    : t("fullscreen")
+                    ? fullScreenHandle.exit
+                    : fullScreenHandle.enter
                 }
               >
-                <IconButton
-                  onClick={
-                    fullScreenHandle.active
-                      ? fullScreenHandle.exit
-                      : fullScreenHandle.enter
-                  }
-                >
+                <span className="mr-1 -mt-1.5 w-4 h-4">
                   {fullScreenHandle.active ? (
                     <FullScreenIcon ariaLabel={t("fullscreen")} />
                   ) : (
                     <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
                   )}
-                </IconButton>
-              </Tooltip>
-            </h2>
+                </span>
+                {fullScreenHandle.active
+                  ? t("fullscreenExit")
+                  : t("fullscreen")}
+              </Button>
+              <p>{t("calibrationAlertContinue")}</p>
+            </div>
           ) : null}
+          <Modal open={errorMessage !== null}>
+            <ModalTitle>{g("error")}</ModalTitle>
+            <ModalContent>
+              <ModalText>{errorMessage}</ModalText>
+              <ModalActions>
+                <Button onClick={() => setErrorMessage(null)}>
+                  {g("close")}
+                </Button>
+              </ModalActions>
+            </ModalContent>
+          </Modal>
           {isCalibrating && (
             <CalibrationCanvas
               className={`absolute ${visible(isCalibrating)}`}
@@ -556,6 +626,9 @@ export default function Page() {
                     height,
                     unitOfMeasure,
                   )}
+                  patternScale={
+                    Number(patternScale) === 0 ? 1 : Number(patternScale)
+                  }
                 />
               </Draggable>
               <OverlayCanvas
@@ -569,6 +642,7 @@ export default function Page() {
                 zoomedOut={zoomedOut}
                 magnifying={magnifying}
                 restoreTransforms={restoreTransforms}
+                patternScale={Number(patternScale) === 0 ? "1" : patternScale}
               />
             </MeasureCanvas>
 
@@ -640,36 +714,30 @@ export default function Page() {
                   buttonColor={buttonColor}
                   mailOpen={mailOpen}
                   setMailOpen={setMailOpen}
+                  invalidCalibration={checkIsConcave(points)}
                 />
-                {isCalibrating && menuStates.nav && <TroubleshootingButton />}
+                {isCalibrating && menuStates.nav && (
+                  <TroubleshootingButton
+                    isDarkTheme={isDarkTheme(displaySettings.theme)}
+                  />
+                )}
                 <MailModal open={mailOpen} setOpen={setMailOpen} />
               </menu>
 
-              <menu
-                className={`${visible(!isCalibrating && file !== null)} p-0`}
-              >
-                <StitchMenu
-                  className={`${menuStates.stitch && menuStates.nav ? "opacity-100 block" : "opacity-0 hidden"}`}
-                  setShowMenu={(showMenu) =>
-                    setMenuStates({ ...menuStates, stitch: showMenu })
-                  }
-                  dispatchStitchSettings={dispatchStitchSettings}
-                  stitchSettings={stitchSettings}
-                  pageCount={pageCount}
-                  file={file}
-                  layers={layers}
+              {!isCalibrating && file !== null && (
+                <SideMenu
                   menuStates={menuStates}
                   setMenuStates={setMenuStates}
-                />
-                <LayerMenu
-                  visible={menuStates.layers}
-                  setVisible={(visible) =>
-                    setMenuStates({ ...menuStates, layers: visible })
-                  }
+                  pageCount={pageCount}
                   layers={layers}
-                  dispatchLayerAction={dispatchLayersAction}
+                  dispatchLayersAction={dispatchLayersAction}
+                  file={file}
+                  stitchSettings={stitchSettings}
+                  dispatchStitchSettings={dispatchStitchSettings}
+                  patternScale={patternScale}
+                  dispatchPatternScaleAction={dispatchPatternScaleAction}
                 />
-              </menu>
+              )}
             </menu>
             <IconButton
               className={`${visible(!menusHidden)} !p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}

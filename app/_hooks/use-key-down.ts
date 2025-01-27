@@ -7,7 +7,7 @@ export const useKeyDown = (
 ) => {
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      const keyDown = keyCodes.some((keyCode) => e.code === keyCode);
+      const keyDown = keyCodes.some((keyCode) => e.key === keyCode);
 
       if (keyDown) {
         e.preventDefault();

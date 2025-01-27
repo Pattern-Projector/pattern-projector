@@ -99,6 +99,10 @@
             "zoomOut": {
                 "title": "Alejar (Z)",
                 "description": "Aleja el zoom para ver todo el PDF. Haz clic (o toca) en el PDF para volver a acercarlo a la ubicación seleccionada."
+            },
+            "scale": {
+                "title": "Mostrar u ocultar el menú de escala",
+                "description": "Cambiar el tamaño del patrón introduciendo un multiplicador: entre 0-1 hará que el patrón sea más pequeño y mayor de 1 hará que el patrón sea más grande."
             }
         },
         "faq": {
@@ -255,13 +259,15 @@
         "overlayOptionFlippedPattern": "Lado erróneo",
         "stitchMenuDisabled": "Abra PDF para usar el menú de unión",
         "magnify": "Aumentar (M)",
-        "zoomOut": "Alejar (Z)"
+        "zoomOut": "Alejar (Z)",
+        "mail": "Correo de Courtney"
     },
     "StitchMenu": {
         "columnCount": "Columnas",
         "pageRange": "Páginas de puntos",
         "horizontal": "Horizontal",
-        "vertical": "Vertical"
+        "vertical": "Vertical",
+        "zeros": "Añadir 0 para las páginas en blanco, por ejemplo 1-3,0,0,4"
     },
     "MovementPad": {
         "left": "Izquierda",
@@ -302,7 +308,8 @@
     },
     "OverlayCanvas": {
         "zoomedOut": "Haz clic en el PDF para ampliar",
-        "magnifying": "Haz clic en PDF para detener la ampliación"
+        "magnifying": "Haz clic en PDF para detener la ampliación",
+        "scaled": "<scale></scale>× escala"
     },
     "PdfViewer": {
         "error": "Error al cargar el PDF",
@@ -333,5 +340,18 @@
         },
         "close": "Cerrar",
         "notMatching": "¿Las líneas no coinciden con tu tapete?"
+    },
+    "Mail": {
+        "title": "¿Tienes un nuevo correo?",
+        "donate": "Donar"
+    },
+    "General": {
+        "close": "Cerrar",
+        "error": "Error"
+    },
+    "ScaleMenu": {
+        "scale": "Patrón de escala",
+        "hide": "Ocultar menú de escala",
+        "show": "Mostrar menú de escala"
     }
 }

@@ -58,7 +58,6 @@ import { useTransformerContext } from "@/_hooks/use-transform-context";
 import { DropdownIconButton } from "./buttons/dropdown-icon-button";
 import MarkAndMeasureIcon from "@/_icons/mark-and-measure-icon";
 import FlippedPatternIcon from "@/_icons/flipped-pattern-icon";
-import MagnifyIcon from "@/_icons/magnify-icon";
 import ZoomOutIcon from "@/_icons/zoom-out-icon";
 import FullSceenExitIcon from "@/_icons/full-screen-exit-icon";
 import FullScreenIcon from "@/_icons/full-screen-icon";
@@ -67,6 +66,7 @@ import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { ButtonStyle, getButtonStyleClasses } from "./theme/styles";
 import { ButtonColor, getColorClasses } from "./theme/colors";
 import MailIcon from "@/_icons/mail-icon";
+import ZoomInIcon from "@/_icons/zoom-in-icon";
 
 export default function Header({
   isCalibrating,
@@ -105,6 +105,7 @@ export default function Header({
   buttonColor,
   mailOpen,
   setMailOpen,
+  invalidCalibration,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -142,6 +143,7 @@ export default function Header({
   buttonColor: ButtonColor;
   mailOpen: boolean;
   setMailOpen: Dispatch<SetStateAction<boolean>>;
+  invalidCalibration: boolean;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
   const mailRead = useRef(true);
@@ -169,7 +171,9 @@ export default function Header({
   ) {
     if (isCalibrating) {
       const expectedContext = localStorage.getItem("calibrationContext");
-      if (expectedContext) {
+      if (invalidCalibration) {
+        setCalibrationAlert(t("invalidCalibration"));
+      } else if (expectedContext) {
         const expected = JSON.parse(expectedContext);
         if (
           getIsInvalidatedCalibrationContextWithPointerEvent(
@@ -277,6 +281,14 @@ export default function Header({
       text: "5px",
       value: 5,
     },
+    {
+      text: "6px",
+      value: 6,
+    },
+    {
+      text: "7px",
+      value: 7,
+    },
   ];
 
   useEffect(() => {
@@ -317,22 +329,36 @@ export default function Header({
         <ModalTitle>{t("calibrationAlertTitle")}</ModalTitle>
         <ModalText>{calibrationAlert}</ModalText>
         <ModalActions>
-          <Button
-            onClick={(e) => {
-              saveContextAndProject(e);
-              setCalibrationAlert("");
-            }}
-          >
-            {t("continue")}
-          </Button>
-          <Button
-            onClick={() => {
-              setIsCalibrating(true);
-              setCalibrationAlert("");
-            }}
-          >
-            {t("checkCalibration")}
-          </Button>
+          {invalidCalibration ? (
+            <Button
+              onClick={() => {
+                handleResetCalibration();
+                setCalibrationAlert("");
+              }}
+            >
+              <DeleteIcon ariaLabel={t("delete")} />
+              {t("delete")}
+            </Button>
+          ) : (
+            <>
+              <Button
+                onClick={(e) => {
+                  saveContextAndProject(e);
+                  setCalibrationAlert("");
+                }}
+              >
+                {t("continue")}
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsCalibrating(true);
+                  setCalibrationAlert("");
+                }}
+              >
+                {t("checkCalibration")}
+              </Button>
+            </>
+          )}
         </ModalActions>
       </Modal>
       <header
@@ -534,7 +560,7 @@ export default function Header({
                 active={magnifying}
                 disabled={zoomedOut}
               >
-                <MagnifyIcon ariaLabel={t("magnify")} />
+                <ZoomInIcon ariaLabel={t("magnify")} />
               </IconButton>
             </Tooltip>
             <Tooltip description={t("zoomOut")}>
@@ -560,7 +586,7 @@ export default function Header({
             <label
               className={`${visible(
                 !isCalibrating,
-              )} flex gap-2 items-center ${fileInputClassNames} ${getButtonStyleClasses(ButtonStyle.OUTLINE)} ${getColorClasses(buttonColor, ButtonStyle.OUTLINE)} !py-1.5 !px-3`}
+              )} flex gap-2 items-center ${isDarkTheme(displaySettings.theme) ? "bg-black" : "bg-white"} ${fileInputClassNames} ${getButtonStyleClasses(ButtonStyle.OUTLINE)} ${getColorClasses(buttonColor, ButtonStyle.OUTLINE)} !py-1.5 !px-3`}
             >
               <FileInput
                 disabled={

@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Side menu for stitch, layers, and scale menus
+- Scale menu for changing the pattern scale
+- "Open With Pattern Projector" for PDF files on desktop, when installed with Chrome/Edge
+- Show a pop up when there's an error
+
+### Changed
+
+- Hide all layers button only switches to show all when all layers are hidden
+- Line menu tools are horizontal and below the header
+- Stitch menu is opened when the file has multiple pages, or the layer menu is opened if only one page & layers
+
+### Fixed
+
+- Bug on international keyboards that was causing key collisions (comma key was triggering magnify tool)
+
 ## [1.1.3] - 2024-11-19
 
 ### Fixed
@@ -18,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Don't allow zero for width and height
+- Export with the largest page size to avoid incorrect overlap when different sized pages in range
 
 ## [1.1.1] - 2024-10-03
 

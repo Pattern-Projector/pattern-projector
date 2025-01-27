@@ -18,6 +18,7 @@ export default function StepperInput({
   name,
   value,
   onStep,
+  step = 1,
 }: {
   inputClassName?: string | undefined;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -25,6 +26,7 @@ export default function StepperInput({
   name?: string;
   value: string;
   onStep: (increment: number) => void;
+  step?: number;
 }) {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
@@ -64,7 +66,7 @@ export default function StepperInput({
         <button
           style={{ WebkitUserSelect: "none", userSelect: "none" }}
           className={`${buttonClassName} rounded-s-lg`}
-          onPointerDown={() => handleStep(-1)}
+          onPointerDown={() => handleStep(-step)}
           onPointerUp={handleButtonRelease}
           onPointerLeave={handleButtonRelease}
         >
@@ -81,7 +83,7 @@ export default function StepperInput({
         <button
           style={{ WebkitUserSelect: "none", userSelect: "none" }}
           className={`${buttonClassName} rounded-e-lg`}
-          onPointerDown={() => handleStep(1)}
+          onPointerDown={() => handleStep(step)}
           onPointerUp={handleButtonRelease}
           onPointerLeave={handleButtonRelease}
         >
