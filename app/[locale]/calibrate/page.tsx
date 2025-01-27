@@ -290,6 +290,7 @@ export default function Page() {
           },
         });
       }
+
       calibrationCallback();
     }
 
@@ -387,7 +388,7 @@ export default function Page() {
     }
   }, []);
 
-  // Set calibration and perspective transforms
+// Set calibration and perspective transforms
   useEffect(() => {
     calibrationCallback();
   }, [points, width, height, unitOfMeasure, calibrationCallback]);

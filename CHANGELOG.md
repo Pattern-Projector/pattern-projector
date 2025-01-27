@@ -20,6 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Line menu tools are horizontal and below the header
 - Stitch menu is opened when the file has multiple pages, or the layer menu is opened if only one page & layers
 
+### Fixed
+
+- Bug on international keyboards that was causing key collisions (comma key was triggering magnify tool)
+
+## [1.1.3] - 2024-11-19
+
+### Fixed
+
+- Allow width and height to be deleted
+
 ## [1.1.2] - 2024-10-23
 
 ### Fixed
@@ -148,6 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Press and hold calibration corners to slow down movement
 
 [unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/main...beta
+[1.1.3]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.3
 [1.1.2]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.2
 [1.1.1]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.1
 [1.1.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.0
