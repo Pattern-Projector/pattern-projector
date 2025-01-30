@@ -30,7 +30,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "types/**/*.ts",
-    "global.d.ts"
+    "global.d.ts",
+    "lostpixel.config.ts"
   ],
   "exclude": ["node_modules"]
 }
