@@ -1,6 +1,22 @@
 import createMiddleware from "next-intl/middleware";
 
-export const locales = ["en", "de", "da", "nl", "fr", "es", "it", "cs", "sv"];
+// Language names are not translated because we want them to be the same always, regardless of the current language.
+// *** IMPORTANT *** Add  new languages to the localeData and matcher in the config below
+export const localeData = {
+  cs: "Čeština",
+  da: "Dansk",
+  de: "Deutsch",
+  en: "English",
+  es: "Español",
+  fr: "Français",
+  hu: "Magyar",
+  it: "Italiano",
+  nl: "Nederlands",
+  sv: "Svenska",
+  ta: "தமிழ்",
+};
+
+export const locales = Object.keys(localeData);
 
 export default createMiddleware({
   // A list of all locales that are supported
@@ -13,5 +29,6 @@ export default createMiddleware({
 export const config = {
   // Match only internationalized pathnames
   // Match /calibrate for people who saved a link to /calibrate before internationalization was added
-  matcher: ["/", "/(da|de|en|nl|fr|es|it|cs|sv)/:path*", "/calibrate"],
+  // *** IMPORTANT *** New language codes must be added here as well as in the localeData above
+  matcher: ["/", "/(cs|da|de|en|es|fr|hu|it|nl|sv|ta)/:path*", "/calibrate"],
 };

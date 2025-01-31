@@ -19,10 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hide all layers button only switches to show all when all layers are hidden
 - Line menu tools are horizontal and below the header
 - Stitch menu is opened when the file has multiple pages, or the layer menu is opened if only one page & layers
+- Languages in the language switcher are sorted alphabetically
 
 ### Fixed
 
 - Bug on international keyboards that was causing key collisions (comma key was triggering magnify tool)
+
+### Removed
+
+- Flags from the language switcher
 
 ## [1.1.3] - 2024-11-19
 
