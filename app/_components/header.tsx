@@ -602,7 +602,7 @@ export default function Header({
               ) : (
                 <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />
               )}
-              {t("openPDF")}
+              <span className="hidden md:flex">{t("openPDF")}</span>
             </label>
             <Button
               onClick={handleCalibrateProjectButtonClick}
