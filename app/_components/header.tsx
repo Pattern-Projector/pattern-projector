@@ -10,7 +10,6 @@ import {
 } from "react";
 import { FullScreenHandle } from "react-full-screen";
 
-import FileInput from "@/_components/file-input";
 import InlineInput from "@/_components/inline-input";
 import InlineSelect from "@/_components/inline-select";
 import DeleteIcon from "@/_icons/delete-icon";
@@ -106,6 +105,7 @@ export default function Header({
   mailOpen,
   setMailOpen,
   invalidCalibration,
+  file,
 }: {
   isCalibrating: boolean;
   setIsCalibrating: Dispatch<SetStateAction<boolean>>;
@@ -144,8 +144,10 @@ export default function Header({
   mailOpen: boolean;
   setMailOpen: Dispatch<SetStateAction<boolean>>;
   invalidCalibration: boolean;
+  file: File | null;
 }) {
   const [calibrationAlert, setCalibrationAlert] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const mailRead = useRef(true);
   const transformer = useTransformerContext();
   const t = useTranslations("Header");
@@ -164,6 +166,10 @@ export default function Header({
     localStorage.setItem("calibrationContext", JSON.stringify(current));
     setCalibrationValidated(true);
     setIsCalibrating(false);
+
+    if (file === null && fileInputRef.current !== null) {
+      fileInputRef.current.click();
+    }
   }
 
   function handleCalibrateProjectButtonClick(
@@ -588,15 +594,17 @@ export default function Header({
                 !isCalibrating,
               )} flex gap-2 items-center ${isDarkTheme(displaySettings.theme) ? "bg-black" : "bg-white"} ${fileInputClassNames} ${getButtonStyleClasses(ButtonStyle.OUTLINE)} ${getColorClasses(buttonColor, ButtonStyle.OUTLINE)} !py-1.5 !px-3`}
             >
-              <FileInput
+              <input
+                ref={fileInputRef}
                 disabled={
                   pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating
                 }
                 accept="application/pdf"
                 className="hidden"
-                handleChange={handleFileChange}
                 id="pdfFile"
-              ></FileInput>
+                onChange={handleFileChange}
+                type="file"
+              />
               {pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating ? (
                 <LoadingSpinner className="mr-1 mt-0.5 w-4 h-4" />
               ) : (

@@ -388,7 +388,7 @@ export default function Page() {
     }
   }, []);
 
-// Set calibration and perspective transforms
+  // Set calibration and perspective transforms
   useEffect(() => {
     calibrationCallback();
   }, [points, width, height, unitOfMeasure, calibrationCallback]);
@@ -715,6 +715,7 @@ export default function Page() {
                   mailOpen={mailOpen}
                   setMailOpen={setMailOpen}
                   invalidCalibration={checkIsConcave(points)}
+                  file={file}
                 />
                 {isCalibrating && menuStates.nav && (
                   <TroubleshootingButton
