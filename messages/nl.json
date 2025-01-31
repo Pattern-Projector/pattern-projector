@@ -99,6 +99,10 @@
             "zoomOut": {
                 "title": "Uitzoomen (Z)",
                 "description": "Zoom uit om de hele PDF te zien. Klik op de PDF om de geselecteerde locatie te vergroten."
+            },
+            "scale": {
+                "title": "Schaalmenu weergeven of verbergen",
+                "description": "Verander de grootte van het patroon door een vergrotingsfactor in te geven: tussen 0 en 1 maakt het patroon kleiner, groter dan 1 maakt het patroon groter."
             }
         },
         "faq": {
@@ -259,13 +263,16 @@
         "stitchMenuDisabled": "Open PDF om het samenvoegen menu te gebruiken",
         "overlayOptionFlippedPattern": "Verkeerde zijde",
         "magnify": "Vergroot (M)",
-        "zoomOut": "Uitzoomen (Z)"
+        "zoomOut": "Uitzoomen (Z)",
+        "invalidCalibration": "Het kalibratieraster is niet geldig. Klik op 'Kalibratie resetten' om opnieuw te proberen.",
+        "mail": "Email van Courtney"
     },
     "StitchMenu": {
         "columnCount": "Kolommen",
         "pageRange": "Paginas aan elkaar plakken",
         "horizontal": "Horizontal",
-        "vertical": "Vertical"
+        "vertical": "Vertical",
+        "zeros": "Voeg 0en toe voor lege paginas, bv 1-3,0,0,4"
     },
     "MovementPad": {
         "up": "Omhoog",
@@ -306,10 +313,50 @@
     },
     "OverlayCanvas": {
         "zoomedOut": "klik PDF om in te zoomen",
-        "magnifying": "klik PDF om te stoppen met vergroten"
+        "magnifying": "klik PDF om te stoppen met vergroten",
+        "scaled": "<scale></scale>× schaal"
     },
     "PdfViewer": {
         "error": "Niet gelukt om PDF te laden",
         "noData": "Druk op de \"Open PDF\" knop om een PDF te laden"
+    },
+    "ScaleMenu": {
+        "show": "Toon schaal menu",
+        "hide": "Verberg schaal menu",
+        "scale": "Schaal patroon"
+    },
+    "Troubleshooting": {
+        "notMatching": "Komen de lijnen niet overeen met je mat?",
+        "dragCorners": {
+            "caption": "Een juist gekalibreerd raster.",
+            "description": "Sleep de hoeken van het raster naar een rechthoek van minstens 80x60cm op je mat. Het raster is best zo groot mogelijk, maar hoeft niet de hele mat te beslaan.",
+            "title": "Hoe te kalibreren"
+        },
+        "offByOne": {
+            "caption": "De foute maten zijn ingevoerd (23x17) in plaats van (24x18). Op de mat staan slechts nummers tot 23 en 17 dus het is makkelijk om de maten door elkaar te halen. Zorg dat je meet met een meetlint!",
+            "title": "Lijnen recht maar komen niet overeen?",
+            "description": "Als de geprojecteerde lijnen recht zijn maar niet overeen komen met je mat, is je breedte of hoogte misschien 1 cm verkeerd. Controleer je maten met een meetlint. Maten van matten kunnen verwarrend of niet erg nauwkeurig zijn, dus het is belangrijk om ze met een meetlint te controleren."
+        },
+        "unevenSurface": {
+            "title": "Gebogen lijnen?",
+            "caption": "Deze mat heeft een meetlat eronder liggen waardoor de lijnen in het midden krom zijn. Een beetje kromming is niet erg, maar grote krommingen zullen problemen veroorzaken.",
+            "description": "Als de geprojecteerde lijnen er gebogen uit zien, is de mat of het oppervlak eronder misschien niet vlak. Probeer de mat vlak te krijgen door karton onder de te lage punten te leggen, of verplaats naar een ander snijoppervlak."
+        },
+        "dimensionsSwapped": {
+            "title": "Rechthoeken in plaats van vierkanten?",
+            "description": "Als het geprojecteerde raster op rechthoeken lijkt in plaats van vierkanten, dan zijn de breedte en hoogte misschien omgedraaid. Wissel de waarden om in de invoervelden.",
+            "caption": "De breedte en hoogte staan in de verkeerde invoervelden. De afmetingen zouden moeten zijn: 'W: 24' en 'H:18'."
+        },
+        "close": "Sluiten",
+        "title": "Problemen met de kalibratie oplossen",
+        "inputMeasurement": "Gebruik een meetlint om de breedte en hoogte van het raster op je mat te meten. Geef deze waarden in in de breedte en hoogte velden."
+    },
+    "General": {
+        "error": "Fout",
+        "close": "Sluiten"
+    },
+    "Mail": {
+        "donate": "Doneer",
+        "title": "Email ontvangen"
     }
 }
