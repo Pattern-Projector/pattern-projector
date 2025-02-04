@@ -11,14 +11,14 @@ interface SetPageRangeAction {
   pageRange: string;
 }
 
-interface SetColumnCountAction {
-  type: "set-column-count";
-  columnCount: number;
+interface SetLineCountAction {
+  type: "set-line-count";
+  lineCount: number;
   pageCount: number;
 }
 
-interface StepColumnCountAction {
-  type: "step-column-count";
+interface StepLineCountAction {
+  type: "step-line-count";
   pageCount: number;
   step: number;
 }
@@ -41,8 +41,8 @@ interface SetEdgeInsetsAction {
 export type StitchSettingsAction =
   | SetAction
   | SetPageRangeAction
-  | StepColumnCountAction
-  | SetColumnCountAction
+  | StepLineCountAction
+  | SetLineCountAction
   | StepHorizontalAction
   | StepVerticalAction
   | SetEdgeInsetsAction;
@@ -68,20 +68,20 @@ function reduceStitchSettings(
       return action.stitchSettings;
     case "set-page-range":
       return { ...stitchSettings, pageRange: action.pageRange };
-    case "set-column-count": {
-      const columnCount =
-        action.pageCount >= action.columnCount && action.columnCount >= 0
-          ? action.columnCount
-          : stitchSettings.columnCount;
-      return { ...stitchSettings, columnCount };
+    case "set-line-count": {
+      const lineCount =
+        action.pageCount >= action.lineCount && action.lineCount >= 0
+          ? action.lineCount
+          : stitchSettings.lineCount;
+      return { ...stitchSettings, lineCount };
     }
-    case "step-column-count": {
-      const count = stitchSettings.columnCount + action.step;
-      const columnCount =
+    case "step-line-count": {
+      const count = stitchSettings.lineCount + action.step;
+      const lineCount =
         count <= action.pageCount && count >= 0
           ? count
-          : stitchSettings.columnCount;
-      return { ...stitchSettings, columnCount };
+          : stitchSettings.lineCount;
+      return { ...stitchSettings, lineCount };
     }
     case "step-horizontal": {
       const horizontal = Math.max(

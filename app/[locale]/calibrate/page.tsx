@@ -47,7 +47,10 @@ import PdfViewer from "@/_components/pdf-viewer";
 import { Transformable } from "@/_hooks/use-transform-context";
 import OverlayCanvas from "@/_components/overlay-canvas";
 import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
-import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
+import {
+  LineDirection,
+  StitchSettings,
+} from "@/_lib/interfaces/stitch-settings";
 import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
 import FullScreenExitIcon from "@/_icons/full-screen-exit-icon";
@@ -70,9 +73,10 @@ import { ModalActions } from "@/_components/modal/modal-actions";
 import { Button } from "@/_components/buttons/button";
 
 const defaultStitchSettings = {
-  columnCount: 1,
+  lineCount: 1,
   edgeInsets: { horizontal: 0, vertical: 0 },
   pageRange: "1-",
+  lineDirection: LineDirection.Column,
 } as StitchSettings;
 
 export default function Page() {
@@ -280,6 +284,14 @@ export default function Page() {
       const stitchSettingsString = localStorage.getItem(key);
       if (stitchSettingsString !== null) {
         const stitchSettings = JSON.parse(stitchSettingsString);
+        if (!stitchSettings.lineCount) {
+          // Old naming
+          stitchSettings.lineCount = stitchSettings.columnCount;
+        }
+        if (!stitchSettings.lineDirection) {
+          // For people who saved stitch settings before Line Direction was an option
+          stitchSettings.lineDirection = LineDirection.Column;
+        }
         dispatchStitchSettings({ type: "set", stitchSettings });
       } else {
         dispatchStitchSettings({

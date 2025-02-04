@@ -286,9 +286,10 @@
   },
   "StitchMenu": {
     "columnCount": "Columns",
+    "rowCount": "Rows",
     "pageRange": "Stitch Pages",
-    "horizontal": "Horizontal",
-    "vertical": "Vertical",
+    "horizontal": "Horizontal Overlap",
+    "vertical": "Vertical Overlap",
     "zeros": "Add 0s for blank pages, e.g. 1-3,0,0,4"
   },
   "SaveMenu": {

@@ -18,7 +18,7 @@ import {
   UnrecognizedStreamTypeError,
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
-import { getPageNumbers } from "./get-page-numbers";
+import { getPageNumbers, getRowsColumns } from "./get-page-numbers";
 import { Layers } from "./layers";
 
 function trimmedPageSize(
@@ -189,8 +189,11 @@ async function tilePages(doc: PDFDocument, settings: StitchSettings) {
    * into a single large page.
    */
   const pages = getPageNumbers(settings.pageRange, doc.getPageCount());
-  const cols = settings.columnCount;
-  const rows = Math.ceil(pages.length / cols);
+  const [rows, cols] = getRowsColumns(
+    pages,
+    settings.lineCount,
+    settings.lineDirection,
+  );
   const trim = settings.edgeInsets;
 
   // Compute the size of the output document
