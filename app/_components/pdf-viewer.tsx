@@ -12,11 +12,14 @@ import { Document, Page, pdfjs } from "react-pdf";
 
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import CustomRenderer from "@/_components/pdf-custom-renderer";
-import { getPageNumbers } from "@/_lib/get-page-numbers";
+import { getPageNumbers, getRowsColumns } from "@/_lib/get-page-numbers";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { RenderContext } from "@/_hooks/use-render-context";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
-import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
+import {
+  LineDirection,
+  StitchSettings,
+} from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
 import { getLayersFromPdf, Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
@@ -44,6 +47,7 @@ export default function PdfViewer({
   setPdfLoadStatus,
   setLineThicknessStatus,
   gridCenter,
+  patternScale,
 }: {
   file: any;
   layers: Layers;
@@ -60,6 +64,7 @@ export default function PdfViewer({
   setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   gridCenter: Point;
+  patternScale: number;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -107,29 +112,42 @@ export default function PdfViewer({
 
   useEffect(() => {
     const pages = getPageNumbers(stitchSettings.pageRange, pageCount);
-    const itemCount = pages.length;
-    const columns = Math.max(
-      Math.min(stitchSettings.columnCount, itemCount),
-      1,
+    const [rows, columns] = getRowsColumns(
+      pages,
+      stitchSettings.lineCount,
+      stitchSettings.lineDirection,
     );
-    const rowCount = Math.ceil((itemCount || 1) / columns);
-    const [tileWidth, tileHeight] = getTileSize(pages, pageSizes);
+    const [tileWidth, tileHeight] = getTileSize(pages, pageSizes, patternScale);
     const w =
       tileWidth * columns -
       (columns - 1) * PDF_TO_CSS_UNITS * stitchSettings.edgeInsets.horizontal;
     const h =
-      tileHeight * rowCount -
-      (rowCount - 1) * PDF_TO_CSS_UNITS * stitchSettings.edgeInsets.vertical;
+      tileHeight * rows -
+      (rows - 1) * PDF_TO_CSS_UNITS * stitchSettings.edgeInsets.vertical;
     setLayoutWidth(w);
     setLayoutHeight(h);
-  }, [pageSizes, stitchSettings, setLayoutWidth, setLayoutHeight, pageCount]);
+  }, [
+    pageSizes,
+    stitchSettings,
+    setLayoutWidth,
+    setLayoutHeight,
+    pageCount,
+    patternScale,
+  ]);
 
   const pages = getPageNumbers(stitchSettings.pageRange, pageCount);
+  const [rows, columns] = getRowsColumns(
+    pages,
+    stitchSettings.lineCount,
+    stitchSettings.lineDirection,
+  );
   const keys = getKeys(pages);
-  const [tileWidth, tileHeight] = getTileSize(pages, pageSizes);
+  const [tileWidth, tileHeight] = getTileSize(pages, pageSizes, patternScale);
   const cssEdgeInsets = {
-    vertical: stitchSettings.edgeInsets.vertical * PDF_TO_CSS_UNITS,
-    horizontal: stitchSettings.edgeInsets.horizontal * PDF_TO_CSS_UNITS,
+    vertical:
+      stitchSettings.edgeInsets.vertical * PDF_TO_CSS_UNITS * patternScale,
+    horizontal:
+      stitchSettings.edgeInsets.horizontal * PDF_TO_CSS_UNITS * patternScale,
   };
   const insetWidth = `${tileWidth - cssEdgeInsets.horizontal}px`;
   const insetHeight = `${tileHeight - cssEdgeInsets.vertical}px`;
@@ -145,7 +163,12 @@ export default function PdfViewer({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${stitchSettings.columnCount}, max-content)`,
+          gridTemplateColumns: `repeat(${columns}, max-content)`,
+          gridTemplateRows: `repeat(${rows}, max-content)`,
+          gridAutoFlow:
+            stitchSettings.lineDirection == LineDirection.Row
+              ? "column"
+              : "row",
           marginRight: cssEdgeInsets.horizontal,
           marginBottom: cssEdgeInsets.vertical,
           filter: filter,
@@ -171,10 +194,11 @@ export default function PdfViewer({
                     layers,
                     magnifying,
                     onPageRenderSuccess,
+                    patternScale,
                   }}
                 >
                   <Page
-                    scale={PDF_TO_CSS_UNITS}
+                    scale={PDF_TO_CSS_UNITS * patternScale}
                     pageNumber={value}
                     renderMode="custom"
                     customRenderer={CustomRenderer}
@@ -222,6 +246,7 @@ function pageSizeReducer(
 function getTileSize(
   pages: number[],
   pageSizes: Map<number, { width: number; height: number }>,
+  patternScale: number,
 ): [number, number] {
   let tileWidth = 0;
   let tileHeight = 0;
@@ -229,5 +254,5 @@ function getTileSize(
     tileWidth = Math.max(tileWidth, pageSizes.get(page)?.width ?? 0);
     tileHeight = Math.max(tileHeight, pageSizes.get(page)?.height ?? 0);
   }
-  return [tileWidth, tileHeight];
+  return [tileWidth * patternScale, tileHeight * patternScale];
 }

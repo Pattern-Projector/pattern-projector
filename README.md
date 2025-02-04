@@ -59,6 +59,14 @@ Phones: While possible to visit and use the webpage on a Phone, the limited scre
 
 ## Translations
 
-Pattern Projector uses [Weblate](https://hosted.weblate.org/projects/pattern-projector/pattern-projector/) for translations. It's currently available in English, Dutch, German, Danish, French, and Spanish.
+Pattern Projector uses [Weblate](https://hosted.weblate.org/projects/pattern-projector/pattern-projector/) for translations.
 
-Feedback, code contributions, translations, and feature requests are welcome.
+<a href="https://hosted.weblate.org/engage/pattern-projector/">
+<img src="https://hosted.weblate.org/widget/pattern-projector/horizontal-auto.svg" alt="Translation status" />
+</a>
+
+## Contributing
+
+[Learn how to set up your local development environment for contributing to Pattern Projector.](/CONTRIBUTING.md)
+
+Feedback, code contributions, translations, and feature requests are welcome!

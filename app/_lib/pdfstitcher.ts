@@ -18,7 +18,7 @@ import {
   UnrecognizedStreamTypeError,
 } from "@cantoo/pdf-lib";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
-import { getPageNumbers } from "./get-page-numbers";
+import { getPageNumbers, getRowsColumns } from "./get-page-numbers";
 import { Layers } from "./layers";
 
 function trimmedPageSize(
@@ -28,16 +28,21 @@ function trimmedPageSize(
 ) {
   /**
    * Computes the size for each trimmed page.
-   * Assumes that all selected pages are the same!
+   * Chooses the largest page width and height from the user specified page range to match how the pdf viewer works.
    */
-  const firstRealPage = (pages.find((p) => p > 0) || 1) - 1;
-  const firstPage = inDoc.getPage(firstRealPage);
+  let width = 0;
+  let height = 0;
+  for (const page of pages) {
+    // Filter out blank pages specified by a 0
+    if (page > 0) {
+      const p = inDoc.getPage(page - 1);
+      const pageSize = p.getTrimBox() || p.getMediaBox();
+      width = Math.max(width, pageSize.width - settings.edgeInsets.horizontal);
+      height = Math.max(height, pageSize.height - settings.edgeInsets.vertical);
+    }
+  }
 
-  const pageSize = firstPage.getTrimBox() || firstPage.getMediaBox();
-  const width = pageSize.width - settings.edgeInsets.horizontal;
-  const height = pageSize.height - settings.edgeInsets.vertical;
-
-  return { width: width, height: height };
+  return { width, height };
 }
 
 function initDoc(doc: PDFDocument, pages: number[]): Map<number, PDFRef> {
@@ -184,8 +189,11 @@ async function tilePages(doc: PDFDocument, settings: StitchSettings) {
    * into a single large page.
    */
   const pages = getPageNumbers(settings.pageRange, doc.getPageCount());
-  const cols = settings.columnCount;
-  const rows = Math.ceil(pages.length / cols);
+  const [rows, cols] = getRowsColumns(
+    pages,
+    settings.lineCount,
+    settings.lineDirection,
+  );
   const trim = settings.edgeInsets;
 
   // Compute the size of the output document
