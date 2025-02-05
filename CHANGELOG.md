@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scale menu for changing the pattern scale
 - "Open With Pattern Projector" for PDF files on desktop, when installed with Chrome/Edge
 - Show a pop up when there's an error
+- Change page range in stitch menu with +/- (use + to throw beginning pages at the end e.g. for instruction pages)
+- Option to arrange stitched pages by column order
 
 ### Changed
 

@@ -27,14 +27,14 @@ export function getPageNumbers(pageRange: string, pageCount: number): number[] {
 export function getPageRange(pageNumbers: number[]): string {
   let start = -1;
   let end = -1;
-  let builder: string[] = [];
+  const builder: string[] = [];
   function range(start: number, end: number): string {
     if (start < 0) {
       return "";
     }
     return start == end ? `${start}` : `${start}-${end}`;
   }
-  for (let page of pageNumbers) {
+  for (const page of pageNumbers) {
     if (start < 1) {
       // not valid
       start = page;
