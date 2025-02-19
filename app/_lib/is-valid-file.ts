@@ -10,7 +10,7 @@ export const acceptedExtensions = [".PDF", ".JPEG", ".PNG", ".SVG"];
 
 // Check if selected file is a PDF or accepted image type
 export default function isValidFile(file: File): boolean {
-  for (let type of acceptedMimeTypes) {
+  for (const type of acceptedMimeTypes) {
     if (file.type === type) {
       return true;
     }
@@ -19,7 +19,7 @@ export default function isValidFile(file: File): boolean {
   if (file.type === "" && file.name) {
     const fileName = file.name;
     const lastDotIndex = fileName.lastIndexOf(".");
-    for (let extension of acceptedExtensions) {
+    for (const extension of acceptedExtensions) {
       if (
         lastDotIndex === -1 ||
         fileName.substring(lastDotIndex).toUpperCase() !== extension
