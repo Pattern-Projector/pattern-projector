@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show a pop up when there's an error
 - Change page range in stitch menu with +/- (use + to throw beginning pages at the end e.g. for instruction pages)
 - Option to arrange stitched pages by column order
+- Support for SVG, PNG, and JPEG
 
 ### Changed
 
