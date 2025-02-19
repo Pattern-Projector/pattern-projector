@@ -20,13 +20,14 @@ import {
   getCalibrationCenterPoint,
   getPerspectiveTransformFromPoints,
 } from "@/_lib/geometry";
-import isValidPDF from "@/_lib/is-valid-pdf";
+import isValidFile from "@/_lib/is-valid-file";
 import removeNonDigits from "@/_lib/remove-non-digits";
 import {
   DisplaySettings,
   getDefaultDisplaySettings,
   isDarkTheme,
   themeFilter,
+  Theme,
 } from "@/_lib/display-settings";
 import { getPtDensity, IN } from "@/_lib/unit";
 import { visible } from "@/_components/theme/css-functions";
@@ -71,6 +72,7 @@ import ModalContent from "@/_components/modal/modal-content";
 import { ModalText } from "@/_components/modal/modal-text";
 import { ModalActions } from "@/_components/modal/modal-actions";
 import { Button } from "@/_components/buttons/button";
+import { erosionFilter } from "@/_lib/erode";
 
 const defaultStitchSettings = {
   lineCount: 1,
@@ -98,7 +100,7 @@ export default function Page() {
   const width = Number(widthInput) > 0 ? Number(widthInput) : 1;
   const height = Number(heightInput) > 0 ? Number(heightInput) : 1;
   const [isCalibrating, setIsCalibrating] = useState(true);
-  const [pdfLoadStatus, setPdfLoadStatus] = useState<LoadStatusEnum>(
+  const [fileLoadStatus, setFileLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
   );
   const [lineThicknessStatus, setLineThicknessStatus] =
@@ -157,6 +159,19 @@ export default function Page() {
   const IDLE_TIMEOUT = 8000;
 
   // HELPER FUNCTIONS
+
+  // Set erosions when not magnifying so the user can see text/lines more clearly when magnifying
+  function filter(magnifying: boolean, lineThickness: number, theme: Theme) {
+    const t = themeFilter(theme);
+    const thicken = erosionFilter(magnifying ? 0 : lineThickness);
+    if (thicken == "none") {
+      return t;
+    }
+    if (t == "none") {
+      return thicken;
+    }
+    return `${thicken} ${t}`;
+  }
 
   // Manage the timeout used for hiding menus when the user hasn't interacted with the site for the specified timeout
   function resetIdle() {
@@ -262,9 +277,9 @@ export default function Page() {
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
     const { files } = e.target;
 
-    if (files && files[0] && isValidPDF(files[0])) {
+    if (files && files[0] && isValidFile(files[0])) {
       setFile(files[0]);
-      setPdfLoadStatus(LoadStatusEnum.LOADING);
+      setFileLoadStatus(LoadStatusEnum.LOADING);
       setRestoreTransforms(null);
       setZoomedOut(false);
       setMagnifying(false);
@@ -475,9 +490,9 @@ export default function Page() {
         !isCalibrating &&
         !zoomedOut &&
         file !== null &&
-        pdfLoadStatus !== LoadStatusEnum.LOADING,
+        fileLoadStatus !== LoadStatusEnum.LOADING,
     );
-  }, [isIdle, isCalibrating, zoomedOut, file, pdfLoadStatus]);
+  }, [isIdle, isCalibrating, zoomedOut, file, fileLoadStatus]);
 
   // Continually check the calibration context because the user could change the viewport size at any time and ruin their calibration
   useEffect(() => {
@@ -618,30 +633,55 @@ export default function Page() {
                 menuStates={menuStates}
                 file={file}
               >
-                <PdfViewer
-                  file={file}
-                  setPageCount={setPageCount}
-                  pageCount={pageCount}
-                  setLayers={setLayers}
-                  layers={layers}
-                  setLayoutWidth={setLayoutWidth}
-                  setLayoutHeight={setLayoutHeight}
-                  lineThickness={lineThickness}
-                  stitchSettings={stitchSettings}
-                  filter={themeFilter(displaySettings.theme)}
-                  dispatchStitchSettings={dispatchStitchSettings}
-                  setLineThicknessStatus={setLineThicknessStatus}
-                  setPdfLoadStatus={setPdfLoadStatus}
-                  magnifying={magnifying}
-                  gridCenter={getCalibrationCenterPoint(
-                    width,
-                    height,
-                    unitOfMeasure,
-                  )}
-                  patternScale={
-                    Number(patternScale) === 0 ? 1 : Number(patternScale)
-                  }
-                />
+                {file === null || file.type === "application/pdf" ? (
+                  <PdfViewer
+                    file={file}
+                    setPageCount={setPageCount}
+                    pageCount={pageCount}
+                    setLayers={setLayers}
+                    layers={layers}
+                    setLayoutWidth={setLayoutWidth}
+                    setLayoutHeight={setLayoutHeight}
+                    lineThickness={lineThickness}
+                    stitchSettings={stitchSettings}
+                    filter={themeFilter(displaySettings.theme)}
+                    dispatchStitchSettings={dispatchStitchSettings}
+                    setLineThicknessStatus={setLineThicknessStatus}
+                    setFileLoadStatus={setFileLoadStatus}
+                    magnifying={magnifying}
+                    gridCenter={getCalibrationCenterPoint(
+                      width,
+                      height,
+                      unitOfMeasure,
+                    )}
+                    patternScale={
+                      Number(patternScale) === 0 ? 1 : Number(patternScale)
+                    }
+                  />
+                ) : (
+                  <>
+                    <img
+                      src={URL.createObjectURL(file)}
+                      className="max-w-none bg-white"
+                      style={{
+                        filter: filter(
+                          magnifying,
+                          lineThickness,
+                          displaySettings.theme,
+                        ),
+                        transform: `scale(${Number(patternScale) === 0 ? 1 : Number(patternScale)})`,
+                      }}
+                      width={layoutWidth}
+                      onLoad={(e) => {
+                        const image = e.target as HTMLImageElement;
+                        setFileLoadStatus(LoadStatusEnum.SUCCESS);
+                        setLayoutWidth(image.naturalWidth);
+                        setLayoutHeight(image.naturalHeight);
+                        setPageCount(1);
+                      }}
+                    />
+                  </>
+                )}
               </Draggable>
               <OverlayCanvas
                 className={`absolute top-0 pointer-events-none`}
@@ -721,7 +761,7 @@ export default function Page() {
                   setMagnifying={setMagnifying}
                   zoomedOut={zoomedOut}
                   setZoomedOut={setZoomedOut}
-                  pdfLoadStatus={pdfLoadStatus}
+                  fileLoadStatus={fileLoadStatus}
                   lineThicknessStatus={lineThicknessStatus}
                   buttonColor={buttonColor}
                   mailOpen={mailOpen}
@@ -758,7 +798,7 @@ export default function Page() {
             >
               <ExpandMoreIcon ariaLabel={t("menuShow")} />
             </IconButton>
-            {!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING ? (
+            {!isCalibrating && fileLoadStatus === LoadStatusEnum.LOADING ? (
               <LoadingSpinner
                 height={100}
                 width={100}

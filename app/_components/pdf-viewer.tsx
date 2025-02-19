@@ -44,7 +44,7 @@ export default function PdfViewer({
   stitchSettings,
   filter,
   magnifying,
-  setPdfLoadStatus,
+  setFileLoadStatus,
   setLineThicknessStatus,
   gridCenter,
   patternScale,
@@ -61,7 +61,7 @@ export default function PdfViewer({
   stitchSettings: StitchSettings;
   filter: string;
   magnifying: boolean;
-  setPdfLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
+  setFileLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   gridCenter: Point;
   patternScale: number;
@@ -102,7 +102,7 @@ export default function PdfViewer({
   }
 
   function onPageRenderSuccess() {
-    setPdfLoadStatus(LoadStatusEnum.SUCCESS);
+    setFileLoadStatus(LoadStatusEnum.SUCCESS);
     setLineThicknessStatus(LoadStatusEnum.SUCCESS);
   }
 
@@ -158,7 +158,7 @@ export default function PdfViewer({
       onLoadSuccess={onDocumentLoadSuccess}
       noData={<p className="text-9xl">{t("noData")}</p>}
       error={<p className="text-9xl">{t("error")}</p>}
-      onLoadError={() => setPdfLoadStatus(LoadStatusEnum.FAILED)}
+      onLoadError={() => setFileLoadStatus(LoadStatusEnum.FAILED)}
     >
       <div
         style={{

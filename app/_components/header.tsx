@@ -66,6 +66,7 @@ import { ButtonStyle, getButtonStyleClasses } from "./theme/styles";
 import { ButtonColor, getColorClasses } from "./theme/colors";
 import MailIcon from "@/_icons/mail-icon";
 import ZoomInIcon from "@/_icons/zoom-in-icon";
+import { acceptedExtensions, acceptedMimeTypes } from "@/_lib/is-valid-file";
 
 export default function Header({
   isCalibrating,
@@ -99,7 +100,7 @@ export default function Header({
   setMagnifying,
   zoomedOut,
   setZoomedOut,
-  pdfLoadStatus,
+  fileLoadStatus,
   lineThicknessStatus,
   buttonColor,
   mailOpen,
@@ -138,7 +139,7 @@ export default function Header({
   setMagnifying: Dispatch<SetStateAction<boolean>>;
   zoomedOut: boolean;
   setZoomedOut: Dispatch<SetStateAction<boolean>>;
-  pdfLoadStatus: LoadStatusEnum;
+  fileLoadStatus: LoadStatusEnum;
   lineThicknessStatus: LoadStatusEnum;
   buttonColor: ButtonColor;
   mailOpen: boolean;
@@ -153,10 +154,10 @@ export default function Header({
   const t = useTranslations("Header");
 
   const fileInputClassNames = useMemo(() => {
-    if (!isCalibrating && pdfLoadStatus === LoadStatusEnum.LOADING) {
+    if (!isCalibrating && fileLoadStatus === LoadStatusEnum.LOADING) {
       return "outline-gray-50 !text-gray-50 !bg-gray-500";
     }
-  }, [isCalibrating, pdfLoadStatus]);
+  }, [isCalibrating, fileLoadStatus]);
 
   function saveContextAndProject(e: React.MouseEvent<HTMLButtonElement>) {
     const current = getCalibrationContextUpdatedWithEvent(
@@ -597,15 +598,15 @@ export default function Header({
               <input
                 ref={fileInputRef}
                 disabled={
-                  pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating
+                  fileLoadStatus === LoadStatusEnum.LOADING && !isCalibrating
                 }
-                accept="application/pdf"
+                accept={acceptedMimeTypes.join(",")}
                 className="hidden"
                 id="pdfFile"
                 onChange={handleFileChange}
                 type="file"
               />
-              {pdfLoadStatus === LoadStatusEnum.LOADING && !isCalibrating ? (
+              {fileLoadStatus === LoadStatusEnum.LOADING && !isCalibrating ? (
                 <LoadingSpinner className="mr-1 mt-0.5 w-4 h-4" />
               ) : (
                 <PdfIcon ariaLabel={t("openPDF")} fill="currentColor" />

@@ -33,7 +33,7 @@
     },
     "project": {
       "title": "Projecting a Pattern",
-      "open": "Click (or tap) <pdficon></pdficon> to open the PDF document.",
+      "open": "Click (or tap) <pdficon></pdficon> to open a pattern.",
       "move": "Move the PDF by clicking and dragging it around the screen.",
       "cut": "Cut along the projected design.",
       "tools": "In projection mode there are several tools provided. Some have keyboard shortcuts, which are denoted in parentheses.",
@@ -229,7 +229,7 @@
     "error": "Error"
   },
   "Header": {
-    "openPDF": "Open PDF",
+    "openPDF": "Open",
     "height": "H:",
     "width": "W:",
     "project": "Project",
@@ -318,17 +318,17 @@
     "rotateAndCenterNext": "Bring next line to center",
     "deleteLine": "Delete line",
     "flipAlong": "Flip along line",
-    "translate": "Move PDF by line length",
+    "translate": "Move pattern by line length",
     "line": "line",
     "lines": "lines"
   },
   "OverlayCanvas": {
-    "zoomedOut": "click PDF to zoom in",
-    "magnifying": "click PDF to stop magnifying",
+    "zoomedOut": "click pattern to zoom in",
+    "magnifying": "click pattern to stop magnifying",
     "scaled": "<scale></scale>× scale"
   },
   "PdfViewer": {
-    "error": "Failed to load PDF",
-    "noData": "Press the \"Open PDF\" button to load a PDF"
+    "error": "Failed to load pattern",
+    "noData": "Press the \"Open\" button to load a pattern"
   }
 }
