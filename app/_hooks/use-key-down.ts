@@ -9,7 +9,7 @@ export const useKeyDown = (
     (e: KeyboardEvent) => {
       const keyDown = keyCodes.some((keyCode) => e.key === keyCode);
 
-      // Only intercept keydown events when no modifier keys are pressed to prevent issues like CTRL-V not working #341
+      // Only intercept keydown events when no modifier keys are pressed to prevent issues like CTRL-V not working #369
       if (keyDown && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
         e.preventDefault();
         callback(e);
