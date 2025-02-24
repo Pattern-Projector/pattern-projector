@@ -5,7 +5,7 @@
                 "description": "Lo strumento spostamento ha quattro pulsanti freccia per spostare gli angoli della griglia di calibrazione e i bordi. Ha anche un pulsante \"successivo\" al centro per passare all'angolo/bordo successivo.",
                 "title": "Mostra o nascondi lo strumento sposta"
             },
-            "open": "Fai clic (o tocca) <pdficon></pdficon> per aprire il documento PDF.",
+            "open": "Fai clic (o tocca) <pdficon></pdficon> per aprire il cartamodello.",
             "cut": "Taglia il cartamodello proiettato.",
             "tools": "In modalità proiezione ci sono diversi strumenti a disposizione. Alcuni hanno scorciatoie da tastiera, che sono indicate tra parentesi.",
             "fullscreen": {
@@ -208,7 +208,7 @@
         "invertColor": "Inverti colori",
         "invertColorOff": "Inverti colori off",
         "overlayOptionPaper": "Foglio di carta",
-        "openPDF": "Apri PDF",
+        "openPDF": "Apri",
         "calibrate": "Calibra",
         "overlayOptionDisabled": "Disabilitato",
         "overlayOptionGrid": "Griglia",
@@ -246,7 +246,8 @@
         "hideMovement": "Nasconde lo strumento muovi",
         "magnify": "Ingrandisci (M)",
         "zoomOut": "Zoom indietro (Z)",
-        "mail": "Messaggio da Courtney"
+        "mail": "Messaggio da Courtney",
+        "invalidCalibration": "La griglia di calibrazione non è corretta. Premi \"resetta calibrazione\" per riprovare."
     },
     "MeasureCanvas": {
         "flipAlong": "Rifletti lungo la linea",
@@ -254,16 +255,17 @@
         "rotateAndCenterPrevious": "Porta la linea precedente al centro",
         "rotateAndCenterNext": "Porta la linea successiva al centro",
         "deleteLine": "Cancella la linea",
-        "translate": "Sposta il PDF della lunghezza della linea",
+        "translate": "Sposta il cartamodello della lunghezza della linea",
         "line": "linea",
         "lines": "linee"
     },
     "StitchMenu": {
         "columnCount": "Colonne",
         "pageRange": "Cuci pagine",
-        "horizontal": "Orizzontale",
-        "vertical": "Verticale",
-        "zeros": "Aggiungi degli 0 per le pagine vuote, es. 1-3,0,0,4"
+        "horizontal": "Sovrapposizione Orizzontale",
+        "vertical": "Sovrapposizione Verticale",
+        "zeros": "Aggiungi degli 0 per le pagine vuote, es. 1-3,0,0,4",
+        "rowCount": "Righe"
     },
     "SaveMenu": {
         "save": "Esporta PDF",
@@ -286,8 +288,8 @@
         "next": "Angolo successivo"
     },
     "OverlayCanvas": {
-        "magnifying": "clicca il PDF per smettere di ingrandire",
-        "zoomedOut": "clicca il PDF per zoomare in avanti",
+        "magnifying": "clicca il cartamodelli per smettere di ingrandire",
+        "zoomedOut": "clicca il cartamodello per zoomare in avanti",
         "scaled": "<scale></scale>× scala"
     },
     "Troubleshooting": {
@@ -325,8 +327,8 @@
         "donate": "Dona"
     },
     "PdfViewer": {
-        "error": "Impossibile caricare il PDF",
-        "noData": "Premi il pulsante \"Apri PDF\" per caricare un PDF"
+        "error": "Impossibile caricare il cartamodello",
+        "noData": "Premi il pulsante \"Apri\" per caricare un cartamodello"
     },
     "ScaleMenu": {
         "scale": "Scala cartamodello",
