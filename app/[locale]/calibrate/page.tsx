@@ -73,6 +73,7 @@ import { ModalText } from "@/_components/modal/modal-text";
 import { ModalActions } from "@/_components/modal/modal-actions";
 import { Button } from "@/_components/buttons/button";
 import { erosionFilter } from "@/_lib/erode";
+import SvgViewer from "@/_components/svg-viewer";
 
 const defaultStitchSettings = {
   lineCount: 1,
@@ -157,6 +158,11 @@ export default function Page() {
   const g = useTranslations("General");
 
   const IDLE_TIMEOUT = 8000;
+
+  const imageStyle = {
+    filter: filter(magnifying, lineThickness, displaySettings.theme),
+    transform: `scale(${Number(patternScale) === 0 ? 1 : Number(patternScale)})`,
+  };
 
   // HELPER FUNCTIONS
 
@@ -658,29 +664,31 @@ export default function Page() {
                       Number(patternScale) === 0 ? 1 : Number(patternScale)
                     }
                   />
+                ) : file.type === "image/svg+xml" ? (
+                  <SvgViewer
+                    file={file}
+                    setFileLoadStatus={setFileLoadStatus}
+                    setLayoutWidth={setLayoutWidth}
+                    setLayoutHeight={setLayoutHeight}
+                    setPageCount={setPageCount}
+                    layers={layers}
+                    setLayers={setLayers}
+                    style={imageStyle}
+                  />
                 ) : (
-                  <>
-                    <img
-                      src={URL.createObjectURL(file)}
-                      className="max-w-none bg-white"
-                      style={{
-                        filter: filter(
-                          magnifying,
-                          lineThickness,
-                          displaySettings.theme,
-                        ),
-                        transform: `scale(${Number(patternScale) === 0 ? 1 : Number(patternScale)})`,
-                      }}
-                      width={layoutWidth}
-                      onLoad={(e) => {
-                        const image = e.target as HTMLImageElement;
-                        setFileLoadStatus(LoadStatusEnum.SUCCESS);
-                        setLayoutWidth(image.naturalWidth);
-                        setLayoutHeight(image.naturalHeight);
-                        setPageCount(1);
-                      }}
-                    />
-                  </>
+                  <img
+                    src={URL.createObjectURL(file)}
+                    className="max-w-none bg-white"
+                    style={imageStyle}
+                    width={layoutWidth}
+                    onLoad={(e) => {
+                      const image = e.target as HTMLImageElement;
+                      setFileLoadStatus(LoadStatusEnum.SUCCESS);
+                      setLayoutWidth(image.naturalWidth);
+                      setLayoutHeight(image.naturalHeight);
+                      setPageCount(1);
+                    }}
+                  />
                 )}
               </Draggable>
               <OverlayCanvas
