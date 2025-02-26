@@ -12,7 +12,7 @@
                 "description": "Ändra mönstrets storlek genom att ange en multiplikator: mellan 0-1 gör mönstret mindre och större än 1 gör mönstret större."
             },
             "title": "Projicera ett mönster",
-            "open": "Klicka (eller tryck) <pdficon></pdficon> för att öppna PDF dokumentet.",
+            "open": "Klicka (eller tryck) <pdficon></pdficon> för att öppna ett mönster.",
             "move": "Flytta PDFn genom att klicka och dra det runt på skärmen.",
             "cut": "Klipp längs med den projicerade designen.",
             "fullscreen": {
@@ -188,7 +188,7 @@
         "contact": "Kontakt"
     },
     "MeasureCanvas": {
-        "translate": "Flytta PDF med linjens längd",
+        "translate": "Flytta mönstret med linjens längd",
         "line": "linje",
         "lines": "linjer",
         "rotateToHorizontal": "Anpassa till centrum",
@@ -198,7 +198,7 @@
         "flipAlong": "Vänd längs linje"
     },
     "OverlayCanvas": {
-        "zoomedOut": "klicka PDF för att zooma in"
+        "zoomedOut": "klicka på mönstret för att zooma in"
     },
     "InstallButton": {
         "title": "Installera app",
@@ -251,7 +251,7 @@
         "mail": "E-post från Courntey",
         "ok": "Ok",
         "recenter": "Centrera och återställ (C)",
-        "openPDF": "Öppna PDF",
+        "openPDF": "Öppna",
         "overlayOptionFlippedPattern": "Avigsida",
         "showMovement": "Visa flytt verktyg"
     },
