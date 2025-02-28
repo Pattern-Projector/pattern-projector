@@ -42,25 +42,25 @@ export default function SvgViewer({
         if (Object.entries(layers).length > 0) {
           // apply visibility
           Object.entries(layers).forEach(([id, layer]) => {
-            const g = svg.getElementById(id);
-            if (g) {
-              g.setAttribute("display", layer.visible ? "inline" : "none");
-            }
+            const g = svg.getElementById(id) as SVGElement;
+            if (!g) return;
+            g.style.display = layer.visible ? "" : "none";
           });
           return;
         }
         // get all groups at the root if the svg
         const groupLayers: Layers = {};
-        svg.querySelectorAll("g").forEach((g) => {
-          const title = g.querySelector("title");
-          const layerName =
-            title?.textContent ?? g.getAttribute("inkscape:label") ?? g.id;
-          groupLayers[g.id] = {
-            name: layerName,
-            ids: [g.id],
-            visible: g.getAttribute("display") !== "none",
-          };
-        });
+        Array.from(svg.querySelectorAll(`g`))
+          .filter((g) => g.getAttribute("inkscape:groupmode") == "layer")
+          .forEach((g) => {
+            const layerName = g.getAttribute("inkscape:label") ?? g.id;
+            const isVisible = getComputedStyle(g).display !== "none";
+            groupLayers[g.id] = {
+              name: layerName,
+              ids: [g.id],
+              visible: isVisible,
+            };
+          });
         setLayers(groupLayers);
       }}
     ></object>

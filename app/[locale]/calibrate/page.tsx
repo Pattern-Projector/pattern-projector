@@ -291,6 +291,7 @@ export default function Page() {
       setMagnifying(false);
       setMeasuring(false);
       setPageCount(0);
+      setLayers({});
       dispatchPatternScaleAction({ type: "set", scale: "1" });
       const lineThicknessString = localStorage.getItem(
         `lineThickness:${files[0].name}`,
