@@ -5,6 +5,7 @@ import React, {
   ChangeEvent,
   useCallback,
   useEffect,
+  useMemo,
   useReducer,
   useRef,
   useState,
@@ -52,7 +53,6 @@ import {
   LineDirection,
   StitchSettings,
 } from "@/_lib/interfaces/stitch-settings";
-import Tooltip from "@/_components/tooltip/tooltip";
 import { IconButton } from "@/_components/buttons/icon-button";
 import FullScreenExitIcon from "@/_icons/full-screen-exit-icon";
 import FullScreenIcon from "@/_icons/full-screen-icon";
@@ -524,7 +524,10 @@ export default function Page() {
       clearInterval(interval);
     };
   }, [calibrationValidated, setCalibrationValidated, fullScreenHandle.active]);
-
+  const dataUrl = useMemo(
+    () => (file ? URL.createObjectURL(file) : null),
+    [file],
+  );
   return (
     <main
       onPointerDown={handlePointerDown}
@@ -667,7 +670,7 @@ export default function Page() {
                   />
                 ) : file.type === "image/svg+xml" ? (
                   <SvgViewer
-                    file={file}
+                    dataUrl={dataUrl ?? ""}
                     setFileLoadStatus={setFileLoadStatus}
                     setLayoutWidth={setLayoutWidth}
                     setLayoutHeight={setLayoutHeight}
@@ -678,10 +681,11 @@ export default function Page() {
                   />
                 ) : (
                   <img
-                    src={URL.createObjectURL(file)}
-                    className="max-w-none bg-white"
+                    src={dataUrl ?? ""}
+                    className="max-w-none bg-white touch-none select-none"
                     style={imageStyle}
                     width={layoutWidth}
+                    alt=""
                     onLoad={(e) => {
                       const image = e.target as HTMLImageElement;
                       setFileLoadStatus(LoadStatusEnum.SUCCESS);

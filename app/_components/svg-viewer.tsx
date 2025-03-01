@@ -3,7 +3,7 @@ import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { CSSProperties, Dispatch, SetStateAction } from "react";
 
 export default function SvgViewer({
-  file,
+  dataUrl,
   style,
   setFileLoadStatus,
   setLayoutWidth,
@@ -12,7 +12,7 @@ export default function SvgViewer({
   layers,
   setLayers,
 }: {
-  file: File;
+  dataUrl: string;
   style: CSSProperties;
   setFileLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   setLayoutWidth: Dispatch<SetStateAction<number>>;
@@ -24,7 +24,7 @@ export default function SvgViewer({
   return (
     <object
       className="pointer-events-none bg-white"
-      data={URL.createObjectURL(file)}
+      data={dataUrl}
       type="image/svg+xml"
       style={style}
       onLoad={(e) => {
