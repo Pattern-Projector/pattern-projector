@@ -1,6 +1,12 @@
 import { Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
-import { CSSProperties, Dispatch, SetStateAction } from "react";
+import {
+  CSSProperties,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+} from "react";
 
 export default function SvgViewer({
   dataUrl,
@@ -21,8 +27,20 @@ export default function SvgViewer({
   layers: Layers;
   setLayers: (layers: Layers) => void;
 }) {
+  const objectRef = useRef<HTMLObjectElement>(null);
+  useEffect(() => {
+    const svg = objectRef.current?.contentDocument?.querySelector("svg");
+    if (!svg) return;
+    // apply visibility
+    Object.entries(layers).forEach(([id, layer]) => {
+      const g = svg.getElementById(id) as SVGElement;
+      if (!g) return;
+      g.style.display = layer.visible ? "" : "none";
+    });
+  }, [layers]);
   return (
     <object
+      ref={objectRef}
       className="pointer-events-none bg-white"
       data={dataUrl}
       type="image/svg+xml"
@@ -39,15 +57,6 @@ export default function SvgViewer({
         setLayoutWidth(svg.width.baseVal.value);
         setLayoutHeight(svg.height.baseVal.value);
         setPageCount(1);
-        if (Object.entries(layers).length > 0) {
-          // apply visibility
-          Object.entries(layers).forEach(([id, layer]) => {
-            const g = svg.getElementById(id) as SVGElement;
-            if (!g) return;
-            g.style.display = layer.visible ? "" : "none";
-          });
-          return;
-        }
         // get all groups at the root if the svg
         const groupLayers: Layers = {};
         Array.from(svg.querySelectorAll(`g`))
