@@ -8,11 +8,11 @@ import {
   rotateMatrixDeg,
   transformPoint,
   translate,
+  scaleAboutPoint,
 } from "@/_lib/geometry";
 import { Line } from "@/_lib/interfaces/line";
 import { Point } from "@/_lib/point";
 import Matrix from "ml-matrix";
-
 interface FlipAction {
   type: "flip_vertical" | "flip_horizontal";
   centerPoint: Point;
@@ -61,6 +61,12 @@ interface AlignAction {
   to: Line;
 }
 
+interface MagnifyAction {
+  type: "magnify";
+  scale: number;
+  point: Point;
+}
+
 export type LocalTransformAction =
   | FlipAction
   | RotateToHorizontalAction
@@ -70,7 +76,8 @@ export type LocalTransformAction =
   | RotateAction
   | RecenterAction
   | ResetAction
-  | AlignAction;
+  | AlignAction
+  | MagnifyAction;
 
 export default function localTransformReducer(
   localTransform: Matrix,
@@ -110,6 +117,9 @@ export default function localTransformReducer(
     }
     case "align": {
       return align(action.line, action.to).mmul(localTransform);
+    }
+    case "magnify": {
+      return scaleAboutPoint(action.scale, action.point).mmul(localTransform);
     }
   }
 }

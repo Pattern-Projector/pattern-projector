@@ -32,7 +32,7 @@
             "fullscreen": "Gå til fuld skærm ved at klikke eller tappe ",
             "drag": "Træk i hjørnerne af gitteret, så ternene kommer til at passe med ternene på dit skæreunderlag. Justér hjørnerne på din tablet eller computer, mens du kigger på skæreunderlaget. Justér hjørnernes placering indtil gitteret i projektorbilledet passer med skæreunderlagets gitter.",
             "size": "Du behøver ikke at bruge hele dit skæreunderlag, når du kalibrerer. Brug i stedet det størst mulige område, som du kan få kalibreringsgitteret til at passe i. Indtast målene (bredde og højde), så de stemmer overens med målene på kalibreringsgitteret.",
-            "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap \"Vis på projektor\""
+            "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap \"Vis mønster\""
         },
         "project": {
             "title": "Vis mønster",
@@ -66,7 +66,7 @@
             },
             "measure": {
                 "title": "Linjeværktøj (L)",
-                "description": "Lav linjer på PDF'en for at rotere, vende, flytte måle eller markere."
+                "description": "Lav linjer på PDF'en for at rotere, vende, flytte måle eller markere. For en detaljeret beskrivelse af linjeværktøjet, se nærmere <lineToolLink>her</lineToolLink>."
             },
             "stitch": {
                 "title": "Vis eller skjul samlemenu",
@@ -81,7 +81,7 @@
                 "description": "Ændr tykkelsen på linjerne i PDF-mønsteret."
             },
             "overlayOptions": {
-                "description": "Markeringer for gitter, kant, papirark, vende-linjer eller vrangside kan vises på PDF'en for at hjælpe med kalibrering og udskæring.",
+                "description": "Markeringer for gitter, kant, papirark, vende-linjer eller vrangside kan vises på PDF'en for at hjælpe med kalibrering og udskæring. Se nærmere i afsnittet om <overlayOptionsLink>overlay-funktioner</overlayOptionsLink>.",
                 "title": "Vis eller skjul overlay-funktioner"
             },
             "moveTool": {
@@ -131,9 +131,9 @@
         },
         "contribute": {
             "title": "Bidrag til projektet",
-            "donation": "Hvis du har lyst til at støtte udviklingen af dette værktøj, så overvej at købe mig <donateLink>en kop kaffe</donateLink>",
+            "donation": "Hvis du har lyst til at støtte udviklingen af dette værktøj, så overvej at købe mig <donateLink>en kop kaffe</donateLink>!",
             "develop": "Hjælp med at implementere funktioner og fixe problemer på <githubLink>GitHub</githubLink>.",
-            "translate": "Oversæt dette værktøj til flere sprog.",
+            "translate": "Oversæt dette værktøj til flere sprog med <weblateLink>Weblate</weblateLink>.",
             "feedback": "Feedback og forslag til funktioner er velkomne!"
         },
         "contact": "Kontakt",
@@ -204,19 +204,19 @@
         "gridOff": "Skjul gitter",
         "invertColor": "Vis farver omvendt",
         "invertColorOff": "Vis farver normalt",
-        "flipVertical": "Vend lodret",
+        "flipVertical": "Vend lodret (V)",
         "flipVerticalOff": "Vend lodret til normal",
-        "flipHorizontal": "Vend vandret",
+        "flipHorizontal": "Vend vandret (H)",
         "flipHorizontalOff": "Vend vandret til normal",
         "fourCornersOn": "Fremhæv alle hjørner",
         "fourCornersOff": "Fremhæv kun valgt hjørne",
-        "rotate90": "Rotér 90 grader med uret",
+        "rotate90": "Rotér 90 grader med uret (R)",
         "arrowBack": "Gå en side tilbage",
         "arrowForward": "Gå en side frem",
         "info": "Infoside",
         "layersOn": "Vis lag-menu",
         "layersOff": "Skjul lag-menu",
-        "recenter": "Centrér PDF'en",
+        "recenter": "Centrér og nulstil PDF'en (C)",
         "fullscreen": "Gå til fuld skærm",
         "fullscreenExit": "Forlad fuld skærm",
         "lineWeight": "Linjetykkelse",
@@ -246,11 +246,16 @@
         "overlayOptionFlippedPattern": "Vrangside/bagside",
         "calibrationAlertTitle": "Kalibreringsadvarsel",
         "calibrationAlert": "Størrelsen på vinduet har ændret sig siden mønstervisningen begyndte, tryk på \"fuld skærm\"-knappen for at rette problemet.",
-        "continue": "Gem størrelse på vindue og fortsæt"
+        "continue": "Gem størrelse på vindue og fortsæt",
+        "flipCenterOn": "Vend hen over midten",
+        "flipCenterOff": "Vend hen over midten slået fra",
+        "magnify": "Forstør (M)",
+        "zoomOut": "Zoom ud (Z)",
+        "stitchMenuDisabled": "Åbn PDF for at bruge samlemenu"
     },
     "StitchMenu": {
         "columnCount": "Kolonner",
-        "pageRange": "Sider",
+        "pageRange": "Saml sider",
         "horizontal": "Vandret",
         "vertical": "Lodret"
     },
@@ -285,5 +290,14 @@
         "description": "For bedste brugeroplevelse, installér Pattern Projector på <chromeLink>Google Chrome</chromeLink>.",
         "descriptionIOS": "Download app'en ved at trykke på share-knappen <shareIcon></shareIcon> i browsermenuen og derefter Add to Home Screen <addBoxIcon></addBoxIcon>/Tilføj til hjemmeskærm.",
         "descriptionAndroid": "For bedre brugeroplevelse på Android, brug Firefox. Download app'en ved at trykke på more-knappen <moreIcon></moreIcon> i browsermenuen og derefter <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen/Tilføj til hjemmeskærm."
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "klik på PDF'en for at zoome ind",
+        "magnifying": "klik på PDF'en for at stoppe med forstørre"
+    },
+    "SaveMenu": {
+        "save": "Eksportér PDF",
+        "saveTooltip": "Eksportér PDF med samlede sider og valgte lag",
+        "encryptedPDF": "Denne PDF er krypteret. Indtast venligst password for at gemme den samlede PDF."
     }
 }

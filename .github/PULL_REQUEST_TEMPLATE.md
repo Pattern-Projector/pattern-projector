@@ -2,6 +2,7 @@
 
 - [ ] I have run `yarn build` to ensure that the project builds successfully.
 - [ ] I have updated `CHANGELOG.md` with the necessary changes made in this pull request.
+- [ ] I have added documentation for any new functionality from this pull request.
 
 ## Description
 

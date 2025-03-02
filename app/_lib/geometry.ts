@@ -136,17 +136,35 @@ export function rectCorners(width: number, height: number): Point[] {
   ];
 }
 
+export function getBounds(pts: Point[]): Point[] {
+  const first = pts[0];
+  let minX = first.x;
+  let minY = first.y;
+  let maxX = first.x;
+  let maxY = first.y;
+  for (const { x, y } of pts) {
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x);
+    maxY = Math.max(maxY, y);
+  }
+  return [
+    { x: minX, y: minY },
+    { x: maxX, y: maxY },
+  ];
+}
+
 function getDstVertices(
   width: number,
   height: number,
   ptDensity: number,
 ): Point[] {
-  const dx = +width * ptDensity;
-  const dy = +height * ptDensity;
+  const dx = width * ptDensity;
+  const dy = height * ptDensity;
   return rectCorners(dx, dy);
 }
 
-export function getCenterPoint(
+export function getCalibrationCenterPoint(
   width: number,
   height: number,
   unitOfMeasure: string,
@@ -202,6 +220,12 @@ export function translate(p: Point): Matrix {
 export function scale(s: number, sy: null | number = null): Matrix {
   sy = sy ?? s;
   return Matrix.from1DArray(3, 3, [s, 0, 0, 0, sy, 0, 0, 0, 1]);
+}
+
+export function scaleAboutPoint(s: number, point: Point): Matrix {
+  return translate(point)
+    .mmul(scale(s))
+    .mmul(translate({ x: -point.x, y: -point.y }));
 }
 
 export function rotate(angle: number): Matrix {
@@ -390,4 +414,9 @@ export function constrained(p: Point, anchorPoint: Point) {
 
 export function isFlipped(m: Matrix): boolean {
   return m.get(1, 1) * m.get(0, 0) < 0;
+}
+
+export interface RestoreTransforms {
+  localTransform: Matrix;
+  calibrationTransform: Matrix;
 }

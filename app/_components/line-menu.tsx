@@ -17,6 +17,7 @@ import FlipHorizontalIcon from "@/_icons/flip-horizontal-icon";
 import KeyboardArrowLeftIcon from "@/_icons/keyboard-arrow-left";
 import ShiftIcon from "@/_icons/shift-icon";
 import { subtract } from "@/_lib/point";
+import { MenuStates } from "@/_lib/menu-states";
 
 export default function LineMenu({
   selectedLine,
@@ -26,6 +27,8 @@ export default function LineMenu({
   handleDeleteLine,
   gridCenter,
   setMeasuring,
+  menusHidden,
+  menuStates,
 }: {
   selectedLine: number;
   setSelectedLine: Dispatch<SetStateAction<number>>;
@@ -34,6 +37,8 @@ export default function LineMenu({
   handleDeleteLine: () => void;
   gridCenter: Point;
   setMeasuring: Dispatch<SetStateAction<boolean>>;
+  menusHidden: boolean;
+  menuStates: MenuStates;
 }) {
   const t = useTranslations("MeasureCanvas");
   const transformer = useTransformerContext();
@@ -77,7 +82,7 @@ export default function LineMenu({
   return (
     // center menu items horizontally
     <menu
-      className={`absolute justify-center items-center left-0 right-0 bottom-0 flex gap-2 p-2 ${visible(selectedLine >= 0)}`}
+      className={`absolute flex-col justify-center items-center ${menuStates.layers ? "left-48 top-36" : "left-0 top-44"} flex gap-2 p-2 ${visible(selectedLine >= 0 && !menusHidden)}`}
     >
       <div className="flex flex-col items-center">
         <span>{lines.length}</span>

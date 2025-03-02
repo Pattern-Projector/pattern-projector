@@ -55,7 +55,7 @@
       },
       "overlayOptions": {
         "title": "Show or hide overlay options",
-        "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting."
+        "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting. For more information, see the <overlayOptionsLink>overlay options section</overlayOptionsLink>."
       },
       "lineWeight": {
         "title": "Line weight",
@@ -73,6 +73,14 @@
         "title": "Center and Reset (C)",
         "description": "Centers the pattern on the cutting mat and resets the rotation/flipping."
       },
+      "magnify": {
+        "title": "Magnify (M)",
+        "description": "Click (or tap) on the PDF to magnify it. Click (or tap) again to stop magnifying."
+      },
+      "zoomOut": {
+        "title": "Zoom out (Z)",
+        "description": "Zoom out to see the whole PDF. Click (or tap) on the PDF to zoom back in at selected location."
+      },
       "layers": {
         "title": "Show or hide layers",
         "description": "Show or hide layers in the PDF."
@@ -83,7 +91,7 @@
       },
       "measure": {
         "title": "Line tool (L)",
-        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking."
+        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking. For a detailed description of the line tool, see the <lineToolLink>line tool section</lineToolLink>."
       }
     },
     "tools": "Tools",
@@ -148,13 +156,9 @@
       "saveAsApp": {
         "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
       },
-      "annotationSupport": {
-        "question": "Do you have support for adding annotations?",
-        "answer": "Not yet, but it's planned for an upcoming release."
-      },
       "mobileSupport": {
         "question": "Do you have support mobile phones and tablets?",
-        "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use. Better mobile support is planned in an upcoming release."
+        "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use."
       }
     },
     "resources": {
@@ -172,7 +176,7 @@
     },
     "contribute": {
       "title": "Contribute to the project",
-      "donation": "If you would like to support the development of this tool, please consider <donateLink>buying me a coffee</donateLink>!",
+      "donation": "If Pattern Projector has saved you money at the copyshop or freed you from a PDF viewer subscription, please consider <donateLink>buying me a coffee</donateLink> or supporting via <payPalLink>PayPal</payPalLink>!",
       "develop": "Help implement features and fix issues on <githubLink>GitHub</githubLink>.",
       "translate": "Translate this tool into more languages using <weblateLink>Weblate</weblateLink>.",
       "feedback": "Feedback and feature requests are welcome!"
@@ -181,14 +185,45 @@
   },
   "InstallButton": {
     "title": "Install App",
-    "description": "For the best experience, install Pattern Projector using <chromeLink>Google Chrome</chromeLink>.",
+    "description": "For the best experience, install Pattern Projector using <chromeLink>Google Chrome</chromeLink>. In Chrome, download the app by tapping <installIcon></installIcon> in the address bar.",
     "descriptionAndroid": "For the best experience on Android, use Firefox. Download the app by tapping the more button <moreIcon></moreIcon> in the browser menu and then <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen.",
     "descriptionIOS": "Download the app by tapping the share button <shareIcon></shareIcon> in the browser menu and then Add to Home Screen <addBoxIcon></addBoxIcon>.",
     "ok": "OK"
   },
+  "Mail": {
+      "title": "You've got mail",
+      "donate": "Donate"
+    },
+  "Troubleshooting": {
+    "notMatching": "Lines not matching your mat?",
+    "title": "Calibration Troubleshooting",
+    "dragCorners": {
+      "title": "How to calibrate",
+      "description": "Drag the corners of the grid to at least a 24x16 inch rectangle on your mat. The grid should be as large as possible but does not need to cover the entire mat.",
+      "caption": "A correctly calibrated grid."
+    },
+    "inputMeasurement": "Use a measuring tape to measure the width and height of the grid on your mat. Input these measurements into the width and height fields.",
+    "offByOne": {
+      "title": "Lines are straight but don’t align?",
+      "description": "If the projected lines are straight but don’t align with your mat, your width or height might be off by 1 inch/centimeter. Double-check your measurements with a measuring tape. Mat measurements can be confusing or inaccurate, so checking with a measuring tape is important.",
+      "caption": "The wrong measurements are input (23 x 17) instead of (24 x 18). The mat only shows numbers up to 23 and 17 so it is easy to confuse the measurements. Make sure you measure with a measuring tape!"
+    },
+    "unevenSurface": {
+      "title": "Curved lines?",
+      "description": "If the projected lines look curved, your mat or surface below the mat may not be flat. Try to flatten the mat but putting card stock under the low points or move to a different cutting surface.",
+      "caption": "This mat has a ruler under it causing the lines to curve in the center. A slight curve is ok but a large curve will cause issues."
+    },
+    "dimensionsSwapped": {
+      "title": "Rectangles instead of squares?",
+      "description": "If the projected grid looks like rectangles instead of squares, the width and height may be swapped. Simply swap the values in the fields.",
+      "caption": "The width and height are in the wrong boxes. The dimension should read 'W: 24' and 'H: 18'."
+    },
+    "close": "Close"
+  },
+  "General": {
+    "close": "Close"
+  },
   "Header": {
-    "projecting": "Projecting",
-    "calibrating": "Calibrating",
     "openPDF": "Open PDF",
     "height": "H:",
     "width": "W:",
@@ -230,15 +265,24 @@
     "lineWeight": "Line weight",
     "stitchMenuShow": "Show stitch menu",
     "stitchMenuHide": "Hide stitch menu",
+    "stitchMenuDisabled": "Open PDF to use stitch menu",
     "measure": "Line tool (L)",
     "showMovement": "Show move tool",
-    "hideMovement": "Hide move tool"
+    "hideMovement": "Hide move tool",
+    "magnify": "Magnify (M)",
+    "zoomOut": "Zoom out (Z)",
+    "mail": "Mail from Courtney"
   },
   "StitchMenu": {
     "columnCount": "Columns",
     "pageRange": "Stitch Pages",
     "horizontal": "Horizontal",
     "vertical": "Vertical"
+  },
+  "SaveMenu": {
+    "save": "Export PDF",
+    "saveTooltip": "Export PDF with stitched pages and selected layers",
+    "encryptedPDF": "This PDF is encrypted. Please enter the password to save the stitched PDF."
   },
   "LayerMenu": {
     "title": "Layers",
@@ -264,5 +308,13 @@
     "translate": "Move PDF by line length",
     "line": "line",
     "lines": "lines"
+  },
+  "OverlayCanvas": {
+    "zoomedOut": "click PDF to zoom in",
+    "magnifying": "click PDF to stop magnifying"
+  },
+  "PdfViewer": {
+    "error": "Failed to load PDF",
+    "noData": "Press the \"Open PDF\" button to load a PDF"
   }
 }

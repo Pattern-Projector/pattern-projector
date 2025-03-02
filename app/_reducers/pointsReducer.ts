@@ -11,18 +11,19 @@ interface SetAction {
   points: Point[];
 }
 
-interface InitializeAction {
-  type: "initialize";
-  points: Point[];
+export type PointAction = OffsetAction | SetAction;
+
+export default function pointsReducer(
+  points: Point[],
+  action: PointAction,
+): Point[] {
+  const newPoints = reducePoints(points, action);
+  localStorage.setItem("points", JSON.stringify(newPoints));
+  return newPoints;
 }
 
-export type PointAction = OffsetAction | SetAction | InitializeAction;
-
-export default function pointsReducer(points: Point[], action: PointAction) {
+function reducePoints(points: Point[], action: PointAction) {
   switch (action.type) {
-    case "initialize": {
-      return [...action.points];
-    }
     case "set": {
       return [...action.points];
     }

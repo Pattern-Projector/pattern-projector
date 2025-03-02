@@ -6,14 +6,14 @@ import type {
   RenderParameters,
   PDFDocumentProxy,
 } from "pdfjs-dist/types/src/display/api.js";
-import { Layer } from "@/_lib/interfaces/layer";
 import { PDFPageProxy } from "pdfjs-dist";
 import { PDF_TO_CSS_UNITS } from "@/_lib/pixels-per-inch";
 import { erodeImageData, erosionFilter } from "@/_lib/erode";
 import useRenderContext from "@/_hooks/use-render-context";
 
 export default function CustomRenderer() {
-  const { layers, setLayers, erosions } = useRenderContext();
+  const { erosions, layers, magnifying, onPageRenderSuccess } =
+    useRenderContext();
   const pageContext = usePageContext();
 
   invariant(pageContext, "Unable to find Page context.");
@@ -26,7 +26,7 @@ export default function CustomRenderer() {
     const ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
   }, []);
-  const filter = isSafari ? "none" : erosionFilter(erosions);
+  const filter = isSafari ? "none" : erosionFilter(magnifying ? 0 : erosions);
 
   // Safari does not support the feMorphology filter in CSS.
   const renderErosions = isSafari ? erosions : 0;
@@ -61,9 +61,6 @@ export default function CustomRenderer() {
   ) {
     // Some iPad's don't support OffscreenCanvas.
     if (!isSafari) {
-      console.log(
-        `Creating new offscreen canvas ${renderWidth}x${renderHeight} ${offscreen.current?.width}x${offscreen.current?.height} ${offscreen.current ? "replacing" : "initializing"}`,
-      );
       offscreen.current = new OffscreenCanvas(renderWidth, renderHeight);
     }
   }
@@ -81,32 +78,9 @@ export default function CustomRenderer() {
     }
     async function optionalContentConfigPromise(pdf: PDFDocumentProxy) {
       const optionalContentConfig = await pdf.getOptionalContentConfig();
-      const groups = optionalContentConfig.getGroups();
-      if (groups) {
-        if (layers.size === 0) {
-          const l = new Map<string, Layer>();
-          Object.keys(groups).forEach((key) => {
-            const name = String(groups[key].name) ?? key;
-            const existing = l.get(name);
-            if (existing) {
-              existing.ids.push(key);
-              l.set(name, existing);
-            } else {
-              l.set(name, {
-                name,
-                ids: [key],
-                visible: true,
-              });
-            }
-            setLayers(l);
-          });
-        } else {
-          for (const entry of layers) {
-            const layer = entry[1];
-            for (let i = 0; i < layer.ids.length; i += 1) {
-              optionalContentConfig.setVisibility(layer.ids[i], layer.visible);
-            }
-          }
+      for (const layer of Object.values(layers)) {
+        for (const id of layer.ids) {
+          optionalContentConfig.setVisibility(id, layer.visible);
         }
       }
       return optionalContentConfig;
@@ -114,6 +88,7 @@ export default function CustomRenderer() {
 
     const ctx = canvas.getContext("2d", {
       alpha: false,
+      willReadFrequently: true,
     }) as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
     if (!ctx) {
       return;
@@ -149,6 +124,7 @@ export default function CustomRenderer() {
           dest.filter = filter;
           dest.drawImage(canvas, 0, 0);
         }
+        onPageRenderSuccess();
       })
       .catch(() => {
         // Intentionally empty
@@ -165,13 +141,11 @@ export default function CustomRenderer() {
     renderViewport,
     layers,
     pdf,
-    setLayers,
     erosions,
     filter,
     renderErosions,
     renderWidth,
     renderHeight,
-    isSafari,
   ]);
 
   return (
@@ -193,7 +167,7 @@ function getScale(w: number, h: number, userUnit: number): number {
   const dpr = window.devicePixelRatio;
   const dpi = dpr * userUnit * PDF_TO_CSS_UNITS;
   const renderArea = dpi * w * dpi * h;
-  const maxArea = 16_777_216; // limit for iOS device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
+  const maxArea = 16_777_216; // limit for iOS or Android device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
   let scale = dpi;
   if (renderArea > maxArea) {
     // scale to fit max area.

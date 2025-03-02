@@ -2,8 +2,14 @@ import React, { useEffect, useRef } from "react";
 import { CanvasState, drawOverlays } from "@/_lib/drawing";
 import { Point } from "@/_lib/point";
 import { DisplaySettings, strokeColor } from "@/_lib/display-settings";
-import { getPerspectiveTransformFromPoints, isFlipped } from "@/_lib/geometry";
+import {
+  RestoreTransforms,
+  getPerspectiveTransformFromPoints,
+  isFlipped,
+} from "@/_lib/geometry";
 import { useTransformContext } from "@/_hooks/use-transform-context";
+import Matrix from "ml-matrix";
+import { useTranslations } from "next-intl";
 
 export default function OverlayCanvas({
   className,
@@ -12,6 +18,10 @@ export default function OverlayCanvas({
   height,
   unitOfMeasure,
   displaySettings,
+  calibrationTransform,
+  zoomedOut,
+  magnifying,
+  restoreTransforms,
 }: {
   className: string | undefined;
   points: Point[];
@@ -19,9 +29,16 @@ export default function OverlayCanvas({
   height: number;
   unitOfMeasure: string;
   displaySettings: DisplaySettings;
+  calibrationTransform: Matrix;
+  zoomedOut: boolean;
+  magnifying: boolean;
+  restoreTransforms: RestoreTransforms | null;
 }) {
   const flipped = isFlipped(useTransformContext());
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const t = useTranslations("OverlayCanvas");
+
   useEffect(() => {
     if (canvasRef !== null && canvasRef.current !== null) {
       const canvas = canvasRef.current;
@@ -50,11 +67,28 @@ export default function OverlayCanvas({
           strokeColor(displaySettings.theme),
           displaySettings,
           flipped,
+          calibrationTransform,
+          zoomedOut,
+          magnifying,
+          restoreTransforms,
+          t,
         );
         drawOverlays(cs);
       }
     }
-  }, [points, width, height, unitOfMeasure, displaySettings, flipped]);
+  }, [
+    points,
+    width,
+    height,
+    unitOfMeasure,
+    displaySettings,
+    flipped,
+    calibrationTransform,
+    zoomedOut,
+    magnifying,
+    restoreTransforms,
+    t,
+  ]);
   return (
     <canvas
       tabIndex={0}
