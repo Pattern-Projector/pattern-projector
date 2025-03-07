@@ -47,6 +47,8 @@ export default function SideMenu({
   const l = useTranslations("LayerMenu");
 
   const numberOfLayers = Object.entries(layers).length;
+  const disableStitchMenu =
+    pageCount === 0 || file?.name.toLocaleUpperCase().endsWith(".SVG");
 
   return (
     <menu className="pointer-events-auto flex w-fit">
@@ -95,7 +97,7 @@ export default function SideMenu({
           description={
             menuStates.stitch
               ? h("stitchMenuHide")
-              : pageCount === 0
+              : disableStitchMenu
                 ? h("stitchMenuDisabled")
                 : h("stitchMenuShow")
           }
@@ -103,7 +105,7 @@ export default function SideMenu({
           <IconButton
             className="pointer-events-auto"
             active={menuStates.stitch}
-            disabled={pageCount === 0}
+            disabled={disableStitchMenu}
             onClick={() =>
               setMenuStates(
                 toggleSideMenuStates(menuStates, SideMenuType.stitch),
