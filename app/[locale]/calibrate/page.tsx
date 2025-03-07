@@ -151,6 +151,8 @@ export default function Page() {
     PatternScaleReducer,
     "1",
   );
+  const patternScaleFactor =
+    Number(patternScale) === 0 ? 1 : Number(patternScale);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -161,7 +163,8 @@ export default function Page() {
 
   const imageStyle = {
     filter: filter(magnifying, lineThickness, displaySettings.theme),
-    transform: `scale(${Number(patternScale) === 0 ? 1 : Number(patternScale)})`,
+    transform: `scale(${patternScaleFactor})`,
+    transformOrigin: "top left",
   };
 
   // HELPER FUNCTIONS
@@ -664,9 +667,7 @@ export default function Page() {
                       height,
                       unitOfMeasure,
                     )}
-                    patternScale={
-                      Number(patternScale) === 0 ? 1 : Number(patternScale)
-                    }
+                    patternScale={patternScaleFactor}
                   />
                 ) : file.type === "image/svg+xml" ? (
                   <SvgViewer
@@ -678,6 +679,7 @@ export default function Page() {
                     layers={layers}
                     setLayers={setLayers}
                     style={imageStyle}
+                    patternScale={patternScaleFactor}
                   />
                 ) : (
                   <img
@@ -707,7 +709,7 @@ export default function Page() {
                 zoomedOut={zoomedOut}
                 magnifying={magnifying}
                 restoreTransforms={restoreTransforms}
-                patternScale={Number(patternScale) === 0 ? "1" : patternScale}
+                patternScale={String(patternScaleFactor)}
               />
             </MeasureCanvas>
 

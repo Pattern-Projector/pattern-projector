@@ -17,6 +17,7 @@ export default function SvgViewer({
   setPageCount,
   layers,
   setLayers,
+  patternScale,
 }: {
   dataUrl: string;
   style: CSSProperties;
@@ -26,6 +27,7 @@ export default function SvgViewer({
   setPageCount: Dispatch<SetStateAction<number>>;
   layers: Layers;
   setLayers: (layers: Layers) => void;
+  patternScale: number;
 }) {
   const objectRef = useRef<HTMLObjectElement>(null);
   useEffect(() => {
@@ -38,6 +40,17 @@ export default function SvgViewer({
       g.style.display = layer.visible ? "" : "none";
     });
   }, [layers]);
+
+  useEffect(() => {
+    const svg = objectRef.current?.contentDocument?.querySelector("svg");
+    if (!svg) return;
+    const width = svg.width.baseVal.value;
+    const height = svg.height.baseVal.value;
+    if (width === 0 || height === 0) return;
+    setLayoutWidth(width * patternScale);
+    setLayoutHeight(height * patternScale);
+  }, [objectRef, setLayoutWidth, setLayoutHeight, patternScale]);
+
   return (
     <object
       ref={objectRef}
@@ -54,8 +67,8 @@ export default function SvgViewer({
           return;
         }
         setFileLoadStatus(LoadStatusEnum.SUCCESS);
-        setLayoutWidth(svg.width.baseVal.value);
-        setLayoutHeight(svg.height.baseVal.value);
+        setLayoutWidth(svg.width.baseVal.value * patternScale);
+        setLayoutHeight(svg.height.baseVal.value * patternScale);
         setPageCount(1);
         // get all groups at the root if the svg
         const groupLayers: Layers = {};
