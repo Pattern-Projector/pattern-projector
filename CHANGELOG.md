@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stitch menu is opened when the file has multiple pages, or the layer menu is opened if only one page & layers
 - Languages in the language switcher are sorted alphabetically
 - If no file is open, pressing the "Project" button will open the file picker
+- Able to drag outside of PDF
 
 ### Fixed
 

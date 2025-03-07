@@ -151,20 +151,6 @@ export default function Draggable({
     }
   }
 
-  let cursorMode = "grab";
-
-  if (zoomedOut || magnifying) {
-    cursorMode = "zoom-in";
-  }
-  if (magnifying && restoreTransforms !== null) {
-    cursorMode = "zoom-out";
-  }
-  if (dragStart !== null) {
-    cursorMode = "grabbing";
-  }
-
-  const viewportCursorMode = `${dragStart !== null ? "grabbing" : "default"}`;
-
   useEffect(() => {
     if (zoomedOut && restoreTransforms === null) {
       setRestoreTransforms({
@@ -240,34 +226,34 @@ export default function Draggable({
     setPerspective,
   ]);
 
+  let cursorMode = "cursor-grab";
+
+  if (zoomedOut || magnifying) {
+    cursorMode = "cursor-zoom-in";
+  }
+  if (magnifying && restoreTransforms !== null) {
+    cursorMode = "cursor-zoom-out";
+  }
+  if (dragStart !== null) {
+    cursorMode = "cursor-grabbing";
+  }
+
   return (
     <div
       tabIndex={0}
-      className={`${className ?? ""} select-none absolute top-0 ${visible(!isCalibrating)} bg-white dark:bg-black transition-all duration-500 w-screen h-screen`}
+      className={`${className ?? ""} ${cursorMode} ${visible(!isCalibrating)} select-none absolute top-0 bg-white dark:bg-black transition-all duration-500 w-screen h-screen`}
       onPointerMove={handleMove}
+      onPointerDown={handleOnStart}
       onMouseUp={handleOnEnd}
-      style={{
-        cursor: viewportCursorMode,
-      }}
     >
       <div
-        className={`select-none ${visible(!isCalibrating)}`}
-        onPointerMove={handleMove}
-        onPointerDown={handleOnStart}
-        onPointerUp={handleOnEnd}
+        className={"absolute"}
         style={{
-          cursor: cursorMode,
+          transform: `${toMatrix3d(calibrationTransform.mmul(transform))}`,
+          transformOrigin: "0 0",
         }}
       >
-        <div
-          className={"absolute"}
-          style={{
-            transform: `${toMatrix3d(calibrationTransform.mmul(transform))}`,
-            transformOrigin: "0 0",
-          }}
-        >
-          {children}
-        </div>
+        {children}
       </div>
     </div>
   );
