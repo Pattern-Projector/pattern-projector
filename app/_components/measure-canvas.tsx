@@ -427,6 +427,9 @@ export default function MeasureCanvas({
       return (
         <div
           style={{ position: "absolute", left: location.x, top: location.y }}
+          onMouseDownCapture={(e) => {
+            e.stopPropagation();
+          }}
         >
           <InlineInput
             className="relative flex flex-col w-18 mb-0.5"
