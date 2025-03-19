@@ -95,6 +95,12 @@
             "magnify": {
                 "title": "Vergrößern (M)",
                 "description": "Klicke (oder tippe) auf das PDF, um es zu vergrößern. Klicke (oder tippe) erneut, um das Vergrößerung zu beenden."
+            },
+            "scale": {
+                "title": "Anzeigen oder Verstecken des Skalierungsmenüs"
+            },
+            "zoomOut": {
+                "description": "Herauszoomen, um das vollständige PDF anzuzeigen. Auf das PDF klicken, um zur gewählten Stelle zu Zoomen."
             }
         },
         "faq": {
@@ -150,6 +156,17 @@
             "delete": {
                 "title": "Linie löschen",
                 "description": "Ausgewählte Linie löschen."
+            },
+            "previousNext": {
+                "title": "Vorherige/nächste Linie zentrieren"
+            },
+            "move": {
+                "title": "Verschieben des PDF um die Länge der Linie",
+                "description": "Verschiebt das PDF um die Länge der Linie."
+            },
+            "flip": {
+                "description": "Spiegelt das PDF entlang der Linie.",
+                "title": "Spiegeln entlang der Linie"
             }
         },
         "tools": "Werkzeuge"
