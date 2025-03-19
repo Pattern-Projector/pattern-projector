@@ -25,6 +25,7 @@ import { getLayersFromPdf, Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { Point } from "@/_lib/point";
 import { useTranslations } from "next-intl";
+import { MenuStates, getDefaultMenuStates } from "@/_lib/menu-states";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -48,6 +49,7 @@ export default function PdfViewer({
   setLineThicknessStatus,
   gridCenter,
   patternScale,
+  setMenuStates,
 }: {
   file: any;
   layers: Layers;
@@ -65,6 +67,7 @@ export default function PdfViewer({
   setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   gridCenter: Point;
   patternScale: number;
+  setMenuStates: Dispatch<SetStateAction<MenuStates>>;
 }) {
   const [pageSizes, setPageSize] = useReducer(
     pageSizeReducer,
@@ -83,7 +86,18 @@ export default function PdfViewer({
         pageRange: stitchSettings.pageRange + numPages,
       });
     }
-    getLayersFromPdf(docProxy).then((l) => setLayers(l));
+    getLayersFromPdf(docProxy).then((l) => {
+      if (numPages === 1) {
+        if (Object.entries(l).length > 1) {
+          setMenuStates({ ...getDefaultMenuStates(), layers: true });
+        } else {
+          setMenuStates(getDefaultMenuStates());
+        }
+      } else {
+        setMenuStates({ ...getDefaultMenuStates(), stitch: true });
+      }
+      setLayers(l);
+    });
   }
 
   function onPageLoadSuccess(pdfProxy: PDFPageProxy) {

@@ -1,5 +1,6 @@
 import { Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
+import { MenuStates, getDefaultMenuStates } from "@/_lib/menu-states";
 import {
   CSSProperties,
   Dispatch,
@@ -18,6 +19,7 @@ export default function SvgViewer({
   layers,
   setLayers,
   patternScale,
+  setMenuStates,
 }: {
   dataUrl: string;
   style: CSSProperties;
@@ -28,6 +30,7 @@ export default function SvgViewer({
   layers: Layers;
   setLayers: (layers: Layers) => void;
   patternScale: number;
+  setMenuStates: Dispatch<SetStateAction<MenuStates>>;
 }) {
   const objectRef = useRef<HTMLObjectElement>(null);
   useEffect(() => {
@@ -84,6 +87,11 @@ export default function SvgViewer({
             };
           });
         setLayers(groupLayers);
+        if (Object.keys(groupLayers).length > 1) {
+          setMenuStates({ ...getDefaultMenuStates(), layers: true });
+        } else {
+          setMenuStates(getDefaultMenuStates());
+        }
       }}
     ></object>
   );

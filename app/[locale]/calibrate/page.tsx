@@ -386,19 +386,6 @@ export default function Page() {
 
   // EFFECTS
 
-  // Choose which side menu to show based on the number of pages and layers in the PDF
-  useEffect(() => {
-    if (pageCount === 1) {
-      if (Object.entries(layers).length > 1) {
-        setMenuStates({ ...getDefaultMenuStates(), layers: true });
-      } else {
-        setMenuStates(getDefaultMenuStates());
-      }
-    } else {
-      setMenuStates({ ...getDefaultMenuStates(), stitch: true });
-    }
-  }, [pageCount, layers]);
-
   // Allow the user to open the file from their file browser, e.g., "Open With"
   useEffect(() => {
     requestWakeLock();
@@ -668,6 +655,7 @@ export default function Page() {
                       unitOfMeasure,
                     )}
                     patternScale={patternScaleFactor}
+                    setMenuStates={setMenuStates}
                   />
                 ) : file.type === "image/svg+xml" ? (
                   <SvgViewer
@@ -680,6 +668,7 @@ export default function Page() {
                     setLayers={setLayers}
                     style={imageStyle}
                     patternScale={patternScaleFactor}
+                    setMenuStates={setMenuStates}
                   />
                 ) : (
                   <img
