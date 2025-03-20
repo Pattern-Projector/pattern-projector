@@ -244,7 +244,7 @@ export default function Draggable({
       className={`${className ?? ""} ${cursorMode} ${visible(!isCalibrating)} select-none absolute top-0 bg-white dark:bg-black transition-all duration-500 w-screen h-screen`}
       onPointerMove={handleMove}
       onPointerDown={handleOnStart}
-      onMouseUp={handleOnEnd}
+      onPointerUp={handleOnEnd}
     >
       <div
         className={"absolute"}
