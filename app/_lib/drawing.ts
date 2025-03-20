@@ -78,20 +78,25 @@ export function drawArrow(ctx: CanvasRenderingContext2D, line: Line): void {
   const dy = line[1].y - line[0].y;
   const angle = Math.atan2(dy, dx);
   const length = Math.hypot(dy, dx);
-  const arrowLength = 8;
-  const arrowWidth = 4;
+  const arrowLength = 16;
+  const arrowWidth = 8;
+  const whisker = 16;
   ctx.save();
   ctx.fillStyle = ctx.strokeStyle;
   ctx.translate(line[1].x, line[1].y);
   ctx.rotate(angle);
   ctx.beginPath();
-  ctx.moveTo(0, 0);
+  ctx.moveTo(-ctx.lineWidth / 2, 0);
   ctx.lineTo(-arrowLength, arrowWidth);
   ctx.lineTo(-arrowLength, -arrowWidth);
   ctx.closePath();
   ctx.fill();
   ctx.moveTo(-arrowLength, 0);
   ctx.lineTo(-length, 0);
+  ctx.moveTo(0, whisker);
+  ctx.lineTo(0, -whisker);
+  ctx.moveTo(-length, -whisker);
+  ctx.lineTo(-length, whisker);
   ctx.stroke();
   ctx.restore();
 }

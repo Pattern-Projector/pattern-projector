@@ -244,8 +244,6 @@ export default function MeasureCanvas({
           }
           const clientLine = transformLine(matLine, calibrationTransform);
           drawArrow(ctx, clientLine);
-          drawCircle(ctx, clientLine[0], endCircleRadius);
-          drawCircle(ctx, clientLine[1], endCircleRadius);
           drawMeasurementsAt(ctx, matLine, clientLine[1]);
         }
       }
