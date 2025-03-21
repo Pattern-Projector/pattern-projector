@@ -16,7 +16,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { drawLine, drawArrow, drawCircle } from "@/_lib/drawing";
+import { drawLine, drawArrow } from "@/_lib/drawing";
 import { useTransformContext } from "@/_hooks/use-transform-context";
 import { Line } from "@/_lib/interfaces/line";
 
@@ -37,6 +37,7 @@ export default function MeasureCanvas({
   file,
   gridCenter,
   zoomedOut,
+  magnifying,
   menusHidden,
   menuStates,
   children,
@@ -50,6 +51,7 @@ export default function MeasureCanvas({
   file: File | null;
   gridCenter: Point;
   zoomedOut: boolean;
+  magnifying: boolean;
   menusHidden: boolean;
   menuStates: MenuStates;
   children: React.ReactNode;
@@ -280,6 +282,13 @@ export default function MeasureCanvas({
     setLines([]);
     setSelectedLine(-1);
   }, [file]);
+
+  useEffect(() => {
+    if (zoomedOut || magnifying) {
+      setMeasuring(false);
+      setSelectedLine(-1);
+    }
+  }, [zoomedOut, magnifying, setMeasuring]);
 
   return (
     <div className={className}>

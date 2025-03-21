@@ -66,7 +66,7 @@ import { ButtonStyle, getButtonStyleClasses } from "./theme/styles";
 import { ButtonColor, getColorClasses } from "./theme/colors";
 import MailIcon from "@/_icons/mail-icon";
 import ZoomInIcon from "@/_icons/zoom-in-icon";
-import { acceptedExtensions, acceptedMimeTypes } from "@/_lib/is-valid-file";
+import { acceptedMimeTypes } from "@/_lib/is-valid-file";
 
 export default function Header({
   isCalibrating,

@@ -12,7 +12,7 @@ import React, {
 } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
-import CalibrationCanvas from "@/_components/calibration-canvas";
+import CalibrationCanvas from "@/_components/canvases/calibration-canvas";
 import Draggable from "@/_components/draggable";
 import Header from "@/_components/header";
 import {
@@ -33,7 +33,7 @@ import {
 import { getPtDensity, IN } from "@/_lib/unit";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
-import MeasureCanvas from "@/_components/measure-canvas";
+import MeasureCanvas from "@/_components/canvases/measure-canvas";
 import { getDefaultMenuStates, MenuStates } from "@/_lib/menu-states";
 import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
@@ -47,7 +47,7 @@ import CalibrationContext, {
 import WarningIcon from "@/_icons/warning-icon";
 import PdfViewer from "@/_components/pdf-viewer";
 import { Transformable } from "@/_hooks/use-transform-context";
-import OverlayCanvas from "@/_components/overlay-canvas";
+import OverlayCanvas from "@/_components/canvases/overlay-canvas";
 import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
 import {
   LineDirection,
@@ -606,6 +606,7 @@ export default function Page() {
                 unitOfMeasure,
               )}
               zoomedOut={zoomedOut}
+              magnifying={magnifying}
               menusHidden={menusHidden}
               menuStates={menuStates}
             >
