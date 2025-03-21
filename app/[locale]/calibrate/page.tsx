@@ -74,6 +74,7 @@ import { ModalActions } from "@/_components/modal/modal-actions";
 import { Button } from "@/_components/buttons/button";
 import { erosionFilter } from "@/_lib/erode";
 import SvgViewer from "@/_components/svg-viewer";
+import { toggleFullScreen } from "@/_lib/full-screen";
 
 const defaultStitchSettings = {
   lineCount: 1,
@@ -335,9 +336,11 @@ export default function Page() {
     const expectedContext = localStorage.getItem("calibrationContext");
     if (expectedContext !== null) {
       const expected = JSON.parse(expectedContext) as CalibrationContext;
-      if (expected.fullScreen) {
-        fullScreenHandle.enter();
-      }
+      try {
+        if (expected.fullScreen) {
+          fullScreenHandle.enter();
+        }
+      } catch (e) {}
     }
   }
 
@@ -536,11 +539,7 @@ export default function Page() {
               <p>{t("calibrationAlert")}</p>
               <Button
                 className="flex items-center justify-center"
-                onClick={
-                  fullScreenHandle.active
-                    ? fullScreenHandle.exit
-                    : fullScreenHandle.enter
-                }
+                onClick={() => toggleFullScreen(fullScreenHandle)}
               >
                 <span className="mr-1 -mt-1.5 w-4 h-4">
                   {fullScreenHandle.active ? (

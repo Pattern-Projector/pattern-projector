@@ -67,6 +67,7 @@ import { ButtonColor, getColorClasses } from "./theme/colors";
 import MailIcon from "@/_icons/mail-icon";
 import ZoomInIcon from "@/_icons/zoom-in-icon";
 import { acceptedMimeTypes } from "@/_lib/is-valid-file";
+import { toggleFullScreen } from "@/_lib/full-screen";
 
 export default function Header({
   isCalibrating,
@@ -382,13 +383,7 @@ export default function Header({
               }
               visible={fullScreenTooltipVisible}
             >
-              <IconButton
-                onClick={
-                  fullScreenHandle.active
-                    ? fullScreenHandle.exit
-                    : fullScreenHandle.enter
-                }
-              >
+              <IconButton onClick={() => toggleFullScreen(fullScreenHandle)}>
                 {fullScreenHandle.active ? (
                   <FullScreenIcon ariaLabel={t("fullscreen")} />
                 ) : (
