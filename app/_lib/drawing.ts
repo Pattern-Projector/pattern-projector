@@ -157,7 +157,7 @@ export function drawOverlays(cs: CanvasState) {
       drawMessage(
         cs,
         t.rich("scaled", {
-          scale: () => patternScale,
+          scale: () => String(Number(patternScale).toFixed(2)),
         }),
       );
     }

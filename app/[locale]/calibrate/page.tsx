@@ -149,7 +149,7 @@ export default function Page() {
   );
   const [patternScale, dispatchPatternScaleAction] = useReducer(
     PatternScaleReducer,
-    "1",
+    "1.00",
   );
   const patternScaleFactor =
     Number(patternScale) === 0 ? 1 : Number(patternScale);
@@ -295,7 +295,7 @@ export default function Page() {
       setMeasuring(false);
       setPageCount(0);
       setLayers({});
-      dispatchPatternScaleAction({ type: "set", scale: "1" });
+      dispatchPatternScaleAction({ type: "set", scale: "1.00" });
       const lineThicknessString = localStorage.getItem(
         `lineThickness:${files[0].name}`,
       );

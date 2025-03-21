@@ -20,7 +20,7 @@ export default function PatternScaleReducer(
     }
     case "delta": {
       const n = action.delta + Number(patternScale);
-      const hm = n > 0 ? String(n.toFixed(1)) : patternScale;
+      const hm = n > 0 ? String(n.toFixed(2)) : patternScale;
       return hm;
     }
   }
