@@ -3,7 +3,10 @@ import { Dispatch, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { PatternScaleAction } from "@/_reducers/patternScaleReducer";
 import { sideMenuStyles } from "../theme/styles";
-import { decimalToString, roundTo } from "@/_lib/remove-non-digits";
+import removeNonDigits, {
+  decimalToString,
+  roundTo,
+} from "@/_lib/remove-non-digits";
 
 export default function ScaleMenu({
   patternScale,
@@ -19,16 +22,8 @@ export default function ScaleMenu({
     if (Number.isNaN(number)) {
       return "1";
     }
-    return decimalToString(number, 2);
+    return patternScale;
   }, [patternScale]);
-
-  const convertInputToScale = (newString: string, oldString: string) => {
-    const num = +newString.replace(/[^.\d]/g, "");
-    if (!isNaN(num)) {
-      return (num / 100).toString();
-    }
-    return oldString;
-  };
 
   return (
     <menu className={`${sideMenuStyles}`}>
@@ -37,7 +32,7 @@ export default function ScaleMenu({
         handleChange={(e) =>
           dispatchPatternScaleAction({
             type: "set",
-            scale: convertInputToScale(e.target.value, patternScale),
+            scale: removeNonDigits(e.target.value, patternScale),
           })
         }
         label={t("scale")}
