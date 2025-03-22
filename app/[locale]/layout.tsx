@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 import type { Metadata } from "next";
+import { pad } from "node_modules/cypress/types/lodash";
 const inter = Inter({ subsets: ["latin"] });
 
 const APP_TITLE = "Pattern Projector";
@@ -62,6 +63,7 @@ export default function LocaleLayout({
           overscrollBehavior: "none",
           overflow: "hidden",
           height: "100vh",
+          paddingTop: "env(safe-area-inset-top)",
         }}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
