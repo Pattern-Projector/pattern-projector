@@ -58,7 +58,11 @@ export default function LocaleLayout({
     <html lang={locale}>
       <body
         className={inter.className}
-        style={{ overscrollBehavior: "none", overflow: "hidden" }}
+        style={{
+          overscrollBehavior: "none",
+          overflow: "hidden",
+          height: "100vh",
+        }}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
