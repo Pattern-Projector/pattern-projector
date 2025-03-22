@@ -14,5 +14,18 @@ const config: Config = {
     require("@tailwindcss/typography"),
     require("@tailwindcss/aspect-ratio"),
   ],
+  theme: {
+    extend: {
+      keyframes: {
+        breathe: {
+          "0%, 100%": { color: "" }, // Primary color
+          "50%": { color: "#FACC15" }, // Secondary color
+        },
+      },
+      animation: {
+        breathe: "breathe 1.5s ease-in-out infinite",
+      },
+    },
+  },
 };
 export default config;

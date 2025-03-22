@@ -29,8 +29,8 @@ export function getColorClasses(
     }
     case ButtonColor.PURPLE: {
       return style === ButtonStyle.OUTLINE
-        ? "text-purple-700 border-purple-700 hover:bg-purple-800 focus:ring-purple-300 dark:border-purple-500 dark:text-purple-500 dark:hover:bg-purple-500 dark:focus:ring-purple-800"
-        : "bg-purple-700 hover:bg-purple-800 focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800";
+        ? "btn-primary-outline"
+        : "btn-primary";
     }
   }
 }

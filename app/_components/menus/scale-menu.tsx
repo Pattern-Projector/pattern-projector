@@ -1,9 +1,12 @@
 import StepperInput from "@/_components/stepper-input";
-import { Dispatch } from "react";
-import removeNonDigits from "@/_lib/remove-non-digits";
+import { Dispatch, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { PatternScaleAction } from "@/_reducers/patternScaleReducer";
 import { sideMenuStyles } from "../theme/styles";
+import removeNonDigits, {
+  decimalToString,
+  roundTo,
+} from "@/_lib/remove-non-digits";
 
 export default function ScaleMenu({
   patternScale,
@@ -13,6 +16,14 @@ export default function ScaleMenu({
   dispatchPatternScaleAction: Dispatch<PatternScaleAction>;
 }) {
   const t = useTranslations("ScaleMenu");
+
+  const scaleValue: string = useMemo(() => {
+    const number = +patternScale;
+    if (Number.isNaN(number)) {
+      return "1";
+    }
+    return patternScale;
+  }, [patternScale]);
 
   return (
     <menu className={`${sideMenuStyles}`}>
@@ -25,11 +36,11 @@ export default function ScaleMenu({
           })
         }
         label={t("scale")}
-        value={patternScale}
+        value={scaleValue}
         onStep={(delta) =>
           dispatchPatternScaleAction({ type: "delta", delta: delta })
         }
-        step={0.1}
+        step={0.05}
       ></StepperInput>
     </menu>
   );

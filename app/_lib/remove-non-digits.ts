@@ -14,6 +14,19 @@ export default function removeNonDigits(
   }
 }
 
+export function roundTo(num: number, decimalDigits: number) {
+  const factor = 10 ** decimalDigits; // Takes 10^num
+  return Math.round(num * factor) / factor;
+}
+
+export function decimalToString(num: number, decimalDigits: number) {
+  const roundedNum = roundTo(num, decimalDigits);
+  if (Number.isInteger(roundedNum)) {
+    return num.toFixed(0);
+  }
+  return num.toFixed(decimalDigits);
+}
+
 export function allowInteger(
   s: string,
   allowNegative: boolean = false,
