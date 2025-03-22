@@ -9,4 +9,10 @@ export function getButtonStyleClasses(style: ButtonStyle) {
     : `flex gap-2 items-center text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none`;
 }
 
+export function getStaticButtonStyleClasses(style: ButtonStyle) {
+  return style === ButtonStyle.OUTLINE
+    ? `flex gap-2 dark:bg-black bg-white items-center border border-2 border-solid focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center`
+    : `flex gap-2 items-center text-white font-medium rounded-lg text-sm px-5 py-2.5`;
+}
+
 export const sideMenuStyles = `flex flex-col gap-2 p-2 w-64 items-start bg-white dark:bg-black border-b border-r border-gray-200 dark:border-gray-700`;

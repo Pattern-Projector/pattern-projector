@@ -1,3 +1,5 @@
+import { roundTo } from "@/_lib/remove-non-digits";
+
 interface DeltaAction {
   type: "delta";
   delta: number;
@@ -19,8 +21,8 @@ export default function PatternScaleReducer(
       return action.scale;
     }
     case "delta": {
-      const n = action.delta + Number(patternScale);
-      const hm = n > 0 ? String(n.toFixed(2)) : patternScale;
+      const n = roundTo(action.delta + Number(patternScale), 3);
+      const hm = n > 0 ? n.toFixed(3) : patternScale;
       return hm;
     }
   }

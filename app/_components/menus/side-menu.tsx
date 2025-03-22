@@ -18,8 +18,10 @@ import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { LayerAction } from "@/_reducers/layersReducer";
 import { PatternScaleAction } from "@/_reducers/patternScaleReducer";
 import TuneIcon from "@/_icons/tune-icon";
+import { visible } from "@/_components/theme/css-functions";
 
 export default function SideMenu({
+  hidden,
   menuStates,
   setMenuStates,
   pageCount,
@@ -31,6 +33,7 @@ export default function SideMenu({
   patternScale,
   dispatchPatternScaleAction,
 }: {
+  hidden: boolean;
   menuStates: MenuStates;
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
   pageCount: number;
@@ -51,7 +54,7 @@ export default function SideMenu({
     pageCount === 0 || file?.name.toLocaleUpperCase().endsWith(".SVG");
 
   return (
-    <menu className="pointer-events-auto flex w-fit">
+    <menu className={`pointer-events-auto flex w-fit ${visible(!hidden)}`}>
       {/* reverse so the tooltips show on top */}
       <menu className="w-16 flex flex-col-reverse justify-end gap-2 p-2 bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black left-0 border-b border-r dark:border-gray-700 transition-all duration-500">
         <Tooltip description={menuStates.scale ? sc("hide") : sc("show")}>

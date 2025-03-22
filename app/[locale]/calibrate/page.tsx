@@ -75,6 +75,7 @@ import { Button } from "@/_components/buttons/button";
 import { erosionFilter } from "@/_lib/erode";
 import SvgViewer from "@/_components/svg-viewer";
 import { toggleFullScreen } from "@/_lib/full-screen";
+import ModifiersBanner from "@/_components/modifiers-banner";
 
 const defaultStitchSettings = {
   lineCount: 1,
@@ -296,7 +297,7 @@ export default function Page() {
       setMeasuring(false);
       setPageCount(0);
       setLayers({});
-      dispatchPatternScaleAction({ type: "set", scale: "1.00" });
+      dispatchPatternScaleAction({ type: "set", scale: "1.000" });
       const lineThicknessString = localStorage.getItem(
         `lineThickness:${files[0].name}`,
       );
@@ -703,10 +704,11 @@ export default function Page() {
             </MeasureCanvas>
 
             <menu
-              className={`absolute w-screen ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
+              className={`absolute w-screen ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
             >
               <menu className="pointer-events-auto">
                 <Header
+                  hidden={menusHidden}
                   isCalibrating={isCalibrating}
                   setIsCalibrating={setIsCalibrating}
                   widthInput={widthInput}
@@ -779,10 +781,12 @@ export default function Page() {
                   />
                 )}
                 <MailModal open={mailOpen} setOpen={setMailOpen} />
+                <ModifiersBanner patternScale={patternScaleFactor} />
               </menu>
 
               {!isCalibrating && file !== null && (
                 <SideMenu
+                  hidden={menusHidden}
                   menuStates={menuStates}
                   setMenuStates={setMenuStates}
                   pageCount={pageCount}

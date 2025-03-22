@@ -25,7 +25,8 @@ import { getLayersFromPdf, Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { Point } from "@/_lib/point";
 import { useTranslations } from "next-intl";
-import { MenuStates, getDefaultMenuStates } from "@/_lib/menu-states";
+import { getDefaultMenuStates, MenuStates } from "@/_lib/menu-states";
+import PdfIcon from "@/_icons/pdf-icon";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -75,6 +76,7 @@ export default function PdfViewer({
   );
   const transformer = useTransformerContext();
   const t = useTranslations("PdfViewer");
+  const h = useTranslations("Header");
 
   function onDocumentLoadSuccess(docProxy: PDFDocumentProxy) {
     const numPages = docProxy.numPages;
@@ -170,7 +172,22 @@ export default function PdfViewer({
     <Document
       file={file}
       onLoadSuccess={onDocumentLoadSuccess}
-      noData={<p className="text-9xl">{t("noData")}</p>}
+      noData={
+        <div className="text-6xl text-center w-full border-gray-400 leading-[1.3] px-6 py-3">
+          <span>{t("noDataFirst")}</span>
+          <div className="flex w-full align-middle justify-center">
+            <div className="flex items-center gap-2 scale-[2] m-8">
+              <label
+                className={`flex gap-2 items-center btn-primary-static-outline !py-1.5 !px-3`}
+              >
+                <PdfIcon ariaLabel={h("openPDF")} fill="currentColor" />
+                <span className="hidden md:flex">{h("openPDF")}</span>
+              </label>
+            </div>
+          </div>
+          <span>{t("noDataLast")}</span>
+        </div>
+      }
       error={<p className="text-9xl">{t("error")}</p>}
       onLoadError={() => setFileLoadStatus(LoadStatusEnum.FAILED)}
     >

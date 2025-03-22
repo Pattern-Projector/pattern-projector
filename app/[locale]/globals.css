@@ -22,6 +22,45 @@
   .scrollbar::-webkit-scrollbar-thumb:hover {
     background: #6b7280;
   }
+
+  /**
+   * Buttons ========================
+   */
+
+  /* Button base classes */
+  .btn-outline {
+    @apply flex gap-2 dark:bg-black bg-white items-center border-2 border-solid focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center
+  }
+
+  .btn {
+    @apply flex gap-2 items-center text-white font-medium rounded-lg text-sm px-5 py-2.5
+  }
+
+  /* Primary color button */
+  .btn-primary-static-outline {
+    @apply btn-outline text-purple-700 border-purple-700 dark:border-purple-500 dark:text-purple-500;
+  }
+
+  .btn-primary-static {
+    @apply btn bg-purple-700 dark:bg-purple-600
+  }
+
+  .btn-primary-outline {
+    @apply btn-primary-static-outline hover:bg-purple-800 focus:ring-purple-300 dark:hover:bg-purple-500 dark:focus:ring-purple-800
+  }
+
+  .btn-primary {
+    @apply btn-primary-static hover:bg-purple-800 focus:ring-purple-300 dark:hover:bg-purple-700 dark:focus:ring-purple-800
+  }
+
+  /* Secondary color button */
+  .btn-secondary-outline-static {
+    @apply text-blue-700 border-blue-700 dark:border-blue-500 dark:text-blue-500
+  }
+
+  .btn-secondary-static {
+    @apply bg-blue-700 dark:bg-blue-600
+  }
 }
 
 /* Do not display PDF Links https://github.com/Pattern-Projector/pattern-projector/issues/260 */
