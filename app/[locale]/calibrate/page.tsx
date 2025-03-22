@@ -699,7 +699,7 @@ export default function Page() {
                 zoomedOut={zoomedOut}
                 magnifying={magnifying}
                 restoreTransforms={restoreTransforms}
-                patternScale={String(patternScaleFactor)}
+                // patternScale={String(patternScaleFactor)}
               />
             </MeasureCanvas>
 
