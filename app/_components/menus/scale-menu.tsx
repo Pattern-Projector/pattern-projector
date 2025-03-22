@@ -17,9 +17,9 @@ export default function ScaleMenu({
   const scaleValue: string = useMemo(() => {
     const number = +patternScale;
     if (Number.isNaN(number)) {
-      return "100%";
+      return "1";
     }
-    return `${decimalToString(number * 100, 1)}%`;
+    return decimalToString(number, 2);
   }, [patternScale]);
 
   const convertInputToScale = (newString: string, oldString: string) => {

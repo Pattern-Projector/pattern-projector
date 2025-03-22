@@ -325,7 +325,7 @@
   "OverlayCanvas": {
     "zoomedOut": "click pattern to zoom in",
     "magnifying": "click pattern to stop magnifying",
-    "scaled": "<scale></scale>%"
+    "scaled": "Scaled to <scale></scale>x (<scaleP></scaleP>%)"
   },
   "PdfViewer": {
     "error": "Failed to load pattern",
