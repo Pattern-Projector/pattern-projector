@@ -173,10 +173,10 @@ export default function PdfViewer({
       file={file}
       onLoadSuccess={onDocumentLoadSuccess}
       noData={
-        <div className="text-6xl text-center w-full border-gray-400 leading-[1.3] px-6 py-3">
+        <div className="text-9xl text-center w-full border-gray-400 leading-[1.3] px-6 py-3">
           <span>{t("noDataFirst")}</span>
           <div className="flex w-full align-middle justify-center">
-            <div className="flex items-center gap-2 scale-[2] m-8">
+            <div className="flex items-center gap-2 scale-[4] m-16">
               <label
                 className={`flex gap-2 items-center btn-primary-static-outline !py-1.5 !px-3`}
               >
