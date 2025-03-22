@@ -50,7 +50,7 @@ export default function Home() {
   );
 
   return (
-    <main className="m-4 bg-white !overflow-scroll h-full">
+    <main className="p-4 bg-white !overflow-y-scroll h-full overflow-x-hidden">
       <nav className="flex items-center justify-between">
         <PatternProjectorIcon ariaLabel="" />
 
