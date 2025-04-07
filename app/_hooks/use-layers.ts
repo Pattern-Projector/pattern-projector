@@ -17,7 +17,7 @@ export default function useLayers(fileName: string) {
       if (action.type === "set-layers") {
         // Layers were freshly loaded, so let's check local storage for which layers should be visible
         const visibleLayers = visibleLayersFromLocalStorage(fileName);
-        if (visibleLayers != null) {
+        if (visibleLayers != null && visibleLayers.length > 0) {
           const visibilityAction: LayerAction = {
             type: "update-visibility",
             visibleLayers: new Set(visibleLayers),
@@ -27,6 +27,9 @@ export default function useLayers(fileName: string) {
           // otherwise visible layers would reset to "everything visible"
           newLayers = layersReducer(newLayers, visibilityAction);
         }
+      }
+      if (newLayers == null || Object.keys(newLayers).length === 0) {
+        return;
       }
       writeToLocalStorage(fileName, newLayers);
     },

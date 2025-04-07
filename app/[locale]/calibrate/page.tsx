@@ -162,13 +162,23 @@ export default function Page() {
 
   const IDLE_TIMEOUT = 8000;
 
-  const imageStyle = {
+  const imageStyle = `
+    transform: ${transformStyle(patternScaleFactor)};
+    transformOrigin: "top left";
+    background: "white";
+  `;
+
+  const svgStyle = {
     filter: filter(magnifying, lineThickness, displaySettings.theme),
-    transform: `scale(${patternScaleFactor})`,
-    transformOrigin: "top left",
   };
 
   // HELPER FUNCTIONS
+  function transformStyle(patternScaleFactor: number): string {
+    if (patternScaleFactor === 1) {
+      return "none";
+    }
+    return `scale(${patternScaleFactor})`;
+  }
 
   // Set erosions when not magnifying so the user can see text/lines more clearly when magnifying
   function filter(magnifying: boolean, lineThickness: number, theme: Theme) {
@@ -657,7 +667,7 @@ export default function Page() {
                     patternScale={patternScaleFactor}
                     setMenuStates={setMenuStates}
                   />
-                ) : file.type === "image/svg+xml" ? (
+                ) : (
                   <SvgViewer
                     dataUrl={dataUrl ?? ""}
                     setFileLoadStatus={setFileLoadStatus}
@@ -667,23 +677,9 @@ export default function Page() {
                     layers={layers}
                     setLayers={setLayers}
                     style={imageStyle}
+                    svgStyle={svgStyle}
                     patternScale={patternScaleFactor}
                     setMenuStates={setMenuStates}
-                  />
-                ) : (
-                  <img
-                    src={dataUrl ?? ""}
-                    className="max-w-none bg-white touch-none select-none"
-                    style={imageStyle}
-                    width={layoutWidth}
-                    alt=""
-                    onLoad={(e) => {
-                      const image = e.target as HTMLImageElement;
-                      setFileLoadStatus(LoadStatusEnum.SUCCESS);
-                      setLayoutWidth(image.naturalWidth);
-                      setLayoutHeight(image.naturalHeight);
-                      setPageCount(1);
-                    }}
                   />
                 )}
               </Draggable>

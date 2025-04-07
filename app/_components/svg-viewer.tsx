@@ -12,6 +12,7 @@ import {
 export default function SvgViewer({
   dataUrl,
   style,
+  svgStyle,
   setFileLoadStatus,
   setLayoutWidth,
   setLayoutHeight,
@@ -22,7 +23,8 @@ export default function SvgViewer({
   setMenuStates,
 }: {
   dataUrl: string;
-  style: CSSProperties;
+  style: string;
+  svgStyle: CSSProperties;
   setFileLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   setLayoutWidth: Dispatch<SetStateAction<number>>;
   setLayoutHeight: Dispatch<SetStateAction<number>>;
@@ -57,13 +59,14 @@ export default function SvgViewer({
   return (
     <object
       ref={objectRef}
-      className="pointer-events-none bg-white"
+      className="pointer-events-none"
       data={dataUrl}
       type="image/svg+xml"
-      style={style}
+      style={svgStyle}
       onLoad={(e) => {
         const object = e.target as HTMLObjectElement;
         const svg = object.contentDocument?.querySelector("svg");
+        svg?.setAttribute("style", style);
 
         if (!svg) {
           setFileLoadStatus(LoadStatusEnum.FAILED);
@@ -90,6 +93,7 @@ export default function SvgViewer({
         if (Object.keys(groupLayers).length > 1) {
           setMenuStates({ ...getDefaultMenuStates(), layers: true });
         } else {
+          setLayers({});
           setMenuStates(getDefaultMenuStates());
         }
       }}
