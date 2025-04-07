@@ -1,12 +1,10 @@
 export const acceptedMimeTypes = [
   "image/svg+xml",
   "application/pdf",
-  "image/jpeg",
-  "image/png",
   "application/xml", // Drive classifies Inkscape SVGs as XML text on iPad
 ];
 
-export const acceptedExtensions = [".PDF", ".JPEG", ".PNG", ".SVG"];
+export const acceptedExtensions = [".PDF", ".SVG"];
 
 // Check if selected file is a PDF or accepted image type
 export default function isValidFile(file: File): boolean {
