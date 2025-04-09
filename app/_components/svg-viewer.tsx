@@ -11,7 +11,6 @@ import {
 
 export default function SvgViewer({
   dataUrl,
-  style,
   svgStyle,
   setFileLoadStatus,
   setLayoutWidth,
@@ -21,9 +20,9 @@ export default function SvgViewer({
   setLayers,
   patternScale,
   setMenuStates,
+  patternScaleFactor,
 }: {
   dataUrl: string;
-  style: string;
   svgStyle: CSSProperties;
   setFileLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   setLayoutWidth: Dispatch<SetStateAction<number>>;
@@ -33,8 +32,28 @@ export default function SvgViewer({
   setLayers: (layers: Layers) => void;
   patternScale: number;
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
+  patternScaleFactor: number;
 }) {
   const objectRef = useRef<HTMLObjectElement>(null);
+
+  const imageStyle = `
+    transform: ${transformStyle(patternScaleFactor)};
+    transform-origin: top left;
+    background-color: white;
+  `;
+
+  function transformStyle(patternScaleFactor: number): string {
+    if (patternScaleFactor === 1) {
+      return "none";
+    }
+    return `scale(${patternScaleFactor})`;
+  }
+  useEffect(() => {
+    const svg = objectRef.current?.contentDocument?.querySelector("svg");
+    if (!svg) return;
+    svg.setAttribute("style", imageStyle);
+  }, [imageStyle]);
+
   useEffect(() => {
     const svg = objectRef.current?.contentDocument?.querySelector("svg");
     if (!svg) return;
@@ -66,7 +85,7 @@ export default function SvgViewer({
       onLoad={(e) => {
         const object = e.target as HTMLObjectElement;
         const svg = object.contentDocument?.querySelector("svg");
-        svg?.setAttribute("style", style);
+        svg?.setAttribute("style", imageStyle);
 
         if (!svg) {
           setFileLoadStatus(LoadStatusEnum.FAILED);
