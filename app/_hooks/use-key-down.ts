@@ -10,7 +10,8 @@ export const useKeyDown = (
       const keyDown = keyCodes.some((keyCode) => e.key === keyCode);
 
       // Only intercept keydown events when no modifier keys are pressed to prevent issues like CTRL-V not working #369
-      if (keyDown && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+      // Removing shiftKey because it is used for snapping when using the line tool
+      if (keyDown && !e.ctrlKey && !e.metaKey && !e.altKey) {
         e.preventDefault();
         callback(e);
       }
