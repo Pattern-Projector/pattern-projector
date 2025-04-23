@@ -9,6 +9,7 @@ import ModalContent from "./modal/modal-content";
 import { Link } from "navigation";
 import ModalFigure from "./modal/modal-figure";
 import { ButtonStyle } from "./theme/styles";
+import { ModalList } from "./modal/modal-list";
 
 export default function MailModal({
   open,
@@ -28,40 +29,193 @@ export default function MailModal({
         <ModalTitle>{t("title")}</ModalTitle>
         <ModalContent>
           <ModalText>
-            Hi! I’m Courtney Pattison, the creator of Pattern Projector. After
-            six years as a stay-at-home mom, I developed Pattern Projector as
-            both a project for my job search and a tool to improve my own
-            sewing. While it hasn’t led to a job yet, it has truly transformed
-            the way I sew, and I’m thrilled to see it helping others as well.
+            Hi! I’m Courtney Pattison, a longtime sewist and stay-at-home mom. I
+            created Pattern Projector to make sewing with a projector easier—for
+            myself and for anyone else who finds taping paper patterns a pain.
+            It’s now a free tool used by thousands of people, and I’m always
+            working to make it better.
           </ModalText>
+
           <ModalText>
-            Pattern Projector will always be free, but with your support, I can
-            continue improving it with new features and bug fixes. If it’s been
-            useful to you, even a small contribution—
-            <Link
-              className={linkClass}
-              href="https://buymeacoffee.com/patternprojector"
-            >
-              like $2 a month or a one-time donation
-            </Link>
-            —would make a big difference to me.
+            I’ve just released an update with some highly requested features:
           </ModalText>
+          <ModalList>
+            <ul className="list-disc list-inside">
+              <li>
+                <strong>Scale menu</strong> to change pattern scale directly
+              </li>
+              <li>
+                New <strong>side menu</strong> for Stitch, Layers, and Scale
+              </li>
+              <li>
+                <strong>&quot;Open With Pattern Projector&quot;</strong> for
+                PDFs on desktop
+              </li>
+              <li>
+                Support for <strong>SVG files</strong> with layer visibility
+              </li>
+              <li>Improved stitching tools: +/- page ranges, column order</li>
+              <li>
+                Lots of <strong>bug fixes</strong> and interface improvements
+              </li>
+            </ul>
+          </ModalList>
+
           <ModalText>
-            I’d also love to hear your thoughts on which updates you’d like me
-            to focus on, so feel free to{" "}
-            <Link
-              className={linkClass}
-              href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAO__oXPy8tUQk8yT1hISFNYQ0Q1REVZR1JVQ1YzTDBHQS4u"
-            >
-              rank or request features you would like to see added
-            </Link>
-            .
+            I also made a full <strong>walkthrough video</strong> with chapters
+            so you can jump to what’s most relevant:
           </ModalText>
+          <ModalList>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=0"
+              >
+                00:00 – Intro
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=20"
+              >
+                00:20 – How to Install Pattern Projector
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=46"
+              >
+                00:46 – Calibrating Your Projector
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=295"
+              >
+                04:55 – Stitching Together a PDF Pattern: Example 1
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=453"
+              >
+                07:33 – Tools to Make Projecting Easier
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=709"
+              >
+                11:49 – Using the Line Tool
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=866"
+              >
+                14:26 – Stitching Together a PDF Pattern: Example 2
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=987"
+              >
+                16:27 – Lengthen/Shorten Patterns
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://youtu.be/TH8tY9BoxfM?t=1070"
+              >
+                17:50 – Final Tips + Outro
+              </Link>
+            </li>
+          </ModalList>
+
           <ModalText>
-            Thank you for being part of this journey with me!
+            I forgot to mention the new <strong>&quot;Open With&quot;</strong>{" "}
+            feature in the video, but here’s a screenshot:
           </ModalText>
-          <ModalFigure src="/courtney.jpg" caption="" />
+          <ModalFigure
+            src="/open-with.png"
+            caption="New 'Open With Pattern Projector' option on desktop"
+          />
+
+          <ModalText>
+            Pattern Projector is free and always will be. If it’s been useful to
+            you, you can support future updates by:
+          </ModalText>
+          <ModalList>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://www.paypal.com/donate/?hosted_button_id=LF949PXS4RGYS"
+              >
+                Donating via PayPal
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href="https://buymeacoffee.com/patternprojector"
+              >
+                Buying me a coffee
+              </Link>
+            </li>
+          </ModalList>
+
+          <ModalText>
+            <strong>Having trouble?</strong> If the new version isn’t working
+            quite right for you, you can:
+          </ModalText>
+          <ModalList>
+            <li>
+              Try the{" "}
+              <Link
+                className={linkClass}
+                href="https://beta.patternprojector.com"
+              >
+                beta site
+              </Link>{" "}
+              or the previous version at{" "}
+              <Link
+                className={linkClass}
+                href="https://old.patternprojector.com"
+              >
+                old.patternprojector.com
+              </Link>
+            </li>
+            <li>
+              Test a different browser—<strong>Chrome</strong>,{" "}
+              <strong>Edge</strong>, and <strong>Firefox</strong> are
+              recommended
+            </li>
+            <li>
+              Post in the{" "}
+              <Link
+                className={linkClass}
+                href="https://www.facebook.com/groups/ProjectorsForSewing"
+              >
+                Projectors for Sewing Facebook group
+              </Link>{" "}
+              so we can troubleshoot together!
+            </li>
+          </ModalList>
+
+          <ModalText>
+            Thank you so much for using Pattern Projector and for helping it
+            grow!
+          </ModalText>
         </ModalContent>
+
         <ModalActions>
           <Button onClick={() => setOpen(false)}>{g("close")}</Button>
           <Button
@@ -69,12 +223,6 @@ export default function MailModal({
             href="https://buymeacoffee.com/patternprojector"
           >
             {t("donate")}
-          </Button>
-          <Button
-            style={ButtonStyle.FILLED}
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAO__oXPy8tUQk8yT1hISFNYQ0Q1REVZR1JVQ1YzTDBHQS4u"
-          >
-            Rank Features
           </Button>
         </ModalActions>
       </Modal>
