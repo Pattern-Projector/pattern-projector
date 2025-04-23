@@ -300,7 +300,19 @@ export default function Header({
   ];
 
   useEffect(() => {
-    mailRead.current = localStorage.getItem("mailRead") ? true : false;
+    const mailReadDate = localStorage.getItem("mailRead");
+    if (mailReadDate) {
+      const mailReadTime = parseInt(mailReadDate);
+      const lastReleaseDate = new Date("2025-04-22").getTime();
+      // If mail was read after the last release date, style mail as read.
+      if (mailReadTime > lastReleaseDate) {
+        mailRead.current = true;
+      } else {
+        mailRead.current = false;
+      }
+    } else {
+      mailRead.current = false;
+    }
   }, [mailOpen]);
 
   useKeyDown(() => {
