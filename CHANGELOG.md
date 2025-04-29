@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2025-04-29
+
+### Fixed
+
+- Regression where line tool stays constrained after holding shift
+
 ## [1.2.0] - 2025-04-23
 
 ### Added
@@ -170,6 +176,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Press and hold calibration corners to slow down movement
 
 [unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/main...beta
+[1.2.1]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.2.1
 [1.2.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.2.0
 [1.1.3]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.3
 [1.1.2]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.2
