@@ -4,7 +4,7 @@ import { KeyCode } from "@/_lib/key-code";
 export const useKeyUp = (callback: (T?: any) => void, keyCodes: KeyCode[]) => {
   const onKeyUp = useCallback(
     (e: KeyboardEvent) => {
-      const keyUp = keyCodes.some((keyCode) => e.code === keyCode);
+      const keyUp = keyCodes.some((keyCode) => e.key === keyCode);
 
       if (keyUp) {
         e.preventDefault();
