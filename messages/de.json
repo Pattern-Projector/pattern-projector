@@ -141,9 +141,9 @@
         },
         "contribute": {
             "title": "Unterstütze dieses Projekt",
-            "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>kaufe mir einen Kaffee</donateLink> unterstützen",
+            "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>kaufe mir einen Kaffee</donateLink> unterstützen oder mit <payPalLink>PayPal</payPalLink>!",
             "develop": "Hilfe um neue Featuers zu implementieren oder Fehler zu beheben auf <githubLink>GitHub</githubLink>.",
-            "translate": "Übersetzung dieses Projekts in mehrere Sprachen.",
+            "translate": "Übersetzung dieses Projekts in mehrere Sprachen mit  <weblateLink>Weblate</weblateLink>.",
             "feedback": "Feedback und Verbesserungsvorschläge sind herzlich Willkommen!"
         },
         "contact": "Kontakt",
