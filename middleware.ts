@@ -12,6 +12,7 @@ export const localeData = {
   hu: "Magyar",
   it: "Italiano",
   nl: "Nederlands",
+  sl: "Slovenščina",
   sv: "Svenska",
   ta: "தமிழ்",
 };
@@ -30,5 +31,5 @@ export const config = {
   // Match only internationalized pathnames
   // Match /calibrate for people who saved a link to /calibrate before internationalization was added
   // *** IMPORTANT *** New language codes must be added here as well as in the localeData above
-  matcher: ["/", "/(cs|da|de|en|es|fr|hu|it|nl|sv|ta)/:path*", "/calibrate"],
+  matcher: ["/", "/(cs|da|de|en|es|fr|hu|it|nl|sl|sv|ta)/:path*", "/calibrate"],
 };
