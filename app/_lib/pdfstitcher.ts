@@ -17,7 +17,10 @@ import {
   decodePDFRawStream,
   UnrecognizedStreamTypeError,
 } from "@cantoo/pdf-lib";
-import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
+import {
+  LineDirection,
+  StitchSettings,
+} from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers, getRowsColumns } from "./get-page-numbers";
 import { Layers } from "./layers";
 
@@ -245,10 +248,21 @@ async function tilePages(doc: PDFDocument, settings: StitchSettings) {
     }
 
     // Adjust the position for the next page
-    x += pageSize.width;
-    if (x > outWidth - margin) {
-      x = 0;
-      y -= pageSize.height;
+    switch (settings.lineDirection) {
+      case LineDirection.Column:
+        x += pageSize.width;
+        if (x > outWidth - margin) {
+          x = 0;
+          y -= pageSize.height;
+        }
+        break;
+      case LineDirection.Row:
+        y -= pageSize.height;
+        if (y < -margin) {
+          y = outHeight - pageSize.height;
+          x += pageSize.width;
+        }
+        break;
     }
   }
 
