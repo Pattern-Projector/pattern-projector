@@ -142,5 +142,5 @@ export function getIsInvalidatedCalibrationContextWithPointerEvent(
       current.clientScreenLeft,
     );
   }
-  return topDiff || leftDiff;
+  return (topDiff || leftDiff) && !context.fullScreen;
 }

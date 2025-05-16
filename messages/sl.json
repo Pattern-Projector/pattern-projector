@@ -1,0 +1,334 @@
+{
+    "HomePage": {
+        "calibration": {
+            "start": "Kliknite na \"Začni kalibrirati\"",
+            "drag": "Povlecite oglišča mreže in jih poravnajte z vašo rezalno podlogo. Glejte na rezalno podlogo ter nastavite oglišča na vašem računalniku/tablici. Korigirajte pozicijo oglišč dokler se projicirana mreža ne prekriva s mrežo na vaši rezalni podlagi.",
+            "title": "Kalibracija",
+            "fullscreen": "Aktiviraj celozaslonski prikaz s klikom na ikonco. ",
+            "size": "Ni vam potrebno kalibrirat z uporabo vaše celotne rezalne površine. Izberite največjo površino, ki jo lahko prekrijte z kalibracijsko mrežo ter vnesite ustrezno višino ter širino uporabljene mreže.",
+            "project": "Ko je projicirana mreža poravnana s rezalno podlogo kliknite na \"Projiciraj\""
+        },
+        "project": {
+            "moveTool": {
+                "description": "Orodje za premikanje ima štiri gumbe s puščicami za premikanje oglišč kalibracijske mreže. Na sredini ima tudi gumb naslednji za preklop na naslednje oglišče.",
+                "title": "Skrij ali prikaži orodje za premikanje"
+            },
+            "invert": {
+                "description": "Med projiciranjem je pogosto lažje gledat zelene ali bele črte na črnem ozadju. Kliknite enkrat za zelene, dvakrat za bele črte. Ter trikrat, da se vrnete nazaj na črne črte.",
+                "title": "Inverzija barv"
+            },
+            "fullscreen": {
+                "description": "Program uporabljat v celozaslonskem načinu, je pogosto najlažje.",
+                "title": "Celoten zaslon"
+            },
+            "tools": "V načini projiciranja je na voljo več orodij. Nekatere imajo bližnjice na tipkovnici, le te so podatke v oklepajih.",
+            "overlayOptions": {
+                "description": "Mreža, okvir, list papirja, zrcalne črte, napačna stran so orodja za šablone. Lahko so prikazana čez PDF, da pomagajo pri kalibraciji ter rezanju. Za več informacij, si oglejte <overlayOptionsLink>odsek orodij za šablone</overlayOptionsLink>.",
+                "title": "Prikaži ali skrij pripomočke za šablone"
+            },
+            "scale": {
+                "description": "Spremeni velikost šablone z vnosom mnogokratnika: Število med 0 in 1 bo šablono naredilo manjšo. Število večje od 1 pa bo šablono naredilo večjo.",
+                "title": "Prikaži ali skrij meni povečave"
+            },
+            "measure": {
+                "description": "Označi črtne na PDF-u za rotiranje, zrcaljenje, premikanje merjenje ali označevanje. Za podroben opis tega orodja si oglej <lineToolLink>Odsek orodja za izbor</lineToolLink>.",
+                "title": "Orodje za črto (L)"
+            },
+            "rotate": {
+                "description": "Zavrti šablono za 90 stopinj.",
+                "title": "Rotiraj (R)"
+            },
+            "zoomOut": {
+                "title": "Pomanjšaj (Z)",
+                "description": "Pomanjšaj, da vidiš celotni PDF. Klikno na PDF, da povečaš na izbrano mesto."
+            },
+            "title": "Projiciranje šablone",
+            "open": "Kliknite na <pdficon></pdficon> da odprete šablono.",
+            "move": "Premikajte PDF s klikni ter povleci po površini zaslona.",
+            "cut": "Režite kose po projiciranih črtah.",
+            "showMenu": {
+                "title": "Prikaži/Skrij meni",
+                "description": "Skrij ali prikaži zgornji meni."
+            },
+            "lineWeight": {
+                "title": "Debelina črt",
+                "description": "Spremenite debelino črt na PDF šabloni."
+            },
+            "flip": {
+                "title": "Zrcali navpično (H) ali vodoravno (V)",
+                "description": "Uporabno pri izdelavi zrcalnih kosov."
+            },
+            "recenter": {
+                "title": "Centriraj ter Ponastavi (C)",
+                "description": "Centriraj šablono na rezalno podlago ter ponastavi rotacijo/zrcaljenje."
+            },
+            "magnify": {
+                "title": "Približaj (M)",
+                "description": "Klikni na PDF, da ga približaš. Klikni ponovno, da zapustiš približanje."
+            },
+            "layers": {
+                "title": "Prikaži ali skrij plasti",
+                "description": "Prikaži ali skrij plasti v PDF datoteki."
+            },
+            "stitch": {
+                "title": "Prikaži ali skrij meni spajanja",
+                "description": "Prikaže ali skrije meni spajanja, kateri vam omogoča spajanje šablon razrezanih na več strani."
+            }
+        },
+        "overlayOptions": {
+            "paper": {
+                "title": "List papirja",
+                "description": "Prikaže kvadrat velikosti papirja Letter ali A4, za kontrolo kalibracije."
+            },
+            "flipLines": {
+                "title": "Zrcalne črte",
+                "description": "Prikaže črte, ki pomagajo pri polovičnih/zrcalnih šablonah. Poravnaj delilno črto polovične/zrcalnega kosa na šabloni z zrcalno črto ter klikni na zrcali vodoravno ali navpično, da zrcališ kos."
+            },
+            "grid": {
+                "title": "Mreža",
+                "description": "Prikaže kalibracijsko mrežo."
+            },
+            "border": {
+                "title": "Rob",
+                "description": "Prikaže rob kalibracijske mreže."
+            },
+            "title": "Pripomočki za šablone",
+            "description": "Pripomočki za šablone se lahko uporabijo za kontrolo kalibracije med projiciranjem ter kot pomoč pri rezanju šablone. Sledeče možnosti so na voljo:",
+            "flippedPattern": {
+                "title": "Spodnja stran",
+                "description": "Prikaže pike, ko je projicirana spodnja stran šablone."
+            }
+        },
+        "contact": "Kontakt",
+        "lineTool": {
+            "description": "Orodje za črto se lahko uporabi za merjenje razdalj, označevanje črt na katerih se naj rotira, zrcali, premika PDF šablona. Kliknite na orodje za črto, nato kliknite na PDF ter povlecite črto. Ko je črta narisana, se bo pojavil meni s sledečimi možnostmi:",
+            "rotate": {
+                "title": "Poravnaj na sredino",
+                "description": "Rotira PDF, tako da je izbrana črta vodoravno ter na sredini vaše rezalne površine.",
+                "use": "Za poravnavo smeri kroja na šabloni s smerjo kroja na vašem blagu: Narišite črto na označbi poteka kroja na šabloni, nato kliknite na gumb poravnaj na sredino."
+            },
+            "previousNext": {
+                "use": "Za premik med kosi ko jih režeš: Nariši črto smeri kroja na vsakem kosu, nato se premikaj med kosi z uporabo teh gumbov. izbriši črto, ki izrežeš kos, da imaš pregled katere kose še rabiš izrezati.",
+                "title": "Postavi v center prejšnjo/naslednjo črto",
+                "description": "Premakne PDF tako, da je prejšnja/naslednja narisana črta vodoravna ter v sredini vaše rezalne površine."
+            },
+            "flip": {
+                "use": "Za polovične/zrcalne šablone: Nariši črto na zrcalni črti šablone, izreži/preriši kot do te črte, klikni gumb zrcali čez črto ter nato izreži/preriši preostanek kosa.",
+                "title": "Zrcali čez črto",
+                "description": "Zrcali PDF čez izbrano črto."
+            },
+            "move": {
+                "use": "Za podaljševanje/krajšanje dela šablone: Narišite črto vzporedno na črto dela šablone, ki jo želite podaljšat/krajšat. Izrežite/prerišite črto nato kliknite gumb premakni za dolžino črte ter nadaljujte z rezanjem/prerisovanjem. Smer risanja črte bo odvisna ali podaljšujete ali krajšate šablono.",
+                "title": "Premakni PDF za dolžino črte",
+                "description": "Premakne PDF za dolžino izbrane črte."
+            },
+            "title": "Orodje za črto",
+            "delete": {
+                "title": "Izbris črte",
+                "description": "Izbriše izbrano črto."
+            }
+        },
+        "faq": {
+            "mobileSupport": {
+                "answer": "Sicer je možno odpret in uporabljat to spletno aplikacijo na telefonu, a je zaradi majhnega zaslona naporna za uporabo.",
+                "question": "Se lahko uporablja tudi na mobilnem telefonu ali tablici?"
+            },
+            "wrongSizePdf": {
+                "answer": "Pattern Projector korak kalibracije nima povečave, ker mere projekcije prihajajo iz podatki o velikosti v PDF datoteki. Šablone od oblikovalcev imajo ponavadi nastavljeno pravilno merilo. Sprememba merila bi se lahko nehote zgodila ob odpiranju šablone v drugem programu kot na primer Affinity Designer ali Inkscape.",
+                "question": "Je vaš PDF projiciran premajhno ali preveliko?"
+            },
+            "saveAsApp": {
+                "answer": "Pattern Projector je Progressive Web App (PWA) tako si ga lahko shranite kot aplikacijo. Na vaše namizje si ga lahko namestite če uporabljate <googleChromeLink>Chrome</googleChromeLink> ali <microsoftEdgeLink>Edge</microsoftEdgeLink>. Na tablici odprite meni ter izberite dodaj na začetni zaslon."
+            },
+            "title": "Pogosta vprašanja"
+        },
+        "contribute": {
+            "donation": "V kolikor ti je Pattern Projector prihranil denar v fotokopirnici, olajšal delo ali zmanjšal stroške PDF prikazovalnika, bom zelo vesela če mi <donateLink>kupiš kavo</donateLink> ali podpreš z donacijo preko <payPalLink>PayPal</payPalLink>. Hvala!",
+            "title": "Podpri razvoj tega projekta",
+            "develop": "Pomagaj mi pri razvoju novih možnosti ter odpravi težav na <githubLink>GitHub</githubLink>.",
+            "translate": "Lahko tudi pomagaš prevesti to orodje v več jezikov z uporabo <weblateLink>Weblate</weblateLink>.",
+            "feedback": "Povratne informacije ter predlogi za dodatne izboljšave so dobrodošli!"
+        },
+        "resources": {
+            "title": "Dodatni uporabni viri",
+            "links": {
+                "onePageGuide": {
+                    "title": "Navodila na enem listu za uporabo projektorja pri šivanju",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
+                },
+                "projectorsForSewing": {
+                    "link": "https://www.facebook.com/groups/481078582801085",
+                    "title": "Facebook grupa Projectors for Sewing"
+                }
+            }
+        },
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "welcome": {
+            "title": "Dobrodošli pri Pattern Projector!",
+            "description": "Pattern Projector je brezplačna ter odprtokodna spletna aplikacija. ki hitro kalibrira projektor za uporabo kot šablone za rezanje rezanje. Ima tudi orodja za združevanje šablon razdeljenih na več strani, spremembo debeline črt, inverzijo barv, zrcaljenje/obračanje šablon ter veliko več. V kolikor želiš prebrati vse o zadnjih posodobitvah, si oglej <changeLogLink>changelog</changeLogLink>."
+        },
+        "github": "Oglej si izvorno kodo",
+        "requirements": {
+            "mat": "Rezalno podlogo z mrežo (opcijsko)",
+            "title": "Kaj potrebuješ",
+            "projector": "Projektor: Priporočeno vsaj 720p",
+            "mount": "Stojalo ali stensko/polično/mizno pritrditev za projektor",
+            "computer": "Računalnik ali tablico za povezavo na projektor",
+            "pattern": "Šablono v PDF datoteki"
+        },
+        "calibrate": "Zaženi kalibracijo",
+        "choose-language": "Jezik",
+        "setup": {
+            "title": "Nastavitev",
+            "connect": "Priklopite vaš računalnik na projektor ter ga nastavite tako, da bo slika iz računalnika na njem vidna kot klon namizja ali kot razširjeno namizje.",
+            "place": "Postavite/obesite projektor nad rezalno podlogo, tako da bo projeciral direktno na rezalno podlogo. V primeru, da nimate rezalne podloge, lahko uporabite papir ali krep lepilni strak, da na tleh označite kvader/mrežo.",
+            "focus": "Nastavljajte ostrino projektorja dokler ni besedilo na sredini projekcije prikazano ostro. Če vam ne uspe nastavit ostre slike, preverite da je razdalja med projektorjem in rezalno podlaga v območju projekcije predlagane iz strani proizvajalca projektorja.",
+            "keystone": "V kolikor ima vaš projektor funkcijo keystone(trapezna korekcija), jo nastavite tako, da bo projekcija čim bolj podobna pravokotniku, saj se bo s tem izboljšala ostrina ob robovih."
+        },
+        "tools": "Orodja"
+    },
+    "InstallButton": {
+        "descriptionAndroid": "Za najboljšo izkušnjo na Android uporabite Firefox. Prenesite aplikacijo z klikom v brskalniku na gumb več <moreIcon></moreIcon> ter nato <addToHomeScreenIcon></addToHomeScreenIcon>, da jo dodate na začetni zaslon.",
+        "descriptionIOS": "Prenesite aplikacijo z klikom na deli ikonco <shareIcon></shareIcon> v brskalniku ter nato na dodaj na začetni zaslon <addBoxIcon></addBoxIcon>.",
+        "description": "Za najboljšo izkušnjo si namesti Pattern Projector z uporabo <chromeLink>Google Chrome</chromeLink>. V Chrome si prenesi aplikacijo z klikom na gumb <installIcon></installIcon> v naslovni vrstici.",
+        "title": "Namesti aplikacijo",
+        "ok": "V redu"
+    },
+    "Header": {
+        "invertColor": "Inverzija barv vklopljena",
+        "width": "Š:",
+        "mail": "Sporočilo do Courtney",
+        "ok": "V redu",
+        "arrowForward": "Naprej 1 stran",
+        "rotate90": "Rotiraj za 90 stopinj v desno (R)",
+        "zoomOut": "Pomanjšaj (Z)",
+        "overlayOptionBorder": "Robovi",
+        "overlayOptionFlippedPattern": "Spodnja stran",
+        "stitchMenuShow": "Prikaži meni spajanja",
+        "lineWeight": "Debelina črt",
+        "gridOff": "Izklopi mrežo",
+        "overlayOptions": "Pripomočki za šablone",
+        "flipHorizontal": "Zrcali navpično (H)",
+        "overlayOptionPaper": "List paprija",
+        "overlayOptionFliplines": "Zrcalne črtne",
+        "calibrationAlertContinue": "Velikost okna se ne more spremeniti po kalibraciji. Za projiciranje v celozaslonskem načinu, kalibrirajte v celozaslonskem načinu. Če želite spremeniti velikost okna, izvedite kalibracijo ponovno.",
+        "magnify": "Približaj (M)",
+        "fourCornersOn": "Poudari vsa oglišča",
+        "menuShow": "Prikaži meni",
+        "fullscreenExit": "Izklopi celozaslonski način",
+        "showMovement": "Prikaži orodje za premikanje",
+        "menuHide": "Skrij meni",
+        "openPDF": "Odpri",
+        "height": "V:",
+        "project": "Projiciraj",
+        "calibrate": "Kalibiriraj",
+        "delete": "Ponastavi kalibracijo",
+        "gridOn": "Vklopi mrežo",
+        "overlayOptionDisabled": "Izklopljeno",
+        "overlayOptionGrid": "Mreža",
+        "invertColorOff": "Inverzija barv izklopljena",
+        "flipVertical": "Zrcali vodoravno (V)",
+        "flipCenterOn": "Zrcaljenje čez sredino vklopljeno",
+        "flipCenterOff": "Zrcaljenje čez sredino izklopljeno",
+        "fourCornersOff": "Poudari samo izbrano oglišče",
+        "arrowBack": "Nazaj 1 stran",
+        "info": "Stran z informacijami",
+        "recenter": "Centriraj ter Ponastavi (C)",
+        "fullscreen": "Vklopi celozaslonski način",
+        "calibrationAlert": "Velikost okna je drugačna, kot ob začetku projiciranja! Za odpravo napake, kliknite na gumb za celozaslonski način ali izvedite kalibracijo na novo.",
+        "continue": "Shrani velikost okna in nadaljuj",
+        "checkCalibration": "Preveri kalibracijo",
+        "stitchMenuHide": "Skrij meni spajanja",
+        "stitchMenuDisabled": "Za uporabo menija spajanja odpri PDF",
+        "measure": "Orodje za črte (L)",
+        "hideMovement": "Skrij orodje za premikanje",
+        "invalidCalibration": "Kalibracijska mreža ni veljavna. Kliknite \"Ponastavi kalibracijo\" in poizkusite znova.",
+        "calibrationAlertTitle": "Opozorilo kalibracije"
+    },
+    "Troubleshooting": {
+        "dimensionsSwapped": {
+            "description": "Če projicirana mreža zgleda kot kvadrat namesto pravokotnik, so mogoče zamenjane vrednosti za širino in višino. Preprosto zamenjajte vrednosti v teh poljih.",
+            "caption": "Širina ter višina sta v napačnih poljih. Mere bi morale izgledati kot 'Š: 24' ter 'V: 18'.",
+            "title": "Kvadrat namesto pravokotnik?"
+        },
+        "dragCorners": {
+            "description": "Povlecite vogale mreže na vsaj velikost kvadrata 24x16 inch na vaši rezalni podlagi. Mreža naj bo kar se da velika a ne rabi prekrivat celotne rezalne podlage.",
+            "title": "Kako kalibrirati",
+            "caption": "Pravilno kalibrirana mreža."
+        },
+        "inputMeasurement": "Uporabite ravnilo, da izmerite širino ter višino mreže na vaši rezalni podlogi. Vnesite te mere v polji za širino ter višino.",
+        "offByOne": {
+            "description": "Če so projicirane črte ravne a niso poravnane z vašo rezalno podlago, mogoče vaša vnesena širina ali višina odstopa za 1 inch/centimeter. Ponovno preverite z ravnilom. Mere na rezalni šabloni so lahko dvomljive ali netočne, zato je kontrola z ravnilom pomembna.",
+            "caption": "Vnesene so napačne mere (23 x 17) namesto (24 x 18). Rezalna površina prikazuje le številke do 23 ter 17, kar je hitro dvoumno. Preverite mero s uporabo ravnila!",
+            "title": "Črte so ravne a niso poravnane?"
+        },
+        "unevenSurface": {
+            "title": "Zvite črte?",
+            "caption": "Ta podloga ima pod njo ravnilo, kar povzroča, da črte na sredini niso ravne. Rahlo zvita črta je še v redu a večje vam bodo povzročale težave.",
+            "description": "Če projicirane črte izgledajo zvite je zelo verjetno vaša površina pod rezalno podlago ni ravna. Poizkusite zravnat vašo podlago s podlaganjem kartona na nižjih mestih ali uporabite drugi podlago."
+        },
+        "close": "Zapri",
+        "notMatching": "Črte se ne ujemajo z vašo rezalno podlago?",
+        "title": "Odpravljanje napak kalibracije"
+    },
+    "PdfViewer": {
+        "noData": "Kliknite na gumb \"Odpri\", da odprete šablono",
+        "error": "Šablone ni bilo možno naložiti"
+    },
+    "StitchMenu": {
+        "horizontal": "Vodoravno prekrivanje",
+        "vertical": "Navpično prekrivanje",
+        "columnCount": "Stolpci",
+        "rowCount": "Vrstice",
+        "pageRange": "Strani za spajanje",
+        "zeros": "Vstavi 0-le za prazne strani. npr: 1-3,0,0,4"
+    },
+    "SaveMenu": {
+        "encryptedPDF": "Ta PDF je šifriran. Vnesite geslo za izvoz v spojeni PDF.",
+        "save": "Izvozi v PDF",
+        "saveTooltip": "Izvozi v PDF s spojenimi stranmi ter izbranimi plastmi"
+    },
+    "LayerMenu": {
+        "hideAll": "Skrij vse",
+        "layersOn": "Prikaži meni plasti",
+        "title": "Plasti",
+        "showAll": "Prikaži vse",
+        "layersOff": "Skrij meni plasti",
+        "noLayers": "Ta šablona nima plasti"
+    },
+    "MeasureCanvas": {
+        "line": "črta",
+        "lines": "črte",
+        "flipAlong": "Zrcali čez črto",
+        "rotateToHorizontal": "Poravnaj v sredino",
+        "rotateAndCenterPrevious": "Postavi prejšnjo črto v sredino",
+        "rotateAndCenterNext": "Postavi naslednjo črto v sredino",
+        "deleteLine": "Izbriši črto",
+        "translate": "Premakni šablono za dolžino črte"
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "klikni na šablono za približanje",
+        "magnifying": "klikni na šablono za izhod iz približanja",
+        "scaled": "<scale></scale>× povečava"
+    },
+    "Mail": {
+        "title": "Imaš sporočilo",
+        "donate": "Doniraj"
+    },
+    "General": {
+        "close": "Zapri",
+        "error": "Napaka"
+    },
+    "ScaleMenu": {
+        "hide": "Skrij meni povečave",
+        "show": "Pokaži meni povečave",
+        "scale": "Povečava šablone"
+    },
+    "MovementPad": {
+        "up": "Gor",
+        "down": "Dol",
+        "left": "Levo",
+        "right": "Desno",
+        "next": "Naslednje oglišče"
+    }
+}

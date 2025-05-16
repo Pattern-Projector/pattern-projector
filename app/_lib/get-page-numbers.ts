@@ -59,14 +59,43 @@ export function rotateRange(
 ): string {
   const numbers = getPageNumbers(pageRange, pageCount);
   if (increment > 0) {
-    const a = numbers.shift();
-    if (a !== undefined) {
-      numbers.push(a);
+    // increment
+    if (numbers.length == 1) {
+      // single page
+      const a = numbers.shift();
+      if (a !== undefined) {
+        if (a == pageCount) {
+          // wrap to first
+          numbers.push(1);
+        } else {
+          numbers.push(a + 1); // move to next
+        }
+      }
+    } else {
+      // rotate range
+      const a = numbers.shift();
+      if (a !== undefined) {
+        numbers.push(a);
+      }
     }
   } else {
-    const a = numbers.pop();
-    if (a !== undefined) {
-      numbers.unshift(a);
+    // decrement
+    if (numbers.length == 1) {
+      // single page move to previous
+      const a = numbers.pop();
+      if (a !== undefined) {
+        if (a <= 1) {
+          numbers.push(pageCount);
+        } else {
+          numbers.push(a - 1);
+        }
+      }
+    } else {
+      // rotate range
+      const a = numbers.pop();
+      if (a !== undefined) {
+        numbers.unshift(a);
+      }
     }
   }
   return getPageRange(numbers);

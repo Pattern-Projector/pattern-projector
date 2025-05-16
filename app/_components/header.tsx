@@ -390,6 +390,7 @@ export default function Header({
         >
           <div className="flex items-center gap-1">
             <Tooltip
+              className={visible(isCalibrating || fullScreenHandle.active)}
               description={
                 fullScreenHandle.active ? t("fullscreenExit") : t("fullscreen")
               }
