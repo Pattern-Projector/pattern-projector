@@ -39,7 +39,7 @@ function trimmedPageSize(
     // Filter out blank pages specified by a 0
     if (page > 0) {
       const p = inDoc.getPage(page - 1);
-      const pageSize = p.getTrimBox() || p.getMediaBox();
+      const pageSize = p.getMediaBox();
       width = Math.max(width, pageSize.width - settings.edgeInsets.horizontal);
       height = Math.max(height, pageSize.height - settings.edgeInsets.vertical);
     }
