@@ -1,1 +1,26 @@
-{}
+{
+    "HomePage": {
+        "welcome": {
+            "description": "Pattern projector er en gratis åpen kildekode web applikasjon som raskt kan kalibrere projektorer for symønstre. Det finnes også verktøy for å kombinere mønster som er spredt over flere sider, støtte for å endre linjetykkelse, invertere farger, flippe/rotere mønstre og mer. For å lese om de seneste oppdateringene, se  <changeLogLink>endringsloggen</changeLogLink>.",
+            "title": "Velkommen til Pattern Projector!"
+        },
+        "setup": {
+            "place": "Plasser projektoren et sted direkte over skjærematten. Om du ikke har en skjærematte kan du bruke papir eller maskeringsteip for å markere et rutenett på et bord eller på gulvet.",
+            "focus": "Juster fokus på projektoren inntil teksten er i skarp fokus i midten av projeksjonen. Om du ikke kan få et klart bilde, sjekk at distansen mellom projektoren og skjærematten er innenfor produsentens anbefalinger.",
+            "connect": "Koble til datamaskin eller nettbrett til projektoren og enten speil eller utvid skjermen slik at bildet fra datamaskinen eller nettbrettet blir vist på projektoren.",
+            "title": "Oppsett"
+        },
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "requirements": {
+            "mat": "En skjærematte med rutemønster (valgfritt)",
+            "computer": "Datamaskin eller nettbrett for å koble til projektor",
+            "title": "Hva du vil trenge",
+            "projector": "Projektor: bør støtte minst 720p skjermoppløsning",
+            "mount": "Tripod eller vegg/hylle/bordmontering for projektor",
+            "pattern": "Et PDF symønster"
+        },
+        "github": "Se kildekode",
+        "calibrate": "Start kalibrering",
+        "choose-language": "Språk"
+    }
+}
