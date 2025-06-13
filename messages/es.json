@@ -36,7 +36,7 @@
         },
         "project": {
             "title": "Proyectando un patrón",
-            "open": "Selecciona <pdficon></pdficon> para abrir el documento PDF.",
+            "open": "Selecciona <pdficon></pdficon> para abrir el patrón.",
             "move": "Mueve el documento pinchando y arrastrándolo por la pantalla.",
             "cut": "Corta el patrón proyectado.",
             "tools": "En el modo de proyección se proporcionan varias herramientas. Algunos tienen atajos de teclado, que se indican entre paréntesis.",
@@ -206,7 +206,7 @@
     "Header": {
         "projecting": "Proyectando",
         "calibrating": "Calibrando",
-        "openPDF": "Abrir PDF",
+        "openPDF": "Abrir",
         "height": "A:",
         "width": "L:",
         "project": "Proyectar",
@@ -260,14 +260,16 @@
         "stitchMenuDisabled": "Abra PDF para usar el menú de unión",
         "magnify": "Aumentar (M)",
         "zoomOut": "Alejar (Z)",
-        "mail": "Correo de Courtney"
+        "mail": "Correo de Courtney",
+        "invalidCalibration": "La cuadrícula de calibración no es válida. Presiona ‘reiniciar calibración’ para intentar de nuevo."
     },
     "StitchMenu": {
         "columnCount": "Columnas",
         "pageRange": "Páginas de puntos",
-        "horizontal": "Horizontal",
-        "vertical": "Vertical",
-        "zeros": "Añadir 0 para las páginas en blanco, por ejemplo 1-3,0,0,4"
+        "horizontal": "Solapamiento horizontal",
+        "vertical": "Solapamiento Vertical",
+        "zeros": "Añadir 0 para las páginas en blanco, por ejemplo 1-3,0,0,4",
+        "rowCount": "Filas"
     },
     "MovementPad": {
         "left": "Izquierda",
@@ -282,13 +284,13 @@
         "hideAll": "Ocultar todo",
         "layersOff": "Ocultar el menú de la capa",
         "layersOn": "Mostrar menú de la capa",
-        "noLayers": "Sin capas en PDF"
+        "noLayers": "Sin capas en el patrón"
     },
     "MeasureCanvas": {
         "rotateToHorizontal": "Centrar",
         "deleteLine": "Borrar linea",
         "flipAlong": "Girar a lo largo de la línea",
-        "translate": "Mover PDF por la longitud de la línea",
+        "translate": "Mover el patrón por la longitud de la línea",
         "rotateAndCenterNext": "Centrar la siguiente línea",
         "lines": "líneas",
         "rotateAndCenterPrevious": "Centrar la línea anterior",
@@ -307,13 +309,13 @@
         "encryptedPDF": "Este PDF está cifrado. Ingresa la contraseña para guardar el PDF unido."
     },
     "OverlayCanvas": {
-        "zoomedOut": "Haz clic en el PDF para ampliar",
-        "magnifying": "Haz clic en PDF para detener la ampliación",
+        "zoomedOut": "Haz clic en el patrón para ampliar",
+        "magnifying": "Haz clic en el patrón para detener la ampliación",
         "scaled": "<scale></scale>× escala"
     },
     "PdfViewer": {
-        "error": "Error al cargar el PDF",
-        "noData": "Pulsa el botón \"Abrir PDF\" para cargar un PDF"
+        "error": "Error al cargar el patrón",
+        "noData": "Pulsa el botón \"Abrir\" para cargar un patrón"
     },
     "Troubleshooting": {
         "title": "Solución de problemas de calibración",
