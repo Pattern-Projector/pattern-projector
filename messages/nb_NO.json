@@ -1,0 +1,33 @@
+{
+    "HomePage": {
+        "welcome": {
+            "description": "Pattern projector er en gratis åpen kildekode web applikasjon som raskt kan kalibrere projektorer for symønstre. Det finnes også verktøy for å kombinere mønster som er spredt over flere sider, støtte for å endre linjetykkelse, invertere farger, flippe/rotere mønstre og mer. For å lese om de seneste oppdateringene, se  <changeLogLink>endringsloggen</changeLogLink>.",
+            "title": "Velkommen til Pattern Projector!"
+        },
+        "setup": {
+            "place": "Plasser projektoren et sted direkte over skjærematten. Om du ikke har en skjærematte kan du bruke papir eller maskeringsteip for å markere et rutenett på et bord eller på gulvet.",
+            "focus": "Juster fokus på projektoren inntil teksten er skarp og klar i midten av projeksjonen. Om du ikke kan få et klart bilde, sjekk at distansen mellom projektoren og skjærematten er innenfor produsentens anbefalinger.",
+            "connect": "Koble en datamaskin eller nettbrett til projektoren. Speil eller utvid skjermen slik at bildet fra datamaskinen eller nettbrettet blir vist på projektoren.",
+            "title": "Oppsett",
+            "keystone": "Om din projektor har mulighet for å justere keystone, juster disse verdiene til projeksjonen er så rektangulært som mulig, og fokus i kantene av projeksjonen forbedres."
+        },
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "requirements": {
+            "mat": "En skjærematte med rutemønster (valgfritt)",
+            "computer": "Datamaskin eller nettbrett for å koble til projektor",
+            "title": "Hva du vil trenge",
+            "projector": "Projektor: minst 720p anbefalt",
+            "mount": "Tripod eller vegg/hylle/bordmontering til projektor",
+            "pattern": "Et PDF symønster"
+        },
+        "github": "Se kildekode",
+        "calibrate": "Start kalibrering",
+        "choose-language": "Språk",
+        "calibration": {
+            "drag": "Dra i hjørnene på rutenettet på skjermen for å tilpasse størrelsen til rutenettet på skjæreunderlaget. Juster hjørnenes plassering til rutenettet som projiseres matcher rutenettet på skjærematten.",
+            "title": "Kalibrering",
+            "start": "Klikk eller tapp på \"Start kalibrering\"",
+            "fullscreen": "Gå til fullskjermmodus ved å klikke eller tappe. "
+        }
+    }
+}
