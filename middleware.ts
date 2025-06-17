@@ -11,6 +11,7 @@ export const localeData = {
   fr: "Français",
   hu: "Magyar",
   it: "Italiano",
+  "nb-NO": "Norwegian Bokmål", // Needs to be in format nb-NO instead of nb_NO for next-intl to recognize it
   nl: "Nederlands",
   sl: "Slovenščina",
   sv: "Svenska",
@@ -31,5 +32,9 @@ export const config = {
   // Match only internationalized pathnames
   // Match /calibrate for people who saved a link to /calibrate before internationalization was added
   // *** IMPORTANT *** New language codes must be added here as well as in the localeData above
-  matcher: ["/", "/(cs|da|de|en|es|fr|hu|it|nl|sl|sv|ta)/:path*", "/calibrate"],
+  matcher: [
+    "/",
+    "/(cs|da|de|en|es|fr|hu|it|nb-NO|nl|sl|sv|ta)/:path*",
+    "/calibrate",
+  ],
 };

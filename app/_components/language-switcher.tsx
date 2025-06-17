@@ -16,7 +16,7 @@ export default function LanguageSwitcher({ ariaLabel }: { ariaLabel: string }) {
 
   return (
     <DropdownIconButton
-      dropdownClassName="right-0 w-fill"
+      dropdownClassName="right-0 w-fill z-50"
       description={ariaLabel}
       icon={<LanguageIcon ariaLabel={ariaLabel} />}
       options={Object.entries(localeData)
