@@ -7,9 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-06-25
+
+### Added
+
+- Slovenščina and Norwegian Bokmål translations
+
 ### Changed
 
 - When the page range is a single page, +/- buttons changes the page
+- Enter full screen only in calibrate
+
+### Fixed
+
+- Calibration warning popping up when dragging on Chromecast
+- Mismatch between exported and viewer stitched pages overlap
 
 ## [1.2.1] - 2025-04-29
 
@@ -180,6 +192,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Press and hold calibration corners to slow down movement
 
 [unreleased]: https://github.com/Pattern-Projector/pattern-projector/compare/main...beta
+[1.3.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.3.0
 [1.2.1]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.2.1
 [1.2.0]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.2.0
 [1.1.3]: https://github.com/Pattern-Projector/pattern-projector/releases/tag/v1.1.3
