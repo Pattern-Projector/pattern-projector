@@ -385,6 +385,34 @@ export default function Page() {
 
   // EFFECTS
 
+  useEffect(() => {
+    if ("serviceWorker" in navigator && window.serwist !== undefined) {
+      window.serwist.register();
+
+      // Client-side logic to handle shared files: listens for messages from the Service Worker
+      const handleServiceWorkerMessage = (event) => {
+        if (event.data && event.data.type === "shared-file") {
+          console.log(
+            "Client: Received shared file from service worker:",
+            event.data,
+          );
+          const fileData = event.data;
+          const blob = new Blob([fileData.data], { type: fileData.fileType });
+          const url = URL.createObjectURL(blob);
+          setFile(new File([blob], fileData.name, { type: fileData.fileType }));
+
+          return () => {
+            URL.revokeObjectURL(url);
+          };
+        }
+      };
+      navigator.serviceWorker.addEventListener(
+        "message",
+        handleServiceWorkerMessage,
+      );
+    }
+  });
+
   // Allow the user to open the file from their file browser, e.g., "Open With"
   useEffect(() => {
     requestWakeLock();

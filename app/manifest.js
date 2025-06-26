@@ -44,5 +44,18 @@ export default function manifest() {
         },
       },
     ],
+    share_target: {
+      action: "/shared-target",
+      method: "POST",
+      enctype: "multipart/form-data",
+      params: {
+        files: [
+          {
+            name: "shared_file",
+            accept: ["application/pdf", "image/svg+xml"],
+          },
+        ],
+      },
+    },
   };
 }
