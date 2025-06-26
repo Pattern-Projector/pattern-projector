@@ -390,7 +390,7 @@ export default function Page() {
       window.serwist.register();
 
       // Client-side logic to handle shared files: listens for messages from the Service Worker
-      const handleServiceWorkerMessage = (event) => {
+      const handleServiceWorkerMessage = (event: any) => {
         if (event.data && event.data.type === "shared-file") {
           console.log(
             "Client: Received shared file from service worker:",
