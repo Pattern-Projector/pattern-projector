@@ -17,7 +17,7 @@ registerRoute(
       console.log(
         `My Service Worker: Handling navigation request for ${url.pathname}`,
       );
-      if (request.method === "POST" && url.pathname === "/share-target") {
+      if (request.method === "POST" && url.pathname === "/shared-target") {
         try {
           const formData = await request.formData();
           const sharedFile = formData.get("shared_file");
@@ -55,7 +55,7 @@ registerRoute(
       return new NetworkOnly().handle({ url, request, event });
     },
     {
-      allowlist: [new RegExp("/share-target")],
+      allowlist: [new RegExp("/shared-target")],
     },
   ),
 );

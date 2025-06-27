@@ -45,7 +45,7 @@ export default function manifest() {
       },
     ],
     share_target: {
-      action: "/share-target",
+      action: "/shared-target",
       method: "POST",
       enctype: "multipart/form-data",
       params: {
