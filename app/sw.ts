@@ -58,6 +58,8 @@ registerRoute(
       allowlist: [new RegExp("/shared-target")],
     },
   ),
+  undefined, // This is the default handler for navigation requests.
+  "POST",
 );
 
 installSerwist({
