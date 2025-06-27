@@ -12,53 +12,48 @@ declare const self: ServiceWorkerGlobalScope & {
 };
 
 registerRoute(
-  new NavigationRoute(
-    async ({ url, request, event }) => {
-      console.log(
-        `My Service Worker: Handling navigation request for ${url.pathname}`,
-      );
-      if (request.method === "POST" && url.pathname === "/shared-target") {
-        try {
-          const formData = await request.formData();
-          const sharedFile = formData.get("shared_file");
+  /shared-target/,
+  async ({ url, request, event }) => {
+    console.log(
+      `My Service Worker: Handling navigation request for ${url.pathname}`,
+    );
+    if (request.method === "POST" && url.pathname === "/shared-target") {
+      try {
+        const formData = await request.formData();
+        const sharedFile = formData.get("shared_file");
 
-          if (sharedFile instanceof File) {
-            const fileBuffer = await sharedFile.arrayBuffer();
-            const allClients = await self.clients.matchAll({
-              includeUncontrolled: true,
-              type: "window",
-            });
+        if (sharedFile instanceof File) {
+          const fileBuffer = await sharedFile.arrayBuffer();
+          const allClients = await self.clients.matchAll({
+            includeUncontrolled: true,
+            type: "window",
+          });
 
-            for (const client of allClients) {
-              client.postMessage({
-                type: "shared-file",
-                name: sharedFile.name,
-                size: sharedFile.size,
-                fileType: sharedFile.type,
-                data: fileBuffer,
-              });
-            }
-            return Response.redirect("/calibrate", 303);
-          } else {
-            console.error(
-              "Service Worker: No file received or file is not an instance of File.",
-            );
-            return new Response("No file received for shared-file.", {
-              status: 400,
+          for (const client of allClients) {
+            client.postMessage({
+              type: "shared-file",
+              name: sharedFile.name,
+              size: sharedFile.size,
+              fileType: sharedFile.type,
+              data: fileBuffer,
             });
           }
-        } catch (error) {
-          console.error("Service Worker: Error handling shared file:", error);
-          return new Response("Error processing shared file.", { status: 500 });
+          return Response.redirect("/calibrate", 303);
+        } else {
+          console.error(
+            "Service Worker: No file received or file is not an instance of File.",
+          );
+          return new Response("No file received for shared-file.", {
+            status: 400,
+          });
         }
+      } catch (error) {
+        console.error("Service Worker: Error handling shared file:", error);
+        return new Response("Error processing shared file.", { status: 500 });
       }
-      return new NetworkOnly().handle({ url, request, event });
-    },
-    {
-      allowlist: [new RegExp("/shared-target")],
-    },
-  ),
-  undefined, // This is the default handler for navigation requests.
+    }
+    return new NetworkOnly().handle({ url, request, event });
+  },
   "POST",
 );
 
