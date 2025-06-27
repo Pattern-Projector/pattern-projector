@@ -416,7 +416,7 @@ export default function Page() {
         handleServiceWorkerMessage,
       );
     }
-  });
+  }, []);
 
   // Allow the user to open the file from their file browser, e.g., "Open With"
   useEffect(() => {
