@@ -386,11 +386,16 @@ export default function Page() {
   // EFFECTS
 
   useEffect(() => {
+    console.log("Client: Registering service worker...");
     if ("serviceWorker" in navigator && window.serwist !== undefined) {
       window.serwist.register();
-
+      console.log("Client: Service Worker registered successfully.");
       // Client-side logic to handle shared files: listens for messages from the Service Worker
       const handleServiceWorkerMessage = (event: any) => {
+        console.log(
+          "Client: Received message from service worker:",
+          event.data,
+        );
         if (event.data && event.data.type === "shared-file") {
           console.log(
             "Client: Received shared file from service worker:",
