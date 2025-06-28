@@ -413,14 +413,6 @@ export default function Page() {
     }
   }, []);
 
-  useEffect(() => {
-    console.log("Client: Registering service worker...");
-    if ("serviceWorker" in navigator && window.serwist !== undefined) {
-      window.serwist.register();
-      console.log("Client: Service Worker registered successfully.");
-    }
-  }, []);
-
   // Allow the user to open the file from their file browser, e.g., "Open With"
   useEffect(() => {
     requestWakeLock();
