@@ -384,6 +384,34 @@ export default function Page() {
   }
 
   // EFFECTS
+  useEffect(() => {
+    console.log("checking for open file in URL parameters");
+    const params = new URL(location.href).searchParams;
+    const openFile = params.get("open");
+    const name = params.get("name") ?? "";
+    if (openFile !== null) {
+      console.log("Client: openFile found in URL parameters.");
+      fetch(openFile)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const file = new File([blob], name, {
+            type: blob.type,
+          });
+          setFile(file);
+          console.log("Client: Shared file loaded successfully.");
+          // Check for shared file URL in query parameters on initial load
+          if (window.history.replaceState) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("open");
+            url.searchParams.delete("name");
+            window.history.replaceState({ path: url.href }, "", url.href);
+          }
+        })
+        .catch((error) => {
+          console.error("Client: Error loading shared file:", error);
+        });
+    }
+  }, []);
 
   // Allow the user to open the file from their file browser, e.g., "Open With"
   useEffect(() => {
