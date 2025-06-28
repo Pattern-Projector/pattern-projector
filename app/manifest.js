@@ -23,7 +23,7 @@ export default function manifest() {
     orientation: "landscape",
     lang: "en-US",
     dir: "ltr",
-    scope: "https://patternprojector.com",
+    scope: "/",
     scope_extensions: [{ origin: "*.patternprojector.com" }],
     prefer_related_applications: false,
     launch_handler: {

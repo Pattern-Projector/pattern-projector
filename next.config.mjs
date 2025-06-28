@@ -6,7 +6,8 @@ const withSerwist = withSerwistInit({
   swDest: "public/sw.js",
   cacheOnFrontEndNav: true,
   reloadOnOnline: true,
-  disable: process.env.NODE_ENV === "development",
+  //disable: process.env.NODE_ENV === "development",
+  register: false,
 });
 
 const withNextIntl = createNextIntlPlugin();

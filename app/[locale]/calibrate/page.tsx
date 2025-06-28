@@ -384,37 +384,40 @@ export default function Page() {
   }
 
   // EFFECTS
+  useEffect(() => {
+    console.log("checking for open file in URL parameters");
+    const params = new URL(location.href).searchParams;
+    const openFile = params.get("open");
+    const name = params.get("name") ?? "";
+    if (openFile !== null) {
+      console.log("Client: openFile found in URL parameters.");
+      fetch(openFile)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const file = new File([blob], name, {
+            type: blob.type,
+          });
+          setFile(file);
+          console.log("Client: Shared file loaded successfully.");
+          // Check for shared file URL in query parameters on initial load
+          if (window.history.replaceState) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("open");
+            url.searchParams.delete("name");
+            window.history.replaceState({ path: url.href }, "", url.href);
+          }
+        })
+        .catch((error) => {
+          console.error("Client: Error loading shared file:", error);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     console.log("Client: Registering service worker...");
     if ("serviceWorker" in navigator && window.serwist !== undefined) {
       window.serwist.register();
       console.log("Client: Service Worker registered successfully.");
-      // Client-side logic to handle shared files: listens for messages from the Service Worker
-      const handleServiceWorkerMessage = (event: any) => {
-        console.log(
-          "Client: Received message from service worker:",
-          event.data,
-        );
-        if (event.data && event.data.type === "shared-file") {
-          console.log(
-            "Client: Received shared file from service worker:",
-            event.data,
-          );
-          const fileData = event.data;
-          const blob = new Blob([fileData.data], { type: fileData.fileType });
-          const url = URL.createObjectURL(blob);
-          setFile(new File([blob], fileData.name, { type: fileData.fileType }));
-
-          return () => {
-            URL.revokeObjectURL(url);
-          };
-        }
-      };
-      navigator.serviceWorker.addEventListener(
-        "message",
-        handleServiceWorkerMessage,
-      );
     }
   }, []);
 
