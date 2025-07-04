@@ -737,11 +737,11 @@ export default function Page() {
               />
             </MeasureCanvas>
             {showCalibrationAlert ? (
-              <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black opacity-80 dark:text-white p-4 rounded border-2 border-black dark:border-white">
+              <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black opacity-80 dark:text-white p-4 rounded border-2 border-black dark:border-white pointer-events-none">
                 <WarningIcon ariaLabel="warning" />
                 <p>{t("calibrationAlert")}</p>
                 <Button
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center pointer-events-auto"
                   onClick={() => toggleFullScreen(fullScreenHandle)}
                 >
                   <span className="mr-1 -mt-1.5 w-4 h-4">
