@@ -604,28 +604,6 @@ export default function Page() {
           handle={fullScreenHandle}
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
-          {showCalibrationAlert ? (
-            <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
-              <WarningIcon ariaLabel="warning" />
-              <p>{t("calibrationAlert")}</p>
-              <Button
-                className="flex items-center justify-center"
-                onClick={() => toggleFullScreen(fullScreenHandle)}
-              >
-                <span className="mr-1 -mt-1.5 w-4 h-4">
-                  {fullScreenHandle.active ? (
-                    <FullScreenIcon ariaLabel={t("fullscreen")} />
-                  ) : (
-                    <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
-                  )}
-                </span>
-                {fullScreenHandle.active
-                  ? t("fullscreenExit")
-                  : t("fullscreen")}
-              </Button>
-              <p>{t("calibrationAlertContinue")}</p>
-            </div>
-          ) : null}
           <Modal open={errorMessage !== null}>
             <ModalTitle>{g("error")}</ModalTitle>
             <ModalContent>
@@ -758,7 +736,28 @@ export default function Page() {
                 patternScale={String(patternScaleFactor)}
               />
             </MeasureCanvas>
-
+            {showCalibrationAlert ? (
+              <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black opacity-80 dark:text-white p-4 rounded border-2 border-black dark:border-white">
+                <WarningIcon ariaLabel="warning" />
+                <p>{t("calibrationAlert")}</p>
+                <Button
+                  className="flex items-center justify-center"
+                  onClick={() => toggleFullScreen(fullScreenHandle)}
+                >
+                  <span className="mr-1 -mt-1.5 w-4 h-4">
+                    {fullScreenHandle.active ? (
+                      <FullScreenIcon ariaLabel={t("fullscreen")} />
+                    ) : (
+                      <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
+                    )}
+                  </span>
+                  {fullScreenHandle.active
+                    ? t("fullscreenExit")
+                    : t("fullscreen")}
+                </Button>
+                <p>{t("calibrationAlertContinue")}</p>
+              </div>
+            ) : null}
             <menu
               className={`absolute w-screen ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
             >
