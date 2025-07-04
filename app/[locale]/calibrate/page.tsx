@@ -102,6 +102,7 @@ export default function Page() {
   const width = Number(widthInput) > 0 ? Number(widthInput) : 1;
   const height = Number(heightInput) > 0 ? Number(heightInput) : 1;
   const [isCalibrating, setIsCalibrating] = useState(true);
+  const [isFileDragging, setIsFileDragging] = useState(false);
   const [fileLoadStatus, setFileLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
   );
@@ -279,55 +280,52 @@ export default function Page() {
     updateLocalSettings({ width: w });
   }
 
-  // Set new file; reset file based state; and if available, load file based state from localStorage
-  function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
-    const { files } = e.target;
-
-    if (files && files[0] && isValidFile(files[0])) {
-      setFile(files[0]);
-      setFileLoadStatus(LoadStatusEnum.LOADING);
-      setRestoreTransforms(null);
-      setZoomedOut(false);
-      setMagnifying(false);
-      setMeasuring(false);
-      setPageCount(0);
-      setLayers({});
-      dispatchPatternScaleAction({ type: "set", scale: "1.00" });
-      const lineThicknessString = localStorage.getItem(
-        `lineThickness:${files[0].name}`,
-      );
-      if (lineThicknessString !== null) {
-        setLineThickness(Number(lineThicknessString));
-      } else {
-        setLineThickness(0);
-      }
-
-      const key = `stitchSettings:${files[0].name ?? "default"}`;
-      const stitchSettingsString = localStorage.getItem(key);
-      if (stitchSettingsString !== null) {
-        const stitchSettings = JSON.parse(stitchSettingsString);
-        if (!stitchSettings.lineCount) {
-          // Old naming
-          stitchSettings.lineCount = stitchSettings.columnCount;
-        }
-        if (!stitchSettings.lineDirection) {
-          // For people who saved stitch settings before Line Direction was an option
-          stitchSettings.lineDirection = LineDirection.Column;
-        }
-        dispatchStitchSettings({ type: "set", stitchSettings });
-      } else {
-        dispatchStitchSettings({
-          type: "set",
-          stitchSettings: {
-            ...defaultStitchSettings,
-            key,
-          },
-        });
-      }
-
-      calibrationCallback();
+  function openPatternFile(file: File): boolean {
+    if (!isValidFile(file)) {
+      return false;
+    }
+    setFile(file);
+    setFileLoadStatus(LoadStatusEnum.LOADING);
+    setRestoreTransforms(null);
+    setZoomedOut(false);
+    setMagnifying(false);
+    setMeasuring(false);
+    setPageCount(0);
+    setLayers({});
+    dispatchPatternScaleAction({ type: "set", scale: "1.00" });
+    const lineThicknessString = localStorage.getItem(
+      `lineThickness:${file.name}`,
+    );
+    if (lineThicknessString !== null) {
+      setLineThickness(Number(lineThicknessString));
+    } else {
+      setLineThickness(0);
     }
 
+    const key = `stitchSettings:${file.name ?? "default"}`;
+    const stitchSettingsString = localStorage.getItem(key);
+    if (stitchSettingsString !== null) {
+      const stitchSettings = JSON.parse(stitchSettingsString);
+      if (!stitchSettings.lineCount) {
+        // Old naming
+        stitchSettings.lineCount = stitchSettings.columnCount;
+      }
+      if (!stitchSettings.lineDirection) {
+        // For people who saved stitch settings before Line Direction was an option
+        stitchSettings.lineDirection = LineDirection.Column;
+      }
+      dispatchStitchSettings({ type: "set", stitchSettings });
+    } else {
+      dispatchStitchSettings({
+        type: "set",
+        stitchSettings: {
+          ...defaultStitchSettings,
+          key,
+        },
+      });
+    }
+
+    calibrationCallback();
     // If the user calibrated in full screen, try to go back into full screen after opening the file: some browsers pop users out of full screen when selecting a file
     const expectedContext = localStorage.getItem("calibrationContext");
     if (expectedContext !== null) {
@@ -338,7 +336,52 @@ export default function Page() {
         }
       } catch (e) {}
     }
+    return true;
   }
+
+  // Set new file; reset file based state; and if available, load file based state from localStorage
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
+    const { files } = e.target;
+    if (files && files[0]) {
+      openPatternFile(files[0]);
+    }
+  }
+
+  const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFileDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFileDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Set effect to copy (optional, but good practice for clarity)
+    e.dataTransfer.dropEffect = "copy";
+    setIsFileDragging(true); // Keep it highlighted during dragover
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsFileDragging(false); // Reset dragging state
+
+      const files = e.dataTransfer.files;
+
+      if (files && files.length > 0) {
+        const file = files[0];
+        openPatternFile(file);
+      }
+    },
+    [openPatternFile],
+  );
 
   function handlePointerDown(e: React.PointerEvent) {
     resetIdle();
@@ -384,6 +427,34 @@ export default function Page() {
   }
 
   // EFFECTS
+  useEffect(() => {
+    console.log("checking for open file in URL parameters");
+    const params = new URL(location.href).searchParams;
+    const openFile = params.get("open");
+    const name = params.get("name") ?? "";
+    if (openFile !== null) {
+      console.log("Client: openFile found in URL parameters.");
+      fetch(openFile)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const file = new File([blob], name, {
+            type: blob.type,
+          });
+          openPatternFile(file);
+          console.log("Client: Shared file loaded successfully.");
+          // Check for shared file URL in query parameters on initial load
+          if (window.history.replaceState) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("open");
+            url.searchParams.delete("name");
+            window.history.replaceState({ path: url.href }, "", url.href);
+          }
+        })
+        .catch((error) => {
+          console.error("Client: Error loading shared file:", error);
+        });
+    }
+  }, []);
 
   // Allow the user to open the file from their file browser, e.g., "Open With"
   useEffect(() => {
@@ -394,7 +465,7 @@ export default function Page() {
           for (const handle of launchParams.files) {
             if (handle.kind == "file") {
               const file = await (handle as FileSystemFileHandle).getFile();
-              setFile(file);
+              openPatternFile(file);
               return;
             }
           }
@@ -521,6 +592,10 @@ export default function Page() {
     <main
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
       ref={noZoomRefCallback}
       className={`${menusHidden && "cursor-none"} ${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
@@ -529,28 +604,6 @@ export default function Page() {
           handle={fullScreenHandle}
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
-          {showCalibrationAlert ? (
-            <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
-              <WarningIcon ariaLabel="warning" />
-              <p>{t("calibrationAlert")}</p>
-              <Button
-                className="flex items-center justify-center"
-                onClick={() => toggleFullScreen(fullScreenHandle)}
-              >
-                <span className="mr-1 -mt-1.5 w-4 h-4">
-                  {fullScreenHandle.active ? (
-                    <FullScreenIcon ariaLabel={t("fullscreen")} />
-                  ) : (
-                    <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
-                  )}
-                </span>
-                {fullScreenHandle.active
-                  ? t("fullscreenExit")
-                  : t("fullscreen")}
-              </Button>
-              <p>{t("calibrationAlertContinue")}</p>
-            </div>
-          ) : null}
           <Modal open={errorMessage !== null}>
             <ModalTitle>{g("error")}</ModalTitle>
             <ModalContent>
@@ -683,7 +736,28 @@ export default function Page() {
                 patternScale={String(patternScaleFactor)}
               />
             </MeasureCanvas>
-
+            {showCalibrationAlert ? (
+              <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black opacity-80 dark:text-white p-4 rounded border-2 border-black dark:border-white pointer-events-none">
+                <WarningIcon ariaLabel="warning" />
+                <p>{t("calibrationAlert")}</p>
+                <Button
+                  className="flex items-center justify-center pointer-events-auto"
+                  onClick={() => toggleFullScreen(fullScreenHandle)}
+                >
+                  <span className="mr-1 -mt-1.5 w-4 h-4">
+                    {fullScreenHandle.active ? (
+                      <FullScreenIcon ariaLabel={t("fullscreen")} />
+                    ) : (
+                      <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
+                    )}
+                  </span>
+                  {fullScreenHandle.active
+                    ? t("fullscreenExit")
+                    : t("fullscreen")}
+                </Button>
+                <p>{t("calibrationAlertContinue")}</p>
+              </div>
+            ) : null}
             <menu
               className={`absolute w-screen ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
             >
