@@ -102,6 +102,7 @@ export default function Page() {
   const width = Number(widthInput) > 0 ? Number(widthInput) : 1;
   const height = Number(heightInput) > 0 ? Number(heightInput) : 1;
   const [isCalibrating, setIsCalibrating] = useState(true);
+  const [isFileDragging, setIsFileDragging] = useState(false);
   const [fileLoadStatus, setFileLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
   );
@@ -279,55 +280,52 @@ export default function Page() {
     updateLocalSettings({ width: w });
   }
 
-  // Set new file; reset file based state; and if available, load file based state from localStorage
-  function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
-    const { files } = e.target;
-
-    if (files && files[0] && isValidFile(files[0])) {
-      setFile(files[0]);
-      setFileLoadStatus(LoadStatusEnum.LOADING);
-      setRestoreTransforms(null);
-      setZoomedOut(false);
-      setMagnifying(false);
-      setMeasuring(false);
-      setPageCount(0);
-      setLayers({});
-      dispatchPatternScaleAction({ type: "set", scale: "1.00" });
-      const lineThicknessString = localStorage.getItem(
-        `lineThickness:${files[0].name}`,
-      );
-      if (lineThicknessString !== null) {
-        setLineThickness(Number(lineThicknessString));
-      } else {
-        setLineThickness(0);
-      }
-
-      const key = `stitchSettings:${files[0].name ?? "default"}`;
-      const stitchSettingsString = localStorage.getItem(key);
-      if (stitchSettingsString !== null) {
-        const stitchSettings = JSON.parse(stitchSettingsString);
-        if (!stitchSettings.lineCount) {
-          // Old naming
-          stitchSettings.lineCount = stitchSettings.columnCount;
-        }
-        if (!stitchSettings.lineDirection) {
-          // For people who saved stitch settings before Line Direction was an option
-          stitchSettings.lineDirection = LineDirection.Column;
-        }
-        dispatchStitchSettings({ type: "set", stitchSettings });
-      } else {
-        dispatchStitchSettings({
-          type: "set",
-          stitchSettings: {
-            ...defaultStitchSettings,
-            key,
-          },
-        });
-      }
-
-      calibrationCallback();
+  function openPatternFile(file: File): boolean {
+    if (!isValidFile(file)) {
+      return false;
+    }
+    setFile(file);
+    setFileLoadStatus(LoadStatusEnum.LOADING);
+    setRestoreTransforms(null);
+    setZoomedOut(false);
+    setMagnifying(false);
+    setMeasuring(false);
+    setPageCount(0);
+    setLayers({});
+    dispatchPatternScaleAction({ type: "set", scale: "1.00" });
+    const lineThicknessString = localStorage.getItem(
+      `lineThickness:${file.name}`,
+    );
+    if (lineThicknessString !== null) {
+      setLineThickness(Number(lineThicknessString));
+    } else {
+      setLineThickness(0);
     }
 
+    const key = `stitchSettings:${file.name ?? "default"}`;
+    const stitchSettingsString = localStorage.getItem(key);
+    if (stitchSettingsString !== null) {
+      const stitchSettings = JSON.parse(stitchSettingsString);
+      if (!stitchSettings.lineCount) {
+        // Old naming
+        stitchSettings.lineCount = stitchSettings.columnCount;
+      }
+      if (!stitchSettings.lineDirection) {
+        // For people who saved stitch settings before Line Direction was an option
+        stitchSettings.lineDirection = LineDirection.Column;
+      }
+      dispatchStitchSettings({ type: "set", stitchSettings });
+    } else {
+      dispatchStitchSettings({
+        type: "set",
+        stitchSettings: {
+          ...defaultStitchSettings,
+          key,
+        },
+      });
+    }
+
+    calibrationCallback();
     // If the user calibrated in full screen, try to go back into full screen after opening the file: some browsers pop users out of full screen when selecting a file
     const expectedContext = localStorage.getItem("calibrationContext");
     if (expectedContext !== null) {
@@ -338,7 +336,52 @@ export default function Page() {
         }
       } catch (e) {}
     }
+    return true;
   }
+
+  // Set new file; reset file based state; and if available, load file based state from localStorage
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
+    const { files } = e.target;
+    if (files && files[0]) {
+      openPatternFile(files[0]);
+    }
+  }
+
+  const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFileDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFileDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Set effect to copy (optional, but good practice for clarity)
+    e.dataTransfer.dropEffect = "copy";
+    setIsFileDragging(true); // Keep it highlighted during dragover
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsFileDragging(false); // Reset dragging state
+
+      const files = e.dataTransfer.files;
+
+      if (files && files.length > 0) {
+        const file = files[0];
+        openPatternFile(file);
+      }
+    },
+    [openPatternFile],
+  );
 
   function handlePointerDown(e: React.PointerEvent) {
     resetIdle();
@@ -397,7 +440,7 @@ export default function Page() {
           const file = new File([blob], name, {
             type: blob.type,
           });
-          setFile(file);
+          openPatternFile(file);
           console.log("Client: Shared file loaded successfully.");
           // Check for shared file URL in query parameters on initial load
           if (window.history.replaceState) {
@@ -422,7 +465,7 @@ export default function Page() {
           for (const handle of launchParams.files) {
             if (handle.kind == "file") {
               const file = await (handle as FileSystemFileHandle).getFile();
-              setFile(file);
+              openPatternFile(file);
               return;
             }
           }
@@ -549,6 +592,10 @@ export default function Page() {
     <main
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
       ref={noZoomRefCallback}
       className={`${menusHidden && "cursor-none"} ${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
