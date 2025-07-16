@@ -62,5 +62,8 @@
   },
   "prettier": {
     "trailingComma": "all"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }
