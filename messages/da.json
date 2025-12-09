@@ -32,7 +32,7 @@
             "fullscreen": "Gå til fuld skærm ved at klikke eller tappe ",
             "drag": "Træk i hjørnerne af gitteret, så ternene kommer til at passe med ternene på dit skæreunderlag. Justér hjørnerne på din tablet eller computer, mens du kigger på skæreunderlaget. Justér hjørnernes placering indtil gitteret i projektorbilledet passer med skæreunderlagets gitter.",
             "size": "Du behøver ikke at bruge hele dit skæreunderlag, når du kalibrerer. Brug i stedet det størst mulige område, som du kan få kalibreringsgitteret til at passe i. Indtast målene (bredde og højde), så de stemmer overens med målene på kalibreringsgitteret.",
-            "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap \"Vis mønster\""
+            "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap \"Vis mønster\"."
         },
         "project": {
             "title": "Vis et mønster",
