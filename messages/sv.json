@@ -134,7 +134,7 @@
             "fullscreen": "Gå till helskärmsläge genom att klicka (eller trycka) ",
             "drag": "Drag hörnen i rutnätet för att linjera med din matta. Med ögonen på mattan, justera hörnen på din dator eller surfplatta. Justera placeringen av hörnen tills det projicerade rutnätet matchar din mattas rutnät.",
             "size": "Du måste inte använda hela mattan för att kalibrera, välj istället den största ytan som kan passa kalibreringens rutnät och sätt in bredd och höjd att matcha bredd och höjd av det rutnätet.",
-            "project": "När det projicerade rutnätet är i linje med din matta, klicka (eller tryck) ”Project.”"
+            "project": "När det projicerade rutnätet är i linje med din matta, klicka (eller tryck) ”Project”."
         },
         "lineTool": {
             "title": "Linjeverktyg",
