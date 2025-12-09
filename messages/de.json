@@ -29,17 +29,17 @@
             "title": "Kalibrierung",
             "start": "Klicke auf “Starte Kalibrierung.”",
             "input": "Füge die Weite und Höhe deiner Schneidematte ein.",
-            "fullscreen": "Gehe auf Vollbildmodus, indem du auf das Ikon klickst ",
+            "fullscreen": "Wechsle in Vollbildmodus, indem du oben links auf das <fullscreenIcon></fullscreenIcon> klickst.",
             "drag": "Ziehe die Ecken des Rasters auf die Ecken deiner Schneidematte. Mit Blick auf die Matte, justiere die Ecken am PC oder Tablet. Justiere es solange, bis die Ecken und Linien mit deiner Schneidematte übereinstimmen.",
             "size": "Sie müssen nicht die gesamte Matte kalibrieren. Wählen Sie stattdessen den größten Bereich, in den das Kalibrierungsgitter passt, und geben Sie die Breite und Höhe entsprechend der Breite und Höhe des Gitters ein.",
             "project": "Wenn das projizierte Gitter mit deiner Schneidematte übereinstimmt, klicke auf \"Beamen\"."
         },
         "project": {
             "title": "Projiziere ein Schnittmuster",
-            "open": "Klicke auf <pdficon></pdficon> um das PDF-Dokument zu öffnen.",
+            "open": "Klicke auf <pdficon></pdficon> um das Schnittmuster zu öffnen.",
             "move": "Bewege die PDF durch Klicken und Ziehen über den Bildschirm.",
             "cut": "Schneide die Schnittteile an der Projektion aus.",
-            "tools": "Im Projektionsmodus sind verschiedene Tools enthalten. Manche funktionieren durch Tastatur-Kurzbefehl, diese sind in Klammern angegeben:",
+            "tools": "Im Projektionsmodus sind verschiedene Tools enthalten. Einige funktionieren durch Tastatur-Kurzbefehle, die in Klammern angegeben sind.",
             "showGrid": {
                 "title": "Ein-/Ausblenden des Rasters",
                 "description": "Beim Beamen kann das abgeschwächte Raster ein-/ausgeblendet, um zu sehen, ob die Kalibrierung korrekt ist."
@@ -65,8 +65,8 @@
                 "description": "Es ist generell einfacher, die Software im Vollbildmodus zu verwenden."
             },
             "measure": {
-                "description": "Markieren Sie Linien in der PDF-Datei zum Drehen, Spiegeln, Verschieben, Messen oder Markieren.",
-                "title": "Werkzeug zum Markieren, Messen und Transformieren starten"
+                "description": "Markieren Sie Linien in der PDF-Datei zum Drehen, Spiegeln, Verschieben, Messen oder Markieren. Für eine detaillierte Beschreibung des Linie-Werkzeugs, gehen sie zum Abschnitt <lineToolLink>Linien-Werkzeug</lineToolLink>.",
+                "title": "Linien-Werkzeug (L)"
             },
             "showMenu": {
                 "title": "Zeige/Verstecke Menü",
@@ -78,7 +78,7 @@
             },
             "overlayOptions": {
                 "title": "Überlagerungsoptionen ein- oder ausblenden",
-                "description": "Die Overlays Raster, Rand, Papierbogen und Flip-Linien können ein- oder ausgeblendet werden. Das Raster entspricht dem Kalibrierungsraster, der Rand ist die Umrandung des Kalibrierungsrasters, das Papierblatt ist ein Rechteck in der Größe eines DIN-A4-Blattes, und die Umkehrlinien sind Linien, die bei der Spiegelung von Mustern helfen."
+                "description": "Raster, Rand, Papierbogen, Flip-Linien und Overlays können im PDF angezeigt werden, um bei Kalibierung und Zuschnitt zu helfen. Für mehr Informationen gehen sie zu den <overlayOptionsLink>Overlay Optionen</overlayOptionsLink>."
             },
             "lineWeight": {
                 "title": "Liniendicke",
@@ -97,17 +97,19 @@
                 "description": "Klicke (oder tippe) auf das PDF, um es zu vergrößern. Klicke (oder tippe) erneut, um das Vergrößerung zu beenden."
             },
             "scale": {
-                "title": "Anzeigen oder Verstecken des Skalierungsmenüs"
+                "title": "Anzeigen oder Verstecken des Skalierungsmenüs",
+                "description": "Ändere die Größe des Schnittmusters durch Eingabe eines Faktors: zwischen 0-1 verkleinert das Muster und größer als 1 vergrößert das Muster."
             },
             "zoomOut": {
-                "description": "Herauszoomen, um das vollständige PDF anzuzeigen. Auf das PDF klicken, um zur gewählten Stelle zu Zoomen."
+                "description": "Herauszoomen, um das vollständige PDF anzuzeigen. Auf das PDF klicken, um zur gewählten Stelle zu Zoomen.",
+                "title": "Herauszoomen (Z)"
             }
         },
         "faq": {
             "title": "FAQ",
             "wrongSizePdf": {
                 "question": "Wird die PDF zu groß oder zu klein projiziert?",
-                "answer": "Die Kalibrierung hat keinen Zoom, da der Maßstab der Projektion von den Größenangaben in der PDF-Datei stammt. Stellen Sie sicher, dass das Schnittmuster den richtigen Maßstab hat. Eine gute Möglichkeit um zu überprüfen, ob der Maßstab des Schnittmusters stimmt, ist die Projektion eines <inchGridLink>ein Zoll</inchGridLink> oder <cmGridLink>ein Zentimeter</cmGridLink> Rasters, um zu sehen, ob es mit der Schneidematte übereinstimmt."
+                "answer": "Die Kalibrierung hat keinen Zoom, da der Maßstab der Projektion von den Größenangaben in der PDF-Datei stammt. Schnittmuster von Designern haben in der Regel den korrekten Maßstab. Ein Änderung des Maßstabs hätte beim Öffnen des Schnittmusters in Affinity Designer oder Inkscape erfolgen sollen."
             },
             "saveAsApp": {
                 "question": "Möchtest du Pattern Projector als App speichern?",
@@ -123,7 +125,7 @@
             },
             "mobileSupport": {
                 "question": "Unterstützt du Tablets oder Handys?",
-                "answer": "Es ist möglich die Webseite auf dem Handy zu öffnen und zu benutzen, allerdings wird die begrenzte Bildschirmgröße die Benutzung erschweren. Besserer Support dafür ist geplant und wird in kommenden Updates umgesetzt."
+                "answer": "Es ist möglich die Webseite auf dem Handy zu öffnen und zu benutzen, allerdings wird die begrenzte Bildschirmgröße die Benutzung erschweren."
             }
         },
         "resources": {
@@ -143,7 +145,7 @@
             "title": "Unterstütze dieses Projekt",
             "donation": "Sofern du die Entwicklung dieses Projekts unterstützen möchtest, kannst du mich gerne hier <donateLink>kaufe mir einen Kaffee</donateLink> unterstützen oder mit <payPalLink>PayPal</payPalLink>!",
             "develop": "Hilfe um neue Featuers zu implementieren oder Fehler zu beheben auf <githubLink>GitHub</githubLink>.",
-            "translate": "Übersetzung dieses Projekts in mehrere Sprachen mit  <weblateLink>Weblate</weblateLink>.",
+            "translate": "Übersetze dieses Projekt in mehr Sprachen mit <weblateLink>Weblate</weblateLink>.",
             "feedback": "Feedback und Verbesserungsvorschläge sind herzlich Willkommen!"
         },
         "contact": "Kontakt",
@@ -158,7 +160,8 @@
                 "description": "Ausgewählte Linie löschen."
             },
             "previousNext": {
-                "title": "Vorherige/nächste Linie zentrieren"
+                "title": "Vorherige/nächste Linie zentrieren",
+                "description": "Verschiebt das PDF so, dass the vorherige/nächste gezeichnete Linie horizontal und zentriert auf der Schneidematte ist."
             },
             "move": {
                 "title": "Verschieben des PDF um die Länge der Linie",
@@ -167,14 +170,47 @@
             "flip": {
                 "description": "Spiegelt das PDF entlang der Linie.",
                 "title": "Spiegeln entlang der Linie"
+            },
+            "length": {
+                "title": "Linienlänge",
+                "description": "Zeigt die Länge der selektierten Linie (angezeigt in lila). Andere Linien sind orange.",
+                "use": "Klicke auf die Länge, um für die Linienlänge ein genaues Maß einzugeben. Nützlich, um Schnittmusterteile zu verlängern/kürzen. Siehe <lineToolVideoLink>dieses Video</lineToolVideoLink> für ein Beispiel."
+            },
+            "angle": {
+                "title": "Linienwinkel",
+                "description": "Zeigt den Winkel der selektierten Linie an (in lila). Andere Linien sind orange.",
+                "use": "Geben Sie einen Winkel an, um die Linie und das Schnittmusterteil zu rotieren. Nutze den <alignIcon></alignIcon> Mittig ausrichten Button, um die Rotation basieren auf dem eingegebenen Winkel anzuwenden."
             }
         },
-        "tools": "Werkzeuge"
+        "tools": "Werkzeuge",
+        "overlayOptions": {
+            "border": {
+                "description": "Zeigt den Rand des Kalibrierrasters.",
+                "title": "Rand"
+            },
+            "flipLines": {
+                "title": "Bruchlinie"
+            },
+            "title": "Overlay Einstellungen",
+            "description": "Die Overlay Einstellungen können genutzt werden, um die Kalibrierung während der Projektion zu überprüfen und helfen mit Schnittmustern. Die folgenden Optionen sind verfügbar:",
+            "grid": {
+                "title": "Raster",
+                "description": "Zeigt das Kalibrierraster."
+            },
+            "paper": {
+                "title": "Papierblatt",
+                "description": "Zeigt ein Rechteck der Größe eines Letter oder DIN A4 Blattes an, um die Kalibrierung zu überprüfen."
+            },
+            "flippedPattern": {
+                "title": "Falsche Seite",
+                "description": "Zeigt Punkte an, wenn die falsche Seite des Schnittmusters projiziert wird."
+            }
+        }
     },
     "Header": {
         "projecting": "Beamen",
         "calibrating": "Kalibrierung",
-        "openPDF": "Öffne PDF",
+        "openPDF": "Öffnen",
         "height": "H:",
         "width": "B:",
         "project": "Beamen",
@@ -184,19 +220,19 @@
         "gridOff": "Raster aus",
         "invertColor": "Farbumkehrung ein",
         "invertColorOff": "Farbumkehrung aus",
-        "flipVertical": "Spiegel vertikal (V)",
+        "flipVertical": "Vertikal spiegeln (V)",
         "flipVerticalOff": "Spiegel vertikal aus",
-        "flipHorizontal": "Spiegel horizontal (h)",
+        "flipHorizontal": "Horizontal spiegeln (H)",
         "flipHorizontalOff": "Spiegel horizontal aus",
         "fourCornersOn": "Eckpunkte einblenden",
         "fourCornersOff": "Eckpunkte ausblenden",
-        "rotate90": "Drehe 90 Grad im Uhrzeigersinn (r)",
+        "rotate90": "Drehe 90 Grad im Uhrzeigersinn (R)",
         "arrowBack": "Zurück 1 Seite",
         "arrowForward": "Vorwärts 1 Seite",
         "info": "Info Seite",
         "layersOn": "Blende Ebenenmenü ein",
         "layersOff": "Blende Ebenenmenü aus",
-        "recenter": "PDF zentrieren (c)",
+        "recenter": "Zentrieren und zurücksetzen (C)",
         "fullscreen": "Vollbild ein",
         "fullscreenExit": "Vollbild aus",
         "lineWeight": "Linienstärke",
@@ -218,7 +254,7 @@
         "overlayOptionPaper": "Papierseite",
         "overlayOptionFliplines": "Drehe Linien",
         "flipCenterOn": "Über die Mitte drehen",
-        "measure": "Markieren, messen und transformieren (m)",
+        "measure": "Linien-Werkzeug (L)",
         "ok": "Ok",
         "flipCenterOff": "Nicht über die Mitte drehen",
         "calibrationAlertTitle": "Kalibrierung Warnung",
@@ -232,19 +268,21 @@
     "StitchMenu": {
         "columnCount": "Spalten",
         "pageRange": "Stichseiten",
-        "horizontal": "Horizontal",
-        "vertical": "Vertikal"
+        "horizontal": "Horizontale Überschneidung",
+        "vertical": "Vertikale Überschneidung"
     },
     "MeasureCanvas": {
-        "rotateToHorizontal": "Rotiere horizontal",
+        "rotateToHorizontal": "Mittig ausrichten",
         "deleteLine": "Lösche Linie",
         "flipAlong": "Drehe an der Linie entlang",
-        "translate": "PDF nach Zeilenlänge verschieben"
+        "translate": "Schnittmuster um Linienlänge verschieben",
+        "rotateAndCenterPrevious": "Vorherige Linie zentrieren",
+        "rotateAndCenterNext": "Nächste Linie zentrieren"
     },
     "LayerMenu": {
         "layersOn": "Zeige Ebenenmenü",
         "layersOff": "Verstecke Ebenenmenü",
-        "noLayers": "Keine Ebenen in der PDF",
+        "noLayers": "Keine Ebenen im Schnittmuster",
         "title": "Ebenen",
         "showAll": "Zeige alle",
         "hideAll": "Verstecke alle"
@@ -255,5 +293,14 @@
         "down": "Runter",
         "next": "Nächste Ecke",
         "up": "Hoch"
+    },
+    "Mail": {
+        "title": "Sie haben Post"
+    },
+    "ScaleMenu": {
+        "show": "Skalieren Menü anzeigen"
+    },
+    "OverlayCanvas": {
+        "scaled": "<scale></scale>x skalieren"
     }
 }
