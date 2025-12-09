@@ -6,7 +6,7 @@
             "title": "Kalibracija",
             "fullscreen": "Aktiviraj celozaslonski prikaz s klikom na ikonco. ",
             "size": "Ni vam potrebno kalibrirat z uporabo vaše celotne rezalne površine. Izberite največjo površino, ki jo lahko prekrijte z kalibracijsko mrežo ter vnesite ustrezno višino ter širino uporabljene mreže.",
-            "project": "Ko je projicirana mreža poravnana s rezalno podlogo kliknite na \"Projiciraj\""
+            "project": "Ko je projicirana mreža poravnana s rezalno podlogo kliknite na \"Projiciraj\"."
         },
         "project": {
             "moveTool": {
