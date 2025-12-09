@@ -69,7 +69,7 @@
         },
         "calibration": {
             "size": "Non è necessario calibrare utilizzando l'intero tappetino, invece scegli l'area più grande in cui è possibile far entrare la griglia di calibrazione e inserisci larghezza e altezza per farle combaciare con la larghezza e l'altezza della griglia.",
-            "project": "Quando la griglia proiettata è allineata con il tappetino, fai clic (o tocca) “Proietta.”",
+            "project": "Quando la griglia proiettata è allineata con il tappetino, fai clic (o tocca) “Proietta”.",
             "title": "Calibrazione",
             "fullscreen": "Entra in modalità a schermo intero cliccando (o toccando) ",
             "start": "Fari clic (o tocca) su “Avvia calibrazione.”",
