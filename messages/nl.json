@@ -32,7 +32,7 @@
             "fullscreen": "Ga naar 'Volledig scherm' modus door te klikken (of drukken) op ",
             "drag": "Sleep de hoeken van het raster tot ze overeenkomen met je snijmat. Stel de hoeken op je computer of tablet bij terwijl je naar de projectie kijkt.",
             "size": "Je hoeft niet te kalibreren met je hele mat. Kies het grootste gebied op je mat waar het kalibratierooster in past en zorg ervoor dat je breedte- en hoogteinstellingen overeenkomen met het aantal vakjes van je raster.",
-            "project": "Als het geprojecteerde grid overeen komt met de snijmat, klik (of druk) dan op 'Projecteer'"
+            "project": "Als het geprojecteerde grid overeen komt met de snijmat, klik (of druk) dan op 'Projecteer'."
         },
         "project": {
             "title": "Een patroon projecteren",
