@@ -31,7 +31,7 @@
             "fullscreen": "Passez en mode plein écran en cliquant (ou en appuyant) sur ",
             "drag": "Déplacez les coins du quadrillage pour les aligner avec votre tapis. Avec vos yeux sur le tapis, ajustez les coins sur votre ordinateur ou tablette. Ajustez le placement des coins jusqu'à ce que le quadrillage projeté corresponde au quadrillage de votre tapis.",
             "size": "Vous n'avez pas besoin de calibrer en utilisant tout votre tapis. Choisissez plutôt l'espace le plus grand où vous pouvez faire rentrer le quadrillage de calibration puis saisissez la largeur et la hauteur pour qu'elles correspondent à la largeur et la hauteur du quadrillage.",
-            "project": "Quand le quadrillage projeté est aligné avec votre tapis, cliquez (ou appuyer) sur \"Projeter.\""
+            "project": "Quand le quadrillage projeté est aligné avec votre tapis, cliquez (ou appuyer) sur \"Projeter\"."
         },
         "project": {
             "title": "Projection d'un patron",
