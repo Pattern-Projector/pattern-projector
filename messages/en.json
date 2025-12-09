@@ -1,344 +1,344 @@
 {
-  "HomePage": {
-    "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
-    "github": "See source code",
-    "calibrate": "Start Calibrating",
-    "choose-language": "Language",
-    "welcome": {
-      "title": "Welcome to Pattern Projector!",
-      "description": "Pattern projector is a free and open source web app that quickly calibrates projectors for sewing patterns. It also has tools for stitching together multiple page patterns, changing line thickness, inverting colors, flipping/rotating patterns, and more. To read about the latest updates, check out the <changeLogLink>changelog</changeLogLink>."
-    },
-    "requirements": {
-      "title": "What You’ll Need",
-      "projector": "Projector: at least 720p recommended",
-      "mat": "A cutting mat with grid lines (optional)",
-      "mount": "Tripod or wall/shelf/table mount for projector",
-      "computer": "Computer or tablet to connect to the projector",
-      "pattern": "A PDF sewing pattern"
-    },
-    "setup": {
-      "title": "Setup",
-      "place": "Place the projector above the cutting mat, pointing directly at the cutting mat. If you do not have a cutting mat, you can use paper or masking tape to mark out a grid/rectangle on a table or floor.",
-      "connect": "Connect your computer or tablet to the projector and either mirror or extend the display so that image from computer or tablet is shown on the projector.",
-      "focus": "Adjust the focus on the projector, until text is crisp in the centre of the projection. If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended by the manufacturer.",
-      "keystone": "If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves."
-    },
-    "calibration": {
-      "title": "Calibration",
-      "start": "Click (or tap) “Start Calibrating.”",
-      "fullscreen": "Enter full screen mode by clicking (or tapping) <fullscreenIcon></fullscreenIcon> in the top left corner.",
-      "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your computer or tablet. Adjust the placement of the corners until the projected grid matches your mat's grid.",
-      "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and input the width and height to match the width and height of the grid.",
-      "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
-    },
-    "project": {
-      "title": "Projecting a Pattern",
-      "open": "Click (or tap) <pdficon></pdficon> to open a pattern.",
-      "move": "Move the PDF by clicking and dragging it around the screen.",
-      "cut": "Cut along the projected design.",
-      "tools": "In projection mode there are several tools provided. Some have keyboard shortcuts, which are denoted in parentheses.",
-      "fullscreen": {
-        "title": "Full screen",
-        "description": "It's generally easier to use the software in full screen mode."
-      },
-      "showMenu": {
-        "title": "Show/hide menu",
-        "description": "Show or hide the top menu."
-      },
-      "invert": {
-        "title": "Invert Colors",
-        "description": "When projecting, it's usually easier to see green or white lines on black. Click/tap once for green lines, twice for white lines, and three times to return to black lines."
-      },
-      "moveTool": {
-        "title": "Show or hide move tool",
-        "description": "The move tool has four arrow buttons to move the calibration grid corners/edges. It also has a next button in the middle for switching to the next corner/edge."
-      },
-      "overlayOptions": {
-        "title": "Show or hide overlay options",
-        "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting. For more information, see the <overlayOptionsLink>overlay options section</overlayOptionsLink>."
-      },
-      "lineWeight": {
-        "title": "Line weight",
-        "description": "Change the thickness of the lines in the PDF pattern."
-      },
-      "flip": {
-        "title": "Flip Vertical (V) or Horizontal (H)",
-        "description": "Helpful when mirroring patterns in half."
-      },
-      "rotate": {
-        "title": "Rotate (R)",
-        "description": "Change the orientation of the pattern by 90 degrees."
-      },
-      "recenter": {
-        "title": "Center and Reset (C)",
-        "description": "Centers the pattern on the cutting mat and resets the rotation/flipping."
-      },
-      "magnify": {
-        "title": "Magnify (M)",
-        "description": "Click (or tap) on the PDF to magnify it. Click (or tap) again to stop magnifying."
-      },
-      "zoomOut": {
-        "title": "Zoom out (Z)",
-        "description": "Zoom out to see the whole PDF. Click (or tap) on the PDF to zoom back in at selected location."
-      },
-      "layers": {
-        "title": "Show or hide layers",
-        "description": "Show or hide layers in the PDF."
-      },
-      "stitch": {
-        "title": "Show or hide stitch menu",
-        "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
-      },
-      "scale": {
-        "title": "Show or hide the scale menu",
-        "description": "Change size of the pattern by entering a multiplier: between 0-1 will make the pattern smaller and greater than 1 will make the pattern larger."
-      },
-      "measure": {
-        "title": "Line tool (L)",
-        "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking. For a detailed description of the line tool, see the <lineToolLink>line tool section</lineToolLink>."
-      }
-    },
-    "tools": "Tools",
-    "lineTool": {
-      "title": "Line Tool",
-      "description": "The line tool can be used to measure distances, mark lines on, rotate, flip, and move the PDF. Click (or tap) the line tool button, then click (or tap) on the PDF and drag to draw a line. Once a line is drawn, a menu will appear on the bottom of the screen with the following options:",
-      "delete": {
-        "title": "Delete line",
-        "description": "Deletes the selected line."
-      },
-      "rotate": {
-        "title": "Align to center",
-        "description": "Rotates the PDF so the selected line is horizontal and centered on your mat.",
-        "use": "For aligning the grain of a pattern piece with the grain of your fabric: draw a line on the grain line of the pattern piece, then click (or tap) the align to center button."
-      },
-      "previousNext": {
-        "title": "Bring previous/next line to center",
-        "description": "Moves the PDF so that the previous/next line drawn is horizontal and centered on your mat.",
-        "use": "For moving between pattern pieces when cutting: draw a line on the grain line of each pattern piece, then move through the pattern pieces using these buttons. Delete lines as you move through the pattern pieces to keep track of which pieces are left to be cut."
-      },
-      "flip": {
-        "title": "Flip along line",
-        "description": "Flips the PDF along the line.",
-        "use": "For unfolding pattern pieces: draw a line on the fold line of a pattern piece, cut the piece up to the fold line, click (or tap) the flip along line button, and then cut the remainder of the piece."
-      },
-      "move": {
-        "title": "Move PDF by line length",
-        "description": "Moves the PDF by the length of the line.",
-        "use": "For lengthening/shortening pattern pieces: draw a line perpendicular the lengthen/shorten line of a pattern piece, cut to the lengthen/shorten line, then click (or tap) the move by line length button, and then continue cutting the piece. The direction of the line drawn will depend on whether you are lengthening or shortening the pattern piece."
-      },
-      "length": {
-        "title": "Line length",
-        "description": "Displays the length of the selected line (shown in purple). Other lines are orange.",
-        "use": "Tap the length to enter a precise measurement and adjust the line's size. Useful for lengthening/shortening pattern pieces. See <lineToolVideoLink>this video</lineToolVideoLink> for an example."
-      },
-      "angle": {
-        "title": "Line angle",
-        "description": "Displays the angle of the selected line (shown in purple). Other lines are orange.",
-        "use": "Enter a precise angle to rotate the line and pattern piece. Use the <alignIcon></alignIcon> align to center button to apply the rotation based on the entered angle."
-      }
-    },
-    "overlayOptions": {
-      "title": "Overlay Options",
-      "description": "The overlay options can be used to verify calibration while projecting and help with cutting patterns. The following options are available:",
-      "border": {
-        "title": "Border",
-        "description": "Shows the border of the calibration grid."
-      },
-      "grid": {
-        "title": "Grid",
-        "description": "Shows the calibration grid."
-      },
-      "paper": {
-        "title": "Paper Sheet",
-        "description": "Shows a rectangle the size of a Letter or A4 piece of paper to verify calibration."
-      },
-      "flipLines": {
-        "title": "Flip Lines",
-        "description": "Shows lines that help with unfolding patterns. Line the fold line of the pattern up with the flip line and press flip horizontally or vertically to mirror the piece."
-      },
-      "flippedPattern": {
-        "title": "Wrong side",
-        "description": "Shows dots when the wrong side of the pattern is projected."
-      }
-    },
-    "faq": {
-      "title": "FAQ",
-      "wrongSizePdf": {
-        "question": "Is your PDF projecting too small or large?",
-        "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Patterns from designers usually have the correct scale, so a change in scale could have been introduced when opening the pattern in Affinity Designer or Inkscape."
-      },
-      "saveAsApp": {
-        "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
-      },
-      "mobileSupport": {
-        "question": "Do you have support mobile phones and tablets?",
-        "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use."
-      }
-    },
-    "resources": {
-      "title": "Additional Resources",
-      "links": {
-        "projectorsForSewing": {
-          "title": "Projectors for Sewing Facebook Group",
-          "link": "https://www.facebook.com/groups/481078582801085"
+    "HomePage": {
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "github": "See source code",
+        "calibrate": "Start Calibrating",
+        "choose-language": "Language",
+        "welcome": {
+            "title": "Welcome to Pattern Projector!",
+            "description": "Pattern projector is a free and open source web app that quickly calibrates projectors for sewing patterns. It also has tools for stitching together multiple page patterns, changing line thickness, inverting colors, flipping/rotating patterns, and more. To read about the latest updates, check out the <changeLogLink>changelog</changeLogLink>."
         },
-        "onePageGuide": {
-          "title": "One Page Guide to Projector Sewing",
-          "link": "https://bit.ly/onepageguidetoprojectorsewing"
-        }
-      }
+        "requirements": {
+            "title": "What You’ll Need",
+            "projector": "Projector: at least 720p recommended",
+            "mat": "A cutting mat with grid lines (optional)",
+            "mount": "Tripod or wall/shelf/table mount for projector",
+            "computer": "Computer or tablet to connect to the projector",
+            "pattern": "A PDF sewing pattern"
+        },
+        "setup": {
+            "title": "Setup",
+            "place": "Place the projector above the cutting mat, pointing directly at the cutting mat. If you do not have a cutting mat, you can use paper or masking tape to mark out a grid/rectangle on a table or floor.",
+            "connect": "Connect your computer or tablet to the projector and either mirror or extend the display so that image from computer or tablet is shown on the projector.",
+            "focus": "Adjust the focus on the projector, until text is crisp in the centre of the projection. If you cannot get a clear image, ensure the distance between the projector and cutting mat is within the functional range recommended by the manufacturer.",
+            "keystone": "If your projector has a keystone, adjust it so that projection is close to rectangular and focus near the edges improves."
+        },
+        "calibration": {
+            "title": "Calibration",
+            "start": "Click (or tap) “Start Calibrating.”",
+            "fullscreen": "Enter full screen mode by clicking (or tapping) <fullscreenIcon></fullscreenIcon> in the top left corner.",
+            "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your computer or tablet. Adjust the placement of the corners until the projected grid matches your mat's grid.",
+            "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and input the width and height to match the width and height of the grid.",
+            "project": "When the projected grid is aligned with your mat, click (or tap) “Project”."
+        },
+        "project": {
+            "title": "Projecting a Pattern",
+            "open": "Click (or tap) <pdficon></pdficon> to open a pattern.",
+            "move": "Move the PDF by clicking and dragging it around the screen.",
+            "cut": "Cut along the projected design.",
+            "tools": "In projection mode there are several tools provided. Some have keyboard shortcuts, which are denoted in parentheses.",
+            "fullscreen": {
+                "title": "Full screen",
+                "description": "It's generally easier to use the software in full screen mode."
+            },
+            "showMenu": {
+                "title": "Show/hide menu",
+                "description": "Show or hide the top menu."
+            },
+            "invert": {
+                "title": "Invert Colors",
+                "description": "When projecting, it's usually easier to see green or white lines on black. Click/tap once for green lines, twice for white lines, and three times to return to black lines."
+            },
+            "moveTool": {
+                "title": "Show or hide move tool",
+                "description": "The move tool has four arrow buttons to move the calibration grid corners/edges. It also has a next button in the middle for switching to the next corner/edge."
+            },
+            "overlayOptions": {
+                "title": "Show or hide overlay options",
+                "description": "Grid, border, paper sheet, flip lines, or wrong side overlays can be shown on the PDF to help with calibration and cutting. For more information, see the <overlayOptionsLink>overlay options section</overlayOptionsLink>."
+            },
+            "lineWeight": {
+                "title": "Line weight",
+                "description": "Change the thickness of the lines in the PDF pattern."
+            },
+            "flip": {
+                "title": "Flip Vertical (V) or Horizontal (H)",
+                "description": "Helpful when mirroring patterns in half."
+            },
+            "rotate": {
+                "title": "Rotate (R)",
+                "description": "Change the orientation of the pattern by 90 degrees."
+            },
+            "recenter": {
+                "title": "Center and Reset (C)",
+                "description": "Centers the pattern on the cutting mat and resets the rotation/flipping."
+            },
+            "magnify": {
+                "title": "Magnify (M)",
+                "description": "Click (or tap) on the PDF to magnify it. Click (or tap) again to stop magnifying."
+            },
+            "zoomOut": {
+                "title": "Zoom out (Z)",
+                "description": "Zoom out to see the whole PDF. Click (or tap) on the PDF to zoom back in at selected location."
+            },
+            "layers": {
+                "title": "Show or hide layers",
+                "description": "Show or hide layers in the PDF."
+            },
+            "stitch": {
+                "title": "Show or hide stitch menu",
+                "description": "Show or hide the stitch menu, which allows you to stitch together multiple page PDF patterns."
+            },
+            "scale": {
+                "title": "Show or hide the scale menu",
+                "description": "Change size of the pattern by entering a multiplier: between 0-1 will make the pattern smaller and greater than 1 will make the pattern larger."
+            },
+            "measure": {
+                "title": "Line tool (L)",
+                "description": "Mark lines on the PDF for rotating, flipping, moving, measuring, or marking. For a detailed description of the line tool, see the <lineToolLink>line tool section</lineToolLink>."
+            }
+        },
+        "tools": "Tools",
+        "lineTool": {
+            "title": "Line Tool",
+            "description": "The line tool can be used to measure distances, mark lines on, rotate, flip, and move the PDF. Click (or tap) the line tool button, then click (or tap) on the PDF and drag to draw a line. Once a line is drawn, a menu will appear on the bottom of the screen with the following options:",
+            "delete": {
+                "title": "Delete line",
+                "description": "Deletes the selected line."
+            },
+            "rotate": {
+                "title": "Align to center",
+                "description": "Rotates the PDF so the selected line is horizontal and centered on your mat.",
+                "use": "For aligning the grain of a pattern piece with the grain of your fabric: draw a line on the grain line of the pattern piece, then click (or tap) the align to center button."
+            },
+            "previousNext": {
+                "title": "Bring previous/next line to center",
+                "description": "Moves the PDF so that the previous/next line drawn is horizontal and centered on your mat.",
+                "use": "For moving between pattern pieces when cutting: draw a line on the grain line of each pattern piece, then move through the pattern pieces using these buttons. Delete lines as you move through the pattern pieces to keep track of which pieces are left to be cut."
+            },
+            "flip": {
+                "title": "Flip along line",
+                "description": "Flips the PDF along the line.",
+                "use": "For unfolding pattern pieces: draw a line on the fold line of a pattern piece, cut the piece up to the fold line, click (or tap) the flip along line button, and then cut the remainder of the piece."
+            },
+            "move": {
+                "title": "Move PDF by line length",
+                "description": "Moves the PDF by the length of the line.",
+                "use": "For lengthening/shortening pattern pieces: draw a line perpendicular the lengthen/shorten line of a pattern piece, cut to the lengthen/shorten line, then click (or tap) the move by line length button, and then continue cutting the piece. The direction of the line drawn will depend on whether you are lengthening or shortening the pattern piece."
+            },
+            "length": {
+                "title": "Line length",
+                "description": "Displays the length of the selected line (shown in purple). Other lines are orange.",
+                "use": "Tap the length to enter a precise measurement and adjust the line's size. Useful for lengthening/shortening pattern pieces. See <lineToolVideoLink>this video</lineToolVideoLink> for an example."
+            },
+            "angle": {
+                "title": "Line angle",
+                "description": "Displays the angle of the selected line (shown in purple). Other lines are orange.",
+                "use": "Enter a precise angle to rotate the line and pattern piece. Use the <alignIcon></alignIcon> align to center button to apply the rotation based on the entered angle."
+            }
+        },
+        "overlayOptions": {
+            "title": "Overlay Options",
+            "description": "The overlay options can be used to verify calibration while projecting and help with cutting patterns. The following options are available:",
+            "border": {
+                "title": "Border",
+                "description": "Shows the border of the calibration grid."
+            },
+            "grid": {
+                "title": "Grid",
+                "description": "Shows the calibration grid."
+            },
+            "paper": {
+                "title": "Paper Sheet",
+                "description": "Shows a rectangle the size of a Letter or A4 piece of paper to verify calibration."
+            },
+            "flipLines": {
+                "title": "Flip Lines",
+                "description": "Shows lines that help with unfolding patterns. Line the fold line of the pattern up with the flip line and press flip horizontally or vertically to mirror the piece."
+            },
+            "flippedPattern": {
+                "title": "Wrong side",
+                "description": "Shows dots when the wrong side of the pattern is projected."
+            }
+        },
+        "faq": {
+            "title": "FAQ",
+            "wrongSizePdf": {
+                "question": "Is your PDF projecting too small or large?",
+                "answer": "The Pattern Projector calibration tool has no zoom because the scale of the projection comes from the size information in the PDF. Patterns from designers usually have the correct scale, so a change in scale could have been introduced when opening the pattern in Affinity Designer or Inkscape."
+            },
+            "saveAsApp": {
+                "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
+            },
+            "mobileSupport": {
+                "question": "Do you have support mobile phones and tablets?",
+                "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use."
+            }
+        },
+        "resources": {
+            "title": "Additional Resources",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Projectors for Sewing Facebook Group",
+                    "link": "https://www.facebook.com/groups/481078582801085"
+                },
+                "onePageGuide": {
+                    "title": "One Page Guide to Projector Sewing",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
+                }
+            }
+        },
+        "contribute": {
+            "title": "Contribute to the project",
+            "donation": "If Pattern Projector has saved you money at the copyshop or freed you from a PDF viewer subscription, please consider <donateLink>buying me a coffee</donateLink> or supporting via <payPalLink>PayPal</payPalLink>!",
+            "develop": "Help implement features and fix issues on <githubLink>GitHub</githubLink>.",
+            "translate": "Translate this tool into more languages using <weblateLink>Weblate</weblateLink>.",
+            "feedback": "Feedback and feature requests are welcome!"
+        },
+        "contact": "Contact"
     },
-    "contribute": {
-      "title": "Contribute to the project",
-      "donation": "If Pattern Projector has saved you money at the copyshop or freed you from a PDF viewer subscription, please consider <donateLink>buying me a coffee</donateLink> or supporting via <payPalLink>PayPal</payPalLink>!",
-      "develop": "Help implement features and fix issues on <githubLink>GitHub</githubLink>.",
-      "translate": "Translate this tool into more languages using <weblateLink>Weblate</weblateLink>.",
-      "feedback": "Feedback and feature requests are welcome!"
+    "InstallButton": {
+        "title": "Install App",
+        "description": "For the best experience, install Pattern Projector using <chromeLink>Google Chrome</chromeLink>. In Chrome, download the app by tapping <installIcon></installIcon> in the address bar.",
+        "descriptionAndroid": "For the best experience on Android, use Firefox. Download the app by tapping the more button <moreIcon></moreIcon> in the browser menu and then <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen.",
+        "descriptionIOS": "Download the app by tapping the share button <shareIcon></shareIcon> in the browser menu and then Add to Home Screen <addBoxIcon></addBoxIcon>.",
+        "ok": "OK"
     },
-    "contact": "Contact"
-  },
-  "InstallButton": {
-    "title": "Install App",
-    "description": "For the best experience, install Pattern Projector using <chromeLink>Google Chrome</chromeLink>. In Chrome, download the app by tapping <installIcon></installIcon> in the address bar.",
-    "descriptionAndroid": "For the best experience on Android, use Firefox. Download the app by tapping the more button <moreIcon></moreIcon> in the browser menu and then <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen.",
-    "descriptionIOS": "Download the app by tapping the share button <shareIcon></shareIcon> in the browser menu and then Add to Home Screen <addBoxIcon></addBoxIcon>.",
-    "ok": "OK"
-  },
-  "Mail": {
-      "title": "You've got mail",
-      "donate": "Donate"
+    "Mail": {
+        "title": "You've got mail",
+        "donate": "Donate"
     },
-  "Troubleshooting": {
-    "notMatching": "Lines not matching your mat?",
-    "title": "Calibration Troubleshooting",
-    "dragCorners": {
-      "title": "How to calibrate",
-      "description": "Drag the corners of the grid to at least a 24x16 inch rectangle on your mat. The grid should be as large as possible but does not need to cover the entire mat.",
-      "caption": "A correctly calibrated grid."
+    "Troubleshooting": {
+        "notMatching": "Lines not matching your mat?",
+        "title": "Calibration Troubleshooting",
+        "dragCorners": {
+            "title": "How to calibrate",
+            "description": "Drag the corners of the grid to at least a 24x16 inch rectangle on your mat. The grid should be as large as possible but does not need to cover the entire mat.",
+            "caption": "A correctly calibrated grid."
+        },
+        "inputMeasurement": "Use a measuring tape to measure the width and height of the grid on your mat. Input these measurements into the width and height fields.",
+        "offByOne": {
+            "title": "Lines are straight but don’t align?",
+            "description": "If the projected lines are straight but don’t align with your mat, your width or height might be off by 1 inch/centimeter. Double-check your measurements with a measuring tape. Mat measurements can be confusing or inaccurate, so checking with a measuring tape is important.",
+            "caption": "The wrong measurements are input (23 x 17) instead of (24 x 18). The mat only shows numbers up to 23 and 17 so it is easy to confuse the measurements. Make sure you measure with a measuring tape!"
+        },
+        "unevenSurface": {
+            "title": "Curved lines?",
+            "description": "If the projected lines look curved, your mat or surface below the mat may not be flat. Try to flatten the mat but putting card stock under the low points or move to a different cutting surface.",
+            "caption": "This mat has a ruler under it causing the lines to curve in the center. A slight curve is ok but a large curve will cause issues."
+        },
+        "dimensionsSwapped": {
+            "title": "Rectangles instead of squares?",
+            "description": "If the projected grid looks like rectangles instead of squares, the width and height may be swapped. Simply swap the values in the fields.",
+            "caption": "The width and height are in the wrong boxes. The dimension should read 'W: 24' and 'H: 18'."
+        },
+        "close": "Close"
     },
-    "inputMeasurement": "Use a measuring tape to measure the width and height of the grid on your mat. Input these measurements into the width and height fields.",
-    "offByOne": {
-      "title": "Lines are straight but don’t align?",
-      "description": "If the projected lines are straight but don’t align with your mat, your width or height might be off by 1 inch/centimeter. Double-check your measurements with a measuring tape. Mat measurements can be confusing or inaccurate, so checking with a measuring tape is important.",
-      "caption": "The wrong measurements are input (23 x 17) instead of (24 x 18). The mat only shows numbers up to 23 and 17 so it is easy to confuse the measurements. Make sure you measure with a measuring tape!"
+    "General": {
+        "close": "Close",
+        "error": "Error"
     },
-    "unevenSurface": {
-      "title": "Curved lines?",
-      "description": "If the projected lines look curved, your mat or surface below the mat may not be flat. Try to flatten the mat but putting card stock under the low points or move to a different cutting surface.",
-      "caption": "This mat has a ruler under it causing the lines to curve in the center. A slight curve is ok but a large curve will cause issues."
+    "Header": {
+        "openPDF": "Open",
+        "height": "H:",
+        "width": "W:",
+        "project": "Project",
+        "calibrate": "Calibrate",
+        "delete": "Reset calibration",
+        "gridOn": "Grid on",
+        "gridOff": "Grid off",
+        "overlayOptions": "Overlay Options",
+        "overlayOptionBorder": "Border",
+        "overlayOptionDisabled": "Disabled",
+        "overlayOptionGrid": "Grid",
+        "overlayOptionPaper": "Paper Sheet",
+        "overlayOptionFliplines": "Flip Lines",
+        "overlayOptionFlippedPattern": "Wrong side",
+        "invertColor": "Invert colors",
+        "invertColorOff": "Invert colors off",
+        "flipVertical": "Flip vertically (V)",
+        "flipHorizontal": "Flip horizontally (H)",
+        "flipCenterOn": "Flip across center",
+        "flipCenterOff": "Flip across center off",
+        "fourCornersOn": "Highlight all corners",
+        "fourCornersOff": "Only highlight selected corner",
+        "rotate90": "Rotate 90 degrees clockwise (R)",
+        "arrowBack": "Back 1 page",
+        "arrowForward": "Forward 1 page",
+        "info": "Info page",
+        "recenter": "Center and Reset (C)",
+        "fullscreen": "Enter full screen",
+        "fullscreenExit": "Exit full screen",
+        "ok": "OK",
+        "calibrationAlertTitle": "Calibration Warning",
+        "calibrationAlert": "The window size has changed since projecting started, press the full screen button or recalibrate to fix this issue.",
+        "calibrationAlertContinue": "The window size can't change after calibration. To project in full screen, calibrate in full screen. If you want to change the window size, recalibrate.",
+        "continue": "Save window size and continue",
+        "checkCalibration": "Check calibration",
+        "menuShow": "Show menu",
+        "menuHide": "Hide menu",
+        "lineWeight": "Line weight",
+        "stitchMenuShow": "Show stitch menu",
+        "stitchMenuHide": "Hide stitch menu",
+        "stitchMenuDisabled": "Open PDF to use stitch menu",
+        "measure": "Line tool (L)",
+        "showMovement": "Show move tool",
+        "hideMovement": "Hide move tool",
+        "magnify": "Magnify (M)",
+        "zoomOut": "Zoom out (Z)",
+        "mail": "Mail from Courtney",
+        "invalidCalibration": "The calibration grid is not valid. Press 'Reset calibration' to try again."
     },
-    "dimensionsSwapped": {
-      "title": "Rectangles instead of squares?",
-      "description": "If the projected grid looks like rectangles instead of squares, the width and height may be swapped. Simply swap the values in the fields.",
-      "caption": "The width and height are in the wrong boxes. The dimension should read 'W: 24' and 'H: 18'."
+    "ScaleMenu": {
+        "scale": "Scale Pattern",
+        "hide": "Hide scale menu",
+        "show": "Show scale menu"
     },
-    "close": "Close"
-  },
-  "General": {
-    "close": "Close",
-    "error": "Error"
-  },
-  "Header": {
-    "openPDF": "Open",
-    "height": "H:",
-    "width": "W:",
-    "project": "Project",
-    "calibrate": "Calibrate",
-    "delete": "Reset calibration",
-    "gridOn": "Grid on",
-    "gridOff": "Grid off",
-    "overlayOptions": "Overlay Options",
-    "overlayOptionBorder": "Border",
-    "overlayOptionDisabled": "Disabled",
-    "overlayOptionGrid": "Grid",
-    "overlayOptionPaper": "Paper Sheet",
-    "overlayOptionFliplines": "Flip Lines",
-    "overlayOptionFlippedPattern": "Wrong side",
-    "invertColor": "Invert colors",
-    "invertColorOff": "Invert colors off",
-    "flipVertical": "Flip vertically (V)",
-    "flipHorizontal": "Flip horizontally (H)",
-    "flipCenterOn": "Flip across center",
-    "flipCenterOff": "Flip across center off",
-    "fourCornersOn": "Highlight all corners",
-    "fourCornersOff": "Only highlight selected corner",
-    "rotate90": "Rotate 90 degrees clockwise (R)",
-    "arrowBack": "Back 1 page",
-    "arrowForward": "Forward 1 page",
-    "info": "Info page",
-    "recenter": "Center and Reset (C)",
-    "fullscreen": "Enter full screen",
-    "fullscreenExit": "Exit full screen",
-    "ok": "OK",
-    "calibrationAlertTitle": "Calibration Warning",
-    "calibrationAlert": "The window size has changed since projecting started, press the full screen button or recalibrate to fix this issue.",
-    "calibrationAlertContinue": "The window size can't change after calibration. To project in full screen, calibrate in full screen. If you want to change the window size, recalibrate.",
-    "continue": "Save window size and continue",
-    "checkCalibration": "Check calibration",
-    "menuShow": "Show menu",
-    "menuHide": "Hide menu",
-    "lineWeight": "Line weight",
-    "stitchMenuShow": "Show stitch menu",
-    "stitchMenuHide": "Hide stitch menu",
-    "stitchMenuDisabled": "Open PDF to use stitch menu",
-    "measure": "Line tool (L)",
-    "showMovement": "Show move tool",
-    "hideMovement": "Hide move tool",
-    "magnify": "Magnify (M)",
-    "zoomOut": "Zoom out (Z)",
-    "mail": "Mail from Courtney",
-    "invalidCalibration": "The calibration grid is not valid. Press 'Reset calibration' to try again."
-  },
-  "ScaleMenu": {
-    "scale": "Scale Pattern",
-    "hide": "Hide scale menu",
-    "show": "Show scale menu"
-  },
-  "StitchMenu": {
-    "columnCount": "Columns",
-    "rowCount": "Rows",
-    "pageRange": "Stitch Pages",
-    "horizontal": "Horizontal Overlap",
-    "vertical": "Vertical Overlap",
-    "zeros": "Add 0s for blank pages, e.g. 1-3,0,0,4"
-  },
-  "SaveMenu": {
-    "save": "Export PDF",
-    "saveTooltip": "Export PDF with stitched pages and selected layers",
-    "encryptedPDF": "This PDF is encrypted. Please enter the password to save the stitched PDF."
-  },
-  "LayerMenu": {
-    "title": "Layers",
-    "showAll": "Show all",
-    "hideAll": "Hide all",
-    "layersOn": "Show layer menu",
-    "layersOff": "Hide layer menu",
-    "noLayers": "No layers in pattern"
-  },
-  "MovementPad": {
-    "up": "Up",
-    "down": "Down",
-    "left": "Left",
-    "right": "Right",
-    "next": "Next corner"
-  },
-  "MeasureCanvas": {
-    "rotateToHorizontal": "Align to center",
-    "rotateAndCenterPrevious": "Bring previous line to center",
-    "rotateAndCenterNext": "Bring next line to center",
-    "deleteLine": "Delete line",
-    "flipAlong": "Flip along line",
-    "translate": "Move pattern by line length",
-    "line": "line",
-    "lines": "lines"
-  },
-  "OverlayCanvas": {
-    "zoomedOut": "click pattern to zoom in",
-    "magnifying": "click pattern to stop magnifying",
-    "scaled": "<scale></scale>× scale"
-  },
-  "PdfViewer": {
-    "error": "Failed to load pattern",
-    "noData": "Press the \"Open\" button to load a pattern"
-  }
+    "StitchMenu": {
+        "columnCount": "Columns",
+        "rowCount": "Rows",
+        "pageRange": "Stitch Pages",
+        "horizontal": "Horizontal Overlap",
+        "vertical": "Vertical Overlap",
+        "zeros": "Add 0s for blank pages, e.g. 1-3,0,0,4"
+    },
+    "SaveMenu": {
+        "save": "Export PDF",
+        "saveTooltip": "Export PDF with stitched pages and selected layers",
+        "encryptedPDF": "This PDF is encrypted. Please enter the password to save the stitched PDF."
+    },
+    "LayerMenu": {
+        "title": "Layers",
+        "showAll": "Show all",
+        "hideAll": "Hide all",
+        "layersOn": "Show layer menu",
+        "layersOff": "Hide layer menu",
+        "noLayers": "No layers in pattern"
+    },
+    "MovementPad": {
+        "up": "Up",
+        "down": "Down",
+        "left": "Left",
+        "right": "Right",
+        "next": "Next corner"
+    },
+    "MeasureCanvas": {
+        "rotateToHorizontal": "Align to center",
+        "rotateAndCenterPrevious": "Bring previous line to center",
+        "rotateAndCenterNext": "Bring next line to center",
+        "deleteLine": "Delete line",
+        "flipAlong": "Flip along line",
+        "translate": "Move pattern by line length",
+        "line": "line",
+        "lines": "lines"
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "click pattern to zoom in",
+        "magnifying": "click pattern to stop magnifying",
+        "scaled": "<scale></scale>× scale"
+    },
+    "PdfViewer": {
+        "error": "Failed to load pattern",
+        "noData": "Press the \"Open\" button to load a pattern"
+    }
 }
