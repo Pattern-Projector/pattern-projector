@@ -18,7 +18,7 @@
             },
             "invert": {
                 "description": "Quando si proietta, di solito è più facile vedere linee verdi o bianche su nero. Fai clic/tocca una volta per linee verdi, due volte per linee bianche, e tre volte per tornare alle linee nere.",
-                "title": "Inverti colori"
+                "title": "Inverti Colori"
             },
             "overlayOptions": {
                 "title": "Mostra o nascondi le opzioni di sovrapposizione",
@@ -71,7 +71,7 @@
             "size": "Non è necessario calibrare utilizzando l'intero tappetino, invece scegli l'area più grande in cui è possibile far entrare la griglia di calibrazione e inserisci larghezza e altezza per farle combaciare con la larghezza e l'altezza della griglia.",
             "project": "Quando la griglia proiettata è allineata con il tappetino, fai clic (o tocca) “Proietta”.",
             "title": "Calibrazione",
-            "fullscreen": "Entra in modalità a schermo intero cliccando (o toccando) ",
+            "fullscreen": "Entra in modalità a schermo intero cliccando (o toccando) <fullscreenIcon></fullscreenIcon> nell'angolo in alto a sinistra.",
             "start": "Fari clic (o tocca) su “Avvia calibrazione.”",
             "drag": "Trascina gli angoli della griglia per allinearli con il tappetino. Mantenendo gli occhi sul tappetino, regola gli angoli sul computer o tablet. Sistema il posizionamento degli angoli fino a quando la griglia proiettata corrisponde alla griglia del tappetino."
         },
@@ -125,7 +125,17 @@
                 "description": "Sposta il PDF dalla lunghezza della linea.",
                 "use": "Per allungare/accorciare i pezzi del cartamodello: disegna una linea perpendicolare alla linea di allungamento di un pezzo del cartamodello, taglia fino alla linea di allungamento, quindi fai clic (o tocca) il pulsante \"sposta per lunghezza linea\" e continua a tagliare il pezzo. La direzione della linea disegnata dipenderà se stai allungando o accorciando il pezzo."
             },
-            "description": "Lo strumento linea può essere utilizzato per misurare le distanze, contrassegnare le linee, ruotare, riflettere e spostare il PDF. Fai clic (o tocca) sul pulsante linea, quindi fai clic (o tocca) sul PDF e trascina per disegnare una linea. Una volta tracciata una riga, un menu apparirà nella parte bassa dello schermo con le seguenti opzioni:"
+            "description": "Lo strumento linea può essere utilizzato per misurare le distanze, contrassegnare le linee, ruotare, riflettere e spostare il PDF. Fai clic (o tocca) sul pulsante linea, quindi fai clic (o tocca) sul PDF e trascina per disegnare una linea. Una volta tracciata una riga, un menu apparirà nella parte bassa dello schermo con le seguenti opzioni:",
+            "length": {
+                "title": "Lunghezza della linea",
+                "description": "Mostra la lunghezza della linea selezionata (in viola). Le altre linee sono arancioni.",
+                "use": "Fai tap per inserire una misura precisa e modificare la lunghezza della linea. Utile per allungare/accorciare i pezzi del modello. Guarda <lineToolVideoLink>questo video</lineToolVideoLink> per un esempio."
+            },
+            "angle": {
+                "description": "Mostra l'angolo della linea selezionata (in viola). Le altre linee sono arancioni.",
+                "use": "Inserisci un angolo preciso per ruotare la linea e il pezzo del cartamodello. Usa il <alignIcon></alignIcon> pulsante allinea al centro per applicare la rotazione in base all'angolo inserito.",
+                "title": "Angolo della linea"
+            }
         },
         "overlayOptions": {
             "border": {
@@ -278,7 +288,7 @@
         "hideAll": "Nascondi tutto",
         "layersOn": "Mostra il menu livelli",
         "layersOff": "Nascondi il menu livelli",
-        "noLayers": "Nessun livello nel PDF"
+        "noLayers": "Nessun livello nel cartamodello"
     },
     "MovementPad": {
         "up": "Su",
