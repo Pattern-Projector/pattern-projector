@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Line measurement labels match the theme
 - Enabled measuring when magnified for precision measuring
+- Pressing an arrow button once will move the pattern by 1/8" or 2mm
 
 ## [1.3.0] - 2025-06-25
 

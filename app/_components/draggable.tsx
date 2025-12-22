@@ -77,12 +77,12 @@ export default function Draggable({
   const transform = useTransformContext();
   const transformer = useTransformerContext();
 
-  const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
-  const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
+  const eighthInchPx = CSS_PIXELS_PER_INCH / 8;
+  const twoMmPx = CSS_PIXELS_PER_INCH / 12.7;
 
   useProgArrowKeyToMatrix(
     !isCalibrating,
-    unitOfMeasure === Unit.IN ? quarterInchPx : halfCmPx,
+    unitOfMeasure === Unit.IN ? eighthInchPx : twoMmPx,
     (matrix) => {
       transformer.setLocalTransform(matrix.mmul(transform));
     },
