@@ -585,7 +585,6 @@ export default function Header({
               <IconButton
                 onClick={() => setMeasuring(!measuring)}
                 active={measuring}
-                disabled={magnifying}
               >
                 <MarkAndMeasureIcon ariaLabel={t("measure")} />
               </IconButton>

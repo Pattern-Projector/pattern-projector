@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Line measurement labels match the theme
+- Enabled measuring when magnified for precision measuring
 
 ## [1.3.0] - 2025-06-25
 
