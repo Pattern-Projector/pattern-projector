@@ -12,10 +12,8 @@ import {
   PDFDict,
   PDFStream,
   PDFArray,
-  PDFContext,
   PDFRawStream,
   decodePDFRawStream,
-  UnrecognizedStreamTypeError,
 } from "@cantoo/pdf-lib";
 import {
   LineDirection,
@@ -24,289 +22,275 @@ import {
 import { getPageNumbers, getRowsColumns } from "./get-page-numbers";
 import { Layers } from "./layers";
 
-function trimmedPageSize(
-  inDoc: PDFDocument,
-  pages: number[],
-  settings: StitchSettings,
-) {
-  /**
-   * Computes the size for each trimmed page.
-   * Chooses the largest page width and height from the user specified page range to match how the pdf viewer works.
-   */
-  let width = 0;
-  let height = 0;
-  for (const page of pages) {
-    // Filter out blank pages specified by a 0
-    if (page > 0) {
-      const p = inDoc.getPage(page - 1);
-      const pageSize = p.getMediaBox();
-      width = Math.max(width, pageSize.width - settings.edgeInsets.horizontal);
-      height = Math.max(height, pageSize.height - settings.edgeInsets.vertical);
-    }
-  }
-
-  return { width, height };
-}
-
-function initDoc(doc: PDFDocument, pages: number[]): Map<number, PDFRef> {
-  /**
-   * Creates a list of page numbers and references, then removes the pages from the document.
-   */
-
-  const pageMap = new Map<number, PDFRef>();
-  for (const p of pages.filter((p) => p > 0)) {
-    pageMap.set(p, doc.getPage(p - 1).ref);
-  }
-
-  // Remove all the pages
-  while (doc.getPageCount() > 0) {
-    doc.removePage(0);
-  }
-
-  return pageMap;
-}
-
-function mergeStreams(
-  streams: PDFArray | PDFStream,
-  context: PDFContext,
-): PDFStream {
-  /**
-   * Content streams can be an array of streams or a single stream.
-   * This function merges them into a single stream, or just returns
-   * the stream if it was already a singleton.
-   *
-   * Note that the streams are first decoded, then joined with a newline,
-   * then re-encoded, as concatenating encoded streams led to broken pdfs.
-   * This results in an increase in file size, as the streams are copied.
-   * Removing the original streams sometimes led to broken pdfs, so we
-   * can't assume that they're never referenced elsewhere.
-   *
-   * Copied from the private function in pdf-lib here: https://github.com/cantoo-scribe/pdf-lib/blob/9593e75cbcf70f68dcf26bd541919e22514a5898/src/core/embedders/PDFPageEmbedder.ts#L118
-   */
-  if (streams instanceof PDFStream) return streams;
-  else {
-    let totalLength = 0;
-    const decodedStreams: Uint8Array[] = [];
-    for (const ref of streams.asArray()) {
-      const stream = context.lookup(ref, PDFStream);
-      let content: Uint8Array;
-      if (stream instanceof PDFRawStream) {
-        content = decodePDFRawStream(stream).decode();
-      } else if (stream instanceof PDFContentStream) {
-        content = stream.getUnencodedContents();
-      } else {
-        throw new UnrecognizedStreamTypeError(stream);
-      }
-
-      totalLength += content.length + 1; // +1 for newline
-      decodedStreams.push(content);
-    }
-
-    const mergedStream = new Uint8Array(totalLength);
-    let offset = 0;
-    for (const content of decodedStreams) {
-      mergedStream.set(content, offset);
-      offset += content.length;
-      mergedStream[offset] = 0x0a; // newline
-      offset += 1;
-    }
-
-    return context.flateStream(mergedStream);
-  }
-}
-
-function getFormXObjectForPage(
-  context: PDFContext,
-  ref: PDFRef,
-): PDFRef | undefined {
-  /**
-   * Create a form XObject from a page reference. Does not copy resources, just references them.
-   * Adapted from https://github.com/qpdf/qpdf/blob/2eefa580aa0ecf70ae3864d5c47e728480055c38/libqpdf/QPDFPageObjectHelper.cc#L705
-   */
-
-  const page = context.lookup(ref) as PDFPageLeaf | undefined;
-  if (!page) return undefined;
-
-  // PDF treats pages differently from forms, so we need to extract
-  // the content stream and then add on the various attributes.
-  let xObject = page.Contents();
-  if (!xObject) return undefined;
-
-  xObject = mergeStreams(xObject, context);
-  xObject.dict.set(PDFName.of("Type"), PDFName.of("XObject"));
-  xObject.dict.set(PDFName.of("Subtype"), PDFName.of("Form"));
-
-  // Copy the contents, resources, and group info
-  const toCopy = ["Group", "Resources"].map((key) => PDFName.of(key));
-  for (const key of toCopy) {
-    const value = page.get(key);
-    if (value) xObject.dict.set(key, value);
-  }
-
-  // Bounding box is set by CropBox if it exists, otherwise MediaBox
-  const bbox =
-    page.get(PDFName.of("CropBox")) || page.get(PDFName.of("MediaBox"));
-  if (bbox) xObject.dict.set(PDFName.of("BBox"), bbox);
-
-  // register the new form XObject and return the reference
-  return context.register(xObject);
-}
+// --- HELPERS ---
 
 function getAsDict(name: string, dict: PDFDict): PDFDict | undefined {
-  /**
-   * Helper function to get a dictionary from a parent dictionary.
-   * If the object is a reference, find the actual dictionary.
-   */
   const obj = dict.get(PDFName.of(name));
   if (obj instanceof PDFDict) return obj;
   if (obj instanceof PDFRef) return dict.context.lookup(obj, PDFDict);
-  else return undefined;
+  return undefined;
 }
 
-function toggleLayers(doc: PDFDocument, layers: Layers) {
-  /**
-   * Toggle the default visibility of layers in the PDF based on user selections.
-   * Note that this does not actually remove content the way PDFStitcher does.
-   */
-  const ocprops = getAsDict("OCProperties", doc.catalog);
-  if (!ocprops) return; // sometimes the document doesn't have layers
+/** * Safely extracts numeric values from various internal pdf-lib types to avoid "numberValue is not a function"
+ */
+const getNum = (obj: any): number => {
+  if (typeof obj === "number") return obj;
+  if (!obj) return 0;
+  if (typeof obj.numberValue === "function") return obj.numberValue();
+  if (typeof obj.value === "number") return obj.value;
+  return parseFloat(obj.toString()) || 0;
+};
 
-  const D = getAsDict("D", ocprops) ?? doc.context.obj({});
-  ocprops.set(PDFName.of("D"), D);
+// --- CORE LOGIC ---
 
-  const visible: PDFArray = doc.context.obj([]);
-  const hidden: PDFArray = doc.context.obj([]);
+/**
+ * Physically strips vector data belonging to hidden layers to reduce file size and clutter
+ */
+function cleanPageStream(page: PDFPageLeaf, activeRefs: Set<string>) {
+  const resources = getAsDict("Resources", page) || page.context.obj({});
+  const props = getAsDict("Properties", resources);
+  const hiddenNames = new Set<string>();
 
-  for (const layer of Object.values(layers)) {
-    const refs = layer.ids.map((id) => PDFRef.of(parseInt(id)));
-    refs.map((r) => (layer.visible ? visible.push(r) : hidden.push(r)));
+  if (props) {
+    props.entries().forEach(([name, value]) => {
+      const refStr = value instanceof PDFRef ? value.toString() : "";
+      if (refStr && !activeRefs.has(refStr)) {
+        hiddenNames.add(name.toString().replace(/^\//, ""));
+        props.delete(name);
+      }
+    });
   }
 
-  D.set(PDFName.of("ON"), visible);
-  D.set(PDFName.of("OFF"), hidden);
+  const contents = page.Contents();
+  if (!contents) return;
+
+  const streams =
+    contents instanceof PDFArray ? contents.asArray() : [contents];
+  let rawText = "";
+  for (const ref of streams) {
+    const stream = page.context.lookup(ref, PDFStream);
+    const data =
+      stream instanceof PDFRawStream
+        ? decodePDFRawStream(stream).decode()
+        : (stream as any).getUnencodedContents();
+    rawText += new TextDecoder().decode(data) + " ";
+  }
+
+  // Split by BDC/EMC (Marked Content) operators to identify and remove hidden layer blocks
+  const segments = rawText.split(/(\bBDC\b|\bEMC\b)/);
+  let cleaned = "";
+  let skipDepth = 0;
+
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    if (seg === "BDC") {
+      const metadata = segments[i - 1] || "";
+      const isHidden = Array.from(hiddenNames).some((h) =>
+        metadata.includes(`/${h}`),
+      );
+      if (isHidden || skipDepth > 0) skipDepth++;
+      else cleaned += seg;
+    } else if (seg === "EMC") {
+      if (skipDepth > 0) skipDepth--;
+      else cleaned += seg;
+    } else if (skipDepth === 0) {
+      cleaned += seg;
+    }
+  }
+
+  const newStream = page.context.flateStream(new TextEncoder().encode(cleaned));
+  page.set(PDFName.Contents, page.context.register(newStream));
 }
 
-async function tilePages(doc: PDFDocument, settings: StitchSettings) {
-  /**
-   * Do the stitching stuff and update the document. Converts a multi-page document
-   * into a single large page.
-   */
+/**
+ * Normalizes a page into a 0,0-based Form XObject to ensure predictable tiling
+ */
+function pageToXObject(page: PDFPageLeaf): {
+  ref: PDFRef;
+  width: number;
+  height: number;
+} {
+  const context = page.context;
+  const box =
+    page.get(PDFName.of("CropBox")) || page.get(PDFName.of("MediaBox"));
+  if (!(box instanceof PDFArray)) throw new Error("No boundary found");
+
+  const coords = box.asArray().map(getNum);
+  const [x1, y1, x2, y2] = coords;
+  const width = Math.abs(x2 - x1);
+  const height = Math.abs(y2 - y1);
+  const minX = Math.min(x1, x2);
+  const minY = Math.min(y1, y2);
+
+  const contents = page.Contents();
+  let rawData: Uint8Array;
+  if (contents instanceof PDFArray) {
+    const parts = contents.asArray().map((ref) => {
+      const s = context.lookup(ref, PDFStream);
+      return s instanceof PDFRawStream
+        ? decodePDFRawStream(s).decode()
+        : (s as any).getUnencodedContents();
+    });
+    rawData = new Uint8Array(parts.reduce((acc, p) => acc + p.length, 0));
+    let offset = 0;
+    for (const p of parts) {
+      rawData.set(p, offset);
+      offset += p.length;
+    }
+  } else {
+    const s = context.lookup(contents!, PDFStream);
+    rawData =
+      s instanceof PDFRawStream
+        ? decodePDFRawStream(s).decode()
+        : (s as any).getUnencodedContents();
+  }
+
+  // Encapsulation Fix: We wrap the content in a transformation (cm) that moves internal
+  // page coordinates to 0,0. This prevents multiple pages from "cramming" at the original offset.
+  const encoder = new TextEncoder();
+  const wrapper = encoder.encode(`q 1 0 0 1 ${-minX} ${-minY} cm\n`);
+  const closer = encoder.encode(`\nQ`);
+  const finalData = new Uint8Array(
+    wrapper.length + rawData.length + closer.length,
+  );
+  finalData.set(wrapper, 0);
+  finalData.set(rawData, wrapper.length);
+  finalData.set(closer, wrapper.length + rawData.length);
+
+  const xObject = context.flateStream(finalData, {
+    Type: PDFName.of("XObject"),
+    Subtype: PDFName.of("Form"),
+    BBox: [0, 0, width, height], // Resetting BBox to 0,0 for standard tiling
+    Resources: page.get(PDFName.of("Resources")),
+  });
+
+  return { ref: context.register(xObject), width, height };
+}
+
+async function tilePages(
+  doc: PDFDocument,
+  settings: StitchSettings,
+  activeRefs: Set<string>,
+) {
   const pages = getPageNumbers(settings.pageRange, doc.getPageCount());
   const [rows, cols] = getRowsColumns(
     pages,
     settings.lineCount,
     settings.lineDirection,
   );
-  const trim = settings.edgeInsets;
+  const pageMap = new Map<number, ReturnType<typeof pageToXObject>>();
 
-  // Compute the size of the output document
-  const pageSize = trimmedPageSize(doc, pages, settings);
-  const outWidth = pageSize.width * cols;
-  const outHeight = pageSize.height * rows;
+  for (const pNum of pages) {
+    if (pNum > 0) {
+      const page = doc.getPage(pNum - 1);
+      cleanPageStream(page.node, activeRefs);
+      pageMap.set(pNum, pageToXObject(page.node));
+    }
+  }
 
-  // Modify the document to remove the pages but keep the objects
-  const pageMap = initDoc(doc, pages);
+  const firstPage = pageMap.get(pages.find((p) => p > 0)!)!;
+  const w = firstPage.width - settings.edgeInsets.horizontal;
+  const h = firstPage.height - settings.edgeInsets.vertical;
 
-  // Create a new page to hold the stitched pages
-  // Add at least a 1" margin because of weirdness.
-  const margin = Math.max(trim.horizontal, trim.vertical, 72);
-  const outPage = doc.addPage();
-  outPage.setMediaBox(
-    -margin,
-    -margin,
-    outWidth + margin * 2,
-    outHeight + margin * 2,
-  );
+  while (doc.getPageCount() > 0) doc.removePage(0);
 
-  // Loop through the pages and copy them to the output document
-  let x = 0;
-  let y = outHeight - pageSize.height;
-
-  // define the commands to draw the page and the resources dictionary
-  const commands: PDFOperator[] = [];
+  // Canvas size + 1" (72pt) margins on all sides
+  const outPage = doc.addPage([w * cols + 144, h * rows + 144]);
+  let x = 72,
+    y = h * rows - h + 72;
   const XObjectDict = doc.context.obj({});
+  const commands: PDFOperator[] = [];
 
   for (const p of pages) {
-    const ref = pageMap.get(p);
-    if (ref) {
-      // create a new form XObject for the page
-      const xRef = await getFormXObjectForPage(doc.context, ref);
-      if (!xRef) {
-        throw new Error(`Failed to create form XObject for page ${p}`);
+    const data = pageMap.get(p);
+    if (data) {
+      const name = `P${p}`;
+      commands.push(
+        pushGraphicsState(),
+        concatTransformationMatrix(1, 0, 0, 1, x, y),
+        drawObject(name),
+        popGraphicsState(),
+      );
+      XObjectDict.set(PDFName.of(name), data.ref);
+    }
+    if (settings.lineDirection === LineDirection.Column) {
+      x += w;
+      if (x > w * cols + 5) {
+        x = 72;
+        y -= h;
       }
-
-      const pageName = `Page${p}`;
-
-      // Add commands to the content stream to draw the form
-      commands.push(pushGraphicsState());
-      commands.push(concatTransformationMatrix(1, 0, 0, 1, x, y));
-      commands.push(drawObject(pageName));
-      commands.push(popGraphicsState());
-
-      // Update the resources dictionary
-      XObjectDict.set(PDFName.of(pageName), xRef);
-    }
-
-    // Adjust the position for the next page
-    switch (settings.lineDirection) {
-      case LineDirection.Column:
-        x += pageSize.width;
-        if (x > outWidth - margin) {
-          x = 0;
-          y -= pageSize.height;
-        }
-        break;
-      case LineDirection.Row:
-        y -= pageSize.height;
-        if (y < -margin) {
-          y = outHeight - pageSize.height;
-          x += pageSize.width;
-        }
-        break;
+    } else {
+      y -= h;
+      if (y < 70) {
+        y = h * rows - h + 72;
+        x += w;
+      }
     }
   }
 
-  // Write the commands to the content stream
-  const dict = doc.context.obj({});
-  const contentStream = PDFContentStream.of(dict, commands);
-  outPage.node.set(PDFName.Contents, doc.context.register(contentStream));
-
-  // Update the resources dictionary
-  const resources = outPage.node.get(PDFName.of("Resources")) as
-    | PDFDict
-    | undefined;
-  if (resources) {
-    resources.set(PDFName.of("XObject"), XObjectDict);
-  } else {
-    outPage.node.set(
-      PDFName.of("Resources"),
-      doc.context.obj({ XObject: XObjectDict }),
-    );
-  }
+  outPage.node.set(
+    PDFName.Contents,
+    doc.context.register(PDFContentStream.of(doc.context.obj({}), commands)),
+  );
+  outPage.node.set(
+    PDFName.of("Resources"),
+    doc.context.obj({ XObject: XObjectDict }),
+  );
 }
 
+/**
+ * Main entry point: Loads PDF, filters layers (handling reserved slashes), and tiles pages
+ */
 export async function savePDF(
   file: File,
   settings: StitchSettings,
   layers: Layers,
-  password: string = "",
+  password = "",
 ) {
-  // Grab the bytes from the file object and try to load the PDF
-  // Error handling is done in the calling function.
-  const pdfBytes = await file.arrayBuffer();
-  const doc = await PDFDocument.load(pdfBytes, {
+  const doc = await PDFDocument.load(await file.arrayBuffer(), {
     ignoreEncryption: true,
     password,
   });
+  const activeRefs = new Set<string>();
+  const ocprops = getAsDict("OCProperties", doc.catalog);
 
-  // Toggle the visibility of layers
-  toggleLayers(doc, layers);
+  if (ocprops) {
+    const ocgs = ocprops.get(PDFName.of("OCGs"));
+    if (ocgs instanceof PDFArray) {
+      const keptOCGRefs: PDFRef[] = [];
+      ocgs.asArray().forEach((ref) => {
+        if (!(ref instanceof PDFRef)) return;
+        const ocg = doc.context.lookup(ref, PDFDict);
 
-  // if it's a one-page document, we're done. Otherwise, stitch it together.
-  if (doc.getPageCount() > 1) {
-    await tilePages(doc, settings);
+        // Slash-safe name matching: handles PDF-encoded slashes (#2f) and internal slashes like "0/30"
+        const name = (ocg.get(PDFName.of("Name"))?.toString() || "")
+          .replace(/^\//, "")
+          .replace(/#2f/gi, "/")
+          .replace(/[()]/g, "")
+          .trim()
+          .toLowerCase();
+
+        const match = Object.values(layers).find(
+          (l) => l.name.replace(/[()]/g, "").trim().toLowerCase() === name,
+        );
+
+        if (match?.visible) {
+          keptOCGRefs.push(ref);
+          activeRefs.add(ref.toString());
+        }
+      });
+
+      // Update Catalog OCGs and Order to remove hidden layers from the UI sidebar menu
+      const newOCGs = doc.context.obj(keptOCGRefs);
+      ocprops.set(PDFName.of("OCGs"), newOCGs);
+      const D = getAsDict("D", ocprops);
+      if (D) {
+        D.set(PDFName.of("ON"), newOCGs);
+        D.set(PDFName.of("Order"), newOCGs);
+      }
+    }
   }
 
-  // Save the modified document and return the blob
+  await tilePages(doc, settings, activeRefs);
   return await doc.save();
 }

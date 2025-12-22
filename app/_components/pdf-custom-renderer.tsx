@@ -83,11 +83,31 @@ export default function CustomRenderer() {
     }
     async function optionalContentConfigPromise(pdf: PDFDocumentProxy) {
       const optionalContentConfig = await pdf.getOptionalContentConfig();
-      for (const layer of Object.values(layers)) {
-        for (const id of layer.ids) {
-          optionalContentConfig.setVisibility(id, layer.visible);
+      const groups = await (optionalContentConfig as any).getGroups();
+
+      if (groups) {
+        for (const [id, group] of Object.entries(groups)) {
+          const groupName = (group as any).name || "";
+          const cleanPDFName = groupName
+            .replace(/^\//, "") // Remove the leading slash used by pdf.js
+            .replace(/[()]/g, "")
+            .trim()
+            .toLowerCase();
+
+          const layerSetting = Object.values(layers).find(
+            (l) =>
+              l.name.replace(/[()]/g, "").trim().toLowerCase() === cleanPDFName,
+          );
+
+          if (layerSetting) {
+            optionalContentConfig.setVisibility(id, layerSetting.visible);
+          } else {
+            // Hide any orphaned layers that weren't explicitly matched
+            optionalContentConfig.setVisibility(id, false);
+          }
         }
       }
+
       return optionalContentConfig;
     }
 
