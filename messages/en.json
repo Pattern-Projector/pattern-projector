@@ -171,7 +171,7 @@
                 "answer": "Pattern Projector is a Progressive Web App (PWA) so it can be saved as an app. On a Desktop, you can install it using <googleChromeLink>Chrome</googleChromeLink> or <microsoftEdgeLink>Edge</microsoftEdgeLink>. On a tablet, open the Share menu and tap Add to Home Screen."
             },
             "mobileSupport": {
-                "question": "Do you have support mobile phones and tablets?",
+                "question": "Do you have support for mobile phones and tablets?",
                 "answer": "While possible to visit and use the webpage on a smart phone, the limited screen size makes it difficult to use."
             }
         },
