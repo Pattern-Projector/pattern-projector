@@ -153,7 +153,8 @@
             "title": "Linien-Werkzeug",
             "rotate": {
                 "description": "Dreht das PDF, so dass die ausgewählte Linie horizontal und mittig auf der Matte liegt.",
-                "title": "Zentrieren"
+                "title": "Zentrieren",
+                "use": "Um den Fadenlauf eines Schnittteils am Fadenlauf deines Stoffes auszurichten: Zeichne eine Linie entsprechend des Fadenlaufs des Schnittteils, dann klicke (oder tippe) die Schaltfläche \"Zentrieren\"."
             },
             "delete": {
                 "title": "Linie löschen",
@@ -180,7 +181,8 @@
                 "title": "Linienwinkel",
                 "description": "Zeigt den Winkel der selektierten Linie an (in lila). Andere Linien sind orange.",
                 "use": "Geben Sie einen Winkel an, um die Linie und das Schnittmusterteil zu rotieren. Nutze den <alignIcon></alignIcon> Mittig ausrichten Button, um die Rotation basieren auf dem eingegebenen Winkel anzuwenden."
-            }
+            },
+            "description": "Das Linienwerkzeug kann benutzt werden, um Abstände zu messen, Linien auf dem zu zeichnen, es zu rotieren, zu spiegeln und zu verschieben. Klicke auf die Schaltfläche für das Linienwerkzeug, dann klicke auf das PDF und ziehe, um eine Linie zu zeichnen. Sobald eine Linie erstellt ist, erscheint am unteren Bildschirmrand ein neues Menü mit folgenden Optionen:"
         },
         "tools": "Werkzeuge",
         "overlayOptions": {
