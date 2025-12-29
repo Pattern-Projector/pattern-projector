@@ -100,7 +100,7 @@
         "faq": {
             "title": "FAQ",
             "mobileSupport": {
-                "question": "Har ni support för mobiltelefoner eller surfplattor?",
+                "question": "Har ni stöd för mobiltelefoner och surfplattor?",
                 "answer": "Det är möjligt att besöka och använda websidan på en smart telefon, men den begränsade storleken på skärmen gör den svårt att använda."
             },
             "wrongSizePdf": {
