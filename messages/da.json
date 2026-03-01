@@ -29,10 +29,10 @@
             "title": "Kalibrering",
             "start": "Start kalibrering",
             "input": "Indtast bredde og højde på dit skæreunderlag.",
-            "fullscreen": "Gå til fuld skærm ved at klikke eller tappe ",
+            "fullscreen": "Gå til fuld skærm ved at klikke eller tappe fullscreenIcon></fullscreenIcon> i øverste venstre hjørne.",
             "drag": "Træk i hjørnerne af gitteret, så ternene kommer til at passe med ternene på dit skæreunderlag. Justér hjørnerne på din tablet eller computer, mens du kigger på skæreunderlaget. Justér hjørnernes placering indtil gitteret i projektorbilledet passer med skæreunderlagets gitter.",
             "size": "Du behøver ikke at bruge hele dit skæreunderlag, når du kalibrerer. Brug i stedet det størst mulige område, som du kan få kalibreringsgitteret til at passe i. Indtast målene (bredde og højde), så de stemmer overens med målene på kalibreringsgitteret.",
-            "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap \"Vis mønster\""
+            "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap \"Vis mønster\"."
         },
         "project": {
             "title": "Vis et mønster",
@@ -94,14 +94,14 @@
             },
             "magnify": {
                 "title": "Forstør (M)",
-                "description": "Klik eller tap på PDF'en for at forstørre den. Klik eller tap igen for at stoppe med at forstørre."
+                "description": "Klik eller tap på PDF'en, for at førstørre den. Klik eller tap igen for at stoppe forstørrelsen."
             },
             "zoomOut": {
                 "title": "Zoom ud (Z)",
-                "description": "Zoom ud for at se hele PDF'en. Klik eller tap på PDF'en for at zoome ind igen på den valgte placering."
+                "description": "Zoom ud for at se hele PDF'en. Klik eller tap på PDF'en for at zoome tilbage til den valgte placering."
             },
             "scale": {
-                "title": "Vis eller skjul skaleringsmenuen",
+                "title": "Vis eller skjul skaleringsmenuen.",
                 "description": "Ændr størrelse på mønsteret ved at indtaste en gangefaktor: Mellem 0 og 1 vil gøre mønsteret mindre og over 1 vil gøre mønsteret større."
             }
         },
@@ -175,7 +175,17 @@
                 "description": "Flytter PDF'en, så den forrige/næste linje er vandret og centreret på skæreunderlaget.",
                 "use": "For at flytte mellem mønstedele under udskæring: Tegn en linje på trådretningslinjen af hver mønsterdel og gå derefter frem gennem mønsteret ved hjælp af disse knapper. Slet linjerne efterhånden, som du kommer igennem for at holde styr på hvilke dele, der stadig mangler at blive skåret ud."
             },
-            "description": "Linjeværktøjet kan bruges til at måle afstande, lave linjer, rotere, vende og flytte PDF'en. Klik på linjeværktøjsknappen, klik derefter på PDF'en og træk for at tegne en linje. Når der er tegnet en linje, vil der dukke en menu op i bunden af skærmen med følgende funktioner:"
+            "description": "Linjeværktøjet kan bruges til at måle afstande, lave linjer, rotere, vende og flytte PDF'en. Klik på linjeværktøjsknappen, klik derefter på PDF'en og træk for at tegne en linje. Når der er tegnet en linje, vil der dukke en menu op i bunden af skærmen med følgende funktioner:",
+            "length": {
+                "title": "Linjelængde",
+                "description": "Viser længden på den valgte linje (vist i lilla). Andre linjer er orange.",
+                "use": "Tryk på længden for at indtaste et præcist mål og justere linjens størrelse. Nyttig til at forlænge/forkorte mønsterdele. Se <lineToolVideoLink>denne video</lineToolVideoLink> for et eksempel."
+            },
+            "angle": {
+                "title": "Linjevinkel",
+                "description": "Viser vinklen på den valgte linje (vist i lilla). Andre linjer er orange.",
+                "use": "Indtast en præcis vinkel at rotere linjen og mønsterdelen med. Brug <alignIcon></alignIcon> juster til center-knap til at lave rotationen baseret på den indtastede vinkel."
+            }
         },
         "tools": "Værktøjer",
         "overlayOptions": {

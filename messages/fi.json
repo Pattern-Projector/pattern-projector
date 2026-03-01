@@ -29,7 +29,7 @@
             "fullscreen": "Siirry koko näytön tilaan napsauttamalla (tai napauttamalla) <fullscreenIcon></fullscreenIcon> vasemmassa yläkulmassa.",
             "drag": "Vedä ruudukon kulmia linjaan leikkuumattosi kanssa. Pidä katse matossa ja säädä kulmia tietokoneellasi tai tabletillasi. Säädä kulmien sijoittelua, kunnes kuvan ruudukko vastaa omaa ruudukkoasi.",
             "size": "Sinun ei tarvitse kalibroida koko mattoa käyttäen, vaan valitse suurin alue, johon kalibrointiruudukko mahtuu, ja syötä leveys ja korkeus vastaamaan ruudukon leveyttä ja korkeutta.",
-            "project": "Kun kuvan ruudukko on linjassa leikkuumattosi kanssa, napsauta (tai napauta) ”Heijasta kaava.”"
+            "project": "Kun kuvan ruudukko on linjassa leikkuumattosi kanssa, napsauta (tai napauta) ”Heijasta kaava”."
         },
         "project": {
             "title": "Heijasta kaava",

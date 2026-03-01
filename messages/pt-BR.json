@@ -28,7 +28,7 @@
             "fullscreen": "Entre no modo de tela cheia clicando (ou tocando). ",
             "drag": "Arraste os cantos da grade para alinhar com a sua base de corte. Com os olhos na base, ajuste os cantos no seu computador ou tablet. Continue ajustando até que a grade projetada corresponda à grade da sua base de corte.",
             "size": "Você não precisa calibrar usando toda a sua base de corte; em vez disso, escolha a maior área em que consiga encaixar a grade de calibração e insira a largura e a altura correspondentes à largura e à altura da grade.",
-            "project": "Quando a grade projetada estiver alinhada com a sua base de corte, clique (ou toque) em “Projetar.”"
+            "project": "Quando a grade projetada estiver alinhada com a sua base de corte, clique (ou toque) em “Projetar”."
         },
         "project": {
             "title": "Projetando um molde",

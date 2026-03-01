@@ -3,7 +3,7 @@
         "choose-language": "Språk",
         "welcome": {
             "title": "Välkommen till Pattern Projector!",
-            "description": "Pattern projector är en gratis webb app med öppen källkod som snabbt kalibrerar projektorer för symönster. Den har också verktyg för att sätta ihop flera sidor av mönstret, ändra linjetjocklek, invertera färger, vända/rotera mönster och mer. För att läsa om de senaste uppdateringarna, kolla in <changeLogLink>ändringsloggen</changeLogLink>."
+            "description": "Pattern projector är en gratis webb app med öppen källkod som snabbt kalibrerar projektorer för symönster. Den har också verktyg för att sätta ihop flera sidor av mönstret, ändra linjetjocklek, invertera färger, vända/rotera mönster och mer. För att läsa om de senaste uppdateringarna, se i <changeLogLink>ändringsloggan</changeLogLink>."
         },
         "calibrate": "Starta kalibrering",
         "project": {
@@ -13,24 +13,24 @@
             },
             "title": "Projicera ett mönster",
             "open": "Klicka (eller tryck) <pdficon></pdficon> för att öppna ett mönster.",
-            "move": "Flytta PDFn genom att klicka och dra det runt på skärmen.",
+            "move": "Flytta PDF:en genom att klicka och dra den runt på skärmen.",
             "cut": "Klipp längs med den projicerade designen.",
             "fullscreen": {
                 "title": "Helskärm",
-                "description": "Det är generellt lättare att använda mjukvara i helskärmsläge."
+                "description": "Det är generellt lättare att använda mjukvaran i helskärmsläge."
             },
-            "tools": "I projektions läge finns flera verktyg. Några har kortkommandon, som anges inom parenteserna.",
+            "tools": "I projektionsläge finns flera verktyg tillgängliga. Några har kortkommandon, som anges inom parentesen.",
             "showMenu": {
                 "title": "Visa/dölj meny",
-                "description": "Visa eller dölj top meny."
+                "description": "Visa eller dölj toppmenyn."
             },
             "invert": {
                 "title": "Invertera färger",
-                "description": "Vid projesering, är det vanligare att se gröna eller vita linjer på svart. Klicka/tryck en gång för gröna linjer två gånger för vita linjer, och tre gånger för att komma tillbaka till svarta linjer."
+                "description": "Vid projicering, är det vanligtvis lättare att se gröna eller vita linjer på svart. Klicka/tryck en gång för gröna linjer, två gånger för vita linjer, och tre gånger för att komma tillbaka till svarta linjer."
             },
             "moveTool": {
-                "title": "Vis eller dölj verktyg för förflyttning",
-                "description": "Förflyttnings verktyget har en knapp med fyra pilar för att flytta kalibrerings rutnätets hörn/kanter. Det har också en nästa knapp i mitten för att växla till nästa hörn/kant."
+                "title": "Visa eller dölj verktyg för förflyttning",
+                "description": "Flyttverktyget har fyra pilar för att flytta kalibreringsrutnätets hörn/kanter. Det har också en nästa-knapp i mitten för att växla till nästa hörn/kant."
             },
             "overlayOptions": {
                 "title": "Visa eller dölj överläggsalternativ",
@@ -100,7 +100,7 @@
         "faq": {
             "title": "FAQ",
             "mobileSupport": {
-                "question": "Har ni support för mobiltelefoner eller surfplattor?",
+                "question": "Har ni stöd för mobiltelefoner och surfplattor?",
                 "answer": "Det är möjligt att besöka och använda websidan på en smart telefon, men den begränsade storleken på skärmen gör den svårt att använda."
             },
             "wrongSizePdf": {
@@ -114,7 +114,7 @@
         "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
         "github": "Se källkoden",
         "requirements": {
-            "title": "Vad du behöver",
+            "title": "Vad du kommer att behöver",
             "projector": "Projektor: minst 720p rekommenderas",
             "mat": "En skär matta med linjer med rutnät (frivilligt)",
             "mount": "Stativ eller vägg/hylla/bord för montering av projektor",
@@ -125,16 +125,16 @@
             "title": "Inställningar",
             "place": "Placera projektorn över skärmattan, så att den riktas direkt mot skärmattan. Om du inte har en skärmatta, kan du använda papper eller maskeringstejp för att markera ut ett rutnät/rektangel på ett bord eller golv.",
             "connect": "Anslut din dator eller surfplatta till projektorn och antingen spegla eller utöka displayen så att bilden från datorn eller surfplattan visas på projektorn.",
-            "focus": "Justera fokus på projektorn, tills texten är klar i mitten av projektionen. Om du inte kan få en klar bild, säkerställ att avståndet mellan projektor och skärmatta är inom funktions området som rekommenderas av tillverkaren.",
-            "keystone": "Om din projektor har ”keystone”, justera den så att projektionen är nära till rektangeln och fokus kanterna förbättras."
+            "focus": "Justera fokus på projektorn, tills texten är klar i mitten av projektionen. Om du inte kan få en klar bild, säkerställ att avståndet mellan projektor och skärmatta är inom funktionsområdet som rekommenderas av tillverkaren.",
+            "keystone": "Om din projektor har en ”keystone” knapp, justera den så att projektionen är nära till rektangeln och fokus kanterna förbättras."
         },
         "calibration": {
             "title": "Kalibrering",
             "start": "Klicka (eller tryck) ”Start Calibrating.”",
-            "fullscreen": "Gå till helskärmsläge genom att klicka (eller trycka) ",
+            "fullscreen": "Gå till helskärmsläge genom att klicka (eller trycka) <fullscreenIcon></fullscreenIcon> i övre vänstra hörnet.",
             "drag": "Drag hörnen i rutnätet för att linjera med din matta. Med ögonen på mattan, justera hörnen på din dator eller surfplatta. Justera placeringen av hörnen tills det projicerade rutnätet matchar din mattas rutnät.",
             "size": "Du måste inte använda hela mattan för att kalibrera, välj istället den största ytan som kan passa kalibreringens rutnät och sätt in bredd och höjd att matcha bredd och höjd av det rutnätet.",
-            "project": "När det projicerade rutnätet är i linje med din matta, klicka (eller tryck) ”Project.”"
+            "project": "När det projicerade rutnätet är i linje med din matta, klicka (eller tryck) ”Project”."
         },
         "lineTool": {
             "title": "Linjeverktyg",
@@ -162,13 +162,23 @@
                 "title": "Flytta PDF med linje längd",
                 "description": "Flyttar PDF:n med linjens längd.",
                 "use": "För förlänga/förkorta mönster delar: rita en linje vinkelrät mot förlänga/förkorta linjen på mönsterdelen, klipp till förlänga/förkorta linjen, klicka(tryck) sedan på flytta med linje längdens knapp, och fortsätt sedan att klippa delen. Riktningen av den ritade linjen kommer att bero på om du förlänger eller förkortar mönsterdelen."
+            },
+            "length": {
+                "title": "Linjens längd",
+                "description": "Visa längden på vald linje (visad i lila). Övriga linjer är orange.",
+                "use": "Tryck på längden för att ange exakt mått och justera linjens storlek. Användbart för att förlänga/förkorta mönster delar. Se <lineToolVideoLink>den här videon</lineToolVideoLink> som exempel."
+            },
+            "angle": {
+                "title": "Linjens vinkel",
+                "description": "Visa vinkeln på den valda linjen (visad i lila). Övriga linjer är orange.",
+                "use": "Skriv in en exakt vinkel för att rotera linjen och mönster delen. Använd <alignIcon></alignIcon> justera till centrum knappen för att tillämpa rotationen baserad på vald vinkel."
             }
         },
         "tools": "Verktyg",
         "resources": {
             "links": {
                 "projectorsForSewing": {
-                    "title": "Projectors for Sewing Facebook Group",
+                    "title": "Facebook gruppen ”Projectors for Sewing”",
                     "link": "https://www.facebook.com/groups/481078582801085"
                 },
                 "onePageGuide": {
@@ -198,13 +208,16 @@
         "flipAlong": "Vänd längs linje"
     },
     "OverlayCanvas": {
-        "zoomedOut": "klicka på mönstret för att zooma in"
+        "zoomedOut": "klicka på mönstret för att zooma in",
+        "magnifying": "Klicka på mönstret för att stoppa förstoringen",
+        "scaled": "<scale></scale>x scale"
     },
     "InstallButton": {
         "title": "Installera app",
         "ok": "Ok",
         "descriptionAndroid": "För den bästa upplevelsen på Android, använd Firefox. Ladda ner appen genom att trycka på mer-knappen <moreIcon></moreIcon> i webbläsarmenyn och sedan <addToHomeScreenIcon></addToHomeScreenIcon> Lägg till på startskärmen.",
-        "description": "För bästa upplevelse, installera Pattern Projector med <chromeLink>Google Chrome</chromeLink>. I Chrome laddar du ned appen genom att trycka på <installIcon></installIcon> i adressfältet."
+        "description": "För bästa upplevelse, installera Pattern Projector med <chromeLink>Google Chrome</chromeLink>. I Chrome laddar du ned appen genom att trycka på <installIcon></installIcon> i adressfältet.",
+        "descriptionIOS": "Ladda ner/Installera appen genom att trycka på dela knappen <shareIcon></shareIcon> i webbläsarens meny och sedan lägg till på Hemskärmen<addBoxIcon></addBoxIcon>."
     },
     "General": {
         "error": "Fel",
@@ -219,7 +232,7 @@
         "flipCenterOn": "Vänd på mitten",
         "fullscreenExit": "Avsluta helskärm",
         "height": "H:",
-        "width": "W:",
+        "width": "B:",
         "project": "Projekt",
         "calibrate": "Kalibrera",
         "gridOn": "Rutnät på",
@@ -240,9 +253,9 @@
         "info": "Informations sida",
         "menuHide": "Dölj meny",
         "lineWeight": "Linje storlek",
-        "stitchMenuShow": "Visa sammansättnings menyn",
+        "stitchMenuShow": "Visa sammansättningsmenyn",
         "stitchMenuHide": "Dölj sammansättningsmenyn",
-        "stitchMenuDisabled": "Öppna PDF för att använda sammansättnings menyn",
+        "stitchMenuDisabled": "Öppna PDF för att använda sammansättningsmenyn",
         "measure": "Linje verktyg (L)",
         "zoomOut": "Zooma ut",
         "hideMovement": "Dölj flytt verktyg",
@@ -253,7 +266,13 @@
         "recenter": "Centrera och återställ (C)",
         "openPDF": "Öppna",
         "overlayOptionFlippedPattern": "Avigsida",
-        "showMovement": "Visa flytt verktyg"
+        "showMovement": "Visa flytt verktyg",
+        "invalidCalibration": "Det kalibrerade rutnätet är inte godkänt. Tryck ” Återställ kalibrering” för att försöka igen.",
+        "continue": "Spara fönstrets storlek och fortsätt",
+        "checkCalibration": "Kontrollera kalibreringen",
+        "calibrationAlertTitle": "Kalibreringsvarning",
+        "calibrationAlert": "Storleken på fönstret har ändrats sedan projektionen började, tryck på knappen hel skärm eller kalibrera om för att åtgärda problemet.",
+        "calibrationAlertContinue": "Fönstrets storlek kan inte ändras efter kalibreringen. För att projicera i helskärm, kalibrera i helskärm. Om du vill ändra fönstrets storlek , kalibrera om."
     },
     "ScaleMenu": {
         "show": "Visa skala menyn",
@@ -262,20 +281,64 @@
     },
     "StitchMenu": {
         "zeros": "Lägg till 0:or för blanka sidor, ex. 1-3,0,0,4",
-        "vertical": "Vertikalt",
-        "horizontal": "Horisontellt",
+        "vertical": "Vertikal överlappning",
+        "horizontal": "Horisontell överlappning",
         "columnCount": "Kolumner",
-        "pageRange": "Sammansättning av sidor"
+        "pageRange": "Sammansättning av sidor",
+        "rowCount": "Rader"
     },
     "Mail": {
-        "title": "Du har fått e-post"
+        "title": "Du har fått e-post",
+        "donate": "Donera"
     },
     "Troubleshooting": {
         "dragCorners": {
-            "caption": "Korrekt kalibrerat rutnät."
+            "caption": "Korrekt kalibrerat rutnät.",
+            "title": "Hur man kalibrerar",
+            "description": "Dra hörnen på rutnätet tullen rektangel på minst 24x16 inch/60x40 cm på din matta. Rutnätet bör vara så stort som möjligt men måste inte täcka hela mattan."
         },
         "dimensionsSwapped": {
-            "caption": "Bredden och höjden ligger i fel rutor. Måtten ska vara 'B: 24' och 'H: 18'."
+            "caption": "Bredden och höjden ligger i fel rutor. Måtten ska vara 'B: 24' och 'H: 18'.",
+            "title": "Rektangel istället för en kvadrat?",
+            "description": "Om det projicerade rutnätet ser ut som en rektangel istället för en kvadrat, kan längd och bredd vara förväxlade. Byt plats på siffrorna i rutan för längd och bredd."
+        },
+        "notMatching": "Passar inte linjerna in på din matta?",
+        "title": "Calibrering Felsökning",
+        "close": "Stäng",
+        "inputMeasurement": "Använd ett måttband för att mäta längd och bredd av mattans rutmönster. Skriv in dessa mått i respektive ruta för längd och bredd.",
+        "offByOne": {
+            "title": "Linjerna är raka men inte i linje?",
+            "description": "Om de projicerade linjerna är raka men inte följer mattans linjer, längd och bredd kan skilja upp till 1 inch/2,5 cm. Dubbel kontrollera din mätning med ett måttband. Mattans mått kan vara förvirrande eller felaktiga, så att kontrollera med ett måttband är viktigt.",
+            "caption": "Fel mått anges (23x17) istället för (24x18). Mattan visar bara siffrorna upp till 23 och 17, det är lätt att blanda ihop måtten. Se till att du mäter med ett måttband!"
+        },
+        "unevenSurface": {
+            "title": "Böjda linjer?",
+            "description": "Om de projicerade linjerna se böjda ut, kan det hända att din matta eller ytan som mattan ligger på inte är plant. Försök att få mattan plan genom att lägga något under mattan ex. kartong, där mattan är som lägst eller lägg mattan på en annan plats.",
+            "caption": "Den här mattan har en linjal under sig som gör att linjerna böjs i mitten. En lätt böjning är okej, men en stor böjning kommer att orsaka problem."
         }
+    },
+    "SaveMenu": {
+        "save": "Exportera PDF",
+        "saveTooltip": "Exportera PDF med ihopsatta sidor och välj lager",
+        "encryptedPDF": "Den här PDF en är krypterad. Vänligen skriv lösenordet för att spara den ihopsatta PDF:en."
+    },
+    "LayerMenu": {
+        "title": "Lager",
+        "showAll": "Visa alla",
+        "hideAll": "Dölj alla",
+        "layersOn": "Visa menyn för lager",
+        "layersOff": "Dölj menyn för lager",
+        "noLayers": "Finns inga lager i mönstret"
+    },
+    "MovementPad": {
+        "up": "Upp",
+        "down": "Ner",
+        "left": "Vänster",
+        "right": "Höger",
+        "next": "Nästa hörn"
+    },
+    "PdfViewer": {
+        "error": "Misslyckades att ladda upp mönstret",
+        "noData": "Tryck på ”Öppna” knappen för att ladda mönstret"
     }
 }
