@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled measuring when magnified for precision measuring
 - Pressing an arrow button once will move the pattern by 1/8" or 2mm
 - Slow down speed of pattern movement with arrow keys
+- Arrow key movement uses modifier keys for granularity (Shift = coarse, Ctrl = fine, Alt = finer, combinations for extremes); supports diagonal movement and seamless granularity switching without releasing the arrow key
 
 ## [1.3.0] - 2025-06-25
 
