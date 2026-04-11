@@ -10,74 +10,26 @@ import {
   translate,
   scaleAboutPoint,
 } from "@/_lib/geometry";
-import { Line } from "@/_lib/interfaces/line";
+import { Line } from "@/_reducers/linesReducer";
 import { Point } from "@/_lib/point";
 import Matrix from "ml-matrix";
-interface FlipAction {
-  type: "flip_vertical" | "flip_horizontal";
-  centerPoint: Point;
-}
-
-interface RotateAction {
-  type: "rotate";
-  centerPoint: Point;
-  degrees: number;
-}
-
-interface RecenterAction {
-  type: "recenter";
-  centerPoint: Point;
-  layoutWidth: number;
-  layoutHeight: number;
-}
-
-interface RotateToHorizontalAction {
-  type: "rotate_to_horizontal";
-  line: Line;
-}
-
-interface FlipAlongAction {
-  type: "flip_along";
-  line: Line;
-}
-
-interface TranslateAction {
-  type: "translate";
-  p: Point;
-}
-
-interface SetAction {
-  type: "set";
-  localTransform: Matrix;
-}
-
-interface ResetAction {
-  type: "reset";
-}
-
-interface AlignAction {
-  type: "align";
-  line: Line;
-  to: Line;
-}
-
-interface MagnifyAction {
-  type: "magnify";
-  scale: number;
-  point: Point;
-}
 
 export type LocalTransformAction =
-  | FlipAction
-  | RotateToHorizontalAction
-  | FlipAlongAction
-  | TranslateAction
-  | SetAction
-  | RotateAction
-  | RecenterAction
-  | ResetAction
-  | AlignAction
-  | MagnifyAction;
+  | { type: "flip_vertical" | "flip_horizontal"; centerPoint: Point }
+  | { type: "rotate"; centerPoint: Point; degrees: number }
+  | {
+      type: "recenter";
+      centerPoint: Point;
+      layoutWidth: number;
+      layoutHeight: number;
+    }
+  | { type: "rotate_to_horizontal"; line: Line }
+  | { type: "flip_along"; line: Line }
+  | { type: "translate"; p: Point }
+  | { type: "set"; localTransform: Matrix }
+  | { type: "reset" }
+  | { type: "align"; line: Line; to: Line }
+  | { type: "magnify"; scale: number; point: Point };
 
 export default function localTransformReducer(
   localTransform: Matrix,
@@ -88,10 +40,10 @@ export default function localTransformReducer(
       return action.localTransform.clone();
     }
     case "rotate_to_horizontal": {
-      return rotateToHorizontal(action.line).mmul(localTransform);
+      return rotateToHorizontal(action.line.points).mmul(localTransform);
     }
     case "flip_along": {
-      return flipAlong(action.line).mmul(localTransform);
+      return flipAlong(action.line.points).mmul(localTransform);
     }
     case "translate": {
       return translate(action.p).mmul(localTransform);
@@ -116,7 +68,7 @@ export default function localTransformReducer(
       return Matrix.identity(3);
     }
     case "align": {
-      return align(action.line, action.to).mmul(localTransform);
+      return align(action.line.points, action.to.points).mmul(localTransform);
     }
     case "magnify": {
       return scaleAboutPoint(action.scale, action.point).mmul(localTransform);

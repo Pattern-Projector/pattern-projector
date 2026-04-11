@@ -36,6 +36,7 @@ import { Button } from "@/_components/buttons/button";
 import { ButtonStyle } from "@/_components/theme/styles";
 import ZoomInIcon from "@/_icons/zoom-in-icon";
 import TuneIcon from "@/_icons/tune-icon";
+import InlineInput from "@/_components/inline-input";
 
 const DynamicInstallButton = dynamic(
   () => import("@/_components/buttons/install-button"),
@@ -67,7 +68,7 @@ export default function Home() {
         </menu>
       </nav>
       <article className="prose lg:prose-xl m-auto">
-        <h1>{t("welcome.title")}</h1>
+        <h1 data-testid="welcome-title">{t("welcome.title")}</h1>
         <p>
           {t.rich("welcome.description", {
             changeLogLink: (chunks) => (
@@ -149,8 +150,14 @@ export default function Home() {
           </li>
           <li>{t("calibration.start")}</li>
           <li>
-            {t("calibration.fullscreen")}
-            <FullScreenIcon ariaLabel="" />
+            {t.rich("calibration.fullscreen", {
+              fullscreenIcon: () => (
+                <FullScreenIcon
+                  className="inline-block align-middle"
+                  ariaLabel=""
+                />
+              ),
+            })}
           </li>
           <li>{t("calibration.drag")}</li>
           <li>
@@ -176,7 +183,13 @@ export default function Home() {
         <ol>
           <li>
             {t.rich("project.open", {
-              pdficon: () => <PdfIcon fill="#000" ariaLabel="" />,
+              pdficon: () => (
+                <PdfIcon
+                  fill="#000"
+                  ariaLabel=""
+                  className="inline-block align-middle"
+                />
+              ),
             })}
           </li>
           <li>{t("project.move")}</li>
@@ -388,6 +401,61 @@ export default function Home() {
           >
             {t("lineTool.move.description")}
             <p>{t("lineTool.move.use")}</p>
+          </Definition>
+          <Definition
+            icon={
+              <InlineInput
+                className="relative flex flex-col w-20"
+                disabled={true}
+                handleChange={() => {}}
+                inputClassName="pl-1.5 pr-7 !border-2 !border-black dark:!border-white"
+                id="distance"
+                labelRight={"in"}
+                name="distance"
+                value={"10"}
+                type="string"
+              />
+            }
+            title={t("lineTool.length.title")}
+          >
+            {t("lineTool.length.description")}
+            <p>
+              {t.rich("lineTool.length.use", {
+                lineToolVideoLink: (chunks) => (
+                  <a href="https://youtu.be/TH8tY9BoxfM?si=VTC1QRnNzBfG555Z&t=709">
+                    {chunks}
+                  </a>
+                ),
+              })}
+            </p>
+          </Definition>
+          <Definition
+            icon={
+              <InlineInput
+                className="relative flex flex-col w-20"
+                disabled={true}
+                handleChange={() => {}}
+                inputClassName="pl-1.5 pr-7 !border-2 !border-black dark:!border-white"
+                id="distance"
+                labelRight={"°"}
+                name="distance"
+                value={"45"}
+                type="string"
+              />
+            }
+            title={t("lineTool.angle.title")}
+          >
+            {t("lineTool.angle.description")}
+            <p>
+              {t.rich("lineTool.angle.use", {
+                alignIcon: () => (
+                  <RotateToHorizontalIcon
+                    className="inline-block align-middle"
+                    ariaLabel=""
+                  />
+                ),
+              })}
+            </p>
           </Definition>
         </dl>
 

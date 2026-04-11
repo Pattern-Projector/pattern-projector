@@ -1,5 +1,5 @@
 import debounce from "@/_lib/debounce";
-import { Line } from "@/_lib/interfaces/line";
+import { Line } from "@/_reducers/linesReducer";
 import { Point } from "@/_lib/point";
 import localTransformReducer, {
   LocalTransformAction,

@@ -5,10 +5,16 @@ export enum LineDirection {
   Column = "Column",
 }
 
+export enum VerticalAlignment {
+  Top = "Top",
+  Bottom = "Bottom",
+}
+
 export interface StitchSettings {
   key: string;
   lineCount: number;
   edgeInsets: EdgeInsets;
   pageRange: string;
   lineDirection: LineDirection;
+  verticalAlignment: VerticalAlignment;
 }

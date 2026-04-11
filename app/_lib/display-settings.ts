@@ -48,7 +48,7 @@ export function themeFilter(theme: Theme): string {
     case Theme.Dark:
       return "invert(1)";
     case Theme.Green:
-      return "invert(1) sepia(100%) saturate(300%) hue-rotate(80deg)";
+      return "invert(1) sepia(1) saturate(10000%) hue-rotate(65deg) brightness(1.5)";
     case Theme.Light:
       return "none";
   }

@@ -35,8 +35,8 @@
             "project": "Når gitteret i projektorbilledet passer med din skæremåtte, klik eller tap \"Vis mønster\""
         },
         "project": {
-            "title": "Vis mønster",
-            "open": "Klik eller tap <pdficon></pdficon> for at åbne PDF-dokumentet.",
+            "title": "Vis et mønster",
+            "open": "Klik eller tap <pdficon></pdficon> for at åbne et mønster.",
             "move": "Flyt PDF’en ved at klikke og trække det rundt på skærmen.",
             "cut": "Skær ud efter mønsteret.",
             "tools": "Under \"Vis mønster\" er der flere værktøjer tilgængelige. Nogle af dem har genvejstaster, som står i parentes.",
@@ -91,6 +91,18 @@
             "showMenu": {
                 "title": "Vis/skjul menu",
                 "description": "Vis eller skjul topmenu."
+            },
+            "magnify": {
+                "title": "Forstør (M)",
+                "description": "Klik eller tap på PDF'en for at forstørre den. Klik eller tap igen for at stoppe med at forstørre."
+            },
+            "zoomOut": {
+                "title": "Zoom ud (Z)",
+                "description": "Zoom ud for at se hele PDF'en. Klik eller tap på PDF'en for at zoome ind igen på den valgte placering."
+            },
+            "scale": {
+                "title": "Vis eller skjul skaleringsmenuen",
+                "description": "Ændr størrelse på mønsteret ved at indtaste en gangefaktor: Mellem 0 og 1 vil gøre mønsteret mindre og over 1 vil gøre mønsteret større."
             }
         },
         "faq": {
@@ -113,7 +125,7 @@
             },
             "mobileSupport": {
                 "question": "Er det muligt at bruge en mobiltelefon eller tablet?",
-                "answer": "Det er muligt at bruge hjemmesiden på en smartphone, men den begrænsede skærmstørrelse gør det svært at bruge. Der er planer om bedre funktionalitet på mobile enheder i en senere udgave."
+                "answer": "Det er muligt at bruge hjemmesiden på en smartphone, men den begrænsede skærmstørrelse gør det svært at bruge."
             }
         },
         "resources": {
@@ -131,7 +143,7 @@
         },
         "contribute": {
             "title": "Bidrag til projektet",
-            "donation": "Hvis du har lyst til at støtte udviklingen af dette værktøj, så overvej at købe mig <donateLink>en kop kaffe</donateLink>!",
+            "donation": "Hvis Pattern Projector at sparet dig penge i printshoppen eller på abonnement på en PDF-viser, så overvej at købe mig <donateLink>en kop kaffe</donateLink> eller støtte via <payPalLink>PayPal</payPalLink>!",
             "develop": "Hjælp med at implementere funktioner og fixe problemer på <githubLink>GitHub</githubLink>.",
             "translate": "Oversæt dette værktøj til flere sprog med <weblateLink>Weblate</weblateLink>.",
             "feedback": "Feedback og forslag til funktioner er velkomne!"
@@ -151,11 +163,11 @@
             "flip": {
                 "title": "Vend langs linjen",
                 "description": "Vender PDF'en langs linjen.",
-                "use": "For at folde mønsterdele ud: Tegn en linje på til fold-linjen af en mønstedel, skær mønstedelen ud frem til til fold-linjen, klik på \"vend langs streg\"-knappen og skær resten af delen ud."
+                "use": "For at folde mønsterdele ud: Tegn en linje på til fold-linjen af en mønsterdel, skær mønsterdelen ud frem til fold-linjen, klik på \"vend langs streg\"-knappen og skær resten af mønsterdelen ud."
             },
             "move": {
                 "title": "Forskyd PDF'en med linjens længde",
-                "description": "Forskyd PDF'en med linjens længde",
+                "description": "Forskyder PDF'en med linjens længde.",
                 "use": "For at forkorte/forlænge mønsterdele: Tegn en linje vinkelret på forkort/forlæng-linjen på mønsterdelen, skær ud frem til forkort/forlæng-linjen og klik så på \"forskyd PDF med linjens længde\"-knappen og fortsæt med at skære ud. Retningen på den tegnede linje afhænger af, om du vil forkorte eller forlænge mønsterdelen."
             },
             "previousNext": {
@@ -194,7 +206,7 @@
     "Header": {
         "projecting": "Visning af mønster",
         "calibrating": "Kalibrering",
-        "openPDF": "Åbn PDF",
+        "openPDF": "Åbn",
         "height": "H:",
         "width": "B:",
         "project": "Vis mønster",
@@ -251,17 +263,21 @@
         "flipCenterOff": "Vend hen over midten slået fra",
         "magnify": "Forstør (M)",
         "zoomOut": "Zoom ud (Z)",
-        "stitchMenuDisabled": "Åbn PDF for at bruge samlemenu"
+        "stitchMenuDisabled": "Åbn PDF for at bruge samlemenu",
+        "mail": "Mail fra Courtney",
+        "invalidCalibration": "Kalibreringsgitteret er ikke korrekt. Tryk på \"Nulstil kalibrering\" for at prøve igen."
     },
     "StitchMenu": {
         "columnCount": "Kolonner",
         "pageRange": "Saml sider",
-        "horizontal": "Vandret",
-        "vertical": "Lodret"
+        "horizontal": "Vandret overlap",
+        "vertical": "Lodret overlap",
+        "rowCount": "Rækker",
+        "zeros": "Indsæt 0 for at indsætte en blank side, f.eks. 1-3,0,0,4"
     },
     "MeasureCanvas": {
         "rotateToHorizontal": "Rotér til vandret",
-        "translate": "Forskyd PDF med linjens længde",
+        "translate": "Forskyd mønster med linjens længde",
         "deleteLine": "Slet linje",
         "flipAlong": "Vend langs linjen",
         "rotateAndCenterPrevious": "Bring forrige linje til center",
@@ -272,9 +288,9 @@
     "LayerMenu": {
         "layersOn": "Vis lagmenu",
         "layersOff": "Skjul lagmenu",
-        "noLayers": "Ingen lag i PDF",
+        "noLayers": "Ingen lag i mønsteret",
         "showAll": "Vis alle",
-        "hideAll": "Skjul all",
+        "hideAll": "Slå alle fra",
         "title": "Lag"
     },
     "MovementPad": {
@@ -287,17 +303,61 @@
     "InstallButton": {
         "ok": "OK",
         "title": "Installér app",
-        "description": "For bedste brugeroplevelse, installér Pattern Projector på <chromeLink>Google Chrome</chromeLink>.",
+        "description": "For bedste brugeroplevelse, installér Pattern Projector på <chromeLink>Google Chrome</chromeLink>. I Chrome kan du downloade app'en ved at trykke på <installIcon></installIcon> in adresselinjen.",
         "descriptionIOS": "Download app'en ved at trykke på share-knappen <shareIcon></shareIcon> i browsermenuen og derefter Add to Home Screen <addBoxIcon></addBoxIcon>/Tilføj til hjemmeskærm.",
         "descriptionAndroid": "For bedre brugeroplevelse på Android, brug Firefox. Download app'en ved at trykke på more-knappen <moreIcon></moreIcon> i browsermenuen og derefter <addToHomeScreenIcon></addToHomeScreenIcon> Add to Home Screen/Tilføj til hjemmeskærm."
     },
     "OverlayCanvas": {
-        "zoomedOut": "klik på PDF'en for at zoome ind",
-        "magnifying": "klik på PDF'en for at stoppe med forstørre"
+        "zoomedOut": "klik på mønsteret for at zoome ind",
+        "magnifying": "klik på mønsteret for at stoppe med forstørre",
+        "scaled": "<scale></scale>× skala"
     },
     "SaveMenu": {
         "save": "Eksportér PDF",
         "saveTooltip": "Eksportér PDF med samlede sider og valgte lag",
         "encryptedPDF": "Denne PDF er krypteret. Indtast venligst password for at gemme den samlede PDF."
+    },
+    "Mail": {
+        "title": "Du har modtaget mail",
+        "donate": "Donér"
+    },
+    "Troubleshooting": {
+        "notMatching": "Passer linjerne ikke på din måtte?",
+        "title": "Fejlsøg kalibrering",
+        "dragCorners": {
+            "title": "Hvor kalibrerer du",
+            "description": "Træk hjørnerne af gitteret ud til et rektangel på mindst 60x40 cm på måtten. Gitteret skal være så stort som muligt, men det behøver ikke at dække hele måtten.",
+            "caption": "Et korrekt kalibreret gitter."
+        },
+        "inputMeasurement": "Brug et målebånd til at måle bredde og højde på gitteret på din måtte. Indtast disse mål i felterne til bredde og højde.",
+        "offByOne": {
+            "title": "Linjerne er lige men passer ikke?",
+            "description": "Hvis de projicerede linjer (linjerne på billedet fra projektoren) er lige men ikke passer med linjerne på måtten, er bredde og højde måske en 1 tomme/centimeter forkert. Dobbelttjek målene med et målebånd. Målene på måtten kan være forvirrende eller upræcise, så det er vigtigt at tjekke med et målebånd.",
+            "caption": "De indtastede mål er forkerte, der står 23x17 i stedet for 24x18. Måtten viser kun tallene op til 23 og 17, så det er nemt at tage fejl af målene. Husk at måle med et målebånd!"
+        },
+        "unevenSurface": {
+            "title": "Buede linjer?",
+            "description": "Hvis de projicerede linjer (linjerne på billedet fra projektoren) ser buede ud, er din måtte eller underlaget under måtten måske ikke helt lige. Prøv at lægge karton under lave punkter for at gøre måttens overflade lige eller flyt til en anden overflade.",
+            "caption": "Denne måtte har en lineal underneden, hvilket får linjerne til at bue i midten. En svag bue er ok men en stor bue vil give problemer."
+        },
+        "dimensionsSwapped": {
+            "title": "Rektangler i stedet for kvadrater?",
+            "description": "Hvis det viste gitter ligner rektangler i stedet for kvadrater, er der måske byttet om på bredde og højde. Byt de to tal ud i felterne.",
+            "caption": "Bredde og højde er i de forkerte bokse. Der skal stå \"B: 24\" og \"H: 18\"."
+        },
+        "close": "Luk"
+    },
+    "General": {
+        "close": "Luk",
+        "error": "Fejl"
+    },
+    "ScaleMenu": {
+        "scale": "Skalér mønster",
+        "hide": "Skjul skaleringsmenu",
+        "show": "Vis skaleringsmenu"
+    },
+    "PdfViewer": {
+        "error": "Indlæsning af mønster mislykkedes",
+        "noData": "Tryk på \"Åbn\"-knappen for at åbne et mønster"
     }
 }

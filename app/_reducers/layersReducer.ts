@@ -1,34 +1,11 @@
 import { Layers } from "@/_lib/layers";
 
-interface SetLayersAction {
-  type: "set-layers";
-  layers: Layers;
-}
-
-interface UpdateVisibilityAction {
-  type: "update-visibility";
-  visibleLayers: Set<string>;
-}
-
-interface ToggleLayerAction {
-  type: "toggle-layer";
-  key: string;
-}
-
-interface HideAllAction {
-  type: "hide-all";
-}
-
-interface ShowAllAction {
-  type: "show-all";
-}
-
 export type LayerAction =
-  | SetLayersAction
-  | UpdateVisibilityAction
-  | ToggleLayerAction
-  | HideAllAction
-  | ShowAllAction;
+  | { type: "set-layers"; layers: Layers }
+  | { type: "update-visibility"; visibleLayers: Set<string> }
+  | { type: "toggle-layer"; key: string }
+  | { type: "hide-all" }
+  | { type: "show-all" };
 
 export default function layersReducer(
   layers: Layers,

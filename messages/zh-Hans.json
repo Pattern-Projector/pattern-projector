@@ -1,0 +1,10 @@
+{
+    "HomePage": {
+        "github": "查看源代码",
+        "calibrate": "开始校准",
+        "choose-language": "语言",
+        "welcome": {
+            "title": "欢迎来到 Pattern Projector！"
+        }
+    }
+}

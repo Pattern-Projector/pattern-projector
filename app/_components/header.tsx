@@ -31,7 +31,7 @@ import {
   strokeColor,
   themes,
 } from "@/_lib/display-settings";
-import { CM, IN } from "@/_lib/unit";
+import { Unit } from "@/_lib/unit";
 import RecenterIcon from "@/_icons/recenter-icon";
 import { getCalibrationCenterPoint } from "@/_lib/geometry";
 import { visible } from "@/_components/theme/css-functions";
@@ -120,8 +120,8 @@ export default function Header({
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleResetCalibration: () => void;
   fullScreenHandle: FullScreenHandle;
-  unitOfMeasure: string;
-  setUnitOfMeasure: (newUnit: string) => void;
+  unitOfMeasure: Unit;
+  setUnitOfMeasure: (newUnit: Unit) => void;
   displaySettings: DisplaySettings;
   setDisplaySettings: (newDisplaySettings: DisplaySettings) => void;
   layoutWidth: number;
@@ -224,7 +224,8 @@ export default function Header({
     );
   };
 
-  const handleRecenter = () => {
+  const handleRecenterReset = () => {
+    transformer.reset();
     transformer.recenter(
       getCalibrationCenterPoint(width, height, unitOfMeasure),
       layoutWidth,
@@ -324,7 +325,7 @@ export default function Header({
   }, [KeyCode.KeyV]);
 
   useKeyDown(() => {
-    handleRecenter();
+    handleRecenterReset();
   }, [KeyCode.KeyC]);
 
   useKeyDown(() => {
@@ -470,7 +471,7 @@ export default function Header({
           <div className={`flex items-center gap-1 ${visible(isCalibrating)}`}>
             <div className="flex gap-1">
               <InlineInput
-                className="relative flex flex-col"
+                className="relative flex flex-col w-24"
                 inputClassName="pl-6 pr-7 w-24"
                 handleChange={handleWidthChange}
                 id="width"
@@ -482,7 +483,7 @@ export default function Header({
                 min="0"
               />
               <InlineInput
-                className="relative flex flex-col"
+                className="relative flex flex-col w-24"
                 inputClassName="pl-6 pr-7 w-24"
                 handleChange={handleHeightChange}
                 id="height"
@@ -494,13 +495,13 @@ export default function Header({
                 min="0"
               />
               <InlineSelect
-                handleChange={(e) => setUnitOfMeasure(e.target.value)}
+                handleChange={(e) => setUnitOfMeasure(e.target.value as Unit)}
                 id="unit_of_measure"
                 name="unit_of_measure"
                 value={unitOfMeasure}
                 options={[
-                  { value: IN, label: "in" },
-                  { value: CM, label: "cm" },
+                  { value: Unit.IN, label: "in" },
+                  { value: Unit.CM, label: "cm" },
                 ]}
               />
             </div>
@@ -557,14 +558,7 @@ export default function Header({
             <Tooltip description={t("recenter")}>
               <IconButton
                 disabled={zoomedOut || magnifying}
-                onClick={() => {
-                  transformer.reset();
-                  transformer.recenter(
-                    getCalibrationCenterPoint(width, height, unitOfMeasure),
-                    layoutWidth,
-                    layoutHeight,
-                  );
-                }}
+                onClick={handleRecenterReset}
               >
                 <RecenterIcon ariaLabel={t("recenter")} />
               </IconButton>
@@ -591,7 +585,6 @@ export default function Header({
               <IconButton
                 onClick={() => setMeasuring(!measuring)}
                 active={measuring}
-                disabled={magnifying}
               >
                 <MarkAndMeasureIcon ariaLabel={t("measure")} />
               </IconButton>

@@ -19,6 +19,7 @@ import {
 } from "@cantoo/pdf-lib";
 import {
   LineDirection,
+  VerticalAlignment,
   StitchSettings,
 } from "@/_lib/interfaces/stitch-settings";
 import { getPageNumbers, getRowsColumns } from "./get-page-numbers";
@@ -221,6 +222,11 @@ async function tilePages(doc: PDFDocument, settings: StitchSettings) {
   // Loop through the pages and copy them to the output document
   let x = 0;
   let y = outHeight - pageSize.height;
+  let yDirection = 1;
+  if (settings.verticalAlignment == VerticalAlignment.Bottom) {
+    y = 0;
+    yDirection = -1;
+  }
 
   // define the commands to draw the page and the resources dictionary
   const commands: PDFOperator[] = [];
@@ -253,14 +259,22 @@ async function tilePages(doc: PDFDocument, settings: StitchSettings) {
         x += pageSize.width;
         if (x > outWidth - margin) {
           x = 0;
-          y -= pageSize.height;
+          y -= pageSize.height * yDirection;
         }
         break;
       case LineDirection.Row:
-        y -= pageSize.height;
-        if (y < -margin) {
-          y = outHeight - pageSize.height;
-          x += pageSize.width;
+        if (settings.verticalAlignment == VerticalAlignment.Bottom) {
+          y -= pageSize.height * yDirection;
+          if (y > outHeight - margin) {
+            y = 0;
+            x += pageSize.width;
+          }
+        } else {
+          y -= pageSize.height;
+          if (y < -margin) {
+            y = outHeight - pageSize.height;
+            x += pageSize.width;
+          }
         }
         break;
     }

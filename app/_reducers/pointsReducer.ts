@@ -1,17 +1,8 @@
 import { Point, applyOffset } from "@/_lib/point";
 
-interface OffsetAction {
-  type: "offset";
-  offset: Point;
-  corners: Set<number>;
-}
-
-interface SetAction {
-  type: "set";
-  points: Point[];
-}
-
-export type PointAction = OffsetAction | SetAction;
+export type PointAction =
+  | { type: "offset"; offset: Point; corners: Set<number> }
+  | { type: "set"; points: Point[] };
 
 export default function pointsReducer(
   points: Point[],
