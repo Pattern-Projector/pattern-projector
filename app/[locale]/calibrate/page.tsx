@@ -27,6 +27,8 @@ import {
   DisplaySettings,
   getDefaultDisplaySettings,
   isDarkTheme,
+  isColourTheme,
+  strokeColor,
   themeFilter,
   Theme,
 } from "@/_lib/display-settings";
@@ -164,6 +166,13 @@ export default function Page() {
   const g = useTranslations("General");
 
   const IDLE_TIMEOUT = 8000;
+
+  // When using the Green colour theme, apply colouring at canvas draw time via
+  // a feColorMatrix SVG filter rather than the indirect invert/sepia/hue-rotate
+  // chain. This gives exact colours and consistent results across browsers.
+  const recolourHex = isColourTheme(displaySettings.theme)
+    ? strokeColor(displaySettings.theme)
+    : undefined;
 
   const svgStyle = {
     filter: filter(magnifying, lineThickness, displaySettings.theme),
@@ -650,6 +659,7 @@ export default function Page() {
                     lineThickness={lineThickness}
                     stitchSettings={stitchSettings}
                     filter={themeFilter(displaySettings.theme)}
+                    recolourHex={recolourHex}
                     dispatchStitchSettings={dispatchStitchSettings}
                     setLineThicknessStatus={setLineThicknessStatus}
                     setFileLoadStatus={setFileLoadStatus}
@@ -803,7 +813,7 @@ export default function Page() {
           </Transformable>
         </FullScreen>
       </div>
-      <Filters />
+      <Filters recolourHex={recolourHex} />
     </main>
   );
 }
