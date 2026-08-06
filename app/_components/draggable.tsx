@@ -226,6 +226,26 @@ export default function Draggable({
     setPerspective,
   ]);
 
+  useEffect(() => {
+    if (isCalibrating && restoreTransforms !== null) {
+      transformer.setLocalTransform(restoreTransforms.localTransform);
+      setCalibrationTransform(restoreTransforms.calibrationTransform);
+      setPerspective(inverse(restoreTransforms.calibrationTransform));
+      setRestoreTransforms(null);
+      setZoomedOut(false);
+      setMagnifying(false);
+    }
+  }, [
+    isCalibrating,
+    restoreTransforms,
+    transformer,
+    setCalibrationTransform,
+    setPerspective,
+    setRestoreTransforms,
+    setZoomedOut,
+    setMagnifying,
+  ]);
+
   let cursorMode = "cursor-grab";
 
   if (zoomedOut || magnifying) {
