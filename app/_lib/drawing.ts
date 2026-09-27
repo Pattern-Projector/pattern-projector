@@ -1,5 +1,5 @@
 import { Unit } from "@/_lib/unit";
-import Matrix from "ml-matrix";
+import Matrix, { inverse } from "ml-matrix";
 import { Point } from "@/_lib/point";
 import {
   DisplaySettings,
@@ -193,15 +193,16 @@ function drawViewportOutline(cs: CanvasState) {
   ctx.save();
   ctx.strokeStyle = "#9333ea";
   ctx.lineWidth = 2;
-  let corners = transformPoints(
-    rectCorners(window.innerWidth, window.innerHeight),
-    calibrationTransform,
-  );
   if (restoreTransforms !== null) {
-    const x = restoreTransforms.localTransform.get(0, 2);
-    const y = restoreTransforms.localTransform.get(1, 2);
-    const s = calibrationTransform.get(0, 0);
-    corners = translatePoints(corners, Math.abs(x) * s, Math.abs(y) * s);
+    // Map the original screen viewport back into pattern coordinates, then
+    // into the overview. Keep rotation, reflection and perspective intact.
+    const originalTransform = restoreTransforms.calibrationTransform.mmul(
+      restoreTransforms.localTransform,
+    );
+    const corners = transformPoints(
+      rectCorners(window.innerWidth, window.innerHeight),
+      calibrationTransform.mmul(inverse(originalTransform)),
+    );
     drawPolygon(ctx, corners);
     ctx.stroke();
   }
