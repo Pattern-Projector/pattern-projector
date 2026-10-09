@@ -1,6 +1,7 @@
 import { Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { MenuStates, getDefaultMenuStates } from "@/_lib/menu-states";
+import { DxfStyles, applyDxfStyles } from "@/_lib/dxf/dxf-styles";
 import {
   CSSProperties,
   Dispatch,
@@ -21,6 +22,7 @@ export default function SvgViewer({
   patternScale,
   setMenuStates,
   patternScaleFactor,
+  dxfStyles = null,
 }: {
   dataUrl: string;
   svgStyle: CSSProperties;
@@ -33,6 +35,8 @@ export default function SvgViewer({
   patternScale: number;
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
   patternScaleFactor: number;
+  /** Set when the SVG was converted from a DXF: styles are applied live to its layers */
+  dxfStyles?: DxfStyles | null;
 }) {
   const objectRef = useRef<HTMLObjectElement>(null);
 
@@ -64,6 +68,13 @@ export default function SvgViewer({
       g.style.display = layer.visible ? "" : "none";
     });
   }, [layers]);
+
+  useEffect(() => {
+    if (!dxfStyles) return;
+    const svg = objectRef.current?.contentDocument?.querySelector("svg");
+    if (!svg) return;
+    applyDxfStyles(svg, dxfStyles);
+  }, [dxfStyles]);
 
   useEffect(() => {
     const svg = objectRef.current?.contentDocument?.querySelector("svg");
@@ -108,9 +119,16 @@ export default function SvgViewer({
               visible: isVisible,
             };
           });
+        if (dxfStyles) {
+          applyDxfStyles(svg, dxfStyles);
+        }
         setLayers(groupLayers);
         if (Object.keys(groupLayers).length > 1) {
-          setMenuStates({ ...getDefaultMenuStates(), layers: true });
+          // DXF patterns are often reloaded by the folder watcher; keep whichever
+          // side menu is open (the DXF menu has its own layer toggles)
+          if (!dxfStyles) {
+            setMenuStates({ ...getDefaultMenuStates(), layers: true });
+          }
         } else {
           setLayers({});
           setMenuStates(getDefaultMenuStates());

@@ -75,6 +75,17 @@ import { Button } from "@/_components/buttons/button";
 import { erosionFilter } from "@/_lib/erode";
 import SvgViewer from "@/_components/svg-viewer";
 import { toggleFullScreen } from "@/_lib/full-screen";
+import {
+  DxfElement,
+  DxfStyles,
+  dxfElements,
+  getDefaultDxfStyles,
+  loadDxfStyles,
+  saveDxfStyles,
+} from "@/_lib/dxf/dxf-styles";
+import { convertDxfFile, isDxfFile } from "@/_lib/dxf/dxf-to-svg";
+import useDxfWatcher from "@/_hooks/use-dxf-watcher";
+import { LoadedDxfInfo } from "@/_components/menus/dxf-menu";
 
 const defaultStitchSettings = {
   lineCount: 1,
@@ -137,6 +148,19 @@ export default function Page() {
   );
   const [mailOpen, setMailOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
+  // DXF import: the original DXF is kept so it can be re-converted (e.g. when packing changes)
+  const [dxfSource, setDxfSource] = useState<{
+    file: File;
+    info: LoadedDxfInfo;
+  } | null>(null);
+  const [dxfStyles, setDxfStylesState] = useState<DxfStyles>(
+    getDefaultDxfStyles(),
+  );
+  const [dxfPack, setDxfPackState] = useState(false);
+  const dxfStylesRef = useRef(dxfStyles);
+  dxfStylesRef.current = dxfStyles;
+  const dxfPackRef = useRef(dxfPack);
+  dxfPackRef.current = dxfPack;
 
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [stitchSettings, dispatchStitchSettings] = useReducer(
@@ -159,6 +183,7 @@ export default function Page() {
 
   const t = useTranslations("Header");
   const g = useTranslations("General");
+  const dxfT = useTranslations("DxfMenu");
 
   const IDLE_TIMEOUT = 8000;
 
@@ -280,52 +305,91 @@ export default function Page() {
   }
 
   // Set new file; reset file based state; and if available, load file based state from localStorage
+  function showFile(newFile: File) {
+    setFile(newFile);
+    setFileLoadStatus(LoadStatusEnum.LOADING);
+    setRestoreTransforms(null);
+    setZoomedOut(false);
+    setMagnifying(false);
+    setMeasuring(false);
+    setPageCount(0);
+    setLayers({});
+    dispatchPatternScaleAction({ type: "set", scale: "1.00" });
+    const lineThicknessString = localStorage.getItem(
+      `lineThickness:${newFile.name}`,
+    );
+    if (lineThicknessString !== null) {
+      setLineThickness(Number(lineThicknessString));
+    } else {
+      setLineThickness(0);
+    }
+
+    const key = `stitchSettings:${newFile.name ?? "default"}`;
+    const stitchSettingsString = localStorage.getItem(key);
+    if (stitchSettingsString !== null) {
+      const stitchSettings = JSON.parse(stitchSettingsString);
+      if (!stitchSettings.lineCount) {
+        // Old naming
+        stitchSettings.lineCount = stitchSettings.columnCount;
+      }
+      if (!stitchSettings.lineDirection) {
+        // For people who saved stitch settings before Line Direction was an option
+        stitchSettings.lineDirection = LineDirection.Column;
+      }
+      dispatchStitchSettings({ type: "set", stitchSettings });
+    } else {
+      dispatchStitchSettings({
+        type: "set",
+        stitchSettings: {
+          ...defaultStitchSettings,
+          key,
+        },
+      });
+    }
+
+    calibrationCallback();
+  }
+
+  // Open a PDF, SVG or DXF. DXF files are converted to a layered SVG drawn 1:1 in mm.
+  async function openFile(newFile: File) {
+    if (!isValidFile(newFile)) {
+      return;
+    }
+    if (!isDxfFile(newFile)) {
+      setDxfSource(null);
+      showFile(newFile);
+      return;
+    }
+    try {
+      const { svgFile, result } = await convertDxfFile(newFile, {
+        styles: dxfStylesRef.current,
+        pack: dxfPackRef.current,
+        layerNames: Object.fromEntries(
+          dxfElements.map((e) => [e, dxfT(`elements.${e}`)]),
+        ) as Record<DxfElement, string>,
+      });
+      setDxfSource({
+        file: newFile,
+        info: {
+          name: newFile.name,
+          loadedAt: Date.now(),
+          pieceCount: result.pieceCount,
+          widthMm: result.widthMm,
+          heightMm: result.heightMm,
+        },
+      });
+      showFile(svgFile);
+    } catch (e) {
+      setErrorMessage(
+        `${newFile.name}: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    }
+  }
+
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
     const { files } = e.target;
-
-    if (files && files[0] && isValidFile(files[0])) {
-      setFile(files[0]);
-      setFileLoadStatus(LoadStatusEnum.LOADING);
-      setRestoreTransforms(null);
-      setZoomedOut(false);
-      setMagnifying(false);
-      setMeasuring(false);
-      setPageCount(0);
-      setLayers({});
-      dispatchPatternScaleAction({ type: "set", scale: "1.00" });
-      const lineThicknessString = localStorage.getItem(
-        `lineThickness:${files[0].name}`,
-      );
-      if (lineThicknessString !== null) {
-        setLineThickness(Number(lineThicknessString));
-      } else {
-        setLineThickness(0);
-      }
-
-      const key = `stitchSettings:${files[0].name ?? "default"}`;
-      const stitchSettingsString = localStorage.getItem(key);
-      if (stitchSettingsString !== null) {
-        const stitchSettings = JSON.parse(stitchSettingsString);
-        if (!stitchSettings.lineCount) {
-          // Old naming
-          stitchSettings.lineCount = stitchSettings.columnCount;
-        }
-        if (!stitchSettings.lineDirection) {
-          // For people who saved stitch settings before Line Direction was an option
-          stitchSettings.lineDirection = LineDirection.Column;
-        }
-        dispatchStitchSettings({ type: "set", stitchSettings });
-      } else {
-        dispatchStitchSettings({
-          type: "set",
-          stitchSettings: {
-            ...defaultStitchSettings,
-            key,
-          },
-        });
-      }
-
-      calibrationCallback();
+    if (files && files[0]) {
+      openFile(files[0]);
     }
 
     // If the user calibrated in full screen, try to go back into full screen after opening the file: some browsers pop users out of full screen when selecting a file
@@ -337,6 +401,25 @@ export default function Page() {
           fullScreenHandle.enter();
         }
       } catch (e) {}
+    }
+  }
+
+  const dxfWatcher = useDxfWatcher((watchedFile) => openFile(watchedFile));
+
+  function setDxfStyles(styles: DxfStyles) {
+    setDxfStylesState(styles);
+    saveDxfStyles(styles);
+  }
+
+  function setDxfPack(pack: boolean) {
+    setDxfPackState(pack);
+    dxfPackRef.current = pack;
+    try {
+      localStorage.setItem("dxfPack", pack ? "1" : "0");
+    } catch (e) {}
+    // Re-convert the open DXF with the new layout
+    if (dxfSource) {
+      openFile(dxfSource.file);
     }
   }
 
@@ -394,7 +477,7 @@ export default function Page() {
           for (const handle of launchParams.files) {
             if (handle.kind == "file") {
               const file = await (handle as FileSystemFileHandle).getFile();
-              setFile(file);
+              openFile(file);
               return;
             }
           }
@@ -449,6 +532,14 @@ export default function Page() {
         theme: localSettings.theme ?? defaults.theme,
       });
     }
+  }, []);
+
+  // Load DXF import settings
+  useEffect(() => {
+    setDxfStylesState(loadDxfStyles());
+    try {
+      setDxfPackState(localStorage.getItem("dxfPack") === "1");
+    } catch (e) {}
   }, []);
 
   // Set button color style based on URL: blue for the beta site and gray for old site
@@ -628,6 +719,7 @@ export default function Page() {
                 )}
                 menuStates={menuStates}
                 file={file}
+                keepPositionOnReload={dxfSource !== null}
               >
                 {file === null || file.type === "application/pdf" ? (
                   <PdfViewer
@@ -666,6 +758,7 @@ export default function Page() {
                     patternScale={patternScaleFactor}
                     setMenuStates={setMenuStates}
                     patternScaleFactor={patternScaleFactor}
+                    dxfStyles={dxfSource ? dxfStyles : null}
                   />
                 )}
               </Draggable>
@@ -763,7 +856,7 @@ export default function Page() {
                 <MailModal open={mailOpen} setOpen={setMailOpen} />
               </menu>
 
-              {!isCalibrating && file !== null && (
+              {!isCalibrating && (
                 <SideMenu
                   menuStates={menuStates}
                   setMenuStates={setMenuStates}
@@ -775,6 +868,16 @@ export default function Page() {
                   dispatchStitchSettings={dispatchStitchSettings}
                   patternScale={patternScale}
                   dispatchPatternScaleAction={dispatchPatternScaleAction}
+                  dxf={{
+                    watcher: dxfWatcher,
+                    loaded: dxfSource?.info ?? null,
+                    styles: dxfStyles,
+                    setStyles: setDxfStyles,
+                    onResetStyles: () => setDxfStyles(getDefaultDxfStyles()),
+                    pack: dxfPack,
+                    setPack: setDxfPack,
+                    theme: displaySettings.theme,
+                  }}
                 />
               )}
             </menu>

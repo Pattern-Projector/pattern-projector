@@ -66,7 +66,7 @@ import { ButtonStyle, getButtonStyleClasses } from "./theme/styles";
 import { ButtonColor, getColorClasses } from "./theme/colors";
 import MailIcon from "@/_icons/mail-icon";
 import ZoomInIcon from "@/_icons/zoom-in-icon";
-import { acceptedMimeTypes } from "@/_lib/is-valid-file";
+import { acceptAttribute } from "@/_lib/is-valid-file";
 import { toggleFullScreen } from "@/_lib/full-screen";
 
 export default function Header({
@@ -608,7 +608,7 @@ export default function Header({
                 disabled={
                   fileLoadStatus === LoadStatusEnum.LOADING && !isCalibrating
                 }
-                accept={acceptedMimeTypes.join(",")}
+                accept={acceptAttribute}
                 className="hidden"
                 id="pdfFile"
                 onChange={handleFileChange}

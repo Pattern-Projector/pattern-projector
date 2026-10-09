@@ -18,6 +18,11 @@ import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 import { LayerAction } from "@/_reducers/layersReducer";
 import { PatternScaleAction } from "@/_reducers/patternScaleReducer";
 import TuneIcon from "@/_icons/tune-icon";
+import PatternPieceIcon from "@/_icons/pattern-piece-icon";
+import DxfMenu, { LoadedDxfInfo } from "@/_components/menus/dxf-menu";
+import { DxfWatcher } from "@/_hooks/use-dxf-watcher";
+import { DxfStyles } from "@/_lib/dxf/dxf-styles";
+import { Theme } from "@/_lib/display-settings";
 
 export default function SideMenu({
   menuStates,
@@ -30,6 +35,7 @@ export default function SideMenu({
   dispatchStitchSettings,
   patternScale,
   dispatchPatternScaleAction,
+  dxf,
 }: {
   menuStates: MenuStates;
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
@@ -41,10 +47,21 @@ export default function SideMenu({
   stitchSettings: StitchSettings;
   patternScale: string;
   dispatchPatternScaleAction: Dispatch<PatternScaleAction>;
+  dxf: {
+    watcher: DxfWatcher;
+    loaded: LoadedDxfInfo | null;
+    styles: DxfStyles;
+    setStyles: (styles: DxfStyles) => void;
+    onResetStyles: () => void;
+    pack: boolean;
+    setPack: (pack: boolean) => void;
+    theme: Theme;
+  };
 }) {
   const sc = useTranslations("ScaleMenu");
   const h = useTranslations("Header");
   const l = useTranslations("LayerMenu");
+  const d = useTranslations("DxfMenu");
 
   const numberOfLayers = Object.entries(layers).length;
   const disableStitchMenu =
@@ -54,6 +71,19 @@ export default function SideMenu({
     <menu className="pointer-events-auto flex w-fit">
       {/* reverse so the tooltips show on top */}
       <menu className="w-16 flex flex-col-reverse justify-end gap-2 p-2 bg-opacity-60 dark:bg-opacity-50 bg-white dark:bg-black left-0 border-b border-r dark:border-gray-700 transition-all duration-500">
+        <Tooltip description={menuStates.dxf ? d("menuHide") : d("menuShow")}>
+          <IconButton
+            active={menuStates.dxf}
+            onClick={() =>
+              setMenuStates(toggleSideMenuStates(menuStates, SideMenuType.dxf))
+            }
+          >
+            <PatternPieceIcon
+              ariaLabel={menuStates.dxf ? d("menuHide") : d("menuShow")}
+            />
+          </IconButton>
+        </Tooltip>
+
         <Tooltip description={menuStates.scale ? sc("hide") : sc("show")}>
           <IconButton
             active={menuStates.scale}
@@ -138,6 +168,13 @@ export default function SideMenu({
       )}
       {menuStates.layers && (
         <LayerMenu dispatchLayerAction={dispatchLayersAction} layers={layers} />
+      )}
+      {menuStates.dxf && (
+        <DxfMenu
+          {...dxf}
+          layers={layers}
+          dispatchLayerAction={dispatchLayersAction}
+        />
       )}
     </menu>
   );

@@ -3,6 +3,7 @@ import {
   ReactNode,
   useState,
   useEffect,
+  useRef,
   SetStateAction,
   Dispatch,
 } from "react";
@@ -50,6 +51,7 @@ export default function Draggable({
   calibrationCenter,
   menuStates,
   file,
+  keepPositionOnReload = false,
 }: {
   children: ReactNode;
   perspective: Matrix;
@@ -70,6 +72,8 @@ export default function Draggable({
   calibrationCenter: Point;
   menuStates: MenuStates;
   file: File | null;
+  /** Keep the pattern where it is when a new version of the same file is loaded (DXF re-exports) */
+  keepPositionOnReload?: boolean;
 }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [transformStart, setTransformStart] = useState<Matrix | null>(null);
@@ -205,8 +209,15 @@ export default function Draggable({
     setRestoreTransforms,
   ]);
 
+  const previousFileName = useRef<string | null>(null);
   useEffect(() => {
+    const sameName = file !== null && file.name === previousFileName.current;
+    previousFileName.current = file?.name ?? null;
+    if (keepPositionOnReload && sameName) {
+      return;
+    }
     transformer.setLocalTransform(Matrix.identity(3));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
 
   useEffect(() => {
