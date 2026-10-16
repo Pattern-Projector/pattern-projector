@@ -38,6 +38,7 @@ export default function CalibrationCanvas({
   corners,
   setCorners,
   fullScreenHandle,
+  toContentPoint = (p) => p,
 }: {
   className: string | undefined;
   points: Point[];
@@ -50,6 +51,8 @@ export default function CalibrationCanvas({
   corners: Set<number>;
   setCorners: Dispatch<SetStateAction<Set<number>>>;
   fullScreenHandle: FullScreenHandle;
+  /** Maps a pointer position on screen to the calibration grid's coordinates, e.g. to undo lens correction */
+  toContentPoint?: (p: Point) => Point;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hoverCorners, setHoverCorners] = useState<Set<number>>(new Set());
@@ -193,7 +196,7 @@ export default function CalibrationCanvas({
   );
 
   function handlePointerDown(e: React.PointerEvent) {
-    const p = { x: e.clientX, y: e.clientY };
+    const p = toContentPoint({ x: e.clientX, y: e.clientY });
     const selectedCorners = selectCorners(p);
     if (selectedCorners.size) {
       setDragPoint(p);
@@ -203,7 +206,7 @@ export default function CalibrationCanvas({
   }
 
   function handlePointerMove(e: React.PointerEvent) {
-    const p = { x: e.clientX, y: e.clientY };
+    const p = toContentPoint({ x: e.clientX, y: e.clientY });
     if (dragPoint === null) {
       setHoverCorners(selectCorners(p));
     } else if (corners.size) {

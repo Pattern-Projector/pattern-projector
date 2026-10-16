@@ -76,6 +76,17 @@ import { Button } from "@/_components/buttons/button";
 import { erosionFilter } from "@/_lib/erode";
 import SvgViewer from "@/_components/svg-viewer";
 import { toggleFullScreen } from "@/_lib/full-screen";
+import LensCorrectionFilter, {
+  lensCorrectionFilter,
+} from "@/_components/lens-correction-filter";
+import {
+  LensCorrection,
+  clampLensCorrectionStrength,
+  getDefaultLensCorrection,
+  lensSourcePoint,
+  parseLensCorrection,
+} from "@/_lib/lens-correction";
+import { Point } from "@/_lib/point";
 
 const defaultStitchSettings = {
   lineCount: 1,
@@ -140,6 +151,11 @@ export default function Page() {
   );
   const [mailOpen, setMailOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
+  const [lensCorrection, setLensCorrection] = useState<LensCorrection>(
+    getDefaultLensCorrection(),
+  );
+  const [lensCorrectionInput, setLensCorrectionInput] = useState("0");
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
 
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [stitchSettings, dispatchStitchSettings] = useReducer(
@@ -281,6 +297,32 @@ export default function Page() {
     setWidthInput(w);
     updateLocalSettings({ width: w });
   }
+
+  // Save the projector lens correction in localStorage. Keep the raw input so the user can type "-" or "1."
+  function handleLensCorrectionChange(e: ChangeEvent<HTMLInputElement>) {
+    const input = e.target.value;
+    setLensCorrectionInput(input);
+    const strength = Number(input);
+    if (input.trim() !== "" && Number.isFinite(strength)) {
+      const newLensCorrection = {
+        strength: clampLensCorrectionStrength(strength),
+      };
+      setLensCorrection(newLensCorrection);
+      updateLocalSettings({ lensCorrection: newLensCorrection });
+    }
+  }
+
+  // Convert a pointer position on the lens corrected screen to the position in the uncorrected content
+  const toContentPoint = useCallback(
+    (p: Point) =>
+      lensSourcePoint(
+        p,
+        viewportSize.width,
+        viewportSize.height,
+        lensCorrection,
+      ),
+    [viewportSize, lensCorrection],
+  );
 
   // Set new file; reset file based state; and if available, load file based state from localStorage
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -450,12 +492,30 @@ export default function Page() {
         setShowingMovePad(isTouchDevice);
       }
 
+      if (localSettings.lensCorrection !== undefined) {
+        const savedLensCorrection = parseLensCorrection(
+          localSettings.lensCorrection,
+        );
+        setLensCorrection(savedLensCorrection);
+        setLensCorrectionInput(String(savedLensCorrection.strength));
+      }
+
       const defaults = getDefaultDisplaySettings();
       setDisplaySettings({
         overlay: localSettings.overlay ?? defaults.overlay,
         theme: localSettings.theme ?? defaults.theme,
       });
     }
+  }, []);
+
+  // Track the viewport size because the lens correction is centred on the screen
+  useEffect(() => {
+    function updateViewportSize() {
+      setViewportSize({ width: window.innerWidth, height: window.innerHeight });
+    }
+    updateViewportSize();
+    window.addEventListener("resize", updateViewportSize);
+    return () => window.removeEventListener("resize", updateViewportSize);
   }, []);
 
   // Set button color style based on URL: blue for the beta site and gray for old site
@@ -571,19 +631,25 @@ export default function Page() {
             </ModalContent>
           </Modal>
           {isCalibrating && (
-            <CalibrationCanvas
-              className={`absolute ${visible(isCalibrating)}`}
-              points={points}
-              dispatch={dispatch}
-              width={width}
-              height={height}
-              isCalibrating={isCalibrating}
-              unitOfMeasure={unitOfMeasure}
-              displaySettings={displaySettings}
-              corners={corners}
-              setCorners={setCorners}
-              fullScreenHandle={fullScreenHandle}
-            />
+            <div
+              className="absolute top-0 left-0 w-screen h-screen"
+              style={{ filter: lensCorrectionFilter(lensCorrection) }}
+            >
+              <CalibrationCanvas
+                className={`absolute ${visible(isCalibrating)}`}
+                points={points}
+                dispatch={dispatch}
+                width={width}
+                height={height}
+                isCalibrating={isCalibrating}
+                unitOfMeasure={unitOfMeasure}
+                displaySettings={displaySettings}
+                corners={corners}
+                setCorners={setCorners}
+                fullScreenHandle={fullScreenHandle}
+                toContentPoint={toContentPoint}
+              />
+            </div>
           )}
           {isCalibrating && showingMovePad && (
             <MovementPad
@@ -595,103 +661,109 @@ export default function Page() {
           )}
 
           <Transformable fileName={file?.name ?? "default"}>
-            <MeasureCanvas
-              className={visible(!isCalibrating)}
-              perspective={perspective}
-              calibrationTransform={calibrationTransform}
-              unitOfMeasure={unitOfMeasure}
-              measuring={measuring}
-              setMeasuring={setMeasuring}
-              file={file}
-              gridCenter={getCalibrationCenterPoint(
-                width,
-                height,
-                unitOfMeasure,
-              )}
-              zoomedOut={zoomedOut}
-              magnifying={magnifying}
-              menusHidden={menusHidden}
-              menuStates={menuStates}
-              isDarkTheme={isDarkTheme(displaySettings.theme)}
+            {/* Ignore the pointer while calibrating so this layer does not cover the calibration canvas */}
+            <div
+              className={`absolute top-0 left-0 w-screen h-screen ${isCalibrating ? "pointer-events-none" : ""}`}
+              style={{ filter: lensCorrectionFilter(lensCorrection) }}
             >
-              <Draggable
-                className={`absolute ${menusHidden && "!cursor-none"} `}
+              <MeasureCanvas
+                className={visible(!isCalibrating)}
                 perspective={perspective}
-                isCalibrating={isCalibrating}
-                unitOfMeasure={unitOfMeasure}
                 calibrationTransform={calibrationTransform}
-                setCalibrationTransform={setCalibrationTransform}
-                setPerspective={setPerspective}
-                magnifying={magnifying}
-                setMagnifying={setMagnifying}
-                setRestoreTransforms={setRestoreTransforms}
-                restoreTransforms={restoreTransforms}
-                zoomedOut={zoomedOut}
-                setZoomedOut={setZoomedOut}
-                layoutWidth={layoutWidth}
-                layoutHeight={layoutHeight}
-                calibrationCenter={getCalibrationCenterPoint(
+                unitOfMeasure={unitOfMeasure}
+                measuring={measuring}
+                setMeasuring={setMeasuring}
+                file={file}
+                gridCenter={getCalibrationCenterPoint(
                   width,
                   height,
                   unitOfMeasure,
                 )}
-                menuStates={menuStates}
-                file={file}
-              >
-                {file === null || file.type === "application/pdf" ? (
-                  <PdfViewer
-                    file={file}
-                    setPageCount={setPageCount}
-                    pageCount={pageCount}
-                    setLayers={setLayers}
-                    layers={layers}
-                    setLayoutWidth={setLayoutWidth}
-                    setLayoutHeight={setLayoutHeight}
-                    lineThickness={lineThickness}
-                    stitchSettings={stitchSettings}
-                    filter={themeFilter(displaySettings.theme)}
-                    dispatchStitchSettings={dispatchStitchSettings}
-                    setLineThicknessStatus={setLineThicknessStatus}
-                    setFileLoadStatus={setFileLoadStatus}
-                    magnifying={magnifying}
-                    gridCenter={getCalibrationCenterPoint(
-                      width,
-                      height,
-                      unitOfMeasure,
-                    )}
-                    patternScale={patternScaleFactor}
-                    setMenuStates={setMenuStates}
-                  />
-                ) : (
-                  <SvgViewer
-                    dataUrl={dataUrl ?? ""}
-                    setFileLoadStatus={setFileLoadStatus}
-                    setLayoutWidth={setLayoutWidth}
-                    setLayoutHeight={setLayoutHeight}
-                    setPageCount={setPageCount}
-                    layers={layers}
-                    setLayers={setLayers}
-                    svgStyle={svgStyle}
-                    patternScale={patternScaleFactor}
-                    setMenuStates={setMenuStates}
-                    patternScaleFactor={patternScaleFactor}
-                  />
-                )}
-              </Draggable>
-              <OverlayCanvas
-                className={`absolute top-0 pointer-events-none`}
-                points={points}
-                width={width}
-                height={height}
-                unitOfMeasure={unitOfMeasure}
-                displaySettings={displaySettings}
-                calibrationTransform={calibrationTransform}
                 zoomedOut={zoomedOut}
                 magnifying={magnifying}
-                restoreTransforms={restoreTransforms}
-                patternScale={String(patternScaleFactor)}
-              />
-            </MeasureCanvas>
+                menusHidden={menusHidden}
+                menuStates={menuStates}
+                isDarkTheme={isDarkTheme(displaySettings.theme)}
+              >
+                <Draggable
+                  className={`absolute ${menusHidden && "!cursor-none"} `}
+                  perspective={perspective}
+                  isCalibrating={isCalibrating}
+                  unitOfMeasure={unitOfMeasure}
+                  calibrationTransform={calibrationTransform}
+                  setCalibrationTransform={setCalibrationTransform}
+                  setPerspective={setPerspective}
+                  magnifying={magnifying}
+                  setMagnifying={setMagnifying}
+                  setRestoreTransforms={setRestoreTransforms}
+                  restoreTransforms={restoreTransforms}
+                  zoomedOut={zoomedOut}
+                  setZoomedOut={setZoomedOut}
+                  layoutWidth={layoutWidth}
+                  layoutHeight={layoutHeight}
+                  calibrationCenter={getCalibrationCenterPoint(
+                    width,
+                    height,
+                    unitOfMeasure,
+                  )}
+                  menuStates={menuStates}
+                  file={file}
+                >
+                  {file === null || file.type === "application/pdf" ? (
+                    <PdfViewer
+                      file={file}
+                      setPageCount={setPageCount}
+                      pageCount={pageCount}
+                      setLayers={setLayers}
+                      layers={layers}
+                      setLayoutWidth={setLayoutWidth}
+                      setLayoutHeight={setLayoutHeight}
+                      lineThickness={lineThickness}
+                      stitchSettings={stitchSettings}
+                      filter={themeFilter(displaySettings.theme)}
+                      dispatchStitchSettings={dispatchStitchSettings}
+                      setLineThicknessStatus={setLineThicknessStatus}
+                      setFileLoadStatus={setFileLoadStatus}
+                      magnifying={magnifying}
+                      gridCenter={getCalibrationCenterPoint(
+                        width,
+                        height,
+                        unitOfMeasure,
+                      )}
+                      patternScale={patternScaleFactor}
+                      setMenuStates={setMenuStates}
+                    />
+                  ) : (
+                    <SvgViewer
+                      dataUrl={dataUrl ?? ""}
+                      setFileLoadStatus={setFileLoadStatus}
+                      setLayoutWidth={setLayoutWidth}
+                      setLayoutHeight={setLayoutHeight}
+                      setPageCount={setPageCount}
+                      layers={layers}
+                      setLayers={setLayers}
+                      svgStyle={svgStyle}
+                      patternScale={patternScaleFactor}
+                      setMenuStates={setMenuStates}
+                      patternScaleFactor={patternScaleFactor}
+                    />
+                  )}
+                </Draggable>
+                <OverlayCanvas
+                  className={`absolute top-0 pointer-events-none`}
+                  points={points}
+                  width={width}
+                  height={height}
+                  unitOfMeasure={unitOfMeasure}
+                  displaySettings={displaySettings}
+                  calibrationTransform={calibrationTransform}
+                  zoomedOut={zoomedOut}
+                  magnifying={magnifying}
+                  restoreTransforms={restoreTransforms}
+                  patternScale={String(patternScaleFactor)}
+                />
+              </MeasureCanvas>
+            </div>
 
             <menu
               className={`absolute w-screen ${visible(!menusHidden)} ${menuStates.nav ? "top-0" : "-top-16"} pointer-events-none`}
@@ -706,6 +778,8 @@ export default function Page() {
                   height={height}
                   handleHeightChange={handleHeightChange}
                   handleWidthChange={handleWidthChange}
+                  lensCorrectionInput={lensCorrectionInput}
+                  handleLensCorrectionChange={handleLensCorrectionChange}
                   handleResetCalibration={() => {
                     localStorage.setItem(
                       "calibrationContext",
@@ -804,6 +878,11 @@ export default function Page() {
         </FullScreen>
       </div>
       <Filters />
+      <LensCorrectionFilter
+        lensCorrection={lensCorrection}
+        width={viewportSize.width}
+        height={viewportSize.height}
+      />
     </main>
   );
 }

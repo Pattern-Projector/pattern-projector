@@ -242,6 +242,8 @@
     "openPDF": "Open",
     "height": "H:",
     "width": "W:",
+    "lensCorrection": "Lens:",
+    "lensCorrectionDescription": "Lens correction: if straight lines in the calibration grid bow outwards or inwards near the edges, adjust this until they look straight, then recalibrate the corners",
     "project": "Project",
     "calibrate": "Calibrate",
     "delete": "Reset calibration",

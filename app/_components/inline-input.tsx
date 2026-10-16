@@ -20,6 +20,7 @@ export default function InlineInput({
   name,
   value,
   min,
+  step,
   type,
   disabled = false,
 }: {
@@ -34,6 +35,7 @@ export default function InlineInput({
   value: string;
   type?: string;
   min?: string;
+  step?: string;
   disabled?: boolean;
 }) {
   return (
@@ -47,6 +49,7 @@ export default function InlineInput({
       <input
         disabled={disabled}
         min={min}
+        step={step}
         type={type ? type : "text"}
         className={`${inputClassName} p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 ${label && "text-right"} dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-800 dark:focus:border-blue-800`}
         id={id}

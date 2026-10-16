@@ -78,6 +78,8 @@ export default function Header({
   height,
   handleHeightChange,
   handleWidthChange,
+  lensCorrectionInput,
+  handleLensCorrectionChange,
   handleResetCalibration,
   handleFileChange,
   fullScreenHandle,
@@ -117,6 +119,8 @@ export default function Header({
   height: number;
   handleHeightChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleWidthChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  lensCorrectionInput: string;
+  handleLensCorrectionChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleResetCalibration: () => void;
   fullScreenHandle: FullScreenHandle;
@@ -504,6 +508,21 @@ export default function Header({
                   { value: Unit.CM, label: "cm" },
                 ]}
               />
+              <Tooltip description={t("lensCorrectionDescription")}>
+                <InlineInput
+                  className="relative flex flex-col w-28"
+                  inputClassName="pl-12 pr-6 w-28"
+                  handleChange={handleLensCorrectionChange}
+                  id="lens_correction"
+                  inputTestId="lens-correction"
+                  label={t("lensCorrection")}
+                  labelRight="%"
+                  name="lens_correction"
+                  value={lensCorrectionInput}
+                  type="number"
+                  step="0.25"
+                />
+              </Tooltip>
             </div>
             <Tooltip description={t("delete")}>
               <IconButton
