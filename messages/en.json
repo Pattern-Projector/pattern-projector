@@ -205,9 +205,9 @@
     "ok": "OK"
   },
   "Mail": {
-      "title": "You've got mail",
-      "donate": "Donate"
-    },
+    "title": "You've got mail",
+    "donate": "Donate"
+  },
   "Troubleshooting": {
     "notMatching": "Lines not matching your mat?",
     "title": "Calibration Troubleshooting",
@@ -344,5 +344,40 @@
   "PdfViewer": {
     "error": "Failed to load pattern",
     "noData": "Press the \"Open\" button to load a pattern"
+  },
+  "CalibrationGuide": {
+    "title": "Calibration guide",
+    "open": "Guided setup",
+    "stepOf": "Step {step} of {count}:",
+    "skip": "Skip to corners",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "print": {
+      "title": "Print the target",
+      "description": "Print the target at 100% (Actual size) and check that the box measures 8 × 6 inches. Set W and H above to the size of the grid you're calibrating to on your mat, then put the target in the middle of that grid with the arrow pointing to the top of the mat.",
+      "download": "Open the printable target"
+    },
+    "align": {
+      "title": "Line up the target",
+      "description": "Drag to move the purple target until its cross sits on the printed cross. Then resize and rotate it until the purple box sits on the printed box.",
+      "smaller": "Smaller",
+      "bigger": "Bigger",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "hint": "Each click is a small step; hold Shift for bigger steps. You can also scroll or pinch to resize, and hold Shift while scrolling to rotate."
+    },
+    "lens": {
+      "title": "Straighten the lines",
+      "description": "Remove the paper. If the projected grid lines bow outwards or inwards between the corners, adjust the lens correction until they run straight along your mat's lines. The corners stay where you put them. Skip this if the lines already match.",
+      "less": "Less lens correction",
+      "more": "More lens correction"
+    },
+    "corners": {
+      "title": "Fine-tune the corners",
+      "description": "Drag each corner circle onto the matching corner of the grid on your mat. Click a corner and use the arrow keys to nudge it."
+    },
+    "drag": "Drag to move this panel"
   }
 }

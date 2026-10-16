@@ -67,6 +67,63 @@ export function lensSourcePoint(
   return { x: cx + dx * f, y: cy + dy * f };
 }
 
+/**
+ * Returns the screen point where content point q appears, the inverse of lensSourcePoint.
+ * Solves s * (1 + k1 * s²) = u for the normalised screen radius s with Newton's method.
+ */
+export function lensDisplayPoint(
+  q: Point,
+  width: number,
+  height: number,
+  lensCorrection: LensCorrection,
+): Point {
+  const k = k1(lensCorrection);
+  const cx = width / 2;
+  const cy = height / 2;
+  const halfDiagonal = Math.hypot(cx, cy);
+  const dx = q.x - cx;
+  const dy = q.y - cy;
+  const u = Math.hypot(dx, dy) / (halfDiagonal || 1);
+  if (k === 0 || u === 0) {
+    return q;
+  }
+  let s = u;
+  for (let i = 0; i < 20; i++) {
+    const f = s * (1 + k * s * s) - u;
+    const df = 1 + 3 * k * s * s;
+    if (df <= 0) break;
+    const next = s - f / df;
+    if (Math.abs(next - s) < 1e-12) {
+      s = next;
+      break;
+    }
+    s = next;
+  }
+  const ratio = s / u;
+  return { x: cx + dx * ratio, y: cy + dy * ratio };
+}
+
+/**
+ * Moves calibration points so that they stay at the same place on screen when the lens correction changes.
+ * This way adjusting the lens only bends the lines between the corners and never undoes the corner calibration.
+ */
+export function keepPointsInPlace(
+  points: Point[],
+  width: number,
+  height: number,
+  from: LensCorrection,
+  to: LensCorrection,
+): Point[] {
+  return points.map((p) =>
+    lensSourcePoint(
+      lensDisplayPoint(p, width, height, from),
+      width,
+      height,
+      to,
+    ),
+  );
+}
+
 /** Largest displacement in pixels along one axis, which occurs at the corners. */
 export function maxLensDisplacement(
   width: number,

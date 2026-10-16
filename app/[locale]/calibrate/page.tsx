@@ -82,11 +82,20 @@ import LensCorrectionFilter, {
 import {
   LensCorrection,
   clampLensCorrectionStrength,
+  keepPointsInPlace,
   getDefaultLensCorrection,
   lensSourcePoint,
   parseLensCorrection,
 } from "@/_lib/lens-correction";
 import { Point } from "@/_lib/point";
+import CalibrationGuide from "@/_components/calibration-guide";
+import {
+  GuideStep,
+  Placement,
+  initialGuideStep,
+  placementFromPoints,
+  pointsFromPlacement,
+} from "@/_lib/guided-calibration";
 
 const defaultStitchSettings = {
   lineCount: 1,
@@ -156,6 +165,7 @@ export default function Page() {
   );
   const [lensCorrectionInput, setLensCorrectionInput] = useState("0");
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
+  const [guideStep, setGuideStep] = useState<GuideStep | null>(null);
 
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [stitchSettings, dispatchStitchSettings] = useReducer(
@@ -298,18 +308,69 @@ export default function Page() {
     updateLocalSettings({ width: w });
   }
 
-  // Save the projector lens correction in localStorage. Keep the raw input so the user can type "-" or "1."
+  // Save the projector lens correction in localStorage and move the calibration points so the corners stay where
+  // they are on screen: the lens correction then only bends the lines between them
+  function applyLensCorrection(newLensCorrection: LensCorrection) {
+    if (points.length === maxPoints) {
+      dispatch({
+        type: "set",
+        points: keepPointsInPlace(
+          points,
+          viewportSize.width,
+          viewportSize.height,
+          lensCorrection,
+          newLensCorrection,
+        ),
+      });
+    }
+    setLensCorrection(newLensCorrection);
+    updateLocalSettings({ lensCorrection: newLensCorrection });
+  }
+
+  // Keep the raw input so the user can type "-" or "1."
   function handleLensCorrectionChange(e: ChangeEvent<HTMLInputElement>) {
     const input = e.target.value;
     setLensCorrectionInput(input);
     const strength = Number(input);
     if (input.trim() !== "" && Number.isFinite(strength)) {
-      const newLensCorrection = {
-        strength: clampLensCorrectionStrength(strength),
-      };
-      setLensCorrection(newLensCorrection);
-      updateLocalSettings({ lensCorrection: newLensCorrection });
+      applyLensCorrection({ strength: clampLensCorrectionStrength(strength) });
     }
+  }
+
+  // Set the lens correction from the guide's buttons
+  function setLensCorrectionStrength(strength: number) {
+    const newLensCorrection = {
+      strength: clampLensCorrectionStrength(Math.round(strength * 100) / 100),
+    };
+    setLensCorrectionInput(String(newLensCorrection.strength));
+    applyLensCorrection(newLensCorrection);
+  }
+
+  // Move, resize or rotate the whole calibration grid, keeping it rectangular
+  function adjustPlacement(change: (placement: Placement) => Placement) {
+    if (points.length !== maxPoints) {
+      return;
+    }
+    const placement = placementFromPoints(points, width, height);
+    dispatch({
+      type: "set",
+      points: pointsFromPlacement(change(placement), width, height),
+    });
+    localStorage.setItem(
+      "calibrationContext",
+      JSON.stringify(getCalibrationContext(fullScreenHandle.active)),
+    );
+  }
+
+  function handleGuideStepChange(step: GuideStep | null) {
+    if (step === GuideStep.Align) {
+      // Square up the grid so the target can be lined up by moving, resizing and rotating it
+      adjustPlacement((placement) => placement);
+      setCorners(new Set([0, 1, 2, 3]));
+    } else if (step === GuideStep.Corners) {
+      setCorners(new Set([0]));
+    }
+    setGuideStep(step);
   }
 
   // Convert a pointer position on the lens corrected screen to the position in the uncorrected content
@@ -468,6 +529,11 @@ export default function Page() {
   // Load data from localStorage
   useEffect(() => {
     const localPoints = localStorage.getItem("points");
+    // Only ever open the guide here: React may run this effect twice in development, and the first run saves points
+    const startStep = initialGuideStep(localPoints !== null);
+    if (startStep !== null) {
+      setGuideStep(startStep);
+    }
     if (localPoints !== null) {
       dispatch({ type: "set", points: JSON.parse(localPoints) });
     } else {
@@ -648,8 +714,20 @@ export default function Page() {
                 setCorners={setCorners}
                 fullScreenHandle={fullScreenHandle}
                 toContentPoint={toContentPoint}
+                guideStep={guideStep}
+                adjustPlacement={adjustPlacement}
               />
             </div>
+          )}
+          {isCalibrating && (
+            <CalibrationGuide
+              step={guideStep}
+              setStep={handleGuideStepChange}
+              isDarkTheme={isDarkTheme(displaySettings.theme)}
+              adjustPlacement={adjustPlacement}
+              lensCorrectionStrength={lensCorrection.strength}
+              setLensCorrectionStrength={setLensCorrectionStrength}
+            />
           )}
           {isCalibrating && showingMovePad && (
             <MovementPad

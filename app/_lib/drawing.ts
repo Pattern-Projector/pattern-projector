@@ -399,3 +399,72 @@ function drawFlippedPattern(cs: CanvasState) {
   }
   ctx.restore();
 }
+
+/**
+ * Draws the printable calibration target (box, centre cross and ring, and a "top" arrow) in the middle of the
+ * calibration grid so it can be lined up with the printed copy.
+ */
+export function drawTarget(
+  cs: CanvasState,
+  targetWidth: number,
+  targetHeight: number,
+) {
+  const { ctx, width, height, perspective } = cs;
+  const cx = width / 2;
+  const cy = height / 2;
+  // Ring and cross sizes are fractions of the 8 inch box so they match the print in either unit
+  const unit = targetWidth / 8;
+  const project = (p: Point) => transformPoint(p, perspective);
+  ctx.save();
+  ctx.strokeStyle = "rgb(147, 51, 234)";
+  ctx.fillStyle = "rgb(147, 51, 234)";
+  ctx.setLineDash([]);
+
+  ctx.lineWidth = 4;
+  drawPolygon(
+    ctx,
+    transformPoints(
+      translatePoints(
+        rectCorners(targetWidth, targetHeight),
+        cx - targetWidth / 2,
+        cy - targetHeight / 2,
+      ),
+      perspective,
+    ),
+  );
+  ctx.stroke();
+
+  ctx.lineWidth = 3;
+  drawLine(ctx, [
+    project({ x: cx - 0.75 * unit, y: cy }),
+    project({ x: cx + 0.75 * unit, y: cy }),
+  ]);
+  drawLine(ctx, [
+    project({ x: cx, y: cy - 0.75 * unit }),
+    project({ x: cx, y: cy + 0.75 * unit }),
+  ]);
+  ctx.beginPath();
+  for (let i = 0; i <= 48; i++) {
+    const a = (i / 48) * 2 * Math.PI;
+    const p = project({
+      x: cx + 0.5 * unit * Math.cos(a),
+      y: cy + 0.5 * unit * Math.sin(a),
+    });
+    ctx.lineTo(p.x, p.y);
+  }
+  ctx.stroke();
+
+  // Arrow above the box pointing to the top of the mat
+  const top = cy - targetHeight / 2;
+  drawPolygon(ctx, [
+    project({ x: cx, y: top - 0.6 * unit }),
+    project({ x: cx - 0.18 * unit, y: top - 0.35 * unit }),
+    project({ x: cx + 0.18 * unit, y: top - 0.35 * unit }),
+  ]);
+  ctx.fill();
+  drawLine(ctx, [
+    project({ x: cx, y: top - 0.15 * unit }),
+    project({ x: cx, y: top - 0.4 * unit }),
+  ]);
+  ctx.restore();
+}

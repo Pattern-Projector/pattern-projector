@@ -3,6 +3,8 @@ import {
   createDisplacementMap,
   decodeDisplacement,
   isLensCorrectionActive,
+  keepPointsInPlace,
+  lensDisplayPoint,
   lensSourcePoint,
   maxLensDisplacement,
   parseLensCorrection,
@@ -109,5 +111,59 @@ describe("settings", () => {
     expect(parseLensCorrection({ strength: 3 })).toEqual({ strength: 3 });
     expect(parseLensCorrection({ strength: "3" })).toEqual({ strength: 0 });
     expect(parseLensCorrection(null)).toEqual({ strength: 0 });
+  });
+});
+
+describe("lensDisplayPoint", () => {
+  test("undoes lensSourcePoint everywhere on screen", () => {
+    for (const strength of [-10, -2.5, 0.25, 4, 15]) {
+      const lens = { strength };
+      for (const p of [
+        { x: 0, y: 0 },
+        { x: 1920, y: 1080 },
+        { x: 100, y: 900 },
+        { x: 960, y: 540 },
+        { x: 1500, y: 20 },
+      ]) {
+        const back = lensDisplayPoint(
+          lensSourcePoint(p, width, height, lens),
+          width,
+          height,
+          lens,
+        );
+        expect(back.x).toBeCloseTo(p.x, 6);
+        expect(back.y).toBeCloseTo(p.y, 6);
+      }
+    }
+  });
+});
+
+describe("keepPointsInPlace", () => {
+  const corners = [
+    { x: 200, y: 120 },
+    { x: 1700, y: 140 },
+    { x: 1690, y: 980 },
+    { x: 210, y: 960 },
+  ];
+
+  test("keeps every corner at the same place on screen when the lens changes", () => {
+    const from = { strength: 1 };
+    const to = { strength: 6.25 };
+    const moved = keepPointsInPlace(corners, width, height, from, to);
+    moved.forEach((p, i) => {
+      const before = lensDisplayPoint(corners[i], width, height, from);
+      const after = lensDisplayPoint(p, width, height, to);
+      expect(after.x).toBeCloseTo(before.x, 6);
+      expect(after.y).toBeCloseTo(before.y, 6);
+    });
+  });
+
+  test("changes nothing when the lens stays the same", () => {
+    const lens = { strength: 3 };
+    const moved = keepPointsInPlace(corners, width, height, lens, lens);
+    moved.forEach((p, i) => {
+      expect(p.x).toBeCloseTo(corners[i].x, 6);
+      expect(p.y).toBeCloseTo(corners[i].y, 6);
+    });
   });
 });
