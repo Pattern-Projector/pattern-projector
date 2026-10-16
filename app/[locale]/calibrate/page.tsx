@@ -96,6 +96,16 @@ import {
   placementFromPoints,
   pointsFromPlacement,
 } from "@/_lib/guided-calibration";
+import ProjectsModal from "@/_components/projects-modal";
+import { Project } from "@/_lib/projects";
+import {
+  deleteProject,
+  isProjectStoreAvailable,
+  listProjects,
+  openProject,
+  renameProject,
+  saveOpenedFile,
+} from "@/_lib/project-store";
 
 const defaultStitchSettings = {
   lineCount: 1,
@@ -166,6 +176,8 @@ export default function Page() {
   const [lensCorrectionInput, setLensCorrectionInput] = useState("0");
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [guideStep, setGuideStep] = useState<GuideStep | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectsOpen, setProjectsOpen] = useState(false);
 
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [stitchSettings, dispatchStitchSettings] = useReducer(
@@ -385,12 +397,17 @@ export default function Page() {
     [viewportSize, lensCorrection],
   );
 
-  // Set new file; reset file based state; and if available, load file based state from localStorage
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
     const { files } = e.target;
+    if (files && files[0]) {
+      openFile(files[0]);
+    }
+  }
 
-    if (files && files[0] && isValidFile(files[0])) {
-      setFile(files[0]);
+  // Set new file; reset file based state; and if available, load file based state from localStorage
+  function openFile(newFile: File): void {
+    if (isValidFile(newFile)) {
+      setFile(newFile);
       setFileLoadStatus(LoadStatusEnum.LOADING);
       setRestoreTransforms(null);
       setZoomedOut(false);
@@ -398,9 +415,12 @@ export default function Page() {
       setMeasuring(false);
       setPageCount(0);
       setLayers({});
-      dispatchPatternScaleAction({ type: "set", scale: "1.00" });
+      dispatchPatternScaleAction({
+        type: "set",
+        scale: localStorage.getItem(`patternScale:${newFile.name}`) ?? "1.00",
+      });
       const lineThicknessString = localStorage.getItem(
-        `lineThickness:${files[0].name}`,
+        `lineThickness:${newFile.name}`,
       );
       if (lineThicknessString !== null) {
         setLineThickness(Number(lineThicknessString));
@@ -408,7 +428,7 @@ export default function Page() {
         setLineThickness(0);
       }
 
-      const key = `stitchSettings:${files[0].name ?? "default"}`;
+      const key = `stitchSettings:${newFile.name ?? "default"}`;
       const stitchSettingsString = localStorage.getItem(key);
       if (stitchSettingsString !== null) {
         const stitchSettings = JSON.parse(stitchSettingsString);
@@ -436,6 +456,13 @@ export default function Page() {
       }
 
       calibrationCallback();
+
+      // Keep the file in the browser so it can be reopened from the projects list
+      if (isProjectStoreAvailable()) {
+        saveOpenedFile(newFile)
+          .then(refreshProjects)
+          .catch(() => {});
+      }
     }
 
     // If the user calibrated in full screen, try to go back into full screen after opening the file: some browsers pop users out of full screen when selecting a file
@@ -448,6 +475,31 @@ export default function Page() {
         }
       } catch (e) {}
     }
+  }
+
+  const refreshProjects = useCallback(() => {
+    if (!isProjectStoreAvailable()) return;
+    listProjects()
+      .then(setProjects)
+      .catch(() => {});
+  }, []);
+
+  function handleOpenProject(project: Project) {
+    openProject(project.id)
+      .then(openFile)
+      .catch(() => setErrorMessage(t("projectOpenError")));
+  }
+
+  function handleRenameProject(project: Project, name: string) {
+    renameProject(project.id, name)
+      .then(refreshProjects)
+      .catch(() => {});
+  }
+
+  function handleDeleteProject(project: Project) {
+    deleteProject(project.id)
+      .then(refreshProjects)
+      .catch(() => {});
   }
 
   function handlePointerDown(e: React.PointerEvent) {
@@ -505,6 +557,11 @@ export default function Page() {
             if (handle.kind == "file") {
               const file = await (handle as FileSystemFileHandle).getFile();
               setFile(file);
+              if (isProjectStoreAvailable()) {
+                saveOpenedFile(file)
+                  .then(refreshProjects)
+                  .catch(() => {});
+              }
               return;
             }
           }
@@ -512,6 +569,20 @@ export default function Page() {
       );
     }
   });
+
+  // Load the saved projects list
+  useEffect(() => {
+    refreshProjects();
+  }, [refreshProjects]);
+
+  // Remember the pattern scale for each pattern
+  useEffect(() => {
+    if (file) {
+      localStorage.setItem(`patternScale:${file.name}`, patternScale);
+    }
+    // Only save when the scale changes: opening a file sets the file and its saved scale together
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patternScale]);
 
   // Remove buy me a coffee button when calibrating and projecting
   useEffect(() => {
@@ -868,6 +939,8 @@ export default function Page() {
                     dispatch({ type: "set", points: getDefaultPoints() });
                   }}
                   handleFileChange={handleFileChange}
+                  hasProjects={projects.length > 0}
+                  showProjects={() => setProjectsOpen(true)}
                   fullScreenHandle={fullScreenHandle}
                   unitOfMeasure={unitOfMeasure}
                   setUnitOfMeasure={(newUnit) => {
@@ -922,6 +995,18 @@ export default function Page() {
                   />
                 )}
                 <MailModal open={mailOpen} setOpen={setMailOpen} />
+                <ProjectsModal
+                  open={projectsOpen}
+                  setOpen={setProjectsOpen}
+                  projects={projects}
+                  currentFileName={file?.name ?? null}
+                  onOpenProject={handleOpenProject}
+                  onOpenNewFile={() =>
+                    document.getElementById("pdfFile")?.click()
+                  }
+                  onRenameProject={handleRenameProject}
+                  onDeleteProject={handleDeleteProject}
+                />
               </menu>
 
               {!isCalibrating && file !== null && (

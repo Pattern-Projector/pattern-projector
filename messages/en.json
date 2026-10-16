@@ -289,7 +289,9 @@
     "magnify": "Magnify (M)",
     "zoomOut": "Zoom out (Z)",
     "mail": "Mail from Courtney",
-    "invalidCalibration": "The calibration grid is not valid. Press 'Reset calibration' to try again."
+    "invalidCalibration": "The calibration grid is not valid. Press 'Reset calibration' to try again.",
+    "projects": "Projects",
+    "projectOpenError": "That project's pattern file couldn't be loaded from this browser. Try opening the file again."
   },
   "ScaleMenu": {
     "scale": "Scale Pattern",
@@ -379,5 +381,21 @@
       "description": "Drag each corner circle onto the matching corner of the grid on your mat. Click a corner and use the arrow keys to nudge it."
     },
     "drag": "Drag to move this panel"
+  },
+  "Projects": {
+    "title": "Projects",
+    "empty": "Patterns you open are saved here so you can switch between them without opening the file again.",
+    "current": "Open now",
+    "lastOpened": "Opened {date, date, medium}",
+    "name": "Project name",
+    "rename": "Rename",
+    "renameProject": "Rename {name}",
+    "delete": "Delete",
+    "deleteProject": "Delete {name}",
+    "confirmDelete": "Delete for good",
+    "cancel": "Cancel",
+    "openNew": "Open a new pattern",
+    "close": "Close",
+    "storageNote": "Projects are kept in this browser on this device. Your calibration stays the same when you switch projects."
   }
 }

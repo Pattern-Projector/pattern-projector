@@ -82,6 +82,8 @@ export default function Header({
   handleLensCorrectionChange,
   handleResetCalibration,
   handleFileChange,
+  hasProjects,
+  showProjects,
   fullScreenHandle,
   unitOfMeasure,
   setUnitOfMeasure,
@@ -122,6 +124,8 @@ export default function Header({
   lensCorrectionInput: string;
   handleLensCorrectionChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  hasProjects: boolean;
+  showProjects: () => void;
   handleResetCalibration: () => void;
   fullScreenHandle: FullScreenHandle;
   unitOfMeasure: Unit;
@@ -173,7 +177,10 @@ export default function Header({
     setCalibrationValidated(true);
     setIsCalibrating(false);
 
-    if (file === null && fileInputRef.current !== null) {
+    // Offer saved projects first so people don't have to find the file again
+    if (file === null && hasProjects) {
+      showProjects();
+    } else if (file === null && fileInputRef.current !== null) {
       fileInputRef.current.click();
     }
   }
@@ -633,6 +640,13 @@ export default function Header({
               )}
               <span className="hidden md:flex">{t("openPDF")}</span>
             </label>
+            <Button
+              className={`${visible(!isCalibrating)} ${isDarkTheme(displaySettings.theme) ? "bg-black" : "bg-white"} !py-1.5 !px-3`}
+              color={buttonColor}
+              onClick={showProjects}
+            >
+              {t("projects")}
+            </Button>
             <Button
               onClick={handleCalibrateProjectButtonClick}
               className="flex align-middle"

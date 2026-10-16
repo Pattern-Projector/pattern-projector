@@ -24,6 +24,7 @@ import { Unit } from "@/_lib/unit";
 import useProgArrowKeyToMatrix from "@/_hooks/use-prog-arrow-key-to-matrix";
 import { visible } from "./theme/css-functions";
 import {
+  readSavedTransform,
   useTransformContext,
   useTransformerContext,
 } from "@/_hooks/use-transform-context";
@@ -206,7 +207,9 @@ export default function Draggable({
   ]);
 
   useEffect(() => {
-    transformer.setLocalTransform(Matrix.identity(3));
+    // Put a pattern back where it was left last time it was open
+    const saved = file ? readSavedTransform(file.name) : null;
+    transformer.setLocalTransform(saved ?? Matrix.identity(3));
   }, [file]);
 
   useEffect(() => {

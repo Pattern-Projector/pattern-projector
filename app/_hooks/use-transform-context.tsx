@@ -1,10 +1,10 @@
-import debounce from "@/_lib/debounce";
 import { Line } from "@/_reducers/linesReducer";
 import { Point } from "@/_lib/point";
 import localTransformReducer, {
   LocalTransformAction,
 } from "@/_reducers/localTransformReducer";
 import Matrix from "ml-matrix";
+import { parseSavedTransform } from "@/_lib/projects";
 import {
   ReactNode,
   useContext,
@@ -117,8 +117,27 @@ export const Transformable = ({
 };
 
 // Let's not write to local storage too often, but rather wait until the user is done.
-const debouncedWriteToLocalStorage = debounce(writeToLocalStorage, 500);
+// Each file waits on its own, so switching patterns straight after a change still saves it.
+const pendingWrites = new Map<string, ReturnType<typeof setTimeout>>();
+
+function debouncedWriteToLocalStorage(fileName: string, transform: Matrix) {
+  clearTimeout(pendingWrites.get(fileName));
+  pendingWrites.set(
+    fileName,
+    setTimeout(() => {
+      pendingWrites.delete(fileName);
+      writeToLocalStorage(fileName, transform);
+    }, 500),
+  );
+}
 
 function writeToLocalStorage(fileName: string, transform: Matrix) {
   localStorage.setItem(`localTransform:${fileName}`, JSON.stringify(transform));
+}
+
+/** The position, rotation and flip last used for a pattern file, if any. */
+export function readSavedTransform(fileName: string): Matrix | null {
+  return parseSavedTransform(
+    localStorage.getItem(`localTransform:${fileName}`),
+  );
 }
