@@ -25,15 +25,18 @@
     },
     "calibration": {
       "title": "Calibration",
-      "start": "Click (or tap) “Start Calibrating.”",
-      "fullscreen": "Enter full screen mode by clicking (or tapping) <fullscreenIcon></fullscreenIcon> in the top left corner.",
+      "start": "Click (or tap) “Start Calibrating.” This opens your patterns. Click (or tap) “Calibrate” there, or open a pattern and you will calibrate first if needed.",
+      "fullscreen": "Calibration happens in full screen, so the measurements match when you cut. If the app is not in full screen yet, click (or tap) <fullscreenIcon></fullscreenIcon> at the top of the screen.",
+      "guide": "New users get a step-by-step guide with a small printable target. You can open it any time with “Guided setup.”",
       "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your computer or tablet. Adjust the placement of the corners until the projected grid matches your mat's grid.",
       "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and input the width and height to match the width and height of the grid.",
-      "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
+      "lens": "If straight lines bow near the edges of the projection, raise “Lens” a little at a time until they look straight. The corners stay where they are.",
+      "project": "When the projected grid is aligned with your mat, click (or tap) “Save calibration.” “Cancel” puts the previous calibration back."
     },
     "project": {
       "title": "Projecting a Pattern",
-      "open": "Click (or tap) <pdficon></pdficon> to open a pattern.",
+      "open": "Add a PDF or SVG pattern on the patterns screen, then click (or tap) it to open it in full screen. Patterns are saved in this browser, so next time you only need to click the one you want.",
+      "switch": "To switch patterns without leaving full screen, click (or tap) “Projects.” Each pattern reopens where you left it.",
       "move": "Move the PDF by clicking and dragging it around the screen.",
       "cut": "Cut along the projected design.",
       "tools": "In projection mode there are several tools provided. Some have keyboard shortcuts, which are denoted in parentheses.",

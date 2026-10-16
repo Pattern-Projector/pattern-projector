@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Opened file name shows in the stitch menu
 - Screenshot testing
 - Add vertical alignment option for stitching
+- Projects home screen: opened patterns are saved in the browser and reopen with their settings and position
+- Switch patterns from the Projects button without leaving full screen
+- Lens correction setting for projector lens distortion, in 0.25% steps
+- Guided calibration with a printable target
+- Save calibration and Cancel buttons; cancelling restores the previous calibration
 
 ### Fixed
 
@@ -25,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The app opens on the projects home screen, and opening a pattern goes full screen
+- Calibration happens in full screen; the calibration warning explains whether it was done in a window, at another size, or in another position, and can be put off with a reminder
+- Toolbars are laid out as back actions, tools and the main action, and adapt to the screen width
+- Restores each pattern's saved position again
 - Line measurement labels match the theme
 - Enabled measuring when magnified for precision measuring
 - Pressing an arrow button once will move the pattern by 1/8" or 2mm

@@ -45,7 +45,8 @@ export async function seedCalibration(
             windowInnerHeight: viewport.height,
             windowScreenTop: 0,
             windowScreenLeft: 0,
-            devicePixelRatio: 1,
+            // Phones and tablets have their own pixel ratio
+            devicePixelRatio: window.devicePixelRatio,
             clientScreenTop: 0,
             clientScreenLeft: 0,
             fullScreen: true,
