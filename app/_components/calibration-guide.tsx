@@ -52,6 +52,8 @@ export default function CalibrationGuide({
     left: number;
     bottom: number;
   } | null>(null);
+  // The latest position, for saving when the drag ends: the pointer can be released before React re-renders
+  const latestPosition = useRef(position);
 
   useEffect(() => {
     try {
@@ -61,6 +63,7 @@ export default function CalibrationGuide({
         typeof saved?.bottom === "number"
       ) {
         setPosition(saved);
+        latestPosition.current = saved;
       }
     } catch (e) {}
   }, []);
@@ -76,19 +79,21 @@ export default function CalibrationGuide({
     if (start === null) return;
     const maxLeft = window.innerWidth - 64;
     const maxBottom = window.innerHeight - 64;
-    setPosition({
+    const next = {
       left: Math.min(maxLeft, Math.max(0, start.left + e.clientX - start.x)),
       bottom: Math.min(
         maxBottom,
         Math.max(0, start.bottom - (e.clientY - start.y)),
       ),
-    });
+    };
+    latestPosition.current = next;
+    setPosition(next);
   }
 
   function handleDragEnd() {
     if (dragStart.current === null) return;
     dragStart.current = null;
-    localStorage.setItem(positionKey, JSON.stringify(position));
+    localStorage.setItem(positionKey, JSON.stringify(latestPosition.current));
   }
 
   const panelColors = isDarkTheme

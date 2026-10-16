@@ -1,11 +1,13 @@
 import { test, expect, Page } from "@playwright/test";
 import {
   addPattern,
+  canFullScreen,
   home,
   isFullScreen,
   makePattern,
   openApp,
   pdfPage,
+  renderTimeout,
   seedCalibration,
 } from "./helpers";
 
@@ -84,7 +86,7 @@ test.describe("Calibration flow", () => {
   }, testInfo) => {
     await seedCalibration(page);
     await openShirt(page, testInfo.outputPath("Shirt.pdf"));
-    await expect(pdfPage(page)).toBeVisible();
+    await expect(pdfPage(page)).toBeVisible({ timeout: renderTimeout });
     await button(page, "Projects").click();
     await button(page, "All patterns").click();
     await expect(home(page)).toBeVisible();
@@ -99,6 +101,7 @@ test.describe("Calibration flow", () => {
     page,
   }) => {
     await openApp(page);
+    test.skip(!(await canFullScreen(page)), "This browser has no full screen");
     await home(page).getByRole("button", { name: "Calibrate" }).click();
     await expect.poll(() => isFullScreen(page)).toBe(true);
     await button(page, "Save calibration").click();
@@ -112,7 +115,8 @@ test.describe("Calibration flow", () => {
     // Calibrated in full screen with the window somewhere else on the screen
     await seedCalibration(page, { windowScreenLeft: 500 });
     await openShirt(page, testInfo.outputPath("Shirt.pdf"));
-    await expect(pdfPage(page)).toBeVisible();
+    test.skip(!(await canFullScreen(page)), "This browser has no full screen");
+    await expect(pdfPage(page)).toBeVisible({ timeout: renderTimeout });
     await page.waitForTimeout(2500);
     await expect(alert(page)).toHaveCount(0);
   });
@@ -122,7 +126,8 @@ test.describe("Calibration flow", () => {
   }, testInfo) => {
     await seedCalibration(page);
     await openShirt(page, testInfo.outputPath("Shirt.pdf"));
-    await expect(pdfPage(page)).toBeVisible();
+    test.skip(!(await canFullScreen(page)), "This browser has no full screen");
+    await expect(pdfPage(page)).toBeVisible({ timeout: renderTimeout });
     await expect.poll(() => isFullScreen(page)).toBe(true);
 
     // Leaving full screen while projecting

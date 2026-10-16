@@ -12,9 +12,11 @@ const dbVersion = 1;
 const projectStore = "projects";
 const fileStore = "files";
 
+// The file's bytes are stored as an ArrayBuffer: Safari can refuse to store Blobs in IndexedDB, for example in
+// private browsing
 interface StoredFile {
   id: string;
-  blob: Blob;
+  data: ArrayBuffer;
 }
 
 function openDb(): Promise<IDBDatabase> {
@@ -92,7 +94,7 @@ export async function listProjects(): Promise<Project[]> {
  */
 export async function saveOpenedFile(file: File): Promise<Project> {
   // Read the file before the transaction starts: transactions close when they wait on anything but IndexedDB
-  const blob = new Blob([await file.arrayBuffer()], { type: file.type });
+  const data = await file.arrayBuffer();
   return withStores("readwrite", async (projects, files) => {
     const all = await requestToPromise(
       projects.getAll() as IDBRequest<Project[]>,
@@ -106,7 +108,7 @@ export async function saveOpenedFile(file: File): Promise<Project> {
     }
     const project = newProject(file, newId(), now);
     projects.put(project);
-    files.put({ id: project.id, blob } as StoredFile);
+    files.put({ id: project.id, data } as StoredFile);
     return project;
   });
 }
@@ -124,7 +126,7 @@ export async function openProject(id: string): Promise<File> {
       throw new Error("Project not found");
     }
     projects.put({ ...project, openedAt: Date.now() });
-    return new File([stored.blob], project.fileName, {
+    return new File([stored.data], project.fileName, {
       type: project.fileType,
       lastModified: project.fileLastModified,
     });

@@ -563,11 +563,20 @@ export default function Page() {
     setShowHome(true);
   }
 
+  function savedPointsOr(fallback: Point[]): Point[] {
+    try {
+      const saved = JSON.parse(localStorage.getItem("points") ?? "null");
+      if (Array.isArray(saved) && saved.length === 4) return saved;
+    } catch (e) {}
+    return [...fallback];
+  }
+
   // Remember the calibration as it was, so Cancel can put it back
   function startCalibration(fromHome = false) {
     calibrationReturnsHome.current = fromHome;
     calibrationSnapshot.current = {
-      points: [...points],
+      // Read the saved points: right after the page loads, they may not have reached the points state yet
+      points: savedPointsOr(points),
       width: widthInput,
       height: heightInput,
       unitOfMeasure,

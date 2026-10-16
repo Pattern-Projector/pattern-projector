@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import { waitForApp, waitForFullScreenToSettle, windowSize } from "./helpers";
 import { lensSourcePoint } from "@/_lib/lens-correction";
 
 const viewport = { width: 1280, height: 720 };
@@ -27,9 +28,7 @@ async function openCalibration(page: Page, strength: number) {
     { points, strength },
   );
   await page.reload();
-  await expect(page.getByTestId("projects-home")).toBeVisible();
-  // Wait for React to attach its event handlers
-  await page.waitForLoadState("networkidle");
+  await waitForApp(page);
   // The app starts on the projects home screen
   await page
     .getByTestId("projects-home")
@@ -37,10 +36,42 @@ async function openCalibration(page: Page, strength: number) {
     .click();
   await expect(page.getByTestId("projects-home")).toBeHidden();
   await expect(page.getByTestId("calibration-canvas")).toBeVisible();
+  await waitForFullScreenToSettle(page);
 }
 
 // A strip along the bottom edge of the calibration grid, clear of the menus
 const bottomEdge = { x: 0, y: 600, width: viewport.width, height: 120 };
+
+// Share of pixels that differ clearly between two screenshots. Browsers can redraw a few antialiased pixels
+// slightly differently, so the screenshots are compared by eye-level difference, not byte for byte.
+async function changedShare(page: Page, a: Buffer, b: Buffer) {
+  return page.evaluate(
+    async ([a, b]) => {
+      const pixels = async (base64: string) => {
+        const image = new Image();
+        image.src = `data:image/png;base64,${base64}`;
+        await image.decode();
+        const canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(image, 0, 0);
+        return ctx.getImageData(0, 0, image.width, image.height).data;
+      };
+      const [pa, pb] = [await pixels(a), await pixels(b)];
+      let changed = 0;
+      for (let i = 0; i < pa.length; i += 4) {
+        const diff =
+          Math.abs(pa[i] - pb[i]) +
+          Math.abs(pa[i + 1] - pb[i + 1]) +
+          Math.abs(pa[i + 2] - pb[i + 2]);
+        if (diff > 96) changed++;
+      }
+      return changed / (pa.length / 4);
+    },
+    [a.toString("base64"), b.toString("base64")],
+  );
+}
 
 test.describe("Lens correction", () => {
   test("remembers the lens correction after a reload", async ({ page }) => {
@@ -48,7 +79,7 @@ test.describe("Lens correction", () => {
     const input = page.locator("#lens_correction");
     await input.fill("4.5");
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await waitForApp(page);
     await page
       .getByTestId("projects-home")
       .getByRole("button", { name: "Calibrate", exact: true })
@@ -70,17 +101,25 @@ test.describe("Lens correction", () => {
     await expect(page.locator("#lens-correction")).toBeAttached();
     await expect
       .poll(async () =>
-        (await page.screenshot({ clip: bottomEdge })).equals(straight),
+        changedShare(
+          page,
+          await page.screenshot({ clip: bottomEdge }),
+          straight,
+        ),
       )
-      .toBe(false);
+      .toBeGreaterThan(0.002);
 
     await page.locator("#lens_correction").fill("0");
     await expect(page.locator("#lens-correction")).not.toBeAttached();
     await expect
       .poll(async () =>
-        (await page.screenshot({ clip: bottomEdge })).equals(straight),
+        changedShare(
+          page,
+          await page.screenshot({ clip: bottomEdge }),
+          straight,
+        ),
       )
-      .toBe(true);
+      .toBeLessThan(0.0005);
   });
 
   test("drags calibration corners where they appear on the corrected screen", async ({
@@ -96,8 +135,10 @@ test.describe("Lens correction", () => {
     await page.mouse.move(end.x, end.y, { steps: 5 });
     await page.mouse.up();
 
-    const from = lensSourcePoint(start, viewport.width, viewport.height, lens);
-    const to = lensSourcePoint(end, viewport.width, viewport.height, lens);
+    // Full screen can be bigger than the window (Firefox uses its screen size)
+    const size = await windowSize(page);
+    const from = lensSourcePoint(start, size.width, size.height, lens);
+    const to = lensSourcePoint(end, size.width, size.height, lens);
     const saved = await page.evaluate(() =>
       JSON.parse(localStorage.getItem("points") ?? "[]"),
     );

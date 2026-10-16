@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import { waitForApp, waitForFullScreenToSettle, windowSize } from "./helpers";
 import { placementFromPoints } from "@/_lib/guided-calibration";
 import { lensDisplayPoint } from "@/_lib/lens-correction";
 
@@ -23,9 +24,7 @@ async function open(page: Page, points: typeof savedPoints | null) {
     }, points);
   }
   await page.goto("/en/calibrate");
-  await expect(page.getByTestId("projects-home")).toBeVisible();
-  // Wait for React to attach its event handlers
-  await page.waitForLoadState("networkidle");
+  await waitForApp(page);
   // The app starts on the projects home screen
   await page
     .getByTestId("projects-home")
@@ -33,6 +32,7 @@ async function open(page: Page, points: typeof savedPoints | null) {
     .click();
   await expect(page.getByTestId("projects-home")).toBeHidden();
   await expect(page.getByTestId("calibration-canvas")).toBeVisible();
+  await waitForFullScreenToSettle(page);
 }
 
 async function getPlacement(page: Page) {
@@ -93,6 +93,8 @@ test.describe("Guided calibration", () => {
 
   test("squares up the grid, then moves, resizes and rotates it", async ({
     page,
+    browserName,
+    isMobile,
   }) => {
     await open(page, savedPoints);
     await button(page, "Guided setup").click();
@@ -143,7 +145,8 @@ test.describe("Guided calibration", () => {
       6,
     );
 
-    // Scrolling resizes too
+    // Scrolling resizes too, where there is a mouse wheel
+    if (browserName === "webkit" && isMobile) return;
     await page.mouse.move(700, 300);
     await page.mouse.wheel(0, 100);
     await expect
@@ -187,8 +190,10 @@ test.describe("Guided calibration", () => {
     const cornersAfter = await page.evaluate(() =>
       JSON.parse(localStorage.getItem("points") ?? "[]"),
     );
+    // Full screen can be bigger than the window (Firefox uses its screen size)
+    const size = await windowSize(page);
     cornersAfter.forEach((p: { x: number; y: number }, i: number) => {
-      const shown = lensDisplayPoint(p, viewport.width, viewport.height, {
+      const shown = lensDisplayPoint(p, size.width, size.height, {
         strength: 0.25,
       });
       expect(shown.x).toBeCloseTo(cornersBefore[i].x, 3);
@@ -200,7 +205,7 @@ test.describe("Guided calibration", () => {
     await expect(guide(page)).toHaveCount(0);
 
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await waitForApp(page);
     await page
       .getByTestId("projects-home")
       .getByRole("button", { name: "Calibrate", exact: true })
@@ -212,8 +217,14 @@ test.describe("Guided calibration", () => {
     page,
   }) => {
     await open(page, null);
-    const start = await guide(page).boundingBox();
+    // Bottom edge of the panel, measured from the bottom of the screen once any full screen change has settled
+    const gapBelow = async () => {
+      const box = (await guide(page).boundingBox())!;
+      return (await windowSize(page)).height - (box.y + box.height);
+    };
     // It starts in the bottom left, away from the centre where the target is
+    await expect.poll(gapBelow).toBeCloseTo(16, 0);
+    const start = await guide(page).boundingBox();
     expect(start!.x + start!.width).toBeLessThan(viewport.width / 2);
 
     await button(page, "Next").click();
@@ -222,7 +233,7 @@ test.describe("Guided calibration", () => {
     // Same left and bottom edges on every step; only the height follows the text
     const last = await guide(page).boundingBox();
     expect(last!.x).toBeCloseTo(start!.x, 0);
-    expect(last!.y + last!.height).toBeCloseTo(start!.y + start!.height, 0);
+    expect(await gapBelow()).toBeCloseTo(16, 0);
 
     const handle = page.getByTestId("calibration-guide-handle");
     const box = await handle.boundingBox();
@@ -236,7 +247,7 @@ test.describe("Guided calibration", () => {
 
     // The new place is remembered
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await waitForApp(page);
     await page
       .getByTestId("projects-home")
       .getByRole("button", { name: "Calibrate", exact: true })
