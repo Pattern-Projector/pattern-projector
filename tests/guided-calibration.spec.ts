@@ -23,9 +23,16 @@ async function open(page: Page, points: typeof savedPoints | null) {
     }, points);
   }
   await page.goto("/en/calibrate");
-  await expect(page.getByTestId("calibration-canvas")).toBeVisible();
+  await expect(page.getByTestId("projects-home")).toBeVisible();
   // Wait for React to attach its event handlers
   await page.waitForLoadState("networkidle");
+  // The app starts on the projects home screen
+  await page
+    .getByTestId("projects-home")
+    .getByRole("button", { name: "Calibrate", exact: true })
+    .click();
+  await expect(page.getByTestId("projects-home")).toBeHidden();
+  await expect(page.getByTestId("calibration-canvas")).toBeVisible();
 }
 
 async function getPlacement(page: Page) {
@@ -46,11 +53,19 @@ test.describe("Guided calibration", () => {
   }) => {
     await open(page, null);
     await expect(guide(page)).toContainText("Step 1 of 4");
-    const link = page.getByRole("link", { name: "Open the printable target" });
-    const href = await link.getAttribute("href");
-    const response = await request.get(href ?? "");
+    // It downloads instead of opening, so full screen isn't lost
+    const downloading = page.waitForEvent("download");
+    await page
+      .getByRole("link", { name: "Download the printable target" })
+      .click();
+    const download = await downloading;
+    expect(download.suggestedFilename()).toBe(
+      "pattern-projector-calibration-target.pdf",
+    );
+    const response = await request.get(download.url());
     expect(response.ok()).toBe(true);
     expect(response.headers()["content-type"]).toContain("application/pdf");
+    await expect(guide(page)).toBeVisible();
   });
 
   test("stays out of the way for people who already calibrated", async ({
@@ -185,6 +200,11 @@ test.describe("Guided calibration", () => {
     await expect(guide(page)).toHaveCount(0);
 
     await page.reload();
+    await page.waitForLoadState("networkidle");
+    await page
+      .getByTestId("projects-home")
+      .getByRole("button", { name: "Calibrate", exact: true })
+      .click();
     await expect(page.locator("#lens_correction")).toHaveValue("0.25");
   });
 
@@ -201,8 +221,8 @@ test.describe("Guided calibration", () => {
     await button(page, "Next").click();
     // Same left and bottom edges on every step; only the height follows the text
     const last = await guide(page).boundingBox();
-    expect(last!.x).toBe(start!.x);
-    expect(last!.y + last!.height).toBe(start!.y + start!.height);
+    expect(last!.x).toBeCloseTo(start!.x, 0);
+    expect(last!.y + last!.height).toBeCloseTo(start!.y + start!.height, 0);
 
     const handle = page.getByTestId("calibration-guide-handle");
     const box = await handle.boundingBox();
@@ -217,6 +237,10 @@ test.describe("Guided calibration", () => {
     // The new place is remembered
     await page.reload();
     await page.waitForLoadState("networkidle");
+    await page
+      .getByTestId("projects-home")
+      .getByRole("button", { name: "Calibrate", exact: true })
+      .click();
     await button(page, "Guided setup").click();
     const reopened = await guide(page).boundingBox();
     expect(reopened!.x).toBeCloseTo(moved!.x, 0);

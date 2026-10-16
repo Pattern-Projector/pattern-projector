@@ -39,8 +39,10 @@ import MovementPad from "@/_components/movement-pad";
 import pointsReducer from "@/_reducers/pointsReducer";
 import Filters from "@/_components/filters";
 import CalibrationContext, {
+  CalibrationMismatch,
   getCalibrationContext,
-  getIsInvalidatedCalibrationContext,
+  getCalibrationContextUpdatedWithEvent,
+  getCalibrationMismatch,
   getIsInvalidatedCalibrationContextWithPointerEvent,
   logCalibrationContextDifferences,
 } from "@/_lib/calibration-context";
@@ -55,8 +57,6 @@ import {
   StitchSettings,
 } from "@/_lib/interfaces/stitch-settings";
 import { IconButton } from "@/_components/buttons/icon-button";
-import FullScreenExitIcon from "@/_icons/full-screen-exit-icon";
-import FullScreenIcon from "@/_icons/full-screen-icon";
 import { Layers } from "@/_lib/layers";
 import useLayers from "@/_hooks/use-layers";
 import ExpandMoreIcon from "@/_icons/expand-more-icon";
@@ -64,7 +64,7 @@ import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import LoadingSpinner from "@/_icons/loading-spinner";
 import TroubleshootingButton from "@/_components/troubleshooting-button";
 import { ButtonColor } from "@/_components/theme/colors";
-import MailModal from "@/_components/mail-modal";
+import { ButtonStyle } from "@/_components/theme/styles";
 import SideMenu from "@/_components/menus/side-menu";
 import PatternScaleReducer from "@/_reducers/patternScaleReducer";
 import Modal from "@/_components/modal/modal";
@@ -75,7 +75,6 @@ import { ModalActions } from "@/_components/modal/modal-actions";
 import { Button } from "@/_components/buttons/button";
 import { erosionFilter } from "@/_lib/erode";
 import SvgViewer from "@/_components/svg-viewer";
-import { toggleFullScreen } from "@/_lib/full-screen";
 import LensCorrectionFilter, {
   lensCorrectionFilter,
 } from "@/_components/lens-correction-filter";
@@ -97,6 +96,12 @@ import {
   pointsFromPlacement,
 } from "@/_lib/guided-calibration";
 import ProjectsModal from "@/_components/projects-modal";
+import ProjectsHome from "@/_components/projects-home";
+import {
+  OpenDestination,
+  openDestination,
+  parseCalibrationContext,
+} from "@/_lib/start-flow";
 import { Project } from "@/_lib/projects";
 import {
   deleteProject,
@@ -114,6 +119,15 @@ const defaultStitchSettings = {
   lineDirection: LineDirection.Column,
   verticalAlignment: VerticalAlignment.Top,
 } as StitchSettings;
+
+interface CalibrationSnapshot {
+  points: Point[];
+  width: string;
+  height: string;
+  unitOfMeasure: Unit;
+  lensCorrection: LensCorrection;
+  context: string | null;
+}
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
@@ -134,7 +148,11 @@ export default function Page() {
   const [heightInput, setHeightInput] = useState(defaultHeightDimensionValue);
   const width = Number(widthInput) > 0 ? Number(widthInput) : 1;
   const height = Number(heightInput) > 0 ? Number(heightInput) : 1;
-  const [isCalibrating, setIsCalibrating] = useState(true);
+  // Calibration starts from the home screen or the Calibrate button, and ends with Save or Cancel
+  const [isCalibrating, setIsCalibrating] = useState(false);
+  const calibrationSnapshot = useRef<CalibrationSnapshot | null>(null);
+  // Where Save or Cancel goes back to: the home screen or the pattern being projected
+  const calibrationReturnsHome = useRef(false);
   const [fileLoadStatus, setFileLoadStatus] = useState<LoadStatusEnum>(
     LoadStatusEnum.DEFAULT,
   );
@@ -163,12 +181,19 @@ export default function Page() {
   const [showingMovePad, setShowingMovePad] = useState(false);
   const [corners, setCorners] = useState<Set<number>>(new Set([0]));
   const [showCalibrationAlert, setShowCalibrationAlert] = useState(false);
+  const [calibrationMismatch, setCalibrationMismatch] =
+    useState<CalibrationMismatch | null>(null);
+  // A dismissed warning shrinks to a reminder banner until the mismatch changes or is fixed
+  const [dismissedMismatch, setDismissedMismatch] =
+    useState<CalibrationMismatch | null>(null);
+  const mismatchDismissed =
+    calibrationMismatch !== null &&
+    JSON.stringify(dismissedMismatch) === JSON.stringify(calibrationMismatch);
   const [fullScreenTooltipVisible, setFullScreenTooltipVisible] =
     useState(true);
   const [buttonColor, setButtonColor] = useState<ButtonColor>(
     ButtonColor.PURPLE,
   );
-  const [mailOpen, setMailOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [lensCorrection, setLensCorrection] = useState<LensCorrection>(
     getDefaultLensCorrection(),
@@ -178,6 +203,9 @@ export default function Page() {
   const [guideStep, setGuideStep] = useState<GuideStep | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectsOpen, setProjectsOpen] = useState(false);
+  // The app starts on the projects home screen, outside full screen
+  const [showHome, setShowHome] = useState(true);
+  const [homeNotice, setHomeNotice] = useState<string | null>(null);
 
   const [points, dispatch] = useReducer(pointsReducer, []);
   const [stitchSettings, dispatchStitchSettings] = useReducer(
@@ -397,13 +425,6 @@ export default function Page() {
     [viewportSize, lensCorrection],
   );
 
-  function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
-    const { files } = e.target;
-    if (files && files[0]) {
-      openFile(files[0]);
-    }
-  }
-
   // Set new file; reset file based state; and if available, load file based state from localStorage
   function openFile(newFile: File): void {
     if (isValidFile(newFile)) {
@@ -464,17 +485,6 @@ export default function Page() {
           .catch(() => {});
       }
     }
-
-    // If the user calibrated in full screen, try to go back into full screen after opening the file: some browsers pop users out of full screen when selecting a file
-    const expectedContext = localStorage.getItem("calibrationContext");
-    if (expectedContext !== null) {
-      const expected = JSON.parse(expectedContext) as CalibrationContext;
-      try {
-        if (expected.fullScreen) {
-          fullScreenHandle.enter();
-        }
-      } catch (e) {}
-    }
   }
 
   const refreshProjects = useCallback(() => {
@@ -488,6 +498,151 @@ export default function Page() {
     openProject(project.id)
       .then(openFile)
       .catch(() => setErrorMessage(t("projectOpenError")));
+  }
+
+  function isFullScreenAvailable() {
+    return typeof document !== "undefined" && document.fullscreenEnabled;
+  }
+
+  // Must be called straight from a click: browsers only allow full screen in response to the user
+  function enterFullScreen() {
+    if (isFullScreenAvailable() && !fullScreenHandle.active) {
+      fullScreenHandle.enter().catch(() => {});
+    }
+  }
+
+  // Opening a project from the home screen goes full screen, then calibrates first if there's no full screen calibration
+  function handleOpenProjectFromHome(project: Project) {
+    enterFullScreen();
+    const destination = openDestination(
+      localStorage.getItem("points"),
+      parseCalibrationContext(localStorage.getItem("calibrationContext")),
+      isFullScreenAvailable(),
+    );
+    if (destination === OpenDestination.Calibrate) {
+      startCalibration();
+    } else {
+      setIsCalibrating(false);
+    }
+    setHomeNotice(null);
+    setShowHome(false);
+    handleOpenProject(project);
+  }
+
+  function handleCalibrateFromHome() {
+    enterFullScreen();
+    startCalibration(true);
+    setHomeNotice(null);
+    setShowHome(false);
+  }
+
+  // Adding a pattern on the home screen only saves it: opening it is a separate click, which is what allows full screen
+  function handleAddFile(newFile: File) {
+    if (!isValidFile(newFile)) {
+      setHomeNotice(t("invalidFile", { name: newFile.name }));
+      return;
+    }
+    if (!isProjectStoreAvailable()) {
+      setErrorMessage(t("projectSaveError"));
+      return;
+    }
+    saveOpenedFile(newFile)
+      .then((project) => {
+        refreshProjects();
+        setHomeNotice(t("patternAdded", { name: project.name }));
+      })
+      .catch(() => setErrorMessage(t("projectSaveError")));
+  }
+
+  // The home screen is a normal window, so leave full screen to use the file browser there
+  function goHome() {
+    setProjectsOpen(false);
+    if (fullScreenHandle.active) {
+      fullScreenHandle.exit().catch(() => {});
+    }
+    setShowHome(true);
+  }
+
+  // Remember the calibration as it was, so Cancel can put it back
+  function startCalibration(fromHome = false) {
+    calibrationReturnsHome.current = fromHome;
+    calibrationSnapshot.current = {
+      points: [...points],
+      width: widthInput,
+      height: heightInput,
+      unitOfMeasure,
+      lensCorrection,
+      context: localStorage.getItem("calibrationContext"),
+    };
+    setIsCalibrating(true);
+  }
+
+  // Recalibrate in full screen, which keeps measurements right while cutting, unless the user chose to stay in a window
+  function handleRecalibrate() {
+    if (calibrationMismatch?.kind !== "calibratedInFullScreen") {
+      enterFullScreen();
+    }
+    startCalibration();
+  }
+
+  function finishCalibration() {
+    calibrationSnapshot.current = null;
+    setGuideStep(null);
+    setIsCalibrating(false);
+    if (calibrationReturnsHome.current) {
+      goHome();
+    } else if (file === null) {
+      if (projects.length > 0) {
+        setProjectsOpen(true);
+      } else {
+        goHome();
+      }
+    }
+  }
+
+  // Saving records the screen the calibration was made on, full screen or window, so projecting can check it matches
+  function handleSaveCalibration(e: React.MouseEvent<HTMLButtonElement>) {
+    localStorage.setItem(
+      "calibrationContext",
+      JSON.stringify(
+        getCalibrationContextUpdatedWithEvent(e, fullScreenHandle.active),
+      ),
+    );
+    setCalibrationValidated(true);
+    finishCalibration();
+  }
+
+  function handleCancelCalibration() {
+    const snapshot = calibrationSnapshot.current;
+    if (snapshot) {
+      dispatch({ type: "set", points: snapshot.points });
+      setWidthInput(snapshot.width);
+      setHeightInput(snapshot.height);
+      setUnitOfMeasure(snapshot.unitOfMeasure);
+      setLensCorrection(snapshot.lensCorrection);
+      setLensCorrectionInput(String(snapshot.lensCorrection.strength));
+      updateLocalSettings({
+        width: snapshot.width,
+        height: snapshot.height,
+        unitOfMeasure: snapshot.unitOfMeasure,
+        lensCorrection: snapshot.lensCorrection,
+      });
+      if (snapshot.context === null) {
+        localStorage.removeItem("calibrationContext");
+      } else {
+        localStorage.setItem("calibrationContext", snapshot.context);
+      }
+    }
+    finishCalibration();
+  }
+
+  // Patterns dropped on the projection open straight away, without leaving full screen
+  function handleDrop(e: React.DragEvent) {
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile && !showHome) {
+      e.preventDefault();
+      openFile(droppedFile);
+    }
   }
 
   function handleRenameProject(project: Project, name: string) {
@@ -556,12 +711,8 @@ export default function Page() {
           for (const handle of launchParams.files) {
             if (handle.kind == "file") {
               const file = await (handle as FileSystemFileHandle).getFile();
-              setFile(file);
-              if (isProjectStoreAvailable()) {
-                saveOpenedFile(file)
-                  .then(refreshProjects)
-                  .catch(() => {});
-              }
+              // Add it to the home screen: opening it from there goes full screen
+              handleAddFile(file);
               return;
             }
           }
@@ -676,12 +827,16 @@ export default function Page() {
     });
   }, []);
 
-  // Show a calibration warning when the calibration context is different than what was calibrated in
+  // Show a calibration warning when the calibration context is different than what was calibrated in. Wait a moment
+  // first: going in and out of full screen takes a second, and the screen doesn't match while it animates.
   useEffect(() => {
-    const projectingWithInvalidContext =
-      !isCalibrating && !calibrationValidated;
-    setShowCalibrationAlert(projectingWithInvalidContext);
-  }, [isCalibrating, calibrationValidated]);
+    if (isCalibrating || showHome || calibrationValidated) {
+      setShowCalibrationAlert(false);
+      return;
+    }
+    const timeout = setTimeout(() => setShowCalibrationAlert(true), 1500);
+    return () => clearTimeout(timeout);
+  }, [isCalibrating, showHome, calibrationValidated]);
 
   // Hide menus after a timeout as long ad they aren't calibrating, zoomed out, haven't loaded a file yet or are in the process of loading a file
   useEffect(() => {
@@ -697,20 +852,17 @@ export default function Page() {
   // Continually check the calibration context because the user could change the viewport size at any time and ruin their calibration
   useEffect(() => {
     const interval = setInterval(() => {
-      const calibrationContext = localStorage.getItem("calibrationContext");
-      if (calibrationContext === null) {
-        if (calibrationValidated) {
-          setCalibrationValidated(false);
-        }
-      } else {
-        const expected = JSON.parse(calibrationContext) as CalibrationContext;
-        const isInvalid = getIsInvalidatedCalibrationContext(
-          expected,
-          fullScreenHandle.active,
-        );
-        if (isInvalid === calibrationValidated) {
-          setCalibrationValidated(!isInvalid);
-        }
+      const mismatch = getCalibrationMismatch(
+        parseCalibrationContext(localStorage.getItem("calibrationContext")),
+        getCalibrationContext(fullScreenHandle.active),
+      );
+      setCalibrationMismatch((previous) =>
+        JSON.stringify(previous) === JSON.stringify(mismatch)
+          ? previous
+          : mismatch,
+      );
+      if ((mismatch !== null) === calibrationValidated) {
+        setCalibrationValidated(mismatch === null);
       }
     }, 500);
     return () => {
@@ -726,6 +878,10 @@ export default function Page() {
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onKeyDown={resetIdle}
+      onDragOver={(e) => {
+        if (!showHome) e.preventDefault();
+      }}
+      onDrop={handleDrop}
       ref={noZoomRefCallback}
       className={`${menusHidden && "cursor-none"} ${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
@@ -734,26 +890,63 @@ export default function Page() {
           handle={fullScreenHandle}
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
-          {showCalibrationAlert ? (
-            <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white pointer-events-none">
+          {showCalibrationAlert &&
+          calibrationMismatch !== null &&
+          mismatchDismissed ? (
+            <div
+              role="status"
+              data-testid="calibration-reminder"
+              className="absolute left-1/2 bottom-4 -translate-x-1/2 z-[100] flex items-center gap-3 rounded border-2 border-black dark:border-white bg-white dark:bg-black dark:text-white px-3 py-1 text-sm shadow"
+            >
               <WarningIcon ariaLabel="warning" />
-              <p>{t("calibrationAlert")}</p>
-              <Button
-                className="flex items-center justify-center pointer-events-auto"
-                onClick={() => toggleFullScreen(fullScreenHandle)}
-              >
-                <span className="mr-1 -mt-1.5 w-4 h-4">
-                  {fullScreenHandle.active ? (
-                    <FullScreenIcon ariaLabel={t("fullscreen")} />
-                  ) : (
-                    <FullScreenExitIcon ariaLabel={t("fullscreenExit")} />
-                  )}
-                </span>
-                {fullScreenHandle.active
-                  ? t("fullscreenExit")
-                  : t("fullscreen")}
-              </Button>
-              <p>{t("calibrationAlertContinue")}</p>
+              <p>{t("calibrationReminder")}</p>
+              <Button onClick={handleRecalibrate}>{t("recalibrate")}</Button>
+            </div>
+          ) : null}
+          {showCalibrationAlert &&
+          calibrationMismatch !== null &&
+          !mismatchDismissed ? (
+            <div
+              role="alert"
+              data-testid="calibration-alert"
+              className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white"
+            >
+              <WarningIcon ariaLabel="warning" />
+              <p>
+                {calibrationMismatch.kind === "sizeChanged"
+                  ? t("calibrationMismatch.sizeChanged", {
+                      was: `${calibrationMismatch.was.width} × ${calibrationMismatch.was.height}`,
+                      now: `${calibrationMismatch.now.width} × ${calibrationMismatch.now.height}`,
+                    })
+                  : t(`calibrationMismatch.${calibrationMismatch.kind}`)}
+              </p>
+              <div className="flex gap-2">
+                {calibrationMismatch.kind === "calibratedInFullScreen" && (
+                  <Button
+                    style={ButtonStyle.FILLED}
+                    onClick={() => fullScreenHandle.enter().catch(() => {})}
+                  >
+                    {t("fullscreen")}
+                  </Button>
+                )}
+                <Button
+                  style={
+                    calibrationMismatch.kind === "calibratedInFullScreen"
+                      ? ButtonStyle.OUTLINE
+                      : ButtonStyle.FILLED
+                  }
+                  onClick={handleRecalibrate}
+                >
+                  {calibrationMismatch.kind === "calibratedInFullScreen"
+                    ? t("recalibrateInWindow")
+                    : t("recalibrate")}
+                </Button>
+                <Button
+                  onClick={() => setDismissedMismatch(calibrationMismatch)}
+                >
+                  {t("calibrationAlertDismiss")}
+                </Button>
+              </div>
             </div>
           ) : null}
           <Modal open={errorMessage !== null}>
@@ -800,6 +993,22 @@ export default function Page() {
               setLensCorrectionStrength={setLensCorrectionStrength}
             />
           )}
+          {isCalibrating &&
+            !showHome &&
+            !fullScreenHandle.active &&
+            isFullScreenAvailable() && (
+              <div
+                role="alert"
+                className="absolute left-1/2 top-20 -translate-x-1/2 z-[100] flex items-center gap-3 rounded border-2 border-black bg-white px-4 py-2 text-black shadow"
+              >
+                <p className="text-sm">{t("calibrateInFullScreen")}</p>
+                <Button
+                  onClick={() => fullScreenHandle.enter().catch(() => {})}
+                >
+                  {t("fullscreen")}
+                </Button>
+              </div>
+            )}
           {isCalibrating && showingMovePad && (
             <MovementPad
               corners={corners}
@@ -920,7 +1129,9 @@ export default function Page() {
               <menu className="pointer-events-auto">
                 <Header
                   isCalibrating={isCalibrating}
-                  setIsCalibrating={setIsCalibrating}
+                  onCalibrate={() => startCalibration()}
+                  onSaveCalibration={handleSaveCalibration}
+                  onCancelCalibration={handleCancelCalibration}
                   widthInput={widthInput}
                   heightInput={heightInput}
                   width={width}
@@ -938,8 +1149,6 @@ export default function Page() {
                     );
                     dispatch({ type: "set", points: getDefaultPoints() });
                   }}
-                  handleFileChange={handleFileChange}
-                  hasProjects={projects.length > 0}
                   showProjects={() => setProjectsOpen(true)}
                   fullScreenHandle={fullScreenHandle}
                   unitOfMeasure={unitOfMeasure}
@@ -975,7 +1184,6 @@ export default function Page() {
                     setShowingMovePad(show);
                     updateLocalSettings({ showingMovePad: show });
                   }}
-                  setCalibrationValidated={setCalibrationValidated}
                   fullScreenTooltipVisible={fullScreenTooltipVisible}
                   magnifying={magnifying}
                   setMagnifying={setMagnifying}
@@ -984,26 +1192,20 @@ export default function Page() {
                   fileLoadStatus={fileLoadStatus}
                   lineThicknessStatus={lineThicknessStatus}
                   buttonColor={buttonColor}
-                  mailOpen={mailOpen}
-                  setMailOpen={setMailOpen}
                   invalidCalibration={checkIsConcave(points)}
-                  file={file}
                 />
                 {isCalibrating && menuStates.nav && (
                   <TroubleshootingButton
                     isDarkTheme={isDarkTheme(displaySettings.theme)}
                   />
                 )}
-                <MailModal open={mailOpen} setOpen={setMailOpen} />
                 <ProjectsModal
                   open={projectsOpen}
                   setOpen={setProjectsOpen}
                   projects={projects}
                   currentFileName={file?.name ?? null}
                   onOpenProject={handleOpenProject}
-                  onOpenNewFile={() =>
-                    document.getElementById("pdfFile")?.click()
-                  }
+                  onGoHome={goHome}
                   onRenameProject={handleRenameProject}
                   onDeleteProject={handleDeleteProject}
                 />
@@ -1024,12 +1226,17 @@ export default function Page() {
                 />
               )}
             </menu>
-            <IconButton
-              className={`${visible(!menusHidden)} !p-1 m-0 border-2 border-black dark:border-white absolute ${menuStates.nav ? "-top-16" : "top-2"} left-1/4 focus:ring-0`}
-              onClick={() => setMenuStates({ ...menuStates, nav: true })}
+            {/* Sits exactly where the header's hide button was, at the far left of a strip as tall as the header inside its bottom border */}
+            <div
+              className={`${visible(!menusHidden)} pointer-events-none absolute left-2 lg:left-6 h-[63px] flex items-center ${menuStates.nav ? "-top-16" : "top-0"}`}
             >
-              <ExpandMoreIcon ariaLabel={t("menuShow")} />
-            </IconButton>
+              <IconButton
+                className="pointer-events-auto !p-1 m-0 border-2 border-black dark:border-white focus:ring-0"
+                onClick={() => setMenuStates({ ...menuStates, nav: true })}
+              >
+                <ExpandMoreIcon ariaLabel={t("menuShow")} />
+              </IconButton>
+            </div>
             {!isCalibrating && fileLoadStatus === LoadStatusEnum.LOADING ? (
               <LoadingSpinner
                 height={100}
@@ -1039,6 +1246,19 @@ export default function Page() {
             ) : null}
           </Transformable>
         </FullScreen>
+        {showHome && (
+          <ProjectsHome
+            projects={projects}
+            currentFileName={file?.name ?? null}
+            notice={homeNotice}
+            buttonColor={buttonColor}
+            onOpenProject={handleOpenProjectFromHome}
+            onAddFile={handleAddFile}
+            onRenameProject={handleRenameProject}
+            onDeleteProject={handleDeleteProject}
+            onCalibrate={handleCalibrateFromHome}
+          />
+        )}
       </div>
       <Filters />
       <LensCorrectionFilter

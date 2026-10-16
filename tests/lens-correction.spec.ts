@@ -27,9 +27,16 @@ async function openCalibration(page: Page, strength: number) {
     { points, strength },
   );
   await page.reload();
-  await expect(page.getByTestId("calibration-canvas")).toBeVisible();
+  await expect(page.getByTestId("projects-home")).toBeVisible();
   // Wait for React to attach its event handlers
   await page.waitForLoadState("networkidle");
+  // The app starts on the projects home screen
+  await page
+    .getByTestId("projects-home")
+    .getByRole("button", { name: "Calibrate", exact: true })
+    .click();
+  await expect(page.getByTestId("projects-home")).toBeHidden();
+  await expect(page.getByTestId("calibration-canvas")).toBeVisible();
 }
 
 // A strip along the bottom edge of the calibration grid, clear of the menus
@@ -41,6 +48,11 @@ test.describe("Lens correction", () => {
     const input = page.locator("#lens_correction");
     await input.fill("4.5");
     await page.reload();
+    await page.waitForLoadState("networkidle");
+    await page
+      .getByTestId("projects-home")
+      .getByRole("button", { name: "Calibrate", exact: true })
+      .click();
     await expect(page.locator("#lens_correction")).toHaveValue("4.5");
     const saved = await page.evaluate(() =>
       JSON.parse(localStorage.getItem("canvasSettings") ?? "{}"),

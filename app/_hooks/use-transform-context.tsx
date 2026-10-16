@@ -118,25 +118,30 @@ export const Transformable = ({
 
 // Let's not write to local storage too often, but rather wait until the user is done.
 // Each file waits on its own, so switching patterns straight after a change still saves it.
-const pendingWrites = new Map<string, ReturnType<typeof setTimeout>>();
+const pendingWrites = new Map<
+  string,
+  { timeout: ReturnType<typeof setTimeout>; transform: Matrix }
+>();
 
 function debouncedWriteToLocalStorage(fileName: string, transform: Matrix) {
-  clearTimeout(pendingWrites.get(fileName));
-  pendingWrites.set(
-    fileName,
-    setTimeout(() => {
-      pendingWrites.delete(fileName);
-      writeToLocalStorage(fileName, transform);
-    }, 500),
-  );
+  clearTimeout(pendingWrites.get(fileName)?.timeout);
+  const timeout = setTimeout(() => {
+    pendingWrites.delete(fileName);
+    writeToLocalStorage(fileName, transform);
+  }, 500);
+  pendingWrites.set(fileName, { timeout, transform });
 }
 
 function writeToLocalStorage(fileName: string, transform: Matrix) {
   localStorage.setItem(`localTransform:${fileName}`, JSON.stringify(transform));
 }
 
-/** The position, rotation and flip last used for a pattern file, if any. */
+/** The position, rotation and flip last used for a pattern file, if any, including a change not yet written. */
 export function readSavedTransform(fileName: string): Matrix | null {
+  const pending = pendingWrites.get(fileName);
+  if (pending) {
+    return pending.transform.clone();
+  }
   return parseSavedTransform(
     localStorage.getItem(`localTransform:${fileName}`),
   );

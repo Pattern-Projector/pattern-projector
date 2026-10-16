@@ -1,55 +1,18 @@
-import { test, expect, Page } from "@playwright/test";
-import { PDFDocument, rgb } from "@cantoo/pdf-lib";
-import { writeFileSync } from "fs";
-
-const viewport = { width: 1280, height: 720 };
-const points = [
-  { x: 100, y: 100 },
-  { x: 1180, y: 100 },
-  { x: 1180, y: 660 },
-  { x: 100, y: 660 },
-];
-
-async function makePattern(path: string, label: string) {
-  const doc = await PDFDocument.create();
-  const page = doc.addPage([10 * 72, 8 * 72]);
-  page.drawRectangle({
-    x: 72,
-    y: 72,
-    width: 8 * 72,
-    height: 6 * 72,
-    borderColor: rgb(0, 0, 0),
-    borderWidth: 2,
-  });
-  page.drawText(label, { x: 100, y: 300, size: 48 });
-  writeFileSync(path, await doc.save());
-}
-
-async function openPage(page: Page) {
-  await page.setViewportSize(viewport);
-  await page.addInitScript((points) => {
-    if (localStorage.getItem("points") === null) {
-      localStorage.setItem("points", JSON.stringify(points));
-    }
-  }, points);
-  await page.goto("/en/calibrate");
-  await expect(page.locator("canvas").first()).toBeVisible();
-  await page.waitForLoadState("networkidle");
-}
-
-async function openFile(page: Page, path: string) {
-  await page.locator("#pdfFile").setInputFiles(path);
-  await expect(page.locator(".react-pdf__Page").first()).toBeVisible();
-}
-
-const patternTransform = (page: Page) =>
-  page.locator('div[style*="matrix3d"]').first().getAttribute("style");
-
-const projectNames = (page: Page) =>
-  page.getByTestId("project").locator("span.font-medium").allInnerTexts();
+import { test, expect } from "@playwright/test";
+import {
+  addPattern,
+  home,
+  isFullScreen,
+  makePattern,
+  openApp,
+  patternTransform,
+  pdfPage,
+  projectNames,
+  seedFullScreenCalibration,
+} from "./helpers";
 
 test.describe("Saved projects", () => {
-  test("switches between patterns without opening the files again", async ({
+  test("starts on the home screen, where adding patterns stays out of full screen", async ({
     page,
   }, testInfo) => {
     const shirt = testInfo.outputPath("Shirt.pdf");
@@ -57,14 +20,67 @@ test.describe("Saved projects", () => {
     await makePattern(shirt, "Shirt");
     await makePattern(pants, "Pants");
 
-    await openPage(page);
-    // Leave calibration without a file; no projects yet, so the file picker opens
-    const chooser = page.waitForEvent("filechooser");
-    await page.getByRole("button", { name: "Project", exact: true }).click();
-    await (await chooser).setFiles(shirt);
-    await expect(page.locator(".react-pdf__Page").first()).toBeVisible();
+    await openApp(page);
+    await expect(home(page)).toContainText("No patterns yet");
+    await addPattern(page, shirt, "Shirt");
+    await addPattern(page, pants, "Pants");
+    await expect.poll(() => projectNames(page)).toEqual(["Pants", "Shirt"]);
+    expect(await isFullScreen(page)).toBe(false);
+  });
 
-    // Turn the shirt pattern, which is saved for this pattern
+  test("calibrates in full screen first when there is no calibration yet", async ({
+    page,
+  }, testInfo) => {
+    const shirt = testInfo.outputPath("Shirt.pdf");
+    await makePattern(shirt, "Shirt");
+    await openApp(page);
+    await addPattern(page, shirt, "Shirt");
+
+    await home(page)
+      .getByRole("button", { name: /^Shirt/ })
+      .click();
+    await expect(home(page)).toBeHidden();
+    await expect.poll(() => isFullScreen(page)).toBe(true);
+    await expect(page.getByTestId("calibration-guide")).toContainText(
+      "Step 1 of 4",
+    );
+
+    // Once calibrated, Project shows the pattern that was opened
+    await page
+      .getByRole("button", { name: "Save calibration", exact: true })
+      .click();
+    await expect(pdfPage(page)).toBeVisible();
+  });
+
+  test("goes straight to projecting and switches patterns without the file browser", async ({
+    page,
+  }, testInfo) => {
+    const shirt = testInfo.outputPath("Shirt.pdf");
+    const pants = testInfo.outputPath("Pants.pdf");
+    await makePattern(shirt, "Shirt");
+    await makePattern(pants, "Pants");
+    await seedFullScreenCalibration(page);
+    await openApp(page);
+    await addPattern(page, shirt, "Shirt");
+    await addPattern(page, pants, "Pants");
+
+    await home(page)
+      .getByRole("button", { name: /^Shirt/ })
+      .click();
+    await expect(pdfPage(page)).toBeVisible();
+    await expect.poll(() => isFullScreen(page)).toBe(true);
+    await expect(page.getByTestId("calibration-guide")).toHaveCount(0);
+    // No file browser anywhere while projecting
+    await expect(page.locator('input[type="file"]')).toHaveCount(0);
+
+    // Wait for the pattern to be centred on the mat, which is saved
+    await expect
+      .poll(() =>
+        page.evaluate(() => localStorage.getItem("localTransform:Shirt.pdf")),
+      )
+      .not.toBeNull();
+
+    // Turn the shirt, then switch to the pants straight away
     const before = await patternTransform(page);
     await page
       .getByRole("button", { name: "Rotate 90 degrees clockwise (R)" })
@@ -72,51 +88,51 @@ test.describe("Saved projects", () => {
     await expect.poll(() => patternTransform(page)).not.toBe(before);
     const shirtTransform = await patternTransform(page);
 
-    await openFile(page, pants);
-    await expect.poll(() => patternTransform(page)).not.toBe(shirtTransform);
-
+    // Moving the mouse brings back the menu, which hides when idle
+    await page.mouse.move(600, 400 + Math.random() * 10);
     await page.getByRole("button", { name: "Projects", exact: true }).click();
     await expect
       .poll(() => projectNames(page))
-      .toEqual(["PantsOpen now", "Shirt"]);
+      .toEqual(["ShirtOpen now", "Pants"]);
+    await page.getByRole("button", { name: /^Pants/ }).click();
+    await expect.poll(() => patternTransform(page)).not.toBe(shirtTransform);
+    expect(await isFullScreen(page)).toBe(true);
 
-    // Come back later: the projects are still there and reopen where they were left
-    await page.reload();
-    await page.waitForLoadState("networkidle");
-    await page.getByRole("button", { name: "Project", exact: true }).click();
-    await expect(page.getByTestId("projects-list")).toBeVisible();
+    // The shirt comes back where it was left
+    // Moving the mouse brings back the menu, which hides when idle
+    await page.mouse.move(600, 400 + Math.random() * 10);
+    await page.getByRole("button", { name: "Projects", exact: true }).click();
     await page.getByRole("button", { name: /^Shirt/ }).click();
-    await expect(page.locator(".react-pdf__Page").first()).toBeVisible();
     await expect.poll(() => patternTransform(page)).toBe(shirtTransform);
+
+    // Adding a pattern goes back to the home screen, out of full screen
+    // Moving the mouse brings back the menu, which hides when idle
+    await page.mouse.move(600, 400 + Math.random() * 10);
+    await page.getByRole("button", { name: "Projects", exact: true }).click();
+    await page.getByRole("button", { name: "All patterns" }).click();
+    await expect(home(page)).toBeVisible();
+    await expect.poll(() => isFullScreen(page)).toBe(false);
   });
 
   test("renames and deletes projects", async ({ page }, testInfo) => {
     const shirt = testInfo.outputPath("Shirt.pdf");
     await makePattern(shirt, "Shirt");
-    await openPage(page);
-    await page.getByRole("button", { name: "Project", exact: true }).click();
-    await openFile(page, shirt);
+    await openApp(page);
+    await addPattern(page, shirt, "Shirt");
 
-    await page.getByRole("button", { name: "Projects", exact: true }).click();
     await page.getByRole("button", { name: "Rename Shirt" }).click();
-    await page.getByLabel("Project name").fill("Summer shirt");
+    // Typing letters that are also keyboard shortcuts must still work
+    await page.getByLabel("Project name").fill("");
+    await page.getByLabel("Project name").pressSequentially("Summer shirt");
     await page.getByLabel("Project name").press("Enter");
-    await expect
-      .poll(() => projectNames(page))
-      .toEqual(["Summer shirtOpen now"]);
+    await expect.poll(() => projectNames(page)).toEqual(["Summer shirt"]);
 
     await page.reload();
-    await page.waitForLoadState("networkidle");
-    await page.getByRole("button", { name: "Project", exact: true }).click();
+    await expect(home(page)).toBeVisible();
     await expect.poll(() => projectNames(page)).toEqual(["Summer shirt"]);
 
     await page.getByRole("button", { name: "Delete Summer shirt" }).click();
     await page.getByRole("button", { name: "Delete for good" }).click();
     await expect(page.getByTestId("project")).toHaveCount(0);
-    expect(
-      await page.evaluate(() =>
-        localStorage.getItem("localTransform:Shirt.pdf"),
-      ),
-    ).toBeNull();
   });
 });

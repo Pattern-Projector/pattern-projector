@@ -145,8 +145,8 @@ export default function CalibrationGuide({
         <div>
           <a
             href={targetFileName}
-            target="_blank"
-            rel="noopener"
+            // Download rather than open it, which would leave full screen
+            download="pattern-projector-calibration-target.pdf"
             className={`w-fit ${getButtonStyleClasses(ButtonStyle.OUTLINE)} ${getColorClasses(ButtonColor.PURPLE, ButtonStyle.OUTLINE)}`}
           >
             {t("print.download")}
