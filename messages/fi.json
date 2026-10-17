@@ -1,0 +1,344 @@
+{
+    "HomePage": {
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr",
+        "github": "Katso lähde koodi",
+        "calibrate": "Aloita kalibrointi",
+        "choose-language": "Kieli",
+        "welcome": {
+            "title": "Tervetuloa Pattern Projektoriin!",
+            "description": "Kuvioprojektori on ilmainen ja avoimen lähdekoodin verkkosovellus, joka kalibroi projektorit nopeasti kaavojen ompelua varten. Siinä on myös työkaluja useiden sivujen yhdistämiseen, viivan paksuuden muuttamiseen, värien kääntämiseen, kuvioiden kääntämiseen/kiertämiseen ja muuhun. Voit lukea uusimmista päivityksistä <changeLogLink>muutoslokista</changeLogLink>."
+        },
+        "requirements": {
+            "title": "Mitä tarvitset",
+            "projector": "Projektorin: vähintäin 720p tarkkuutta suositellaan",
+            "mat": "Leikkuumatto (optionaalinen)",
+            "mount": "Kolmiojalka tai seinä-/hylly-/pöytäteline projektorille",
+            "computer": "Tietokone tai tabletti, jolla käyttää projektoria",
+            "pattern": "PDF ompelukaavan"
+        },
+        "setup": {
+            "title": "Asennus",
+            "place": "Aseta projektori leikkuualustan yläpuolelle osoittamaan suoraan leikkuualustaa. Jos sinulla ei ole leikkuualustaa, voit merkitä ruudukon/suorakulmion pöydälle tai lattialle paperilla tai maalarinteipillä.",
+            "connect": "Liitä tietokone tai tabletti projektoriin ja joko kopio näytöt tai laajenna näyttöä niin, että tietokoneen tai tabletin kuva näkyy projektorissa.",
+            "focus": "Säädä projektorin tarkennusta, kunnes teksti on terävää kuvan keskellä. Jos et saa selkeää kuvaa, varmista, että projektorin ja leikkausmaton välinen etäisyys on valmistajan suositteleman toiminta-alueen sisällä.",
+            "keystone": "Jos projektorissasi on trapetsikorjaus, säädä sitä niin, että kuva on lähes suorakulmainen ja reunojen tarkennus paranee."
+        },
+        "calibration": {
+            "title": "Kalibrointi",
+            "start": "Napsauta (tai napauta) ”Aloita kalibrointi.”",
+            "fullscreen": "Siirry koko näytön tilaan napsauttamalla (tai napauttamalla) <fullscreenIcon></fullscreenIcon> vasemmassa yläkulmassa.",
+            "drag": "Vedä ruudukon kulmia linjaan leikkuumattosi kanssa. Pidä katse matossa ja säädä kulmia tietokoneellasi tai tabletillasi. Säädä kulmien sijoittelua, kunnes kuvan ruudukko vastaa omaa ruudukkoasi.",
+            "size": "Sinun ei tarvitse kalibroida koko mattoa käyttäen, vaan valitse suurin alue, johon kalibrointiruudukko mahtuu, ja syötä leveys ja korkeus vastaamaan ruudukon leveyttä ja korkeutta.",
+            "project": "Kun kuvan ruudukko on linjassa leikkuumattosi kanssa, napsauta (tai napauta) ”Heijasta kaava.”"
+        },
+        "project": {
+            "title": "Heijasta kaava",
+            "open": "Avaa kaava napsauttamalla (tai napauttamalla) <pdficon></pdficon>.",
+            "move": "Siirrä PDF-kaavaa napsauttamalla ja vetämällä sitä näytöllä.",
+            "cut": "Leikkaa kaavan viivoja pitkin.",
+            "tools": "Haijasta-tilassa on useita työkaluja. Joillakin on pikanäppäin, joka on merkitty suluissa.",
+            "fullscreen": {
+                "title": "Koko näyttö",
+                "description": "Ohjelmaa on yleensä helpompi käyttää koko näytön tilassa."
+            },
+            "showMenu": {
+                "title": "Näytä/piilota valikko",
+                "description": "Näytä tai piilota ylävalikko."
+            },
+            "invert": {
+                "title": "Käänteiset värit",
+                "description": "Heijastattaessa vihreät tai valkoiset viivat on yleensä helpompi nähdä mustalla pohjalla. Napsauta/napauta kerran saadaksesi vihreät viivat, kaksi kertaa valkoiset viivat ja kolme kertaa palataksesi mustiin viivoihin."
+            },
+            "moveTool": {
+                "title": "Näytä tai piilota siirtotyökalu",
+                "description": "Siirtotyökalussa on neljä nuolipainiketta kalibrointiruudukon kulmien/reunojen siirtämiseen. Siinä on myös keskellä seuraava-painike, jolla voi siirtyä seuraavaan nurkkaan/reunaan."
+            },
+            "overlayOptions": {
+                "title": "Näytä tai piilota aputaso asetukset",
+                "description": "Kaavan mukana voidaan näyttää ruudukko, reunus, paperiarkki, kääntöviivat tai nurjan puolen peittokuvat kalibroinnin ja leikkaamisen helpottamiseksi. Lisätietoja on <overlayOptionsLink>aputaso-asetukset-osiossa</overlayOptionsLink>."
+            },
+            "lineWeight": {
+                "title": "Viivan leveys",
+                "description": "Muuta PDF-kaavan viivojen paksuutta."
+            },
+            "flip": {
+                "title": "Käännä pystysuunnassa (V) tai vaakasuunnassa (H)",
+                "description": "Hyödyllinen kaavan puolittaisena peilikuvana."
+            },
+            "rotate": {
+                "title": "Käännä (R)",
+                "description": "Käännä kaavan suuntaa 90 astetta."
+            },
+            "recenter": {
+                "title": "Keskitä ja resetoi (C)",
+                "description": "Keskittää kaavan leikkausmatolle ja nollaa kääntämisen/pyöräytyksen."
+            },
+            "magnify": {
+                "title": "Suurenna (M)",
+                "description": "Napsauta (tai napauta) PDF-kaavaa suurentaaksesi sitä. Napsauta (tai napauta) uudelleen lopettaaksesi suurennus."
+            },
+            "zoomOut": {
+                "title": "Loitonna (Z)",
+                "description": "Loitonna nähdäksesi koko PDF-kaavan. Napsauta (tai napauta) PDF-kaavaa lähentääksesi takaisin valittuun kohtaan."
+            },
+            "layers": {
+                "title": "Näytä tai piilota tasot",
+                "description": "Näytä tai piilota PDF-kaavan tasot."
+            },
+            "stitch": {
+                "title": "Näytä tai piilota ommelvalikko",
+                "description": "Näytä tai piilota ommelvalikko, jonka avulla voit ommella yhteen useita PDF-kaava sivuja."
+            },
+            "scale": {
+                "title": "Näytä tai piilota skaalausvalikko",
+                "description": "Muuta kuvion kokoa syöttämällä kerroin: 0–1 pienentää kuviota ja suurempi kuin 1 suurentaa sitä."
+            },
+            "measure": {
+                "title": "Viivatyökalu (L)",
+                "description": "Merkitse PDF-kaavaan viivoja kiertämistä, kääntämistä, siirtämistä, mittaamista tai merkitsemistä varten. Katso viivatyökalun yksityiskohtainen kuvaus <lineToolLink>viivatyökalu-osiosta</lineToolLink>."
+            }
+        },
+        "tools": "Työkalut",
+        "lineTool": {
+            "title": "Viivatyökalu",
+            "description": "Viivatyökalulla voi mitata etäisyyksiä, merkitä viivoja PDF-kaavaan, kiertää, kääntää ja siirtää sitä. Napsauta (tai napauta) viivatyökalun painiketta ja napsauta (tai napauta) sitten PDF-kaavaa ja vedä piirtääksesi viivan. Kun viiva on piirretty, näytön alareunaan ilmestyy valikko, jossa on seuraavat vaihtoehdot:",
+            "delete": {
+                "title": "Poista viiva",
+                "description": "Poistaa valitun viivan."
+            },
+            "rotate": {
+                "title": "Keskitä",
+                "description": "Kiertää PDF-kaavaa niin, että valittu viiva on vaakasuorassa ja keskitetty leikkuumattoon.",
+                "use": "Kaavan suuntaamiseksi kankaan langan suuntaan: piirrä viiva langan suunnan suuntaan ja napsauta (tai napauta) sitten Keskitä-painiketta."
+            },
+            "previousNext": {
+                "title": "Tuo edellinen/seuraava viiva keskelle",
+                "description": "Siirtää PDF-kaavaa niin, että edellinen/seuraava piirretty viiva on vaakasuorassa ja keskitetty leikkuumattoon.",
+                "use": "Leikkaamisen aikana kaavojan välillä liikkuminen: piirrä viiva jokaisen kaavan langansuunta ja siirry sitten kaavoja läpi näillä painikkeilla. Poista viivoja liikkuessasi kaavojen läpi, jotta voit seurata, mitkä on jäljellä olevia leikattavia paloja."
+            },
+            "flip": {
+                "title": "Käännä viivaa pitkin",
+                "description": "Kääntää PDF-kaavan viivaa pitkin.",
+                "use": "Kaavojen avaaminen taitokselta: piirrä viiva kaavan taitosviivalle, leikkaa kappale taitosviivaan asti, napsauta (tai napauta) Käännä viivaa pitkin -painiketta ja leikkaa sitten loppuosa kaavasta."
+            },
+            "move": {
+                "title": "Siirrä PDF-kaava viivan pituuden verran",
+                "description": "Siirtää PDF-kaavaa viivan pituuden verran.",
+                "use": "Kaavojen pidentäminen/lyhentäminen: piirrä viiva, joka on kohtisuorassa kaavann pidennys-/lyhennysviivan kanssa, leikkaa pidennys-/lyhennysviivan kohdalle, napsauta (tai napauta) sitten \"Siirrä viivan pituuden mukaan\" -painiketta ja jatka kappaleen leikkaamista. Piirretyn viivan suunta riippuu siitä, pidennätkö vai lyhennätkö kaavaa."
+            },
+            "length": {
+                "title": "Viivan pituus",
+                "description": "Näyttää valitun viivan pituuden (näkyy violettina). Muut viivat ovat oransseja.",
+                "use": "Napauta pituutta syöttääksesi tarkan mitan ja säätääksesi viivan pituutta. Hyödyllinen kaavojen pidentämiseen/lyhentämiseen. Katso esimerkki <lineToolVideoLink>tästä videosta</lineToolVideoLink>."
+            },
+            "angle": {
+                "title": "Viivan kulma",
+                "description": "Näyttää valitun viivan kulman (näkyy violettina). Muut viivat ovat oransseja.",
+                "use": "Syötä tarkka kulma viivan ja kaavan kiertämiseksi. Käytä <alignIcon></alignIcon>-painiketta keskittääksesi kierron syötetyn kulman perusteella."
+            }
+        },
+        "overlayOptions": {
+            "title": "Aputasojen asetukset",
+            "description": "Aputasojen asetuksia voidaan käyttää kalibroinnin tarkistamiseen kaavan heijastamisen aikana ja leikkauskuvioiden apuna. Seuraavat asetukset ovat käytettävissä:",
+            "border": {
+                "title": "Reuna",
+                "description": "Näyttää kalibrointiruudukon reunan."
+            },
+            "grid": {
+                "title": "Ruudut",
+                "description": "Näyttää kalibrointiruudukon."
+            },
+            "paper": {
+                "title": "Paperiarkki",
+                "description": "Näyttää Letter- tai A4-kokoisen paperiarkin kokoisen suorakulmion kalibroinnin varmistamiseksi."
+            },
+            "flipLines": {
+                "title": "Kääntöviivat",
+                "description": "Näyttää viivoja, jotka auttavat kaavojen taitoksen avaamisessa. Kohdista kaavan taitosviiva käännekohdan kanssa ja paina \"Käännä vaakasuoraan\" tai \"Pystysuoraan\" peilataksesi kappaleen."
+            },
+            "flippedPattern": {
+                "title": "Nurjapuoli",
+                "description": "Näyttää pisteitä, kun kaavan nurja puoli heijastetaan."
+            }
+        },
+        "faq": {
+            "title": "UKK",
+            "wrongSizePdf": {
+                "question": "Onko PDF-kaavasi heijastettu liian pieneksi vai suureksi?",
+                "answer": "Kalibrointityökalussa ei ole zoomausta, koska kaavan mittakaava tulee PDF-kaavan kokotiedoista. Alunperin kaavoissa on oikea mittakaava, joten mittakaavan muutos on saattanut tapahtua kuviota avattaessa Affinity Designerissa tai Inkscapessa."
+            },
+            "saveAsApp": {
+                "answer": "Pattern Projector on progressiivinen verkkosovellus (PWA), joten sen voi tallentaa sovelluksena. Tietokoneella voit asentaa sen <googleChromeLink>Chromella</googleChromeLink> tai <microsoftEdgeLink>Edgellä</microsoftEdgeLink>. Tabletilla avaa Jaa-valikko ja napauta Lisää aloitusnäyttöön."
+            },
+            "mobileSupport": {
+                "question": "Onko ohjelmalla tukea matkapuhelimille ja tableteille?",
+                "answer": "Vaikka ohjelman käyttö älypuhelimella on mahdollista, näytön rajallinen koko tekee käytöstä hankalaa."
+            }
+        },
+        "resources": {
+            "title": "Lisäominaisuudet",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Projectors for Sewing (Projektorit ompeluun) -Facebook-ryhmä",
+                    "link": "https://www.facebook.com/groups/481078582801085"
+                },
+                "onePageGuide": {
+                    "title": "Yhden sivun opas projektorin ompeluun",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
+                }
+            }
+        },
+        "contribute": {
+            "title": "Osallistu projektiin",
+            "donation": "Jos Pattern Projector on säästänyt sinulta rahaa kopiointipalvelussa tai vapauttanut sinut PDF-katseluohjelman tilauksesta, harkitse <donateLink>kahvin ostamista minulle</donateLink> tai tukemista <payPalLink>PayPalin</payPalLink> kautta!",
+            "develop": "Auta <githubLink>GitHubissa</githubLink> ominaisuuksien toteuttamisessa ja ongelmien korjaamisessa.",
+            "translate": "Käännä tämä työkalu useammille kielille käyttämällä <weblateLink>Weblate</weblateLink>-komentoa.",
+            "feedback": "Palaute ja ominaisuuspyynnöt ovat tervetulleita!"
+        },
+        "contact": "Ota yhteyttä"
+    },
+    "InstallButton": {
+        "title": "Asenna ohjelma",
+        "description": "Parhaan käyttökokemuksen saat asentamalla Pattern Projectorin <chromeLink>Google Chromella</chromeLink>. Lataa sovellus Chromessa napauttamalla <installIcon></installIcon> osoiterivillä.",
+        "descriptionAndroid": "Parhaan käyttökokemuksen saat Androidilla Firefoxilla. Lataa sovellus napauttamalla selaimen valikossa Lisää-painiketta <moreIcon></moreIcon> ja valitsemalla sitten <addToHomeScreenIcon></addToHomeScreenIcon> Lisää aloitusnäyttöön.",
+        "descriptionIOS": "Lataa sovellus napauttamalla jakopainiketta <shareIcon></shareIcon> selaimen valikossa ja sitten Lisää aloitusnäyttöön <addBoxIcon></addBoxIcon>.",
+        "ok": "OK"
+    },
+    "Mail": {
+        "title": "Sinulle on postia",
+        "donate": "Lahjoita"
+    },
+    "Troubleshooting": {
+        "notMatching": "Eivätkö viivat eivät vastaa leikkuumattoasi?",
+        "title": "Kalibroinnin vianmääritys",
+        "dragCorners": {
+            "title": "Kuinka kalibroidaan",
+            "description": "Vedä ruudukon kulmat vähintään 61x40 cm:n kokoiseksi suorakulmioksi matolle. Ruudukon tulisi olla mahdollisimman suuri, mutta sen ei tarvitse peittää koko mattoa.",
+            "caption": "Oikein kalibroitu ruudukko."
+        },
+        "inputMeasurement": "Mittaa leikkuumattosi ruudukon leveys ja korkeus mittanauhalla. Syötä nämä mitat leveys- ja korkeuskenttiin.",
+        "offByOne": {
+            "title": "Viivat ovat suoria, mutta eivät ole linjassa?",
+            "description": "Jos viivat ovat suoria, mutta eivät ole linjassa leikkuumattosi kanssa, leveys tai korkeus saattaa olla 1 cm:n virheellinen. Tarkista mittasi mittanauhalla. Maton mitat voivat olla hämmentäviä tai epätarkkoja, joten mittanauhalla tarkistaminen on tärkeää.",
+            "caption": "Syötetty on väärät mitat (23 x 17) eikä (24 x 18). Matto näyttää numerot vain lukuihin 23 ja 17 asti, joten mittoja on helppo sekoittaa. Muista mitata mittanauhalla!"
+        },
+        "unevenSurface": {
+            "title": "Kaarevia viivoja?",
+            "description": "Jos viivat näyttävät kaarevilta, matto tai maton alla oleva pinta ei ehkä ole tasainen. Yritä tasoittaa mattoa, aseta kartonkia matalien kohtien alle tai siirry eri leikkuualustalle.",
+            "caption": "Tässä leikkuumatossa on viivain, joka saa viivat kaareutumaan keskeltä. Pieni kaarevuus on ok, mutta suuri kaarevuus aiheuttaa ongelmia."
+        },
+        "dimensionsSwapped": {
+            "title": "Suorakulmioita neliöiden sijaan?",
+            "description": "Jos ruudukko näyttää suorakulmioilta neliöiden sijaan, leveys ja korkeus voidaan vaihtaa. Vaihda vain kenttien arvot.",
+            "caption": "Leveys ja korkeus ovat väärissä ruuduissa. Mittojen pitäisi olla 'L: 24' ja 'K: 18'."
+        },
+        "close": "Sulje"
+    },
+    "General": {
+        "close": "Sulje",
+        "error": "Virhe"
+    },
+    "Header": {
+        "openPDF": "Avaa",
+        "height": "K:",
+        "width": "L:",
+        "project": "Heijasta",
+        "calibrate": "Kalibroi",
+        "delete": "Resetoi kalibrointi",
+        "gridOn": "Ruudut päälle",
+        "gridOff": "Ruudut pois",
+        "overlayOptions": "Aputaso asetukset",
+        "overlayOptionBorder": "Reunat",
+        "overlayOptionDisabled": "Pois päältä",
+        "overlayOptionGrid": "Ruudut",
+        "overlayOptionPaper": "Paperiarkki",
+        "overlayOptionFliplines": "Kääntöviivat",
+        "overlayOptionFlippedPattern": "Nurjapuoli",
+        "invertColor": "Käännä värit",
+        "invertColorOff": "Värien kääntö pois",
+        "flipVertical": "Käännä pystysuunnassa (V)",
+        "flipHorizontal": "Käännä vaakasuunnassa (H)",
+        "flipCenterOn": "Käännä keskelle",
+        "flipCenterOff": "Käännä keskelle pois",
+        "fourCornersOn": "Korosta kaikki kulmat",
+        "fourCornersOff": "Korosta vain valittu kulma",
+        "rotate90": "Kierrä 90 astetta myötäpäivään (R)",
+        "arrowBack": "Sivu takaisin",
+        "arrowForward": "Sivu eteenpäin",
+        "info": "Infosivu",
+        "recenter": "Keskitä ja resetoi (C)",
+        "fullscreen": "Avaa koko näyttöön",
+        "fullscreenExit": "Pois koko näytöstä",
+        "ok": "OK",
+        "calibrationAlertTitle": "Kalibrointivaroitus",
+        "calibrationAlert": "Ikkunan koko on muuttunut aloittamisen jälkeen. Korjaa ongelma painamalla koko näytön painiketta tai kalibroimalla uudelleen.",
+        "calibrationAlertContinue": "Ikkunan kokoa ei voi muuttaa kalibroinnin jälkeen. Jos haluat kuvan koko näytöllä, kalibroi koko näytöllä. Jos haluat muuttaa ikkunan kokoa, kalibroi uudelleen.",
+        "continue": "Tallenna ikkunan koko ja jatka",
+        "checkCalibration": "Tarkista kalibrointi",
+        "menuShow": "Näytä valikko",
+        "menuHide": "Kätke valikko",
+        "lineWeight": "Viivan leveys",
+        "stitchMenuShow": "Näytä ommelvalikko",
+        "stitchMenuHide": "Ommelvalikko pois",
+        "stitchMenuDisabled": "Avaa PDF-kaava käyttääksesi ommelvalikkoa",
+        "measure": "Viivatyökalu (L)",
+        "showMovement": "Näytä siirtotyökalu",
+        "hideMovement": "Siirtotyökalu pois",
+        "magnify": "Suurenna (M)",
+        "zoomOut": "Pienennä (Z)",
+        "mail": "Lähetä postia Courtneylle",
+        "invalidCalibration": "Kalibrointiruudukko ei ole kelvollinen. Yritä uudelleen painamalla 'Resetoi kalibrointi'."
+    },
+    "ScaleMenu": {
+        "scale": "Skaalaa kaava",
+        "hide": "Skaalavalikko pois",
+        "show": "Näytä Skaalavalikko"
+    },
+    "StitchMenu": {
+        "columnCount": "Sarakkeet",
+        "rowCount": "Rivit",
+        "pageRange": "Ompele sivut",
+        "horizontal": "Vaakasuora päällekkäisyys",
+        "vertical": "Pystysuora päällekkäisyys",
+        "zeros": "Lisää nollat tyhjille sivuille, esim. 1-3,0,0,4"
+    },
+    "SaveMenu": {
+        "save": "Tallenna PDF",
+        "saveTooltip": "Vie PDF-tiedosto yhdistettyine sivuineen ja valituine tasoineen",
+        "encryptedPDF": "Tämä PDF-tiedosto on salattu. Syötä salasana tallentaaksesi yhdistetyn PDF-tiedoston."
+    },
+    "LayerMenu": {
+        "title": "Tasot",
+        "showAll": "Näytä kaikki",
+        "hideAll": "Kaikki pois",
+        "layersOn": "Näytä tasovalikko",
+        "layersOff": "Tasovalikko pois",
+        "noLayers": "Kaavassa ei ole tasoja"
+    },
+    "MovementPad": {
+        "up": "Ylös",
+        "down": "Alas",
+        "left": "Vasemmalle",
+        "right": "Oikealle",
+        "next": "Seuraava kulma"
+    },
+    "MeasureCanvas": {
+        "rotateToHorizontal": "Keskitä",
+        "rotateAndCenterPrevious": "Tuo edellinen rivi keskelle",
+        "rotateAndCenterNext": "Tuo seuraava rivi keskelle",
+        "deleteLine": "Poista viiva",
+        "flipAlong": "Käännä viivaa pitkin",
+        "translate": "Siirrä kaavaa viivan pituuden verran",
+        "line": "viiva",
+        "lines": "viivat"
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "napsauta kaavaa zoomataksesi",
+        "magnifying": "napsauta kaavaa zoomauksen lopettamiseksi",
+        "scaled": "<scale></scale>× skaalaa"
+    },
+    "PdfViewer": {
+        "error": "Kaavan lataaminen epäonnistui",
+        "noData": "Lataa kaava painamalla \"Avaa\"-painiketta"
+    }
+}

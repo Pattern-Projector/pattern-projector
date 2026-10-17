@@ -18,6 +18,7 @@ import { RenderContext } from "@/_hooks/use-render-context";
 import { useTransformerContext } from "@/_hooks/use-transform-context";
 import {
   LineDirection,
+  VerticalAlignment,
   StitchSettings,
 } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
@@ -186,6 +187,10 @@ export default function PdfViewer({
           marginRight: cssEdgeInsets.horizontal,
           marginBottom: cssEdgeInsets.vertical,
           filter: filter,
+          transform:
+            stitchSettings.verticalAlignment == VerticalAlignment.Top
+              ? `scaleY(1)`
+              : `scaleY(-1)`,
         }}
       >
         {pages.map((value, index) => {
@@ -199,6 +204,10 @@ export default function PdfViewer({
                   cssEdgeInsets.horizontal == 0 && cssEdgeInsets.vertical == 0
                     ? "normal"
                     : "darken",
+                transform:
+                  stitchSettings.verticalAlignment == VerticalAlignment.Top
+                    ? `scaleY(1)`
+                    : `scaleY(-1)`,
               }}
             >
               {value != 0 && (

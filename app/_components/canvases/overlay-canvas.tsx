@@ -10,6 +10,7 @@ import {
 import { useTransformContext } from "@/_hooks/use-transform-context";
 import Matrix from "ml-matrix";
 import { useTranslations } from "next-intl";
+import { Unit } from "@/_lib/unit";
 
 export default function OverlayCanvas({
   className,
@@ -28,7 +29,7 @@ export default function OverlayCanvas({
   points: Point[];
   width: number;
   height: number;
-  unitOfMeasure: string;
+  unitOfMeasure: Unit;
   displaySettings: DisplaySettings;
   calibrationTransform: Matrix;
   zoomedOut: boolean;

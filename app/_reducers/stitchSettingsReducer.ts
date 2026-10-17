@@ -1,51 +1,14 @@
 import { EdgeInsets } from "@/_lib/interfaces/edge-insets";
 import { StitchSettings } from "@/_lib/interfaces/stitch-settings";
 
-interface SetAction {
-  type: "set";
-  stitchSettings: StitchSettings;
-}
-
-interface SetPageRangeAction {
-  type: "set-page-range";
-  pageRange: string;
-}
-
-interface SetLineCountAction {
-  type: "set-line-count";
-  lineCount: number;
-  pageCount: number;
-}
-
-interface StepLineCountAction {
-  type: "step-line-count";
-  pageCount: number;
-  step: number;
-}
-
-interface StepHorizontalAction {
-  type: "step-horizontal";
-  step: number;
-}
-
-interface StepVerticalAction {
-  type: "step-vertical";
-  step: number;
-}
-
-interface SetEdgeInsetsAction {
-  type: "set-edge-insets";
-  edgeInsets: EdgeInsets;
-}
-
 export type StitchSettingsAction =
-  | SetAction
-  | SetPageRangeAction
-  | StepLineCountAction
-  | SetLineCountAction
-  | StepHorizontalAction
-  | StepVerticalAction
-  | SetEdgeInsetsAction;
+  | { type: "set"; stitchSettings: StitchSettings }
+  | { type: "set-page-range"; pageRange: string }
+  | { type: "set-line-count"; lineCount: number; pageCount: number }
+  | { type: "step-line-count"; pageCount: number; step: number }
+  | { type: "step-horizontal"; step: number }
+  | { type: "step-vertical"; step: number }
+  | { type: "set-edge-insets"; edgeInsets: EdgeInsets };
 
 export default function stitchSettingsReducer(
   stitchSettings: StitchSettings,

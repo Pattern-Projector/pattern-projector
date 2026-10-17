@@ -8,14 +8,17 @@ export const localeData = {
   de: "Deutsch",
   en: "English",
   es: "Español",
+  fi: "Suomi",
   fr: "Français",
   hu: "Magyar",
   it: "Italiano",
   "nb-NO": "Norwegian Bokmål", // Needs to be in format nb-NO instead of nb_NO for next-intl to recognize it
   nl: "Nederlands",
+  "pt-BR": "Português (Brasil)",
   sl: "Slovenščina",
   sv: "Svenska",
   ta: "தமிழ்",
+  "zh-Hans": "简体中文",
 };
 
 export const locales = Object.keys(localeData);
@@ -34,7 +37,7 @@ export const config = {
   // *** IMPORTANT *** New language codes must be added here as well as in the localeData above
   matcher: [
     "/",
-    "/(cs|da|de|en|es|fr|hu|it|nb-NO|nl|sl|sv|ta)/:path*",
+    "/(cs|da|de|en|es|fi|fr|hu|it|nb-NO|nl|pt-BR|sl|sv|ta|zh-Hans)/:path*",
     "/calibrate",
   ],
 };

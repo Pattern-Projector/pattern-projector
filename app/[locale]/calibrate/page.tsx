@@ -30,7 +30,7 @@ import {
   themeFilter,
   Theme,
 } from "@/_lib/display-settings";
-import { getPtDensity, IN } from "@/_lib/unit";
+import { getPtDensity, Unit } from "@/_lib/unit";
 import { visible } from "@/_components/theme/css-functions";
 import { useTranslations } from "next-intl";
 import MeasureCanvas from "@/_components/canvases/measure-canvas";
@@ -51,6 +51,7 @@ import OverlayCanvas from "@/_components/canvases/overlay-canvas";
 import stitchSettingsReducer from "@/_reducers/stitchSettingsReducer";
 import {
   LineDirection,
+  VerticalAlignment,
   StitchSettings,
 } from "@/_lib/interfaces/stitch-settings";
 import { IconButton } from "@/_components/buttons/icon-button";
@@ -81,12 +82,14 @@ const defaultStitchSettings = {
   edgeInsets: { horizontal: 0, vertical: 0 },
   pageRange: "1-",
   lineDirection: LineDirection.Column,
+  verticalAlignment: VerticalAlignment.Top,
 } as StitchSettings;
 
 export default function Page() {
   // Default dimensions should be available on most cutting mats and large enough to get an accurate calibration
   const defaultWidthDimensionValue = "24";
   const defaultHeightDimensionValue = "16";
+  const maxDimensionValue = 1000; // Prevents crashing from excessive grid lines #410
 
   const maxPoints = 4; // One point per vertex in rectangle
 
@@ -115,7 +118,7 @@ export default function Page() {
   const [restoreTransforms, setRestoreTransforms] =
     useState<RestoreTransforms | null>(null);
   const [pageCount, setPageCount] = useState<number>(0);
-  const [unitOfMeasure, setUnitOfMeasure] = useState(IN);
+  const [unitOfMeasure, setUnitOfMeasure] = useState<Unit>(Unit.IN);
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
@@ -267,14 +270,14 @@ export default function Page() {
 
   // Save valid calibration grid height in localStorage
   function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
-    const h = removeNonDigits(e.target.value, heightInput);
+    const h = removeNonDigits(e.target.value, heightInput, maxDimensionValue);
     setHeightInput(h);
     updateLocalSettings({ height: h });
   }
 
   // Save valid calibration grid width in localStorage
   function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
-    const w = removeNonDigits(e.target.value, widthInput);
+    const w = removeNonDigits(e.target.value, widthInput, maxDimensionValue);
     setWidthInput(w);
     updateLocalSettings({ width: w });
   }
@@ -313,6 +316,10 @@ export default function Page() {
         if (!stitchSettings.lineDirection) {
           // For people who saved stitch settings before Line Direction was an option
           stitchSettings.lineDirection = LineDirection.Column;
+        }
+        if (!stitchSettings.verticalAlignment) {
+          // For people who saved stitch settings before Vertical Alignment was an option
+          stitchSettings.verticalAlignment = VerticalAlignment.Top;
         }
         dispatchStitchSettings({ type: "set", stitchSettings });
       } else {
@@ -521,6 +528,7 @@ export default function Page() {
     <main
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onKeyDown={resetIdle}
       ref={noZoomRefCallback}
       className={`${menusHidden && "cursor-none"} ${isDarkTheme(displaySettings.theme) && "dark bg-black"} w-screen h-screen absolute overflow-hidden touch-none`}
     >
@@ -530,11 +538,11 @@ export default function Page() {
           className="bg-white dark:bg-black transition-all duration-500 w-screen h-screen"
         >
           {showCalibrationAlert ? (
-            <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white">
+            <div className="flex flex-col items-center gap-4 absolute left-1/4 top-1/2 -translate-y-1/2 w-1/2 bg-white dark:bg-black dark:text-white z-[150] p-4 rounded border-2 border-black dark:border-white pointer-events-none">
               <WarningIcon ariaLabel="warning" />
               <p>{t("calibrationAlert")}</p>
               <Button
-                className="flex items-center justify-center"
+                className="flex items-center justify-center pointer-events-auto"
                 onClick={() => toggleFullScreen(fullScreenHandle)}
               >
                 <span className="mr-1 -mt-1.5 w-4 h-4">
@@ -604,6 +612,7 @@ export default function Page() {
               magnifying={magnifying}
               menusHidden={menusHidden}
               menuStates={menuStates}
+              isDarkTheme={isDarkTheme(displaySettings.theme)}
             >
               <Draggable
                 className={`absolute ${menusHidden && "!cursor-none"} `}

@@ -43,8 +43,9 @@
 
 import { Point, subtract } from "@/_lib/point";
 import { AbstractMatrix, Matrix, solve } from "ml-matrix";
-import { getPtDensity } from "./unit";
-import { Line } from "./interfaces/line";
+import { Unit, getPtDensity } from "@/_lib/unit";
+
+export type SimpleLine = [Point, Point];
 
 /** Calculates a perspective transform from four pairs of the corresponding points.
  *
@@ -167,7 +168,7 @@ function getDstVertices(
 export function getCalibrationCenterPoint(
   width: number,
   height: number,
-  unitOfMeasure: string,
+  unitOfMeasure: Unit,
 ): Point {
   return {
     x: width * getPtDensity(unitOfMeasure) * 0.5,
@@ -195,8 +196,8 @@ export function getPerspectiveTransformFromPoints(
   }
 }
 
-export function transformLine(line: Line, m: Matrix): Line {
-  return [transformPoint(line[0], m), transformPoint(line[1], m)];
+export function transformSimpleLine(line: SimpleLine, m: Matrix): SimpleLine {
+  return transformPoints(line, m) as SimpleLine;
 }
 
 export function transformPoints(points: Point[], m: Matrix): Point[] {
@@ -238,7 +239,7 @@ export function rotate(angle: number): Matrix {
   ]);
 }
 
-export function align(line: Line, to: Line): Matrix {
+export function align(line: SimpleLine, to: SimpleLine): Matrix {
   const toOrigin = translate({ x: -line[0].x, y: -line[0].y });
   const rotateTo = rotate(angle(to) - angle(line));
   return translate(to[0]).mmul(rotateTo).mmul(toOrigin);
@@ -268,21 +269,29 @@ export function flipHorizontal(origin: Point): Matrix {
   return transformAboutPoint(scale(-1, 1), origin);
 }
 
-export function angleDeg(line: Line): number {
+export function angleDeg(line: SimpleLine): number {
   return angle(line) * (180 / Math.PI);
 }
 
-export function angle(line: Line): number {
+export function angle(line: SimpleLine): number {
   const [p1, p2] = line;
   const dx = p2.x - p1.x;
   const dy = p2.y - p1.y;
   return Math.atan2(dy, dx);
 }
-export function rotateToHorizontal(line: Line): Matrix {
+
+export function distance(line: SimpleLine): number {
+  const [p1, p2] = line;
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+export function rotateToHorizontal(line: SimpleLine): Matrix {
   return rotateMatrixDeg(-angleDeg(line), line[0]);
 }
 
-export function flipAlong(line: Line): Matrix {
+export function flipAlong(line: SimpleLine): Matrix {
   const angle = angleDeg(line);
   const a = rotateMatrixDeg(-angle, line[0]);
   const b = translate({ x: 0, y: -line[0].y });
@@ -329,11 +338,11 @@ export function minIndex(a: number[]): number {
   return min;
 }
 
-export function distToLine(line: Line, p: Point): number {
+export function distToLine(line: SimpleLine, p: Point): number {
   return Math.sqrt(sqrDistToLine(line, p));
 }
 
-export function sqrDistToLine(line: Line, p: Point): number {
+export function sqrDistToLine(line: SimpleLine, p: Point): number {
   const [a, b] = line;
   const len2 = sqrDist(a, b);
   if (len2 === 0) {
