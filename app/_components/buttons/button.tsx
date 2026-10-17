@@ -10,6 +10,7 @@ export function Button({
   className,
   onClick,
   href,
+  ariaLabel,
 }: {
   children: any;
   color?: ButtonColor;
@@ -17,6 +18,7 @@ export function Button({
   className?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   href?: string;
+  ariaLabel?: string;
 }) {
   const classes = `flex gap-2 items-center ${getButtonStyleClasses(style)} ${getColorClasses(color, style)} ${className || ""}`;
 
@@ -25,7 +27,12 @@ export function Button({
       {children}
     </Link>
   ) : (
-    <button type="button" className={classes} onClick={onClick}>
+    <button
+      type="button"
+      className={classes}
+      onClick={onClick}
+      aria-label={ariaLabel}
+    >
       {children}
     </button>
   );

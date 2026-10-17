@@ -83,18 +83,63 @@ export function getCalibrationContextUpdatedWithEvent(
   };
 }
 
+/** Why the screen no longer matches the calibration, so the user can be told what to do about it. */
+export type CalibrationMismatch =
+  | { kind: "uncalibrated" }
+  // Calibrated in full screen, now projecting in a window
+  | { kind: "calibratedInFullScreen" }
+  // Calibrated in a window, now projecting in full screen
+  | { kind: "calibratedInWindow" }
+  | {
+      kind: "sizeChanged";
+      was: { width: number; height: number };
+      now: { width: number; height: number };
+    }
+  | { kind: "windowMoved" };
+
+export function getCalibrationMismatch(
+  saved: CalibrationContext | null,
+  current: CalibrationContext,
+): CalibrationMismatch | null {
+  if (saved === null) {
+    return { kind: "uncalibrated" };
+  }
+  if (saved.fullScreen !== current.fullScreen) {
+    return saved.fullScreen
+      ? { kind: "calibratedInFullScreen" }
+      : { kind: "calibratedInWindow" };
+  }
+  if (
+    saved.windowInnerWidth !== current.windowInnerWidth ||
+    saved.windowInnerHeight !== current.windowInnerHeight ||
+    saved.devicePixelRatio !== current.devicePixelRatio
+  ) {
+    return {
+      kind: "sizeChanged",
+      was: { width: saved.windowInnerWidth, height: saved.windowInnerHeight },
+      now: {
+        width: current.windowInnerWidth,
+        height: current.windowInnerHeight,
+      },
+    };
+  }
+  // Full screen fills the display wherever the window was, so its position only matters in a window
+  if (
+    !current.fullScreen &&
+    (saved.windowScreenTop !== current.windowScreenTop ||
+      saved.windowScreenLeft !== current.windowScreenLeft)
+  ) {
+    return { kind: "windowMoved" };
+  }
+  return null;
+}
+
 export function getIsInvalidatedCalibrationContext(
   context: CalibrationContext,
   fullScreen: boolean,
 ): boolean {
-  const current = getCalibrationContext(fullScreen);
   return (
-    context.windowInnerWidth !== current.windowInnerWidth ||
-    context.windowInnerHeight !== current.windowInnerHeight ||
-    context.windowScreenTop !== current.windowScreenTop ||
-    context.windowScreenLeft !== current.windowScreenLeft ||
-    context.devicePixelRatio !== current.devicePixelRatio ||
-    context.fullScreen !== current.fullScreen
+    getCalibrationMismatch(context, getCalibrationContext(fullScreen)) !== null
   );
 }
 

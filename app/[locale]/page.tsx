@@ -159,6 +159,7 @@ export default function Home() {
               ),
             })}
           </li>
+          <li>{t("calibration.guide")}</li>
           <li>{t("calibration.drag")}</li>
           <li>
             {t.rich("calibration.size", {
@@ -174,6 +175,7 @@ export default function Home() {
               ),
             })}
           </li>
+          <li>{t("calibration.lens")}</li>
           <li>{t("calibration.project")}</li>
         </ol>
 
@@ -194,6 +196,7 @@ export default function Home() {
           </li>
           <li>{t("project.move")}</li>
           <li>{t("project.cut")}</li>
+          <li>{t("project.switch")}</li>
         </ol>
         <a href="#tools">
           <h2 id="tools">{t("tools")} #</h2>

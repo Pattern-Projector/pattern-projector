@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { CanvasState, drawPolygon, drawGrid } from "@/_lib/drawing";
+import { CanvasState, drawPolygon, drawGrid, drawTarget } from "@/_lib/drawing";
 import {
   getPerspectiveTransformFromPoints,
   transformPoint,
@@ -22,6 +22,13 @@ import { FullScreenHandle } from "react-full-screen";
 import Matrix from "ml-matrix";
 import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
 import { Unit } from "@/_lib/unit";
+import {
+  GuideStep,
+  Placement,
+  rotatePlacement,
+  scalePlacement,
+  targetBoxSize,
+} from "@/_lib/guided-calibration";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const cornerMargin = 96;
@@ -38,6 +45,9 @@ export default function CalibrationCanvas({
   corners,
   setCorners,
   fullScreenHandle,
+  toContentPoint = (p) => p,
+  guideStep = null,
+  adjustPlacement,
 }: {
   className: string | undefined;
   points: Point[];
@@ -50,10 +60,25 @@ export default function CalibrationCanvas({
   corners: Set<number>;
   setCorners: Dispatch<SetStateAction<Set<number>>>;
   fullScreenHandle: FullScreenHandle;
+  /** Maps a pointer position on screen to the calibration grid's coordinates, e.g. to undo lens correction */
+  toContentPoint?: (p: Point) => Point;
+  /** Step of the calibration guide: aligning moves, resizes and rotates the whole grid; printing and lens steps ignore the pointer */
+  guideStep?: GuideStep | null;
+  adjustPlacement?: (change: (placement: Placement) => Placement) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hoverCorners, setHoverCorners] = useState<Set<number>>(new Set());
   const [dragPoint, setDragPoint] = useState<Point | null>(null);
+  // Where the drag started and the points at that moment. Moving from these, rather than from the last move, keeps
+  // every bit of a fast drag: pointer events can arrive before React has re-rendered with the previous move.
+  const dragStart = useRef<{
+    point: Point;
+    points: Point[];
+    corners: Set<number>;
+  } | null>(null);
+  // The points after the latest move, for the end of the drag: releasing the pointer can come before React
+  // re-renders with the last move, and saving the rendered points then would undo that move
+  const draggedPoints = useRef<Point[] | null>(null);
 
   useEffect(() => {
     if (
@@ -98,10 +123,14 @@ export default function CalibrationCanvas({
           null,
           null,
         );
-        draw(cs);
+        draw(
+          cs,
+          guideStep === GuideStep.Align ? targetBoxSize(unitOfMeasure) : null,
+        );
       }
     }
   }, [
+    guideStep,
     points,
     width,
     height,
@@ -185,17 +214,39 @@ export default function CalibrationCanvas({
     [KeyCode.Tab],
   );
 
+  const ignoresPointer =
+    guideStep === GuideStep.Print || guideStep === GuideStep.Lens;
+
   useProgArrowKeyPoints(
     dispatch,
     corners,
-    isCalibrating,
+    isCalibrating && !ignoresPointer,
     fullScreenHandle.active,
   );
+  const isAligning = guideStep === GuideStep.Align;
 
   function handlePointerDown(e: React.PointerEvent) {
-    const p = { x: e.clientX, y: e.clientY };
+    if (ignoresPointer) return;
+    const p = toContentPoint({ x: e.clientX, y: e.clientY });
+    if (isAligning) {
+      // Drag anywhere to move the whole grid
+      const allCorners = new Set([0, 1, 2, 3]);
+      dragStart.current = {
+        point: p,
+        points: [...points],
+        corners: allCorners,
+      };
+      setDragPoint(p);
+      setCorners(allCorners);
+      return;
+    }
     const selectedCorners = selectCorners(p);
     if (selectedCorners.size) {
+      dragStart.current = {
+        point: p,
+        points: [...points],
+        corners: selectedCorners,
+      };
       setDragPoint(p);
       setCorners(selectedCorners);
       setHoverCorners(new Set());
@@ -203,13 +254,16 @@ export default function CalibrationCanvas({
   }
 
   function handlePointerMove(e: React.PointerEvent) {
-    const p = { x: e.clientX, y: e.clientY };
-    if (dragPoint === null) {
-      setHoverCorners(selectCorners(p));
-    } else if (corners.size) {
-      const newPoints = [...points];
-      let dx = p.x - dragPoint.x;
-      let dy = p.y - dragPoint.y;
+    if (ignoresPointer) return;
+    const p = toContentPoint({ x: e.clientX, y: e.clientY });
+    if (dragStart.current === null) {
+      if (!isAligning) setHoverCorners(selectCorners(p));
+    } else {
+      const start = dragStart.current;
+      const corners = start.corners;
+      const newPoints = [...start.points];
+      let dx = p.x - start.point.x;
+      let dy = p.y - start.point.y;
       if (corners.size === 2) {
         // axis constrained edges.
         if (hasTopEdge(corners) || hasBottomEdge(corners)) {
@@ -225,6 +279,7 @@ export default function CalibrationCanvas({
           y: currentPoint.y + dy,
         };
       }
+      draggedPoints.current = newPoints;
       setDragPoint(p);
       dispatch({ type: "set", points: newPoints });
     }
@@ -233,7 +288,7 @@ export default function CalibrationCanvas({
   function handlePointerEnd(e: React.PointerEvent) {
     /* Nothing to do. This short circuit is required to prevent setting
      * the localStorage of the points to invalid values */
-    if (dragPoint === null) return;
+    if (dragStart.current === null) return;
 
     localStorage.setItem(
       "calibrationContext",
@@ -241,8 +296,25 @@ export default function CalibrationCanvas({
         getCalibrationContextUpdatedWithEvent(e, fullScreenHandle.active),
       ),
     );
-    dispatch({ type: "set", points });
+    dispatch({ type: "set", points: draggedPoints.current ?? points });
+    dragStart.current = null;
+    draggedPoints.current = null;
     setDragPoint(null);
+  }
+
+  // While aligning, scroll or pinch to resize and hold Shift or Option to rotate
+  function handleWheel(e: React.WheelEvent) {
+    if (!isAligning || adjustPlacement === undefined) return;
+    const delta = e.deltaY || e.deltaX;
+    if (e.shiftKey || e.altKey) {
+      adjustPlacement((placement) =>
+        rotatePlacement(placement, delta * 0.0001),
+      );
+    } else {
+      adjustPlacement((placement) =>
+        scalePlacement(placement, Math.exp(-delta * 0.0002)),
+      );
+    }
   }
 
   return (
@@ -257,9 +329,16 @@ export default function CalibrationCanvas({
       onPointerOut={handlePointerEnd}
       onPointerLeave={handlePointerEnd}
       onPointerMove={handlePointerMove}
+      onWheel={handleWheel}
       style={{
         pointerEvents: isCalibrating ? "auto" : "none",
-        cursor: dragPoint ? "none" : "grab",
+        cursor: ignoresPointer
+          ? "default"
+          : dragPoint
+            ? "none"
+            : isAligning
+              ? "move"
+              : "grab",
       }}
     />
   );
@@ -281,11 +360,17 @@ function hasRightEdge(corners: Set<number>): boolean {
   return corners.has(1) && corners.has(2);
 }
 
-function draw(cs: CanvasState): void {
+function draw(
+  cs: CanvasState,
+  target: { width: number; height: number } | null,
+): void {
   const { ctx, isCalibrating } = cs;
   if (isCalibrating) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     drawCalibration(cs);
+    if (target !== null && !cs.isConcave) {
+      drawTarget(cs, target.width, target.height);
+    }
   } else if (cs.isConcave) {
     ctx.fillStyle = cs.errorFillPattern;
     drawPolygon(ctx, cs.points);

@@ -25,15 +25,18 @@
     },
     "calibration": {
       "title": "Calibration",
-      "start": "Click (or tap) “Start Calibrating.”",
-      "fullscreen": "Enter full screen mode by clicking (or tapping) <fullscreenIcon></fullscreenIcon> in the top left corner.",
+      "start": "Click (or tap) “Start Calibrating.” This opens your patterns. Click (or tap) “Calibrate” there, or open a pattern and you will calibrate first if needed.",
+      "fullscreen": "Calibration happens in full screen, so the measurements match when you cut. If the app is not in full screen yet, click (or tap) <fullscreenIcon></fullscreenIcon> at the top of the screen.",
+      "guide": "New users get a step-by-step guide with a small printable target. You can open it any time with “Guided setup.”",
       "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your computer or tablet. Adjust the placement of the corners until the projected grid matches your mat's grid.",
       "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and input the width and height to match the width and height of the grid.",
-      "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
+      "lens": "If straight lines bow near the edges of the projection, raise “Lens” a little at a time until they look straight. The corners stay where they are.",
+      "project": "When the projected grid is aligned with your mat, click (or tap) “Save calibration.” “Cancel” puts the previous calibration back."
     },
     "project": {
       "title": "Projecting a Pattern",
-      "open": "Click (or tap) <pdficon></pdficon> to open a pattern.",
+      "open": "Add a PDF or SVG pattern on the patterns screen, then click (or tap) it to open it in full screen. Patterns are saved in this browser, so next time you only need to click the one you want.",
+      "switch": "To switch patterns without leaving full screen, click (or tap) “Projects.” Each pattern reopens where you left it.",
       "move": "Move the PDF by clicking and dragging it around the screen.",
       "cut": "Cut along the projected design.",
       "tools": "In projection mode there are several tools provided. Some have keyboard shortcuts, which are denoted in parentheses.",
@@ -205,9 +208,9 @@
     "ok": "OK"
   },
   "Mail": {
-      "title": "You've got mail",
-      "donate": "Donate"
-    },
+    "title": "You've got mail",
+    "donate": "Donate"
+  },
   "Troubleshooting": {
     "notMatching": "Lines not matching your mat?",
     "title": "Calibration Troubleshooting",
@@ -242,6 +245,8 @@
     "openPDF": "Open",
     "height": "H:",
     "width": "W:",
+    "lensCorrection": "Lens:",
+    "lensCorrectionDescription": "Lens correction: if straight lines in the calibration grid bow outwards or inwards near the edges, adjust this until they look straight, then recalibrate the corners",
     "project": "Project",
     "calibrate": "Calibrate",
     "delete": "Reset calibration",
@@ -271,7 +276,6 @@
     "fullscreenExit": "Exit full screen",
     "ok": "OK",
     "calibrationAlertTitle": "Calibration Warning",
-    "calibrationAlert": "The window size has changed since projecting started, press the full screen button or recalibrate to fix this issue.",
     "calibrationAlertContinue": "The window size can't change after calibration. To project in full screen, calibrate in full screen. If you want to change the window size, recalibrate.",
     "continue": "Save window size and continue",
     "checkCalibration": "Check calibration",
@@ -287,7 +291,29 @@
     "magnify": "Magnify (M)",
     "zoomOut": "Zoom out (Z)",
     "mail": "Mail from Courtney",
-    "invalidCalibration": "The calibration grid is not valid. Press 'Reset calibration' to try again."
+    "invalidCalibration": "The calibration grid is not valid. Press 'Reset calibration' to try again.",
+    "projects": "Projects",
+    "projectOpenError": "That project's pattern file couldn't be loaded from this browser. Try opening the file again.",
+    "invalidFile": "{name} isn't a PDF or SVG pattern, so it can't be added.",
+    "patternAdded": "{name} is added. Click it to start projecting.",
+    "projectSaveError": "This browser couldn't save the pattern.",
+    "calibrateInFullScreen": "Calibrate in full screen so measurements stay correct while you cut.",
+    "calibrationMismatch": {
+      "uncalibrated": "This screen hasn't been calibrated yet. Calibrate so measurements are correct.",
+      "calibratedInFullScreen": "You calibrated in full screen, so go back to full screen to keep measurements correct.",
+      "calibratedInWindow": "You calibrated in a window, but you're projecting in full screen. Recalibrate in full screen so measurements are correct.",
+      "sizeChanged": "The screen size has changed since you calibrated (it was {was}, now it's {now}). Plugging in or unplugging a projector can do this, for example when the screen mirrors the projector. Recalibrate so measurements are correct.",
+      "windowMoved": "The window has moved since you calibrated. Recalibrate so measurements are correct."
+    },
+    "recalibrate": "Recalibrate",
+    "recalibrateInWindow": "Recalibrate in this window",
+    "saveCalibration": "Save calibration",
+    "cancelCalibration": "Cancel",
+    "cancelCalibrationDescription": "Close calibration without saving changes",
+    "resetCalibration": "Reset",
+    "close": "Close",
+    "calibrationAlertDismiss": "Not now",
+    "calibrationReminder": "Calibration doesn't match this screen. Recalibrate before cutting."
   },
   "ScaleMenu": {
     "scale": "Scale Pattern",
@@ -342,5 +368,65 @@
   "PdfViewer": {
     "error": "Failed to load pattern",
     "noData": "Press the \"Open\" button to load a pattern"
+  },
+  "CalibrationGuide": {
+    "title": "Calibration guide",
+    "open": "Guided setup",
+    "stepOf": "Step {step} of {count}:",
+    "skip": "Skip to corners",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "print": {
+      "title": "Print the target",
+      "description": "Print the target at 100% (Actual size) and check that the box measures 8 × 6 inches. Set W and H above to the size of the grid you're calibrating to on your mat, then put the target in the middle of that grid with the arrow pointing to the top of the mat.",
+      "download": "Download the printable target"
+    },
+    "align": {
+      "title": "Line up the target",
+      "description": "Drag to move the purple target until its cross sits on the printed cross. Then resize and rotate it until the purple box sits on the printed box.",
+      "smaller": "Smaller",
+      "bigger": "Bigger",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "hint": "Each click is a small step; hold Shift for bigger steps. You can also scroll or pinch to resize, and hold Shift while scrolling to rotate."
+    },
+    "lens": {
+      "title": "Straighten the lines",
+      "description": "Remove the paper. If the projected grid lines bow outwards or inwards between the corners, adjust the lens correction until they run straight along your mat's lines. The corners stay where you put them. Skip this if the lines already match.",
+      "less": "Less lens correction",
+      "more": "More lens correction"
+    },
+    "corners": {
+      "title": "Fine-tune the corners",
+      "description": "Drag each corner circle onto the matching corner of the grid on your mat. Click a corner and use the arrow keys to nudge it."
+    },
+    "drag": "Drag to move this panel"
+  },
+  "Projects": {
+    "title": "Projects",
+    "empty": "No patterns yet. Add a PDF or SVG pattern and it stays here, so you can switch between patterns without finding the file again.",
+    "current": "Open now",
+    "lastOpened": "Opened {date, date, medium}",
+    "name": "Project name",
+    "rename": "Rename",
+    "renameProject": "Rename {name}",
+    "delete": "Delete",
+    "deleteProject": "Delete {name}",
+    "confirmDelete": "Delete for good",
+    "cancel": "Cancel",
+    "close": "Close",
+    "addFromHome": "To add a new pattern, go to all patterns. That leaves full screen so you can choose the file.",
+    "goHome": "All patterns"
+  },
+  "ProjectsHome": {
+    "title": "Your patterns",
+    "dropHint": "Drop a PDF or SVG pattern here, or choose one from your computer.",
+    "add": "Add a pattern",
+    "calibrate": "Calibrate",
+    "info": "Info page",
+    "note": "Opening a pattern goes full screen. If you haven't calibrated in full screen yet, you'll calibrate first. Patterns are kept in this browser on this device.",
+    "mail": "Mail from Courtney"
   }
 }

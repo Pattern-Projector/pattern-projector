@@ -321,8 +321,23 @@ export default function MeasureCanvas({
     isDarkTheme,
   ]);
 
+  // Remember measurements for each pattern. This effect has to come before the one that loads them: when the file
+  // changes it runs first, while the lines still belong to the previous file, and skips saving them.
+  const linesFileName = useRef<string | null>(null);
   useEffect(() => {
-    dispatchLines({ type: "reset" });
+    if (file && linesFileName.current === file.name) {
+      localStorage.setItem(`lines:${file.name}`, JSON.stringify(lines));
+    }
+  }, [lines, file]);
+
+  useEffect(() => {
+    linesFileName.current = file?.name ?? null;
+    const saved = file ? readSavedLines(file.name) : null;
+    if (saved) {
+      dispatchLines({ type: "set", lines: saved });
+    } else {
+      dispatchLines({ type: "reset" });
+    }
     setSelectedLine(-1);
   }, [file]);
 
@@ -363,4 +378,15 @@ export default function MeasureCanvas({
       />
     </div>
   );
+}
+
+function readSavedLines(fileName: string): Line[] | null {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(`lines:${fileName}`) ?? "null",
+    );
+    return Array.isArray(saved) ? saved : null;
+  } catch (e) {
+    return null;
+  }
 }
