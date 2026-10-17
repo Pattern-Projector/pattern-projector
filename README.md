@@ -1,3 +1,7 @@
+**A quick note about what's next:** I've been working on a complete rewrite of PP since April. I was really inspired by some community work on PP and wanted to build those features in, but I kept fighting my poor architectural choices, so I decided to start fresh.
+
+It's in a private repo for now while I have fun rebuilding things and adding in a bunch of wishlist features, but it will be open source when it launches. In the meantime, I'm keeping this version stable with just bug fixes, so new feature PRs are on hold.
+
 # Welcome to Pattern Projector!
 
 Pattern projector is a free and open source web app that helps users quickly calibrate projectors for sewing patterns. This project is currently in beta, so expect large changes and new features to be added as we iterate.
