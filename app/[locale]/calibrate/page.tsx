@@ -284,10 +284,12 @@ export default function Page() {
 
   // Set new file; reset file based state; and if available, load file based state from localStorage
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
-    const { files } = e.target;
+    const file = e.target.files?.[0];
+    // Allow the same file to be selected again, including after a load error.
+    e.target.value = "";
 
-    if (files && files[0] && isValidFile(files[0])) {
-      setFile(files[0]);
+    if (file && isValidFile(file)) {
+      setFile(file);
       setFileLoadStatus(LoadStatusEnum.LOADING);
       setRestoreTransforms(null);
       setZoomedOut(false);
@@ -297,7 +299,7 @@ export default function Page() {
       setLayers({});
       dispatchPatternScaleAction({ type: "set", scale: "1.00" });
       const lineThicknessString = localStorage.getItem(
-        `lineThickness:${files[0].name}`,
+        `lineThickness:${file.name}`,
       );
       if (lineThicknessString !== null) {
         setLineThickness(Number(lineThicknessString));
@@ -305,7 +307,7 @@ export default function Page() {
         setLineThickness(0);
       }
 
-      const key = `stitchSettings:${files[0].name ?? "default"}`;
+      const key = `stitchSettings:${file.name ?? "default"}`;
       const stitchSettingsString = localStorage.getItem(key);
       if (stitchSettingsString !== null) {
         const stitchSettings = JSON.parse(stitchSettingsString);

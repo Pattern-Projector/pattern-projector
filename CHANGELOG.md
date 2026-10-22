@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Selecting the same pattern file again reloads it
+
 - Zoom-out viewport outline respects pattern rotation, flipping and calibration
 
 - Menus will not hide when inputting text
