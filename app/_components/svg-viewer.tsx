@@ -95,19 +95,17 @@ export default function SvgViewer({
         setLayoutWidth(svg.width.baseVal.value * patternScale);
         setLayoutHeight(svg.height.baseVal.value * patternScale);
         setPageCount(1);
-        // get all groups at the root if the svg
+        // get all groups at the root of the svg
         const groupLayers: Layers = {};
-        Array.from(svg.querySelectorAll(`g`))
-          .filter((g) => g.getAttribute("inkscape:groupmode") == "layer")
-          .forEach((g) => {
-            const layerName = g.getAttribute("inkscape:label") ?? g.id;
-            const isVisible = getComputedStyle(g).display !== "none";
-            groupLayers[g.id] = {
-              name: layerName,
-              ids: [g.id],
-              visible: isVisible,
-            };
-          });
+        Array.from(svg.querySelectorAll(`svg > g`)).forEach((g) => {
+          const layerName = g.getAttribute("inkscape:label") ?? g.id;
+          const isVisible = getComputedStyle(g).display !== "none";
+          groupLayers[g.id] = {
+            name: layerName,
+            ids: [g.id],
+            visible: isVisible,
+          };
+        });
         setLayers(groupLayers);
         if (Object.keys(groupLayers).length > 1) {
           setMenuStates({ ...getDefaultMenuStates(), layers: true });
