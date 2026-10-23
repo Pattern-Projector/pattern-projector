@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Calibration breaking when zoomed out and switch to calibrate to recalibrate.
+
 ## [1.3.0] - 2025-06-25
 
 ### Added
