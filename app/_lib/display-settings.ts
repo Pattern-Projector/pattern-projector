@@ -43,12 +43,18 @@ export function isDarkTheme(theme: Theme) {
   return [Theme.Dark, Theme.Green].includes(theme);
 }
 
+export function isColourTheme(theme: Theme) {
+  return theme === Theme.Green;
+}
+
 export function themeFilter(theme: Theme): string {
   switch (theme) {
     case Theme.Dark:
       return "invert(1)";
     case Theme.Green:
-      return "invert(1) sepia(1) saturate(10000%) hue-rotate(65deg) brightness(1.5)";
+      // Colouring is handled by the recolor canvas filter (via recolourHex),
+      // so no container CSS filter is needed.
+      return "none";
     case Theme.Light:
       return "none";
   }
@@ -59,7 +65,7 @@ export function strokeColor(theme: Theme) {
     case Theme.Dark:
       return "#fff";
     case Theme.Green:
-      return "#32CD32";
+      return "#00FFCC";
     case Theme.Light:
       return "#000";
   }

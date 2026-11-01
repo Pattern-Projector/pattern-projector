@@ -8,6 +8,17 @@ export interface RenderContextType {
   magnifying: boolean;
   onPageRenderSuccess: () => void;
   patternScale: number;
+  /**
+   * When set, the recolor SVG filter maps black → this hex colour via a
+   * feColorMatrix SVG filter.
+   */
+  recolourHex?: string;
+  /**
+   * CSS filter string for the active theme (e.g. "invert(1)" for Dark).
+   * Applied to the container div on Chrome/Firefox; on Safari, where canvas
+   * rendering is pixel-based, it is handled separately per platform.
+   */
+  themeFilter?: string;
 }
 
 export const RenderContext = createContext<RenderContextType>({
@@ -16,6 +27,8 @@ export const RenderContext = createContext<RenderContextType>({
   magnifying: false,
   onPageRenderSuccess: () => {},
   patternScale: 1,
+  recolourHex: undefined,
+  themeFilter: undefined,
 });
 
 export default function useRenderContext() {

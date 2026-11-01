@@ -45,6 +45,7 @@ export default function PdfViewer({
   lineThickness,
   stitchSettings,
   filter,
+  recolourHex,
   magnifying,
   setFileLoadStatus,
   setLineThicknessStatus,
@@ -63,6 +64,8 @@ export default function PdfViewer({
   lineThickness: number;
   stitchSettings: StitchSettings;
   filter: string;
+  /** When set, the recolor SVG filter maps black → this hex colour at canvas draw time. */
+  recolourHex?: string;
   magnifying: boolean;
   setFileLoadStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
   setLineThicknessStatus: Dispatch<SetStateAction<LoadStatusEnum>>;
@@ -116,10 +119,10 @@ export default function PdfViewer({
     }
   }
 
-  function onPageRenderSuccess() {
+  const onPageRenderSuccess = useCallback(() => {
     setFileLoadStatus(LoadStatusEnum.SUCCESS);
     setLineThicknessStatus(LoadStatusEnum.SUCCESS);
-  }
+  }, [setFileLoadStatus, setLineThicknessStatus]);
 
   const customTextRenderer = useCallback(({ str }: { str: string }) => {
     return `<span class="opacity-0 hover:opacity-100 hover:text-6xl" style="background-color: #FFF; color: #000;">${str}</span>`;
@@ -200,10 +203,16 @@ export default function PdfViewer({
               style={{
                 width: insetWidth,
                 height: insetHeight,
+                backgroundColor:
+                  recolourHex || filter !== "none" ? "#000000" : "#ffffff",
                 mixBlendMode:
                   cssEdgeInsets.horizontal == 0 && cssEdgeInsets.vertical == 0
                     ? "normal"
-                    : "darken",
+                    // Dark canvas background (dark/green theme): use "lighten" so
+                    // pages composite correctly when overlapping.
+                    : recolourHex || filter !== "none"
+                      ? "lighten"
+                      : "darken",
                 transform:
                   stitchSettings.verticalAlignment == VerticalAlignment.Top
                     ? `scaleY(1)`
@@ -218,10 +227,16 @@ export default function PdfViewer({
                     magnifying,
                     onPageRenderSuccess,
                     patternScale,
+                    recolourHex,
+                    themeFilter: filter,
                   }}
                 >
                   <Page
-                    scale={PDF_TO_CSS_UNITS * patternScale}
+                    // Fixed scale — react-pdf's page context (and thus the custom
+                    // renderer's canvas/refs) is NOT recreated when patternScale
+                    // changes. The custom renderer handles its own viewport scale
+                    // via patternScale from RenderContext.
+                    scale={PDF_TO_CSS_UNITS}
                     pageNumber={value}
                     renderMode="custom"
                     customRenderer={CustomRenderer}
