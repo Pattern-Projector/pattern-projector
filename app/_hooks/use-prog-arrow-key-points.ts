@@ -39,7 +39,6 @@ export default function useProgArrowKeyPoints(
   useProgArrowKeyHandler(
     applyOffset,
     corners.size > 0 && active,
-    [1, 3, 5, 10],
     fullScreen,
   );
 
