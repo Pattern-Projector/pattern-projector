@@ -21,6 +21,7 @@ import { PointAction } from "@/_reducers/pointsReducer";
 import { FullScreenHandle } from "react-full-screen";
 import Matrix from "ml-matrix";
 import { getCalibrationContextUpdatedWithEvent } from "@/_lib/calibration-context";
+import { Unit } from "@/_lib/unit";
 
 const maxPoints = 4; // One point per vertex in rectangle
 const cornerMargin = 96;
@@ -44,7 +45,7 @@ export default function CalibrationCanvas({
   width: number;
   height: number;
   isCalibrating: boolean;
-  unitOfMeasure: string;
+  unitOfMeasure: Unit;
   displaySettings: DisplaySettings;
   corners: Set<number>;
   setCorners: Dispatch<SetStateAction<Set<number>>>;
@@ -246,6 +247,7 @@ export default function CalibrationCanvas({
 
   return (
     <canvas
+      data-testid="calibration-canvas"
       tabIndex={0}
       ref={canvasRef}
       className={`${className} outline-none`}

@@ -26,7 +26,7 @@
     "calibration": {
       "title": "Calibration",
       "start": "Click (or tap) “Start Calibrating.”",
-      "fullscreen": "Enter full screen mode by clicking (or tapping) ",
+      "fullscreen": "Enter full screen mode by clicking (or tapping) <fullscreenIcon></fullscreenIcon> in the top left corner.",
       "drag": "Drag the corners of the grid to align with your mat. With your eyes on the mat, adjust the corners on your computer or tablet. Adjust the placement of the corners until the projected grid matches your mat's grid.",
       "size": "You don't have to calibrate using your entire mat, instead choose the largest area you can fit the calibration grid in and input the width and height to match the width and height of the grid.",
       "project": "When the projected grid is aligned with your mat, click (or tap) “Project.”"
@@ -125,6 +125,16 @@
         "title": "Move PDF by line length",
         "description": "Moves the PDF by the length of the line.",
         "use": "For lengthening/shortening pattern pieces: draw a line perpendicular the lengthen/shorten line of a pattern piece, cut to the lengthen/shorten line, then click (or tap) the move by line length button, and then continue cutting the piece. The direction of the line drawn will depend on whether you are lengthening or shortening the pattern piece."
+      },
+      "length": {
+        "title": "Line length",
+        "description": "Displays the length of the selected line (shown in purple). Other lines are orange.",
+        "use": "Tap the length to enter a precise measurement and adjust the line's size. Useful for lengthening/shortening pattern pieces. See <lineToolVideoLink>this video</lineToolVideoLink> for an example."
+      },
+      "angle": {
+        "title": "Line angle",
+        "description": "Displays the angle of the selected line (shown in purple). Other lines are orange.",
+        "use": "Enter a precise angle to rotate the line and pattern piece. Use the <alignIcon></alignIcon> align to center button to apply the rotation based on the entered angle."
       }
     },
     "overlayOptions": {
@@ -287,6 +297,8 @@
   "StitchMenu": {
     "columnCount": "Columns",
     "rowCount": "Rows",
+    "topAlignment": "Top Aligned",
+    "bottomAlignment": "Bottom Aligned",
     "pageRange": "Stitch Pages",
     "horizontal": "Horizontal Overlap",
     "vertical": "Vertical Overlap",

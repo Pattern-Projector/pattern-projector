@@ -1,0 +1,334 @@
+{
+    "HomePage": {
+        "github": "Veja o código fonte",
+        "calibrate": "Iniciar calibragem",
+        "choose-language": "Idioma",
+        "welcome": {
+            "title": "Bem vindo ao Projetor de Moldes Pattern Projector!",
+            "description": "O Pattern projector é um aplicativo web gratuito e de código aberto que calibra rapidamente projetores para moldes de costura. Ele também possui ferramentas para unir moldes de várias páginas, alterar a espessura das linhas, inverter cores, girar/espelhar moldes e muito mais. Para ler sobre as atualizações mais recentes, confira o <changeLogLink>registro de alterações</changeLogLink>."
+        },
+        "requirements": {
+            "title": "O que você vai precisar",
+            "projector": "Projetor: resolução mínima recomendada de 720p",
+            "mat": "Um tapete de corte com linhas de grade (opcional)",
+            "mount": "Tripé ou suporte de parede/prateleira/mesa para projetor",
+            "computer": "Computador ou tablet para conectar ao projetor",
+            "pattern": "Um molde de costura em PDF"
+        },
+        "setup": {
+            "title": "Configuração",
+            "place": "Coloque o projetor acima da base de corte, apontando diretamente para ela. Se você não tiver uma base de corte, pode usar papel ou fita crepe para marcar uma grade/retângulo em uma mesa ou no chão.",
+            "connect": "Conecte o computador ou tablet ao projetor e escolha espelhar ou estender a tela para que a imagem apareça no projetor.",
+            "focus": "Ajuste o foco do projetor até que o texto fique nítido no centro da projeção. Se não conseguir obter uma imagem clara, verifique se a distância entre o projetor e a base de corte está dentro da faixa funcional recomendada pelo fabricante.",
+            "keystone": "Se o seu projetor tiver correção de keystone, ajuste-a para que a projeção fique o mais próxima possível de um retângulo e o foco nas bordas melhore."
+        },
+        "calibration": {
+            "title": "Calibração",
+            "start": "Clique (ou toque) em “Iniciar calibração.”",
+            "fullscreen": "Entre no modo de tela cheia clicando (ou tocando). ",
+            "drag": "Arraste os cantos da grade para alinhar com a sua base de corte. Com os olhos na base, ajuste os cantos no seu computador ou tablet. Continue ajustando até que a grade projetada corresponda à grade da sua base de corte.",
+            "size": "Você não precisa calibrar usando toda a sua base de corte; em vez disso, escolha a maior área em que consiga encaixar a grade de calibração e insira a largura e a altura correspondentes à largura e à altura da grade.",
+            "project": "Quando a grade projetada estiver alinhada com a sua base de corte, clique (ou toque) em “Projetar.”"
+        },
+        "project": {
+            "title": "Projetando um molde",
+            "open": "Clique (ou toque) em <pdficon></pdficon> para abrir um molde.",
+            "move": "Mova o PDF clicando e arrastando-o pela tela.",
+            "cut": "Corte seguindo o desenho projetado.",
+            "tools": "No modo de projeção, várias ferramentas são disponibilizadas. Algumas têm atalhos de teclado, indicados entre parênteses.",
+            "fullscreen": {
+                "title": "Tela cheia",
+                "description": "Em geral, é mais fácil usar o software no modo de tela cheia."
+            },
+            "showMenu": {
+                "title": "Mostrar/ocultar menu",
+                "description": "Mostrar ou ocultar o menu superior."
+            },
+            "invert": {
+                "title": "Inverter cor",
+                "description": "Ao projetar, geralmente é mais fácil enxergar linhas verdes ou brancas sobre o fundo preto. Clique/Toque uma vez para linhas verdes, duas vezes para linhas brancas e três vezes para voltar às linhas pretas."
+            },
+            "moveTool": {
+                "title": "Mostrar ou ocultar a ferramenta de mover",
+                "description": "A ferramenta de mover possui quatro botões de seta para deslocar os cantos/bordas da grade de calibração. Ela também tem um botão central de avançar para alternar para o próximo canto/borda."
+            },
+            "overlayOptions": {
+                "title": "Mostrar ou ocultar opções de sobreposição",
+                "description": "Grade, borda, folha de papel, linhas de inversão ou sobreposições do lado avesso podem ser exibidas no PDF para ajudar na calibração e no corte. Para mais informações, consulte a <overlayOptionsLink>seção de opções de sobreposição</overlayOptionsLink>."
+            },
+            "lineWeight": {
+                "title": "Espessura da linha",
+                "description": "Alterar a espessura das linhas no molde em PDF."
+            },
+            "flip": {
+                "title": "Inverter verticalmente (V) ou horizontalmente (H)",
+                "description": "Útil ao espelhar moldes pela metade."
+            },
+            "rotate": {
+                "title": "Girar (R)",
+                "description": "Alterar a orientação do molde em 90 graus."
+            },
+            "recenter": {
+                "title": "Centralizar e Redefinir (C)",
+                "description": "Centraliza o molde na base de corte e redefine a rotação/inversão."
+            },
+            "magnify": {
+                "title": "Ampliar (M)",
+                "description": "Clique (ou toque) no PDF para ampliá-lo. Clique (ou toque) novamente para parar de ampliar."
+            },
+            "zoomOut": {
+                "title": "Reduzir zoom (Z)",
+                "description": "Reduza o zoom para ver o PDF inteiro. Clique (ou toque) no PDF para ampliar novamente no local selecionado."
+            },
+            "layers": {
+                "title": "Mostrar ou ocultar camadas",
+                "description": "Mostrar ou ocultar camadas no PDF."
+            },
+            "stitch": {
+                "title": "Mostrar ou ocultar menu de pontos",
+                "description": "Mostrar ou ocultar o menu de pontos, que permite unir moldes em PDF de várias páginas."
+            },
+            "scale": {
+                "title": "Mostrar ou ocultar o menu de escala",
+                "description": "Altere o tamanho do molde inserindo um multiplicador: entre 0 e 1 deixará o molde menor e maior que 1 deixará o molde maior."
+            },
+            "measure": {
+                "title": "Ferramenta linha (L)",
+                "description": "Marque linhas no PDF para girar, inverter, mover, medir ou marcar. Para uma descrição detalhada da ferramenta de linha, consulte a <lineToolLink>seção da ferramenta de linha</lineToolLink>."
+            }
+        },
+        "tools": "Ferramentas",
+        "lineTool": {
+            "title": "Ferramenta de linha",
+            "description": "A ferramenta de linha pode ser usada para medir distâncias, marcar linhas, girar, inverter e mover o PDF. Clique (ou toque) no botão da ferramenta de linha, depois clique (ou toque) no PDF e arraste para desenhar uma linha. Assim que a linha for desenhada, aparecerá um menu na parte inferior da tela com as seguintes opções:",
+            "delete": {
+                "title": "Excluir linha",
+                "description": "Exclui a linha selecionada."
+            },
+            "rotate": {
+                "title": "Alinhar ao centro",
+                "description": "Gira o PDF de modo que a linha selecionada fique horizontal e centralizada na sua base de corte.",
+                "use": "Para alinhar o fio de um molde com o fio do seu tecido: desenhe uma linha na linha do fio do molde e, em seguida, clique (ou toque) no botão alinhar ao centro."
+            },
+            "previousNext": {
+                "title": "Trazer linha anterior/próxima para o centro",
+                "description": "Move o PDF de modo que a linha anterior/próxima desenhada fique horizontal e centralizada na sua base de corte.",
+                "use": "Para alternar entre os moldes durante o corte: desenhe uma linha no fio de cada molde e depois navegue pelos moldes usando esses botões. Exclua as linhas à medida que avançar pelos moldes para acompanhar quais peças ainda precisam ser cortadas."
+            },
+            "flip": {
+                "title": "Inverter ao longo da linha",
+                "description": "Inverte o PDF ao longo da linha.",
+                "use": "Para desdobrar peças do molde: desenhe uma linha na linha de dobra de uma peça do molde, corte a peça até a linha de dobra, clique (ou toque) no botão inverter ao longo da linha e depois corte o restante da peça."
+            },
+            "move": {
+                "title": "Mover PDF pelo comprimento da linha",
+                "description": "Move o PDF pelo comprimento da linha.",
+                "use": "Para alongar/encurtar peças do molde: desenhe uma linha perpendicular à linha de alongar/encurtar de uma peça do molde, corte até a linha de alongar/encurtar, depois clique (ou toque) no botão mover pelo comprimento da linha e então continue cortando a peça. A direção da linha desenhada dependerá se você está alongando ou encurtando a peça do molde."
+            }
+        },
+        "overlayOptions": {
+            "title": "Opções de sobreposição",
+            "description": "As opções de sobreposição podem ser usadas para verificar a calibração durante a projeção e ajudar no corte dos moldes. As seguintes opções estão disponíveis:",
+            "border": {
+                "title": "Borda",
+                "description": "Mostra a borda da grade de calibração."
+            },
+            "grid": {
+                "title": "Grade",
+                "description": "Exibe a grade de calibração."
+            },
+            "paper": {
+                "title": "Folha de papel",
+                "description": "Mostra um retângulo no tamanho de uma folha Letter ou A4 para verificar a calibração."
+            },
+            "flipLines": {
+                "title": "Linhas de inversão",
+                "description": "Mostra linhas que ajudam a desdobrar moldes. Alinhe a linha de dobra do molde com a linha de inversão e pressione inverter horizontalmente ou verticalmente para espelhar a peça."
+            },
+            "flippedPattern": {
+                "title": "Lado avesso",
+                "description": "Mostra pontos quando o lado avesso do molde é projetado."
+            }
+        },
+        "faq": {
+            "title": "Perguntas frequentes",
+            "wrongSizePdf": {
+                "question": "Seu PDF está sendo projetado muito pequeno ou muito grande?",
+                "answer": "A ferramenta de calibração do Pattern Projector não possui zoom porque a escala da projeção vem das informações de tamanho do PDF. Os moldes de designers geralmente têm a escala correta, portanto, uma alteração na escala pode ter sido introduzida ao abrir o molde no Affinity Designer ou no Inkscape."
+            },
+            "saveAsApp": {
+                "answer": "O Pattern Projector é um Progressive Web App (PWA), portanto pode ser salvo como um aplicativo. No computador, você pode instalá-lo usando o <googleChromeLink>Chrome</googleChromeLink> ou o <microsoftEdgeLink>Edge</microsoftEdgeLink>. Em um tablet, abra o menu Compartilhar e toque em Adicionar à Tela de Início."
+            },
+            "mobileSupport": {
+                "question": "Vocês oferecem suporte para celulares e tablets?",
+                "answer": "Embora seja possível acessar e usar a página em um smartphone, o tamanho limitado da tela torna o uso difícil."
+            }
+        },
+        "resources": {
+            "title": "Recursos adicionais",
+            "links": {
+                "projectorsForSewing": {
+                    "title": "Grupo do Facebook “Projectors for Sewing”",
+                    "link": "https://www.facebook.com/groups/481078582801085"
+                },
+                "onePageGuide": {
+                    "title": "Guia de uma página para costura com projetor",
+                    "link": "https://bit.ly/onepageguidetoprojectorsewing"
+                }
+            }
+        },
+        "contribute": {
+            "title": "Contribuir para o projeto",
+            "donation": "Se o Pattern Projector fez você economizar dinheiro na copiadora ou livrou você de uma assinatura de visualizador de PDF, considere <donateLink>me pagar um café</donateLink> ou apoiar via <payPalLink>PayPal</payPalLink>!",
+            "develop": "Ajude a implementar recursos e corrigir problemas no <githubLink>GitHub</githubLink>.",
+            "translate": "Traduza esta ferramenta para mais idiomas usando o <weblateLink>Weblate</weblateLink>.",
+            "feedback": "Sugestões e pedidos de recursos são bem-vindos!"
+        },
+        "contact": "Contato",
+        "youTubeSrc": "https://www.youtube.com/embed/videoseries?si=80RVInkOM45wCyMB&amp;list=PLz35rzAwtPHC0IvLaBdWZWaYQxcr4sMlr"
+    },
+    "InstallButton": {
+        "title": "Instalar Aplicativo",
+        "description": "Para a melhor experiência, instale o Pattern Projector usando o <chromeLink>Google Chrome</chromeLink>. No Chrome, baixe o aplicativo tocando em <installIcon></installIcon> na barra de endereços.",
+        "descriptionAndroid": "Para a melhor experiência no Android, use o Firefox. Baixe o aplicativo tocando no botão de mais <moreIcon></moreIcon> no menu do navegador e depois em <addToHomeScreenIcon></addToHomeScreenIcon> Adicionar à tela inicial.",
+        "descriptionIOS": "Baixe o aplicativo tocando no botão de compartilhar <shareIcon></shareIcon> no menu do navegador e depois em Adicionar à tela inicial <addBoxIcon></addBoxIcon>.",
+        "ok": "OK"
+    },
+    "Mail": {
+        "title": "Você tem uma nova mensagem",
+        "donate": "Doar"
+    },
+    "Troubleshooting": {
+        "notMatching": "As linhas não estão coincidindo com a sua base de corte?",
+        "title": "Problemas de calibração",
+        "dragCorners": {
+            "title": "Como calibrar",
+            "description": "Arraste os cantos da grade até formar um retângulo de pelo menos 24x16 polegadas na sua base de corte. A grade deve ser o maior possível, mas não precisa cobrir toda a base.",
+            "caption": "Uma grade calibrada corretamente."
+        },
+        "inputMeasurement": "Use uma fita métrica para medir a largura e a altura da grade na sua base de corte. Insira essas medidas nos campos de largura e altura.",
+        "offByOne": {
+            "title": "As linhas estão retas, mas não se alinham?",
+            "description": "Se as linhas projetadas estiverem retas, mas não se alinharem com a sua base de corte, a largura ou a altura podem estar com uma diferença de 1 polegada/centímetro. Verifique novamente suas medidas com uma fita métrica. As medidas da base podem ser confusas ou imprecisas, por isso é importante conferir com a fita métrica.",
+            "caption": "As medidas foram inseridas incorretamente (23 x 17) em vez de (24 x 18). A base só mostra números até 23 e 17, então é fácil confundir as medidas. Certifique-se de medir com uma fita métrica!"
+        },
+        "unevenSurface": {
+            "title": "Linhas curvas?",
+            "description": "Se as linhas projetadas parecerem curvas, sua base ou a superfície abaixo dela pode não estar plana. Tente nivelar a base colocando cartolina nos pontos mais baixos ou mude para uma superfície de corte diferente.",
+            "caption": "Esta base tem uma régua embaixo, o que faz as linhas se curvarem no centro. Uma leve curvatura não tem problema, mas uma curvatura acentuada causará erros."
+        },
+        "dimensionsSwapped": {
+            "title": "Retângulos em vez de quadrados?",
+            "description": "Se a grade projetada parecer composta por retângulos em vez de quadrados, a largura e a altura podem ter sido trocadas. Basta inverter os valores nos campos.",
+            "caption": "A largura e a altura estão nos campos errados. As dimensões devem ficar como “L: 24” e “A: 18”."
+        },
+        "close": "Fechar"
+    },
+    "General": {
+        "close": "Fechar",
+        "error": "Erro"
+    },
+    "Header": {
+        "openPDF": "Abrir",
+        "height": "A:",
+        "width": "L:",
+        "project": "Projetar",
+        "calibrate": "Calibrar",
+        "delete": "Resetar calibração",
+        "gridOn": "Exibir grade",
+        "gridOff": "Não exibir grade",
+        "overlayOptions": "Opções de sobreposição",
+        "overlayOptionBorder": "Borda",
+        "overlayOptionDisabled": "Desabilitado",
+        "overlayOptionGrid": "Grade",
+        "overlayOptionPaper": "Folha de papel",
+        "overlayOptionFliplines": "Linhas de espelhamento",
+        "overlayOptionFlippedPattern": "Lado avesso",
+        "invertColor": "Inverter cores",
+        "invertColorOff": "Desligar inverter cores",
+        "flipVertical": "Inverter verticalmente (V)",
+        "flipHorizontal": "Inverter Horizontalmente (H)",
+        "flipCenterOn": "Inverter pelo centro",
+        "flipCenterOff": "Desligar Inverter pelo centro",
+        "fourCornersOn": "Destacar todos os cantos",
+        "fourCornersOff": "Destacar apenas o canto selecionado",
+        "rotate90": "Girar 90 graus no sentido horário (R)",
+        "arrowBack": "Voltar 1 página",
+        "arrowForward": "Avançar 1 página",
+        "info": "Página de informações",
+        "recenter": "Centralizar e resetar (C)",
+        "fullscreen": "Iniciar Tela cheia",
+        "fullscreenExit": "Sair tela cheia",
+        "ok": "OK",
+        "calibrationAlertTitle": "Aviso de Calibragem",
+        "calibrationAlert": "O tamanho da janela mudou desde que a projeção foi iniciada. Pressione o botão de tela cheia ou refaça a calibração para corrigir esse problema.",
+        "calibrationAlertContinue": "O tamanho da janela não pode mudar após a calibração. Para projetar em tela cheia, calibre em tela cheia. Se quiser alterar o tamanho da janela, refaça a calibração.",
+        "continue": "Salvar tamanho da janela e continuar",
+        "checkCalibration": "Verificar calibração",
+        "menuShow": "Mostrar menu",
+        "menuHide": "Esconder menu",
+        "lineWeight": "Espessura da linha",
+        "stitchMenuShow": "Mostrar menu de pontos",
+        "stitchMenuHide": "Esconder menu de pontos",
+        "stitchMenuDisabled": "Abra o PDF para usar o menu de pontos",
+        "measure": "Ferramenta de linha (L)",
+        "showMovement": "Exibir mover",
+        "hideMovement": "Esconder mover",
+        "magnify": "Aumentar (M)",
+        "zoomOut": "Afastar (Z)",
+        "mail": "Mensagem de Courtney",
+        "invalidCalibration": "A grade de calibração não é válida. Pressione “Redefinir calibração” para tentar novamente."
+    },
+    "ScaleMenu": {
+        "scale": "Ajustar escala do molde",
+        "hide": "Ocultar escala do molde",
+        "show": "Exibir escala do molde"
+    },
+    "StitchMenu": {
+        "columnCount": "Colunas",
+        "rowCount": "Linhas",
+        "pageRange": "Páginas de pontos",
+        "horizontal": "Sobreposição horizontal",
+        "vertical": "Sobreposição vertical",
+        "zeros": "Adicione 0s para páginas em branco, ex.: 1-3,0,0,4"
+    },
+    "SaveMenu": {
+        "save": "Exportar PDF",
+        "saveTooltip": "Exportar PDF com páginas unidas e camadas selecionadas",
+        "encryptedPDF": "Este PDF está criptografado. Insira a senha para salvar o PDF unido."
+    },
+    "LayerMenu": {
+        "title": "Camadas",
+        "showAll": "Exibir tudo",
+        "hideAll": "Esconder tudo",
+        "layersOn": "Exibir menu de camadas",
+        "layersOff": "Ocultar menu de camadas",
+        "noLayers": "Nenhuma camada no molde"
+    },
+    "MovementPad": {
+        "up": "Cima",
+        "down": "Baixo",
+        "left": "Esquerda",
+        "right": "Direita",
+        "next": "Proximo canto"
+    },
+    "MeasureCanvas": {
+        "rotateToHorizontal": "Alinhar ao centro",
+        "rotateAndCenterPrevious": "Trazer linha anterior ao centro",
+        "rotateAndCenterNext": "Trazer próxima linha ao centro",
+        "deleteLine": "Deletar linhar",
+        "flipAlong": "Inverter linha",
+        "translate": "Mover molde por comprimento de linha",
+        "line": "linha",
+        "lines": "linhas"
+    },
+    "OverlayCanvas": {
+        "zoomedOut": "Click molde para aproximar",
+        "magnifying": "clique molde para parar de aproximar",
+        "scaled": "<scale></scale>× Escala"
+    },
+    "PdfViewer": {
+        "error": "Falha ao carregar o molde",
+        "noData": "Pressione o botão de Abrir para carregar um molde"
+    }
+}

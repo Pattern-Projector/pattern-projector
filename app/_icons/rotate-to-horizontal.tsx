@@ -1,10 +1,13 @@
 export default function RotateToHorizontalIcon({
   ariaLabel,
+  className,
 }: {
   ariaLabel: string;
+  className?: string;
 }) {
   return (
     <svg
+      className={className}
       aria-label={ariaLabel}
       width="24"
       height="24"

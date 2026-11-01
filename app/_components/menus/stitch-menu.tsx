@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import StepperInput from "@/_components/stepper-input";
 import {
   LineDirection,
+  VerticalAlignment,
   StitchSettings,
 } from "@/_lib/interfaces/stitch-settings";
 import { StitchSettingsAction } from "@/_reducers/stitchSettingsReducer";
@@ -50,6 +51,7 @@ export default function StitchMenu({
       <menu
         className={`${sideMenuStyles} ${vh < 478 ? "h-[calc(100vh-8rem)] overflow-y-auto scrollbar" : "h-fit"}`}
       >
+        <h2 className="text-lg font-medium">{file?.name}</h2>
         <Tooltip description={t("zeros")}>
           <StepperInput
             inputClassName="w-36"
@@ -119,6 +121,27 @@ export default function StitchMenu({
             }
           />
         </div>
+        <InlineSelect
+          handleChange={(e) => {
+            dispatchStitchSettings({
+              type: "set",
+              stitchSettings: {
+                ...stitchSettings,
+                verticalAlignment:
+                  VerticalAlignment[
+                    e.target.value as keyof typeof VerticalAlignment
+                  ],
+              },
+            });
+          }}
+          id="vertical-alignment"
+          name="vertical-alignment"
+          value={stitchSettings.verticalAlignment}
+          options={[
+            { value: VerticalAlignment.Top, label: t("topAlignment") },
+            { value: VerticalAlignment.Bottom, label: t("bottomAlignment") },
+          ]}
+        ></InlineSelect>
         <StepperInput
           inputClassName="w-12"
           handleChange={handleEdgeInsetChange}

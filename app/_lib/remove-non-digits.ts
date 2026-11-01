@@ -1,13 +1,14 @@
 export default function removeNonDigits(
   newString: string,
   oldString: string,
+  max?: number,
 ): string {
   const num = newString.replace(/[^.\d]/g, "");
   const decimalCount = (num.match(/\./g) || []).length;
   if (num.localeCompare(".") === 0) {
     return "0.";
   }
-  if (decimalCount > 1) {
+  if (decimalCount > 1 || (max !== undefined && parseFloat(num) > max)) {
     return oldString;
   } else {
     return num;

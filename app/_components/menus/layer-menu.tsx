@@ -1,9 +1,9 @@
 import { Dispatch } from "react";
 import { useTranslations } from "next-intl";
 import { Layers } from "@/_lib/layers";
-import { LayerAction } from "@/_reducers/layersReducer";
 import { ButtonStyle, sideMenuStyles } from "@/_components/theme/styles";
 import { Button } from "@/_components/buttons/button";
+import { LayerAction } from "@/_reducers/layersReducer";
 
 export default function LayerMenu({
   className,

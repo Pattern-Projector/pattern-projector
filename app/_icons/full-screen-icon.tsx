@@ -1,6 +1,13 @@
-export default function FullScreenIcon({ ariaLabel }: { ariaLabel: string }) {
+export default function FullScreenIcon({
+  ariaLabel,
+  className,
+}: {
+  ariaLabel: string;
+  className?: string;
+}) {
   return (
     <svg
+      className={className}
       aria-label={ariaLabel}
       xmlns="http://www.w3.org/2000/svg"
       height="24"

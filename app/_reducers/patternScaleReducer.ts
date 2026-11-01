@@ -1,14 +1,6 @@
-interface DeltaAction {
-  type: "delta";
-  delta: number;
-}
-
-interface SetAction {
-  type: "set";
-  scale: string;
-}
-
-export type PatternScaleAction = DeltaAction | SetAction;
+export type PatternScaleAction =
+  | { type: "delta"; delta: number }
+  | { type: "set"; scale: string };
 
 export default function PatternScaleReducer(
   patternScale: string,

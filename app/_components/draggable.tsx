@@ -20,7 +20,7 @@ import {
 } from "@/_lib/geometry";
 import { Point } from "@/_lib/point";
 import { CSS_PIXELS_PER_INCH } from "@/_lib/pixels-per-inch";
-import { IN } from "@/_lib/unit";
+import { Unit } from "@/_lib/unit";
 import useProgArrowKeyToMatrix from "@/_hooks/use-prog-arrow-key-to-matrix";
 import { visible } from "./theme/css-functions";
 import {
@@ -54,7 +54,7 @@ export default function Draggable({
   children: ReactNode;
   perspective: Matrix;
   isCalibrating: boolean;
-  unitOfMeasure: string;
+  unitOfMeasure: Unit;
   calibrationTransform: Matrix;
   setCalibrationTransform: Dispatch<SetStateAction<Matrix>>;
   setPerspective: Dispatch<SetStateAction<Matrix>>;
@@ -77,12 +77,12 @@ export default function Draggable({
   const transform = useTransformContext();
   const transformer = useTransformerContext();
 
-  const quarterInchPx = CSS_PIXELS_PER_INCH / 4;
-  const halfCmPx = CSS_PIXELS_PER_INCH / 2.54 / 2;
+  const eighthInchPx = CSS_PIXELS_PER_INCH / 8;
+  const twoMmPx = CSS_PIXELS_PER_INCH / 12.7;
 
   useProgArrowKeyToMatrix(
     !isCalibrating,
-    unitOfMeasure === IN ? quarterInchPx : halfCmPx,
+    unitOfMeasure === Unit.IN ? eighthInchPx : twoMmPx,
     (matrix) => {
       transformer.setLocalTransform(matrix.mmul(transform));
     },

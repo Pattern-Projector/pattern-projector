@@ -1,5 +1,8 @@
-export const { CM, IN } = { IN: "IN", CM: "CM" };
+export enum Unit {
+  CM = "CM",
+  IN = "IN",
+}
 
-export function getPtDensity(unitOfMeasure: string): number {
-  return unitOfMeasure === CM ? 96 / 2.54 : 96;
+export function getPtDensity(unitOfMeasure: Unit): number {
+  return unitOfMeasure === Unit.CM ? 96 / 2.54 : 96;
 }
