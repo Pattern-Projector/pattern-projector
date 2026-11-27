@@ -74,6 +74,7 @@ import { ModalActions } from "@/_components/modal/modal-actions";
 import { Button } from "@/_components/buttons/button";
 import { erosionFilter } from "@/_lib/erode";
 import SvgViewer from "@/_components/svg-viewer";
+import SvgDpiModal from "@/_components/svg-dpi-modal";
 import { toggleFullScreen } from "@/_lib/full-screen";
 
 const defaultStitchSettings = {
@@ -120,6 +121,7 @@ export default function Page() {
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
   const [svgDpi, setSvgDpi] = useState<number | null>(null);
+  const [svgDpiPromptOpen, setSvgDpiPromptOpen] = useState(false);
   const [measuring, setMeasuring] = useState<boolean>(false);
   const [magnifying, setMagnifying] = useState<boolean>(false);
   const [zoomedOut, setZoomedOut] = useState<boolean>(false);
@@ -280,14 +282,21 @@ export default function Page() {
     updateLocalSettings({ width: w });
   }
 
-  // SVG DPI: use the value saved for this file, else the viewer's guess
+  // SVG DPI: use the value saved for this file. Otherwise show the viewer's
+  // guess and ask the user to confirm it.
   function handleSvgDpiDetected(guessedDpi: number | null) {
-    const saved = file && localStorage.getItem(`svgDpi:${file.name}`);
-    setSvgDpi(guessedDpi === null ? null : Number(saved) || guessedDpi);
+    if (guessedDpi === null) {
+      setSvgDpi(null);
+      return;
+    }
+    const saved = Number(file && localStorage.getItem(`svgDpi:${file.name}`));
+    setSvgDpi(saved || guessedDpi);
+    setSvgDpiPromptOpen(!saved);
   }
 
   function handleSvgDpiChange(dpi: number) {
     setSvgDpi(dpi);
+    setSvgDpiPromptOpen(false);
     if (file) localStorage.setItem(`svgDpi:${file.name}`, String(dpi));
   }
 
@@ -306,6 +315,7 @@ export default function Page() {
       setLayers({});
       dispatchPatternScaleAction({ type: "set", scale: "1.00" });
       setSvgDpi(null);
+      setSvgDpiPromptOpen(false);
       const lineThicknessString = localStorage.getItem(
         `lineThickness:${files[0].name}`,
       );
@@ -809,6 +819,11 @@ export default function Page() {
               />
             ) : null}
           </Transformable>
+          <SvgDpiModal
+            open={svgDpiPromptOpen && svgDpi !== null}
+            suggestedDpi={svgDpi ?? 96}
+            onChoose={handleSvgDpiChange}
+          />
         </FullScreen>
       </div>
       <Filters />
