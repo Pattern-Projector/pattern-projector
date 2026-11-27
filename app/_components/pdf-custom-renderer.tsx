@@ -66,9 +66,20 @@ export default function CustomRenderer() {
   ) {
     // Some iPad's don't support OffscreenCanvas.
     if (!isSafari) {
+      if (offscreen.current) releaseCanvas(offscreen.current);
       offscreen.current = new OffscreenCanvas(renderWidth, renderHeight);
     }
   }
+
+  // Free canvas memory as soon as this page goes away, instead of waiting for
+  // garbage collection. On iOS, a few leftover canvases can get the tab killed.
+  useEffect(() => {
+    const canvas = canvasElement.current;
+    return () => {
+      if (canvas) releaseCanvas(canvas);
+      if (offscreen.current) releaseCanvas(offscreen.current);
+    };
+  }, []);
 
   function drawPageOnCanvas() {
     if (!page) {
@@ -76,6 +87,15 @@ export default function CustomRenderer() {
     }
 
     page.cleanup();
+
+    // Restore sizes in case a canvas was released (React runs effect
+    // cleanups and re-runs effects in development).
+    for (const c of [canvasElement.current, offscreen.current]) {
+      if (c && (c.width !== renderWidth || c.height !== renderHeight)) {
+        c.width = renderWidth;
+        c.height = renderHeight;
+      }
+    }
 
     const canvas = offscreen.current ?? canvasElement.current;
     if (!canvas) {
@@ -173,16 +193,41 @@ export default function CustomRenderer() {
   );
 }
 
+// Largest canvas iOS and Android will draw: https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
+const MAX_CANVAS_AREA = 16_777_216;
+
+// iOS also kills a tab that uses too much memory in total, and a canvas at
+// the limit above is 64 MB. Stay well under it there.
+const IOS_MAX_CANVAS_AREA = MAX_CANVAS_AREA / 2;
+const IOS_MAX_PIXEL_RATIO = 2;
+
+function isIOS(): boolean {
+  const ua = navigator.userAgent;
+  // iPadOS reports itself as a Mac, but Macs don't have touch screens.
+  return (
+    /iPad|iPhone|iPod/.test(ua) ||
+    (ua.includes("Macintosh") && navigator.maxTouchPoints > 1)
+  );
+}
+
+function releaseCanvas(canvas: HTMLCanvasElement | OffscreenCanvas) {
+  canvas.width = 0;
+  canvas.height = 0;
+}
+
 function getScale(
   w: number,
   h: number,
   userUnit: number,
   patternScale: number,
 ): number {
-  const dpr = window.devicePixelRatio;
+  const ios = isIOS();
+  const dpr = ios
+    ? Math.min(window.devicePixelRatio, IOS_MAX_PIXEL_RATIO)
+    : window.devicePixelRatio;
   const dpi = dpr * userUnit * PDF_TO_CSS_UNITS * patternScale;
   const renderArea = dpi * w * dpi * h;
-  const maxArea = 16_777_216; // limit for iOS or Android device canvas size https://jhildenbiddle.github.io/canvas-size/#/?id=test-results
+  const maxArea = ios ? IOS_MAX_CANVAS_AREA : MAX_CANVAS_AREA;
   let scale = dpi;
   if (renderArea > maxArea) {
     // scale to fit max area.

@@ -2,6 +2,13 @@ import { Layers } from "@/_lib/layers";
 import { LoadStatusEnum } from "@/_lib/load-status-enum";
 import { MenuStates, getDefaultMenuStates } from "@/_lib/menu-states";
 import {
+  STANDARD_DPI,
+  applySvgSize,
+  getOriginalSvgSizeAttributes,
+  guessSvgDpi,
+  svgSizeNeedsDpi,
+} from "@/_lib/svg-size";
+import {
   CSSProperties,
   Dispatch,
   SetStateAction,
@@ -21,6 +28,8 @@ export default function SvgViewer({
   patternScale,
   setMenuStates,
   patternScaleFactor,
+  svgDpi,
+  onSvgDpiDetected,
 }: {
   dataUrl: string;
   svgStyle: CSSProperties;
@@ -33,6 +42,10 @@ export default function SvgViewer({
   patternScale: number;
   setMenuStates: Dispatch<SetStateAction<MenuStates>>;
   patternScaleFactor: number;
+  /** DPI for SVGs whose size has no units; null when the file states real units. */
+  svgDpi: number | null;
+  /** Called on load with a DPI guess, or null when the file doesn't need one. */
+  onSvgDpiDetected: (guessedDpi: number | null) => void;
 }) {
   const objectRef = useRef<HTMLObjectElement>(null);
 
@@ -68,12 +81,13 @@ export default function SvgViewer({
   useEffect(() => {
     const svg = objectRef.current?.contentDocument?.querySelector("svg");
     if (!svg) return;
+    applySvgSize(svg, svgDpi ?? STANDARD_DPI);
     const width = svg.width.baseVal.value;
     const height = svg.height.baseVal.value;
     if (width === 0 || height === 0) return;
     setLayoutWidth(width * patternScale);
     setLayoutHeight(height * patternScale);
-  }, [objectRef, setLayoutWidth, setLayoutHeight, patternScale]);
+  }, [objectRef, setLayoutWidth, setLayoutHeight, patternScale, svgDpi]);
 
   return (
     <object
@@ -85,12 +99,16 @@ export default function SvgViewer({
       onLoad={(e) => {
         const object = e.target as HTMLObjectElement;
         const svg = object.contentDocument?.querySelector("svg");
-        svg?.setAttribute("style", imageStyle);
-
         if (!svg) {
           setFileLoadStatus(LoadStatusEnum.FAILED);
           return;
         }
+        const guessedDpi = svgSizeNeedsDpi(getOriginalSvgSizeAttributes(svg))
+          ? guessSvgDpi(svg)
+          : null;
+        applySvgSize(svg, guessedDpi ?? STANDARD_DPI);
+        onSvgDpiDetected(guessedDpi);
+        svg.setAttribute("style", imageStyle);
         setFileLoadStatus(LoadStatusEnum.SUCCESS);
         setLayoutWidth(svg.width.baseVal.value * patternScale);
         setLayoutHeight(svg.height.baseVal.value * patternScale);
