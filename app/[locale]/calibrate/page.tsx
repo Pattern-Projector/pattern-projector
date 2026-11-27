@@ -119,6 +119,7 @@ export default function Page() {
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const [layoutHeight, setLayoutHeight] = useState<number>(0);
   const [lineThickness, setLineThickness] = useState<number>(0);
+  const [svgDpi, setSvgDpi] = useState<number | null>(null);
   const [measuring, setMeasuring] = useState<boolean>(false);
   const [magnifying, setMagnifying] = useState<boolean>(false);
   const [zoomedOut, setZoomedOut] = useState<boolean>(false);
@@ -279,6 +280,17 @@ export default function Page() {
     updateLocalSettings({ width: w });
   }
 
+  // SVG DPI: use the value saved for this file, else the viewer's guess
+  function handleSvgDpiDetected(guessedDpi: number | null) {
+    const saved = file && localStorage.getItem(`svgDpi:${file.name}`);
+    setSvgDpi(guessedDpi === null ? null : Number(saved) || guessedDpi);
+  }
+
+  function handleSvgDpiChange(dpi: number) {
+    setSvgDpi(dpi);
+    if (file) localStorage.setItem(`svgDpi:${file.name}`, String(dpi));
+  }
+
   // Set new file; reset file based state; and if available, load file based state from localStorage
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
     const { files } = e.target;
@@ -293,6 +305,7 @@ export default function Page() {
       setPageCount(0);
       setLayers({});
       dispatchPatternScaleAction({ type: "set", scale: "1.00" });
+      setSvgDpi(null);
       const lineThicknessString = localStorage.getItem(
         `lineThickness:${files[0].name}`,
       );
@@ -666,6 +679,8 @@ export default function Page() {
                     patternScale={patternScaleFactor}
                     setMenuStates={setMenuStates}
                     patternScaleFactor={patternScaleFactor}
+                    svgDpi={svgDpi}
+                    onSvgDpiDetected={handleSvgDpiDetected}
                   />
                 )}
               </Draggable>
@@ -775,6 +790,8 @@ export default function Page() {
                   dispatchStitchSettings={dispatchStitchSettings}
                   patternScale={patternScale}
                   dispatchPatternScaleAction={dispatchPatternScaleAction}
+                  svgDpi={svgDpi}
+                  setSvgDpi={handleSvgDpiChange}
                 />
               )}
             </menu>
