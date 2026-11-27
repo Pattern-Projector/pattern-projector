@@ -285,6 +285,12 @@
     "hide": "Hide scale menu",
     "show": "Show scale menu"
   },
+  "SvgDpiModal": {
+    "title": "What DPI was this SVG exported at?",
+    "description": "This SVG doesn't say how big it is, so the projected size depends on the DPI it was exported at. Affinity uses 72 by default; most other apps use 96.",
+    "changeLater": "You can change this later in the scale menu.",
+    "option": "{dpi} DPI"
+  },
   "StitchMenu": {
     "columnCount": "Columns",
     "rowCount": "Rows",
